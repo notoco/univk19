@@ -1,5 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
+<addon id="script.notoco.helper" name="pomocnik notoco" version="1.0" provider-name="notoco">
+	<requires>
+		<import addon="xbmc.python" version="3.0.0"/>
+	</requires>
+	<extension point="xbmc.python.script" library="addon.py" />
+	<extension point="xbmc.addon.metadata">
+		<platform>all</platform>
+		<summary lang="en">Pomocne skróty</summary>
+		<assets>
+			<icon>icon.png</icon>
+		</assets>
+	</extension>
+</addon>
+
 <addon id="script.service.hyperion-control" name="Hyperion Control" version="1.0.1" provider-name="hyperion-project, brindosch">
   <requires>
 	<import addon="xbmc.addon"  version="18.9.701"/>
