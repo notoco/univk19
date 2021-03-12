@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addons>
+<addon id="script.service.hyperion-control" name="Hyperion Control" version="1.0.1" provider-name="hyperion-project, brindosch">
+  <requires>
+	<import addon="xbmc.addon"  version="18.9.701"/>
+    <import addon="xbmc.python" version="3.0.0"/>
+	<import addon="script.module.simplejson" version="3.3.0"/>
+	<import addon="script.module.httplib2" version="0.8.0"/>
+  </requires>
+  <extension point="xbmc.service" library="service.py" start="login">
+    <provides>service</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Control Hyperion Ambilight</summary>
+    <summary lang="de">Hyperion Ambilight Steuerung</summary>
+    <description lang="en">Enable and disable components (like capture) of Hyperion automatically based on playing/screensaver state of Kodi[CR]-Supports auto detection of Hyperion Servers[CR]-Token authentication</description>
+    <description lang="de">Aktiviere und deaktiviere automatisch Hyperion Komponenten basierend auf dem aktuellen Kodi Status[CR]-Unterstützt Hyperion Server suche[CR]-Token Autorisierung</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
+    <platform>all</platform>
+    <license>MIT</license>
+    <forum>https://forum.hyperion-project.org</forum>
+    <website>https://www.hyperion-project.org</website>
+    <email></email>
+    <source>https://github.com/hyperion-project</source>
+    <news>
+      1.0.1
+      - Fixed a crash with 3d mode @b-jesch
+
+      1.0.0
+      - Added support for server search
+      - Added support token authentication
+      - Fixed issue where kodi api does not properly announce video playing states
+    </news>
+	<assets>
+		<icon>resources/media/icon.png</icon>
+		<fanart>resources/media/fanart.jpg</fanart>
+		<screenshot>resources/media/fanart.jpg</screenshot>
+	</assets>
+  </extension>
+</addon>
+
+<addon id="plugin.program.simple.favourites" version="0.1.13" name="Simple Favourites" provider-name="primaeval">
+<requires>
+  <import addon="xbmc.python" version="3.0.0"/>
+  <import addon="script.module.xbmcswift2" version="2.4.0"/>
+  <import addon="script.module.requests" version="2.9.1" />
+</requires>
+<extension point="xbmc.python.pluginsource" library="main.py">
+  <provides>executable</provides>
+</extension>
+<extension point="xbmc.addon.metadata">
+  <summary lang="en">Simple Favourites</summary>
+  <description lang="en"></description>
+  <disclaimer lang="en">.</disclaimer>
+</extension>
+</addon>
+
+<addon id="repository.notoco.univ19" name="Notoco Univ Repo" version="2.0" provider-name="notoco">
+		<extension point="xbmc.addon.repository" name="Notoco Univ Repo">
+			<dir>
+				<info>https://github.com/notoco/univ19/raw/master/addons.xml</info>
+				<checksum>https://github.com/notoco/univ19/raw/master/addons.xml.md5</checksum>
+				<datadir zip="true">https://github.com/notoco/univ19/raw/master/zip</datadir>
+			</dir>
+		</extension>
+		<extension point="xbmc.addon.metadata">
+			<summary>Notoco Univ Repo</summary>
+			<description>Prywatne repozytorium notoco</description>
+			<platform>all</platform>
+			<assets>
+				<icon>icon.png</icon>
+			</assets>
+		</extension>
+	</addon>
+
+<addon id="skin.aeon.nox.silvo.notoco" version="2021.01.16.0" name="Aeon Nox: SiLVO - mod NOTOCO" provider-name="SiLVO">
+	<requires>
+		<import addon="xbmc.gui" version="5.15.0" />
+		<import addon="script.skinshortcuts" version="1.0.10" />
+		<import addon="service.library.data.provider" version="0.0.7" />
+		<import addon="resource.images.studios.white" version="0.0.1" />
+		<import addon="resource.images.recordlabels.white" version="0.0.1" />
+	</requires>
+	<extension point="xbmc.gui.skin" debugging="false">
+		<res width="1920" height="1080" aspect="16:9" default="true" folder="16x9" />
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en_GB">Created by BigNoid, Modded by SiLVO and then by notoco, and Widgets by Mr. V</summary>
+		<summary lang="pl_PL">Stworzona przez BigNoid, zmodyfikowana przez SiLVO a następnie przez notco, a gadżety autorstwa Mr. V</summary>
+		<description lang="en_GB">Completely redesigned to create a modern look, while retaining the classic Aeon feel.</description>
+		<description lang="pl_PL">Całkowicie przeprojektowana skóra Aeon, o nowoczesnym wyglądzie, zachowując klasyczny układ skóry Aeon.</description>
+		<platform>all</platform>
+		<license>CC BY-NC-SA 4.0</license>
+		<forum>https://forum.kodi.tv/showthread.php?tid=210069</forum>
+		<website>https://github.com/mikesilvo164/Aeon-Nox-SiLVO</website>
+		<source>https://github.com/mikesilvo164/Aeon-Nox-SiLVO</source>
+		<assets>
+			<icon>resources/icon.png</icon>
+			<fanart>resources/fanart.jpg</fanart>
+			<screenshot>resources/screenshots/screenshot-01.jpg</screenshot>
+			<screenshot>resources/screenshots/screenshot-02.jpg</screenshot>
+			<screenshot>resources/screenshots/screenshot-03.jpg</screenshot>
+			<screenshot>resources/screenshots/screenshot-04.jpg</screenshot>
+			<screenshot>resources/screenshots/screenshot-05.jpg</screenshot>
+			<screenshot>resources/screenshots/screenshot-06.jpg</screenshot>
+			<screenshot>resources/screenshots/screenshot-07.jpg</screenshot>
+			<screenshot>resources/screenshots/screenshot-08.jpg</screenshot>
+			<screenshot>resources/screenshots/screenshot-09.jpg</screenshot>
+			<screenshot>resources/screenshots/screenshot-10.jpg</screenshot>
+			<screenshot>resources/screenshots/screenshot-11.jpg</screenshot>
+			<screenshot>resources/screenshots/screenshot-12.jpg</screenshot>
+		</assets>
+		<news>[I][COLOR FFFF9800]v7.0.9[/COLOR][/I][CR]- Add music playlist contents for List view[CR]- Fix CinemaVision causing focus issue[CR]- Add Artist Slideshow 3.0 support[CR][CR][B]All updates may contain various changes and/or improvements[/B][CR]For a more complete list visit:[CR][I][COLOR FFFF9800]https://github.com/mikesilvo164/Aeon-Nox-SiLVO/commits/master[/COLOR][/I]</news>
+	</extension>
+</addon>
+</addons>
