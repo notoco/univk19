@@ -59,9 +59,9 @@
 <addon id="repository.notoco.univ19" name="Notoco Univ Repo" version="2.0" provider-name="notoco">
 		<extension point="xbmc.addon.repository" name="Notoco Univ Repo">
 			<dir>
-				<info>https://github.com/notoco/univ19/raw/master/addons.xml</info>
-				<checksum>https://github.com/notoco/univ19/raw/master/addons.xml.md5</checksum>
-				<datadir zip="true">https://github.com/notoco/univ19/raw/master/zip</datadir>
+				<info>https://github.com/notoco/univk19/raw/master/addons.xml</info>
+				<checksum>https://github.com/notoco/univk19/raw/master/addons.xml.md5</checksum>
+				<datadir zip="true">https://github.com/notoco/univk19/raw/master/zip</datadir>
 			</dir>
 		</extension>
 		<extension point="xbmc.addon.metadata">
