@@ -72,6 +72,12 @@
 					<height>80</height>
 					<label>$LOCALIZE[19289]</label>
 				</control>
+				<control type="button" id="35">
+					<description>Regenerate Thumbnails</description>
+					<width>310</width>
+					<height>80</height>
+					<label>13315</label>
+				</control>
 			</control>
 		</control>
 		<control type="group">

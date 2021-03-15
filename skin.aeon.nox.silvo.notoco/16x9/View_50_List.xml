@@ -2249,6 +2249,7 @@
 							<align>right</align>
 							<textcolor>grey2</textcolor>
 							<label>$INFO[ListItem.Label2]</label>
+							<visible>!ListItem.IsFolder</visible>
 						</control>
 						<control type="image">
 							<left>1076</left>
@@ -2294,6 +2295,15 @@
 							<height>60</height>
 							<font>font15</font>
 							<label>$INFO[ListItem.Label]</label>
+							<visible>!ListItem.IsFolder</visible>
+						</control>
+						<control type="label">
+							<left>30</left>
+							<width>1104</width>
+							<height>60</height>
+							<font>font15</font>
+							<label>$INFO[ListItem.Label]</label>
+							<visible>ListItem.IsFolder</visible>
 						</control>
 						<control type="image">
 							<left>960</left>
@@ -2312,6 +2322,7 @@
 							<font>font15</font>
 							<align>right</align>
 							<label>$INFO[ListItem.Label2]</label>
+							<visible>!ListItem.IsFolder</visible>
 						</control>
 						<control type="image">
 							<left>1076</left>
