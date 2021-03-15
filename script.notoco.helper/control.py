@@ -2,6 +2,7 @@
 import xbmcaddon
 import xbmcgui
 import os, sys
+import subprocess
 
 addon = xbmcaddon.Addon()
 state = addon.getSetting('state')
@@ -9,11 +10,13 @@ icon = addon.getAddonInfo('icon')
 amb_bright = addon.getSetting('bright')
 
 def turn_off():
-    os.system("hyperion-remote -L 0")
+    #os.system("hyperion-remote -L 0")
+    subprocess.Popen("hyperion-remote -L 0", shell=True)
     addon.setSetting('state', 'false')
 
 def turn_on():
-    os.system("hyperion-remote -L " + amb_bright)
+    #os.system("hyperion-remote -L " + amb_bright)
+    subprocess.Popen("hyperion-remote -L " + amb_bright, shell=True)
     addon.setSetting('state', 'true')
 
 def cpu():

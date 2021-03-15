@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="script.notoco.helper" name="pomocnik notoco" version="1.0" provider-name="notoco">
+<addon id="script.notoco.helper" name="pomocnik notoco" version="1.1" provider-name="notoco">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0"/>
 	</requires>
@@ -52,6 +52,22 @@
 		<screenshot>resources/media/fanart.jpg</screenshot>
 	</assets>
   </extension>
+</addon>
+
+<addon id="plugin.video.favourites" version="0.0.5" name="Video Favourites" provider-name="primaeval">
+<requires>
+  <import addon="xbmc.python" version="3.0.0"/>
+  <import addon="script.module.xbmcswift2" version="2.4.0"/>
+  <import addon="script.module.requests" version="2.9.1" />
+</requires>
+<extension point="xbmc.python.pluginsource" library="main.py">
+  <provides>video</provides>
+</extension>
+<extension point="xbmc.addon.metadata">
+  <summary lang="en">Video Favourites</summary>
+  <description lang="en"></description>
+  <disclaimer lang="en"></disclaimer>
+</extension>
 </addon>
 
 <addon id="plugin.program.simple.favourites" version="0.1.13" name="Simple Favourites" provider-name="primaeval">
