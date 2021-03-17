@@ -1,0 +1,187 @@
+{
+    "prefix": "Exp_View",
+    "viewtypes": {
+        "50":  "Tags",
+        "51":  "Square Row",
+        "52":  "Poster Row",
+        "53":  "Landscape Integrated",
+        "54":  "Landscape Row",
+        "57":  "Banner Row",
+        "58":  "Square Integrated",
+        "59":  "Poster Integrated",
+        "55":  "Landscape List",
+        "500": "Square List",
+        "501": "Square Wall",
+        "502": "Poster Wall",
+        "504": "Landscape Wall",
+        "56":  "Banner Wall"
+    },
+    "icons": {
+        "50":  "special://skin/extras/viewtypes/tags.jpg",
+        "51":  "special://skin/extras/viewtypes/square.jpg",
+        "52":  "special://skin/extras/viewtypes/posters.jpg",
+        "53":  "special://skin/extras/viewtypes/seasons.jpg",
+        "54":  "special://skin/extras/viewtypes/landscape.jpg",
+        "55":  "special://skin/extras/viewtypes/list-landscape.jpg",
+        "56":  "special://skin/extras/viewtypes/banners.jpg",
+        "57":  "special://skin/extras/viewtypes/big-banner.jpg",
+        "58":  "special://skin/extras/viewtypes/artists.jpg",
+        "59":  "special://skin/extras/viewtypes/sets.jpg",
+        "500": "special://skin/extras/viewtypes/list-square.jpg",
+        "501": "special://skin/extras/viewtypes/wall-square.jpg",
+        "502": "special://skin/extras/viewtypes/wall-posters.jpg",
+        "504": "special://skin/extras/viewtypes/wall-landscape.jpg"
+    },
+    "rules": {
+        "addons": {
+            "rule": "Container.Content(addons)",
+            "viewtypes": ["51", "501", "58", "50", "500"],
+            "library": "51",
+            "plugins": "500"
+        },
+        "albums": {
+            "rule": "Container.Content(albums)",
+            "viewtypes": ["51", "501", "500"],
+            "library": "51"
+        },
+        "images": {
+            "rule": "Container.Content(images)",
+            "viewtypes": ["51", "501", "55", "54", "504"],
+            "library": "51"
+        },
+        "musicvideos": {
+            "rule": "Container.Content(musicvideos)",
+            "viewtypes": ["51", "501", "52", "502", "54", "504"],
+            "library": "51"
+        },
+        "actors": {
+            "rule": "Container.Content(actors)",
+            "viewtypes": ["52", "502", "53", "59", "500"],
+            "library": "52"
+        },
+        "seasons": {
+            "rule": "Container.Content(seasons)",
+            "viewtypes": ["52", "502", "53", "55"],
+            "library": "53"
+        },
+        "tags": {
+            "rule": "Container.Content(tags)",
+            "viewtypes": ["53", "59", "50", "500"],
+            "library": "53",
+            "plugins": "50"
+        },
+        "countries": {
+            "rule": "Container.Content(countries)",
+            "viewtypes": ["53", "59", "50", "500"],
+            "library": "53",
+            "plugins": "50"
+        },
+        "genres": {
+            "rule": "Container.Content(genres) + !Window.IsVisible(MyMusicNav.xml)",
+            "viewtypes": ["53", "59", "50", "500"],
+            "library": "53",
+            "plugins": "50"
+        },
+        "genres-music": {
+            "rule": "Container.Content(genres) + Window.IsVisible(MyMusicNav.xml)",
+            "viewtypes": ["53", "58", "50", "500"],
+            "library": "53",
+            "plugins": "50"
+        },
+        "studios": {
+            "rule": "Container.Content(studios)",
+            "viewtypes": ["53", "59", "50", "500"],
+            "library": "53",
+            "plugins": "50"
+        },
+        "years": {
+            "rule": "Container.Content(years) + !Window.IsVisible(MyMusicNav.xml)",
+            "viewtypes": ["53", "59", "50", "500"],
+            "library": "53",
+            "plugins": "50"
+        },
+        "years-music": {
+            "rule": "Container.Content(years) + Window.IsVisible(MyMusicNav.xml)",
+            "viewtypes": ["53", "58", "50", "500"],
+            "library": "53",
+            "plugins": "50"
+        },
+        "directors": {
+            "rule": "Container.Content(directors)",
+            "viewtypes": ["53", "59", "50", "500"],
+            "library": "53",
+            "plugins": "500"
+        },
+        "artists": {
+            "rule": "Container.Content(artists)",
+            "viewtypes": ["51", "501", "54", "504", "58", "55", "500"],
+            "library": "54"
+        },
+        "videos": {
+            "rule": "Container.Content(videos)",
+            "viewtypes": ["54", "504", "55"],
+            "library": "54"
+        },
+        "sets": {
+            "rule": "Container.Content(sets)",
+            "viewtypes": ["52", "502", "59", "54", "504", "55", "53"],
+            "library": "54"
+        },
+        "movies": {
+            "rule": "Container.Content(movies)",
+            "viewtypes": ["52", "502", "54", "504", "55", "56", "57"],
+            "library": "52"
+        },
+        "tvshows": {
+            "rule": "Container.Content(tvshows)",
+            "viewtypes": ["52", "502", "54", "504", "55", "56", "57", "59"],
+            "library": "52"
+        },
+        "episodes": {
+            "rule": "Container.Content(episodes)",
+            "viewtypes": ["54", "504", "55"],
+            "library": "54"
+        },
+        "songs": {
+            "rule": "Container.Content(songs)",
+            "viewtypes": ["500"],
+            "library": "500"
+        },
+        "files": {
+            "rule": "Container.Content(files)",
+            "viewtypes": ["55"],
+            "library": "55"
+        },
+        "unknown": {
+            "rule": "Container.Content(unknown)",
+            "viewtypes": ["50", "500"],
+            "library": "50"
+        },
+        "playlists": {
+            "rule": "Container.Content(playlists)",
+            "viewtypes": ["50", "500"],
+            "library": "50"
+        },
+        "pvr-timers": {
+            "rule": "Window.IsVisible(MyPVRTimers.xml)",
+            "viewtypes": ["500", "54", "504", "51", "501"],
+            "library": "500"
+        },
+        "pvr-search": {
+            "rule": "Window.IsVisible(MyPVRSearch.xml)",
+            "viewtypes": ["500", "54", "504", "51", "501"],
+            "library": "500"
+        },
+        "pvr-recordings": {
+            "rule": "Window.IsVisible(MyPVRRecordings.xml)",
+            "viewtypes": ["500", "54", "504", "52", "502", "51", "501"],
+            "library": "500"
+        },
+        "none": {
+            "rule": "Container.Content() + !Window.IsVisible(MyPVRTimers.xml) + !Window.IsVisible(MyPVRSearch.xml) + !Window.IsVisible(MyPVRRecordings.xml)",
+            "viewtypes": ["50", "500"],
+            "library": "50",
+            "plugins": "500"
+        }
+    }
+}
