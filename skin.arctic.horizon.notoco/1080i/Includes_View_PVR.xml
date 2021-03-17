@@ -516,6 +516,16 @@
     <include name="View_PVR_Guide_Top"><top>320</top></include>
 
     <include name="View_PVR_Guide_Info">
+        <control type="image">
+                <top>-25</top>
+                <right>4</right>
+                <left>1350</left>
+                <bordersize>20</bordersize>
+                <texture>$INFO[Container(10).ListItem.Icon]</texture>
+                <aspectratio aligny="center" align="right">keep</aspectratio>
+                <width>300</width>
+                <height>300</height>
+            </control>
         <control type="grouplist">
             <orientation>vertical</orientation>
             <usecontrolcoords>true</usecontrolcoords>
@@ -526,18 +536,28 @@
                 <param name="label" value="$VAR[Label_PVRGuide_Title]" />
             </include>
             <include>Object_Info_Line</include>
+            <control type="progress">
+                <left>pad</left>
+                <width>1150</width>
+                <height>8</height>
+                <reveal>true</reveal>
+                <top>6</top>
+                <info>ListItem.Progress</info>
+                <colordiffuse>Selected</colordiffuse>
+                <visible>!String.IsEmpty(ListItem.ChannelName)</visible>
+            </control>
             <include content="Object_Info_Title">
                 <param name="font" value="font_small_bold" />
                 <param name="titleheight" value="10" />
                 <param name="label" value="$INFO[ListItem.Genre]" />
-                <top>30</top>
+                <top>10</top>
                 <visible>!Control.HasFocus(9400)</visible>
             </include>
             <include content="Object_Info_Title">
                 <param name="font" value="font_small_bold" />
                 <param name="titleheight" value="10" />
                 <param name="label" value="$INFO[ListItem.NextGenre]" />
-                <top>30</top>
+                <top>10</top>
                 <visible>Control.HasFocus(9400)</visible>
             </include>
             <include content="Object_Info_Plot">
