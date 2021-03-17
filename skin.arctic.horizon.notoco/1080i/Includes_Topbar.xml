@@ -77,7 +77,7 @@
                     </control>
                     <control type="label">
                         <width>auto</width>
-                        <font>font_small</font>
+                        <font>font_medium_bold</font>
                         <textcolor>$PARAM[fgcolor]_100</textcolor>
                         <label>$INFO[System.Time]</label>
                     </control>
