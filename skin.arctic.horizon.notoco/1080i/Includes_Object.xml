@@ -132,8 +132,8 @@
     <include name="Object_ShadowSpot_Grouplist">
         <control type="grouplist">
             <orientation>vertical</orientation>
-            <left>view_pad</left>
-            <top>view_pad</top>
+            <left>30</left>
+            <top>20</top>
             <itemgap>0</itemgap>
             <usecontrolcoords>true</usecontrolcoords>
             <nested />
@@ -152,20 +152,12 @@
                 <width>$PARAM[width]</width>
                 <height>$PARAM[height]</height>
                 <control type="image">
-                    <left>-500</left>
-                    <right>-500</right>
-                    <top>-300</top>
-                    <bottom>-300</bottom>
+                    <left>15</left>
+                    <right>15</right>
+                    <top>15</top>
+                    <bottom>15</bottom>
                     <aspectratio>stretch</aspectratio>
-                    <texture>common/shadowspot.png</texture>
-                </control>
-                <control type="image">
-                    <left>-500</left>
-                    <right>-500</right>
-                    <top>-300</top>
-                    <bottom>-300</bottom>
-                    <aspectratio>stretch</aspectratio>
-                    <texture>common/shadowspot.png</texture>
+                    <texture colordiffuse="panel_bg" border="10">diffuse/box.png</texture>
                 </control>
                 <nested />
             </control>
