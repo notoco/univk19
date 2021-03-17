@@ -39,9 +39,9 @@ if __name__ == '__main__':
             
 #EPG
     elif arg == "epg":
-        playing = xbmc.Player().isPlayingVideo()
+        playing = xbmc.getCondVisibility('Player.Playing')
         if (playing == True):  
-            xbmc.executebuiltin("xbmc.ActivateWindow(12005)")
+            xbmc.executebuiltin('ActivateWindow(12005)')
         else:
             xbmc.executebuiltin("Action(Back)")
 #CPU
