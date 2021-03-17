@@ -41,9 +41,9 @@ if __name__ == '__main__':
     elif arg == "epg":
         playing = xbmc.Player().isPlayingVideo()
         if (playing == True):  
-            xbmc.executebuiltin("xbmc.ActivateWindow(fullscreenvideo)")
+            xbmc.executebuiltin("xbmc.ActivateWindow(12005)")
         else:
-            xbmc.executebuiltin("Action(back)")
+            xbmc.executebuiltin("Action(Back)")
 #CPU
     elif arg == "cpu":
         control.cpu()
