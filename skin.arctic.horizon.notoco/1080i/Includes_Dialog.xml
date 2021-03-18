@@ -538,6 +538,14 @@
             <right>view_pad</right>
             <height>view_header</height>
             <visible>!$EXP[Exp_ShowPlotOverlay]</visible>
+                <control type="image">
+                    <aspectratio>scale</aspectratio>
+                    <width>1100</width>
+                    <height>60</height>
+                    <top>-10</top>
+                    <right>20</right>
+                    <texture colordiffuse="panel_bg" border="2">diffuse/box.png</texture>
+                </control>
             <control type="image" description="Back">
                 <right>-16</right>
                 <centertop>50%</centertop>
