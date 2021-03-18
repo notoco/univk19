@@ -151,10 +151,10 @@
                 <right>view_pad</right>
                 <height>view_header</height>
                 <control type="image" description="Back">
-                    <left>-96</left>
+                    <left>-16</left>
                     <centertop>50%</centertop>
-                    <width>160</width>
-                    <height>160</height>
+                    <width>80</width>
+                    <height>80</height>
                     <aspectratio align="center" aligny="center">keep</aspectratio>
                     <texture>dialog/loading-back-busy.png</texture>
                     <colordiffuse>main_fg_70</colordiffuse>
