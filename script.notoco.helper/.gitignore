@@ -1,0 +1,8 @@
+generator.py
+1080i/script-skinshortcuts-includes.xml
+*.xcf
+*~
+Thumbs.db
+# Test caches
+*.pyc
+*.pyo
