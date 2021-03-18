@@ -1501,6 +1501,16 @@
                         <param name="plotheight-nr" value="$PARAM[plotheight-nr]" />
                     </include>
                 </control>
+                <control type="image">
+                    <visible>!String.IsEmpty(ListItem.EPGEventIcon)</visible>
+                    <top>-420</top>
+                    <left>1260</left>
+                    <height>345</height>
+                    <width>645</width>
+                    <bordertexture border="30" colordiffuse="Shadow">common/shadow-15.png</bordertexture>
+                    <aspectratio scalediffuse="true" align="center" aligny="center">keep</aspectratio>
+                    <texture>$INFO[ListItem.EPGEventIcon]</texture>
+                </control>
             </control>
         </definition>
     </include>
