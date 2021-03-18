@@ -161,10 +161,10 @@
                 </control>
                 <control type="group">
                     <description>Busy animation</description>
-                    <left>-96</left>
+                    <left>-16</left>
                     <centertop>50%</centertop>
-                    <width>160</width>
-                    <height>160</height>
+                    <width>80</width>
+                    <height>80</height>
                     <animation effect="rotate" condition="true" start="360" end="0" loop="true" time="1000" center="auto">Conditional</animation>
                     <control type="image">
                         <texture colordiffuse="$VAR[ColorHighlight]">dialog/loading-spinner.png</texture>
@@ -177,7 +177,7 @@
                     </control>
                 </control>
                 <control type="group">
-                    <left>60</left>
+                    <left>70</left>
                     <centertop>50%</centertop>
                     <height>72</height>
                     <control type="label">
