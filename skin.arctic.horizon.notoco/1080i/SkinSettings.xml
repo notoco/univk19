@@ -827,15 +827,6 @@
                         <selected>System.HasAddon(script.artistslideshow)</selected>
                         <include>Defs_Settings_Button</include>
                     </control>
-                    <control type="radiobutton" id="19907">
-                        <visible>Integer.IsEqual(Window.Property(CurrentFocus),9009)</visible>
-                        <label>plugin.program.autocompletion</label>
-                        <label2>$INFO[System.AddonVersion(plugin.program.autocompletion)]        </label2>
-                        <onclick>Addon.OpenSettings(plugin.program.autocompletion)</onclick>
-                        <onclick condition="!System.HasAddon(plugin.program.autocompletion)">InstallAddon(plugin.program.autocompletion)</onclick>
-                        <selected>System.HasAddon(plugin.program.autocompletion)</selected>
-                        <include>Defs_Settings_Button</include>
-                    </control>
                     <control type="radiobutton" id="19908">
                         <visible>Integer.IsEqual(Window.Property(CurrentFocus),9009)</visible>
                         <label>resource.images.studios.white</label>
