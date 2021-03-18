@@ -501,7 +501,7 @@ msgstr "Użyj szablonu nazw utworów"
 #: /1080i/Includes_Home.xml
 msgctxt "#31097"
 msgid "Ends at"
-msgstr "Zakończeni o"
+msgstr "Zakończenie o"
 
 #: /1080i/script-skinshortcuts.xml
 msgctxt "#31098"
@@ -632,7 +632,7 @@ msgstr "30 sekund"
 #: /1080i/SkinSettings.xml
 msgctxt "#31126"
 msgid "60 seconds"
-msgstr "30 sekund"
+msgstr "60 sekund"
 
 #: /1080i/SkinSettings.xml
 msgctxt "#31127"
