@@ -126,13 +126,18 @@
 </extension>
 </addon>
 
-<addon id="repository.notoco.univ19" name="Notoco Univ Repo" version="2.0" provider-name="notoco">
+<addon id="repository.notoco.univ19" name="Notoco Univ Repo" version="2.1" provider-name="notoco">
 		<extension point="xbmc.addon.repository" name="Notoco Univ Repo">
-			<dir>
+			<dir minversion="18.9.0">
 				<info>https://github.com/notoco/univk19/raw/master/addons.xml</info>
 				<checksum>https://github.com/notoco/univk19/raw/master/addons.xml.md5</checksum>
 				<datadir zip="true">https://github.com/notoco/univk19/raw/master/zip</datadir>
 			</dir>
+			<dir minversion="18.9.0">
+			<info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/</datadir>
+		</dir>
 		</extension>
 		<extension point="xbmc.addon.metadata">
 			<summary>Notoco Univ Repo</summary>
