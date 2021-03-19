@@ -89,38 +89,35 @@
                     </control>
                 </control>
                 <control type="grouplist">
-                    <visible>[Control.HasFocus(60) | Control.HasFocus(64)] + !String.IsEmpty(Container.NumItems)</visible>
-                    <right>view_pad</right>
-                    <align>right</align>
-                    <orientation>horizontal</orientation>
-                    <itemgap>0</itemgap>
-                    <width>700</width>
-                    <usecontrolcoords>true</usecontrolcoords>
-                    <control type="label">
-                        <width>auto</width>
-                        <font>font_small</font>
-                        <textcolor>$PARAM[fgcolor]_100</textcolor>
-                        <label>$INFO[Container.NumItems,, $LOCALIZE[31025]]</label>
+                        <include>Defs_InfoDialog_Visible</include>
+                        <visible>!String.IsEmpty(Container.NumItems) + !Skin.HasSetting(DisableShowItemCount)</visible>
+                        <animation effect="slide" start="0,0" end="0,45" time="200" tween="sine" condition="!Skin.HasSetting(DisableClock)">Conditional</animation>
+                        <animation effect="slide" start="0" end="-80" time="200" tween="sine" condition="Window.IsVisible(DialogVolumeBar.xml) + ![Window.IsVisible(Home) + !Skin.HasSetting(HomeMulti)]">Conditional</animation>
+                        <right>view_pad</right>
+                        <align>right</align>
+                        <orientation>horizontal</orientation>
+                        <itemgap>0</itemgap>
+                        <width>700</width>
+                        <usecontrolcoords>true</usecontrolcoords>
+                        <control type="label">
+                            <width>auto</width>
+                            <font>font_small</font>
+                            <textcolor>$PARAM[fgcolor]_100</textcolor>
+                            <label>$INFO[Container.NumItems,, pozycji]</label>
+                        </control>
+                        <control type="label">
+                            <width>auto</width>
+                            <font>font_small</font>
+                            <textcolor>$VAR[ColorHighlight]</textcolor>
+                            <label>  |  </label>
+                        </control>
+                        <control type="label">
+                            <width>auto</width>
+                            <font>font_small</font>
+                            <textcolor>$PARAM[fgcolor]_100</textcolor>
+                            <label>$INFO[Container.CurrentPage,$LOCALIZE[31391] , $LOCALIZE[20163] ]$INFO[Container.NumPages]</label>
+                        </control>
                     </control>
-                    <control type="label">
-                        <width>auto</width>
-                        <font>font_small</font>
-                        <textcolor>$VAR[ColorHighlight]</textcolor>
-                        <label>  |  </label>
-                    </control>
-                    <control type="label">
-                        <width>auto</width>
-                        <font>font_small</font>
-                        <textcolor>$PARAM[fgcolor]_100</textcolor>
-                        <label>$INFO[Container.CurrentPage,$LOCALIZE[31391] , $LOCALIZE[20163] ]$INFO[Container.NumPages]</label>
-                    </control>
-                    <control type="group" description="Mute bug spacer">
-                        <centertop>50%</centertop>
-                        <height>56</height>
-                        <width>72</width>
-                        <visible>Player.Muted</visible>
-                    </control>
-                </control>
             </control>
         </definition>
     </include>
