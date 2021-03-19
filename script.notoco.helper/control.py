@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import xbmcaddon
 import xbmcgui
-import os, sys
 import subprocess
 
 addon = xbmcaddon.Addon()
@@ -10,12 +9,10 @@ icon = addon.getAddonInfo('icon')
 amb_bright = addon.getSetting('bright')
 
 def turn_off():
-    #os.system("hyperion-remote -L 0")
     subprocess.Popen("hyperion-remote -L 0", shell=True)
     addon.setSetting('state', 'false')
 
 def turn_on():
-    #os.system("hyperion-remote -L " + amb_bright)
     subprocess.Popen("hyperion-remote -L " + amb_bright, shell=True)
     addon.setSetting('state', 'true')
 
