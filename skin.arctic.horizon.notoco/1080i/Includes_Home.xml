@@ -1501,15 +1501,29 @@
                         <param name="plotheight-nr" value="$PARAM[plotheight-nr]" />
                     </include>
                 </control>
-                <control type="image">
-                    <visible>!String.IsEmpty(ListItem.EPGEventIcon)</visible>
-                    <top>-420</top>
-                    <left>1260</left>
-                    <height>345</height>
-                    <width>645</width>
-                    <bordertexture border="30" colordiffuse="Shadow">common/shadow-15.png</bordertexture>
-                    <aspectratio scalediffuse="true" align="center" aligny="center">keep</aspectratio>
-                    <texture>$INFO[ListItem.EPGEventIcon]</texture>
+                <control type="group">
+                   <control type="image">
+                        <visible>!String.IsEmpty(ListItem.EPGEventIcon)</visible>
+                        <top>-420</top>
+                        <left>1260</left>
+                        <height>345</height>
+                        <width>645</width>
+                        <bordersize>20</bordersize>
+                        <bordertexture border="30" colordiffuse="Shadow">common/shadow-20.png</bordertexture>
+                        <aspectratio scalediffuse="true" align="left" aligny="bottom">keep</aspectratio>
+                        <texture background="true" diffuse="diffuse/landscape-big.png">$INFO[ListItem.EPGEventIcon]</texture>
+                    </control>
+                </control>
+                <control type="group">
+                   <control type="image">
+                        <visible>String.IsEmpty(ListItem.EPGEventIcon)</visible>
+                        <top>-420</top>
+                        <left>1460</left>
+                        <texture>$INFO[ListItem.Icon]</texture>
+                        <aspectratio aligny="center" align="right">keep</aspectratio>
+                        <width>300</width>
+                        <height>300</height>
+                    </control>
                 </control>
             </control>
         </definition>
