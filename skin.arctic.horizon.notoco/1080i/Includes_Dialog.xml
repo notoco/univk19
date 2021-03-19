@@ -534,20 +534,18 @@
         <param name="fgcolor" default="main_fg" />
         <definition>
             <bottom>20</bottom>
-            <left>view_pad</left>
-            <right>view_pad</right>
+            <left>0</left>
             <height>view_header</height>
             <visible>!$EXP[Exp_ShowPlotOverlay]</visible>
                 <control type="image">
                     <aspectratio>scale</aspectratio>
-                    <width max="1100">auto</width>
-                    <height>60</height>
-                    <top>-10</top>
-                    <right>20</right>
-                    <texture colordiffuse="FFcccccc">common/dim-top.png</texture>
+                    <width>100%</width>
+                    <height>80</height>
+                    <top>-20</top>
+                    <texture colordiffuse="FFBFBFBF">common/dim-top.png</texture>
                 </control>
             <control type="image" description="Back">
-                <right>-16</right>
+                <right>0</right>
                 <centertop>50%</centertop>
                 <width>80</width>
                 <height>80</height>
@@ -556,7 +554,7 @@
                 <colordiffuse>$PARAM[fgcolor]_70</colordiffuse>
             </control>
             <control type="group">
-                <right>-16</right>
+                <right>8</right>
                 <centertop>50%</centertop>
                 <width>80</width>
                 <height>80</height>
@@ -576,7 +574,7 @@
             </control>
 
             <control type="image">
-                <right>8</right>
+                <right>24</right>
                 <centertop>50%</centertop>
                 <height>32</height>
                 <width>42</width>
@@ -584,7 +582,7 @@
                 <texture colordiffuse="$PARAM[fgcolor]_100">$PARAM[icon]</texture>
             </control>
             <control type="group">
-                <right>64</right>
+                <right>72</right>
                 <centertop>50%</centertop>
                 <height>72</height>
                 <control type="label" id="$PARAM[main_id]">
