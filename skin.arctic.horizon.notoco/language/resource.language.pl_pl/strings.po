@@ -520,7 +520,7 @@ msgstr "Typ zawartości"
 
 msgctxt "#31101"
 msgid "items"
-msgstr "zawartość"
+msgstr "pozycji"
 
 msgctxt "#31102"
 msgid "min"

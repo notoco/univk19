@@ -82,7 +82,7 @@
             <include content="Home_Hub_Widget_Label">
                 <param name="id" value="55" />
                 <param name="label" value="$VAR[Label_Header_Center]" />
-                <param name="altlabel" value="$INFO[Control.GetLabel(3),, ]$INFO[Control.GetLabel(4)]" />
+                <param name="altlabel" value="$INFO[ListItem.Label]" />
                 <top>120</top>
             </include>
             <control type="wraplist" id="550">
