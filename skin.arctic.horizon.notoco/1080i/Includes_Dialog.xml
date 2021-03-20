@@ -541,7 +541,7 @@
                     <aspectratio>scale</aspectratio>
                     <width>100%</width>
                     <height>80</height>
-                    <top>-20</top>
+                    <top>-15</top>
                     <texture colordiffuse="FFBFBFBF">common/dim-top.png</texture>
                 </control>
             <control type="image" description="Back">
