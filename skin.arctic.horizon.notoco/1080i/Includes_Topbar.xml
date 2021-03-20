@@ -39,7 +39,6 @@
             <control type="group">
                 <top>view_pad</top>
                 <height>view_header</height>
-                <visible>!Window.IsVisible(DialogNotification.xml)</visible>
                 <visible>!Window.IsVisible(DialogExtendedProgressBar.xml)</visible>
                 <visible>!Window.IsVisible(DialogVolumeBar.xml) | Player.Muted</visible>
                 <visible>!Player.HasMedia | Window.IsVisible(fullscreenvideo)</visible>
@@ -77,7 +76,7 @@
                     </control>
                     <control type="label">
                         <width>auto</width>
-                        <font>font_medium_bold</font>
+                        <font>font_topbar</font>
                         <textcolor>$PARAM[fgcolor]_100</textcolor>
                         <label>$INFO[System.Time]</label>
                     </control>

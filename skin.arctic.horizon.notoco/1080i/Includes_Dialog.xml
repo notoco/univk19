@@ -574,7 +574,7 @@
             </control>
 
             <control type="image">
-                <right>24</right>
+                <right>32</right>
                 <centertop>50%</centertop>
                 <height>32</height>
                 <width>42</width>
@@ -582,7 +582,7 @@
                 <texture colordiffuse="$PARAM[fgcolor]_100">$PARAM[icon]</texture>
             </control>
             <control type="group">
-                <right>72</right>
+                <right>92</right>
                 <centertop>50%</centertop>
                 <height>72</height>
                 <control type="label" id="$PARAM[main_id]">
@@ -591,7 +591,7 @@
                     <height>26</height>
                     <label>$PARAM[label]</label>
                     <align>right</align>
-                    <width max="1000">auto</width>
+                    <width max="1800">auto</width>
                     <font>font_statusbar_bold</font>
                     <textcolor>$PARAM[fgcolor]_100</textcolor>
                 </control>
@@ -604,7 +604,7 @@
                         <centerbottom>33%</centerbottom>
                         <height>26</height>
                         <label>$PARAM[label2]</label>
-                        <width max="1000">auto</width>
+                        <width max="1800">auto</width>
                         <font>font_statusbar</font>
                         <textcolor>$PARAM[fgcolor]_100</textcolor>
                     </control>
