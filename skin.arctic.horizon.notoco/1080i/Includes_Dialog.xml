@@ -545,7 +545,7 @@
                     <texture colordiffuse="FFBFBFBF">common/dim-top.png</texture>
                 </control>
             <control type="image" description="Back">
-                <right>0</right>
+                <right>8</right>
                 <centertop>50%</centertop>
                 <width>80</width>
                 <height>80</height>
