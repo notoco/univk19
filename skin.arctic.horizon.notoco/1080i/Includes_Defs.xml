@@ -27,7 +27,14 @@
         <value condition="Skin.HasSetting(InvertHomeMenuColors)">dialog_fg_30</value>
         <value>dialog_bg_30</value>
     </variable>
-
+    <variable name="AddonsOriginVar">
+        <value condition="ListItem.Property(Addon.IsFromOfficialRepo) + ListItem.IsAutoUpdateable">indicator/official.png</value>
+        <value condition="ListItem.Property(Addon.IsFromOfficialRepo)">indicator/official-pinned.png</value>
+        <value condition="String.IsEqual(ListItem.AddonOrigin,$LOCALIZE[25014]) + ListItem.IsAutoUpdateable">indicator/manual.png</value>
+        <value condition="String.IsEqual(ListItem.AddonOrigin,$LOCALIZE[25014])">indicator/manual-pinned.png</value>
+        <value condition="ListItem.IsAutoUpdateable">indicator/install.png</value>
+        <value>indicator/install-pinned.png</value>
+    </variable>
     <include name="Defs_Movement_Banner">
         <movement>0</movement>
     </include>

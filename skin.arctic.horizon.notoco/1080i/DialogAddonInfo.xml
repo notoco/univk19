@@ -47,7 +47,13 @@
                         <include content="Object_Info_Line_Label">
                             <param name="label" value="$VAR[Label_SubTitle]" />
                             <param name="textcolor" value="$VAR[ColorHighlight]" />
+                            <param name="divider" value="true" />
+                        </include>
+                        <include content="Object_Info_Line">
+                            <param name="label" value="[COLOR=main_fg_100]Repozytorium:[/COLOR] $INFO[ListItem.AddonOrigin]" />
+                            <param name="textcolor" value="$VAR[white]" />
                             <param name="divider" value="false" />
+                            <param name="image" value="$VAR[AddonsOriginVar]" />
                         </include>
                         <include content="Object_Info_Plot">
                             <param name="height" value="120" />
@@ -75,7 +81,7 @@
                     <control type="textbox">
                         <top>-10</top>
                         <left>100</left>
-                        <height>400</height>
+                        <height>300</height>
                         <align>left</align>
                         <font>font_plotbox</font>
                         <textcolor>main_fg_70</textcolor>
