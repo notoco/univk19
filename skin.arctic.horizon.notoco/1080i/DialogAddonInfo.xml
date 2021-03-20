@@ -47,7 +47,7 @@
                         <include content="Object_Info_Line_Label">
                             <param name="label" value="$VAR[Label_SubTitle]" />
                             <param name="textcolor" value="$VAR[ColorHighlight]" />
-                            <param name="divider" value="true" />
+                            <param name="divider" value="false" />
                         </include>
                         <include content="Object_Info_Line">
                             <param name="label" value="[COLOR=main_fg_100]Repozytorium:[/COLOR] $INFO[ListItem.AddonOrigin]" />
