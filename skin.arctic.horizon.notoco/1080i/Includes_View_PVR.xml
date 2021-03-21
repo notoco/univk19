@@ -164,7 +164,7 @@
                 <aligny>center</aligny>
                 <textcolor>$PARAM[fgcolor]</textcolor>
                 <selectedcolor>$PARAM[fgcolor]</selectedcolor>
-                <font>font_small_bold</font>
+                <font>font_mainmenu</font>
                 <label>$VAR[Label_PVROSD_Title]</label>
             </control>
             <control type="label">
