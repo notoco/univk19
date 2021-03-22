@@ -70,7 +70,7 @@
 </extension>
 </addon>
 
-<addon id="skin.arctic.horizon.notoco" name="Arctic Horizon Notoco" provider-name="jurialmunkey+notoco" version="2021.03.21.0">
+<addon id="skin.arctic.horizon.notoco" name="Arctic Horizon Notoco" provider-name="jurialmunkey+notoco" version="2021.03.22.0">
     <requires>
         <import addon="xbmc.gui" version="5.15.0" />
         <import addon="script.skinshortcuts" version="0.4.0" />
@@ -148,4 +148,41 @@
 			</assets>
 		</extension>
 	</addon>
+
+<addon id="script.audio.profiles" name="Audio Profiles" version="2.1.1" provider-name="pkscout, notoco, Regss">
+	<requires>
+        <import addon="xbmc.python" version="3.0.0" />
+        <import addon="script.module.kodi-six" version="0.1.3.1" />
+	</requires>
+	<extension point="xbmc.python.script" library="default.py"/>
+	<extension point="xbmc.service" library="service.py" />
+	<extension point="xbmc.addon.metadata">
+		<news>
+v.2.1.0
+- fix for logging issue with Python3
+		</news>
+		<assets>
+			<icon>icon.png</icon>
+		</assets>
+		<summary lang="en_GB">Save audio profile and easily switch between them.</summary>
+		<summary lang="es_AR">Guarde el perfil de audio y cambie fácilmente entre ellos.</summary>
+		<summary lang="es_ES">Guarde el perfil de audio y cambie fácilmente entre ellos.</summary>
+		<summary lang="es_MX">Guarde el perfil de audio y cambie fácilmente entre ellos.</summary>
+		<summary lang="hu_HU">Hangbeállítások profilba mentése, és könnyű váltás közöttük.</summary>
+		<summary lang="it_IT">Salva il profilo audio e cambia facilmente da uno all'altro.</summary>
+		<summary lang="pl_PL">Zapisuje profile ustawień audio i łatwo przełącza między nimi.</summary>
+		<description lang="en_GB">Save audio profile and easily switch between them.</description>
+		<description lang="es_AR">Guarde el perfil de audio y cambie fácilmente entre ellos.</description>
+		<description lang="es_ES">Guarde el perfil de audio y cambie fácilmente entre ellos.</description>
+		<description lang="es_MX">Guarde el perfil de audio y cambie fácilmente entre ellos.</description>
+		<description lang="hu_HU">Hangbeállítások profilba mentése, és könnyű váltás közöttük.</description>
+		<description lang="it_IT">Salva il profilo audio e cambia facilmente da uno all'altro.</description>
+		<description lang="pl_PL">Zapisuje profile ustawień audio i łatwo przełącza między nimi.</description>
+		<platform>all</platform>
+		<license>GPL-3.0-only</license>
+		<forum>https://forum.kodi.tv/showthread.php?tid=353852</forum>
+		<website>https://kodi.wiki/view/Add-on:Audio_Profiles</website>
+		<source>https://github.com/pkscout/script.audio.profiles</source>
+	</extension>
+</addon>
 </addons>
