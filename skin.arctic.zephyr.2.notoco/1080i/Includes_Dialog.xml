@@ -184,21 +184,17 @@
         <param name="topalign" default="false" />
         <param name="height" default="view_bottom" />
         <definition>
-            <include condition="$PARAM[topalign]">Dialog_Notification_TopAlign</include>
-            <include condition="!$PARAM[topalign]">Dialog_Notification_BottomAlign</include>
-            <left>view_pad</left>
-            <right>view_pad</right>
+            <bottom>20</bottom>
+            <left>0</left>
             <height>$PARAM[height]</height>
             <visible>!$EXP[Exp_ShowPlotOverlay]</visible>
-            <control type="image" description="Back">
-                <left>-16</left>
-                <centertop>50%</centertop>
-                <width>80</width>
-                <height>80</height>
-                <aspectratio align="center" aligny="center">keep</aspectratio>
-                <texture>dialog/loading-back.png</texture>
-                <colordiffuse>$PARAM[fgcolor]_70</colordiffuse>
-            </control>
+                <control type="image">
+                    <aspectratio>scale</aspectratio>
+                    <width>100%</width>
+                    <height>80</height>
+                    <top>-15</top>
+                    <texture colordiffuse="FFBFBFBF">common/dim-top.png</texture>
+                </control>
             <control type="image">
                 <left>-16</left>
                 <centertop>50%</centertop>
