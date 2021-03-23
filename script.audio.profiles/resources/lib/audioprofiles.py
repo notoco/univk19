@@ -98,7 +98,7 @@ class apMonitor( xbmc.Monitor ):
         content_autoswitch = self._auto_switch_content( data )
         self.LW.log( ['got a content autoswitch of %s' % content_autoswitch] )
         if content_autoswitch not in ['auto_music', 'auto_pvr_radio', 'auto_pvr_tv']:
-                codec_setting, channels_setting = self._auto_switch_stream()
+            codec_setting, channels_setting = self._auto_switch_stream()
             if codec_setting != '0':
                 the_setting = codec_setting
                 self.LW.log( ['using the codec setting of %s' % the_setting] )
