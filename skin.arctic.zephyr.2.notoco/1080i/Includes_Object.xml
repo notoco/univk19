@@ -836,7 +836,14 @@
             <param name="name" value="Status" />
             <param name="label" value="ListItem.Property(Addon.Status)" />
         </include>
+        <include content="Object_Info_TextPairs">
+            <param name="pad" value="16" />
+            <param name="name" value="Repozytorium" />
+            <param name="label" value="ListItem.AddonOrigin" />
+        </include>
     </include>
+    
+    
 
     <include name="Object_Info_Details_PVR">
         <include content="Object_Info_TextPairs">
