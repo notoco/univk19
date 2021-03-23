@@ -247,6 +247,18 @@
                     <param name="id" value="$PARAM[id]" />
                     <param name="selectbox" value="$PARAM[selectbox]" />
                 </include>
+
+                <control type="group">
+                    <height>$PARAM[iconheight]</height>
+                    <control type="image">
+                        <right>30</right>
+                        <bottom>30</bottom>
+                        <width>33%</width>
+                        <aspectratio align="right" aligny="bottom">keep</aspectratio>
+                        <texture>$VAR[Image_ClearLogo]</texture>
+                        <visible>$PARAM[clearlogo]</visible>
+                    </control>
+                </control>
             </control>
         </definition>
     </include>
