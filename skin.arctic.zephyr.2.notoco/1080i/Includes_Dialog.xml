@@ -400,8 +400,8 @@
 
         <control type="radiobutton" id="8">
             <description>Default RadioButton</description>
-            <radioposx>1160</radioposx>
-            <textwidth>1070</textwidth>
+            <radioposx>960</radioposx>
+            <textwidth>870</textwidth>
             <include>Dialog_Standard_Button</include>
         </control>
 
@@ -784,7 +784,7 @@
         <param name="itemlayout_condition" default="true" />
         <param name="onright" default="61" />
         <param name="onleft" default="noop" />
-        <param name="width" default="1200" />
+        <param name="width" default="936" />
         <param name="list_type" default="panel" />
         <param name="onup" default="3" />
         <param name="ondown" default="3" />
@@ -858,7 +858,7 @@
 
         <control type="group">
             <include content="Dialog_Standard_Group">
-                <param name="width" value="1536" />
+                <param name="width" value="1336" />
                 <param name="height" value="930" />
             </include>
             <control type="label" id="1">
