@@ -229,9 +229,10 @@
                     <colordiffuse>Selected</colordiffuse>
                     <visible>!String.IsEmpty(ListItem.ChannelName)</visible>
                 </control>
+                
                 <control type="group">
-                    <visible>!String.IsEmpty(ListItem.EPGEventIcon)</visible>
                     <control type="image">
+                        <visible>!String.IsEmpty(ListItem.EPGEventIcon)</visible>
                         <top>20</top>
                         <left>-15</left>
                         <height>230</height>
@@ -241,25 +242,29 @@
                             <texture colordiffuse="main_bg_30" border="10">diffuse/box.png</texture>
                     </control>
                     <control type="image">
+                        <visible>!String.IsEmpty(ListItem.EPGEventIcon)</visible>
                         <top>20</top>
                         <left>-15</left>
-                        <width>430</width>
                         <bordersize>16</bordersize>
                         <height>230</height>
                         <width>430</width>
-                        <texture background="true" diffuse="diffuse/banner-side.png">$INFO[ListItem.EPGEventIcon]</texture>
+                        <texture background="true" diffuse="diffuse/landscape-wall.png">$INFO[ListItem.EPGEventIcon]</texture>
+                    </control>
+                    <control type="image">
+                        <visible>String.IsEmpty(ListItem.EPGEventIcon)</visible>
+                        <top>20</top>
+                        <left>20</left>
+                        <texture>$INFO[ListItem.Icon]</texture>
+                        <aspectratio aligny="center" align="right">keep</aspectratio>
+                        <width>300</width>
+                        <height>300</height>
                     </control>
                     <include content="Object_Info_Plot">
                         <param name="maxheight" value="$PARAM[plotheight]" />
                         <left>420</left>
                         <top>10</top>
                     </include>
-                </control>
-                <include content="Object_Info_Plot">
-                    <top>20</top>
-                    <param name="maxheight" value="$PARAM[plotheight]" />
-                    <visible>String.IsEmpty(ListItem.EPGEventIcon)</visible>
-                </include>                
+                </control>               
             </control>
         </definition>
     </include>
