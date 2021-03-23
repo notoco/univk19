@@ -236,9 +236,18 @@
                         <left>-15</left>
                         <height>230</height>
                         <width>430</width>
-                        <bordertexture border="30" colordiffuse="Shadow">common/shadow-15.png</bordertexture>
-                        <aspectratio scalediffuse="true" align="center" aligny="center">keep</aspectratio>
-                        <texture>$INFO[ListItem.EPGEventIcon]</texture>
+                            <bordersize>15</bordersize>
+                            <bordertexture border="30" colordiffuse="Shadow">common/shadow-15.png</bordertexture>
+                            <texture colordiffuse="main_bg_30" border="10">diffuse/box.png</texture>
+                    </control>
+                    <control type="image">
+                        <top>20</top>
+                        <left>-15</left>
+                        <width>430</width>
+                        <bordersize>16</bordersize>
+                        <height>230</height>
+                        <width>430</width>
+                        <texture background="true" diffuse="diffuse/banner-side.png">$INFO[ListItem.EPGEventIcon]</texture>
                     </control>
                     <include content="Object_Info_Plot">
                         <param name="maxheight" value="$PARAM[plotheight]" />
