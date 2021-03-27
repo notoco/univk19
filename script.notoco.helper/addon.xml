@@ -4,7 +4,7 @@
         <import addon="xbmc.python" version="3.0.0"/>
     </requires>
     <extension point="xbmc.python.script" library="addon.py" />
-    <extension point="xbmc.service" library="autoexec.py">
+    <extension point="xbmc.service" library="autoexec.py" />
     <extension point="xbmc.addon.metadata">
         <platform>all</platform>
         <summary lang="en">Pomocne skróty</summary>
