@@ -119,7 +119,7 @@
         },
         "videos": {
             "rule": "Container.Content(videos)",
-            "viewtypes": ["54", "504", "55"],
+            "viewtypes": ["54", "504", "55", "500"],
             "library": "54"
         },
         "sets": {
@@ -129,12 +129,12 @@
         },
         "movies": {
             "rule": "Container.Content(movies)",
-            "viewtypes": ["52", "502", "54", "504", "55", "56", "57"],
+            "viewtypes": ["52", "502", "54", "504", "55", "500", "56", "57"],
             "library": "52"
         },
         "tvshows": {
             "rule": "Container.Content(tvshows)",
-            "viewtypes": ["52", "502", "54", "504", "55", "56", "57", "59"],
+            "viewtypes": ["52", "502", "54", "504", "55", "500", "56", "57", "59"],
             "library": "52"
         },
         "episodes": {
@@ -149,7 +149,7 @@
         },
         "files": {
             "rule": "Container.Content(files)",
-            "viewtypes": ["55"],
+            "viewtypes": ["55", "500"],
             "library": "55"
         },
         "unknown": {
