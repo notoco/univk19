@@ -270,6 +270,139 @@
         </definition>
     </include>
 
+<include name="View_503_PosterList">
+
+        <control type="group">
+            <visible>Control.IsVisible(503)</visible>
+            <include>Animation_Down</include>
+            <control type="button" id="5091">
+                <include>Defs_Hidden_Button</include>
+                <onup>Control.Move(503,-1)</onup>
+                <ondown>Control.Move(503,1)</ondown>
+                <onleft condition="String.IsEmpty(Window.Property(5091Action))">500</onleft>
+                <onleft condition="String.IsEqual(Window.Property(5091Action),Queue)">CLearProperty(5091Action)</onleft>
+                <onleft condition="String.IsEqual(Window.Property(5091Action),Delete)">CLearProperty(5090Action)</onleft>
+                <onleft condition="String.IsEqual(Window.Property(5091Action),MoveItemUp)">SetProperty(5091Action,Delete)</onleft>
+                <onleft condition="String.IsEqual(Window.Property(5091Action),MoveItemDown)">SetProperty(5091Action,MoveItemUp)</onleft>
+
+                <onright condition="String.IsEmpty(Window.Property(5091Action)) + Window.IsVisible(musicplaylist)">SetProperty(5091Action,Delete)</onright>
+                <onright condition="String.IsEmpty(Window.Property(5091Action)) + Window.IsVisible(MyMusicNav.xml)">SetProperty(5091Action,Queue)</onright>
+                <onright condition="String.IsEqual(Window.Property(5091Action),Delete)">SetProperty(5091Action,MoveItemUp)</onright>
+                <onright condition="String.IsEqual(Window.Property(5091Action),MoveItemUp)">SetProperty(5091Action,MoveItemDown)</onright>
+
+                <onclick>SetFocus(503)</onclick>
+                <onclick condition="String.IsEmpty(Window.Property(5091Action))">Action(Select)</onclick>
+                <onclick condition="String.IsEqual(Window.Property(5091Action),Queue)">Action(Queue)</onclick>
+                <onclick condition="String.IsEqual(Window.Property(5091Action),MoveItemUp)">Action(MoveItemUp)</onclick>
+                <onclick condition="String.IsEqual(Window.Property(5091Action),MoveItemDown)">Action(MoveItemDown)</onclick>
+                <onclick condition="String.IsEqual(Window.Property(5091Action),Delete)">Action(Delete)</onclick>
+                <onclick>SetFocus(5091)</onclick>
+            </control>
+            <control type="group">
+                <left>-20</left>
+                <bottom>-20</bottom>
+                <right>393</right>
+                <height>600</height>
+                <include>Object_PosterBack</include>
+                <include content="Viewtype_FileList">
+                    <param name="id" value="503" />
+                    <param name="itemlayout-width" value="1347" />
+                    <param name="viewtype-label" value="$LOCALIZE[31361]" />
+                    <param name="altid" value="5091" />
+                    <onfocus condition="!Skin.HasSetting(DisableBlur) + Skin.HasSetting(NoFanart)">SetProperty(TMDbHelper.Blur.SourceImage,Art(fallback),Home)</onfocus>
+                    <onfocus condition="!Skin.HasSetting(DisableBlur) + !Skin.HasSetting(NoFanart)">SetProperty(TMDbHelper.Blur.SourceImage,poster,Home)</onfocus>
+
+                    <movement>3</movement>
+                    <width>1347</width>
+                    <height>560</height>
+                    <onleft>64</onleft>
+                    <onright>5090</onright>
+                    <left>20</left>
+                    <top>20</top>
+                    <pagecontrol>64</pagecontrol>
+                    <animation effect="slide" end="0,-80" condition="Integer.IsLess(Container.NumAllItems,7) + !String.IsEmpty(Container.NumAllITems)">Conditional</animation>
+                    <animation effect="slide" end="0,-80" condition="Integer.IsLess(Container.NumAllItems,5) + !String.IsEmpty(Container.NumAllITems)">Conditional</animation>
+                    <animation effect="slide" end="0,-80" condition="Integer.IsLess(Container.NumAllItems,3) + !String.IsEmpty(Container.NumAllITems)">Conditional</animation>
+                    <visible>$EXP[Exp_View_503] | Window.IsVisible(musicplaylist)</visible>
+                </include>
+            </control>
+            <control type="group">
+                <right>-20</right>
+                <bottom>-20</bottom>
+                <height>600</height>
+                <width>413</width>
+                <include>Object_PosterBack</include>
+                <control type="group">
+                    <include>Defs_Pad</include>
+                    <include content="Object_Artwork">
+                        <param name="id" value="503" />
+                        <param name="selectbox" value="false" />
+                        <param name="icon" value="$VAR[Image_Poster]" />
+                        <param name="diffuse" value="diffuse/square-big.png" />
+                        <param name="aspectratio" value="keep" />
+                    </include>
+                </control>
+            </control>
+            <include content="Home_Hub_Widget_Label">
+                <param name="id" value="503" />
+                <param name="altid" value="5091" />
+                <param name="label" value="$VAR[Label_Header_Center]" />
+                <param name="altlabel" value="$INFO[Control.GetLabel(3),, ]$INFO[Control.GetLabel(4)]" />
+                <top>120</top>
+            </include>
+        </control>
+    </include>
+
+    <include name="View_50_List_Control">
+        <param name="itemlayout" default="View_50_Itemlayout" />
+        <param name="itemheight" default="item_list_height" />
+        <param name="altid" default="999999" />
+        <param name="height" default="view_list_height" />
+        <param name="top" default="0" />
+        <param name="controllayout" default="View_Vertical" />
+        <param name="control-type" default="panel" />
+        <param name="viewtype" default="$LOCALIZE[535]" />
+        <param name="viewtypename" default="list" />
+        <param name="flipsides" default="false" />
+        <definition>
+            <control type="$PARAM[control-type]" id="$PARAM[id]">
+                <nested />
+                <scrolltime tween="quadratic">400</scrolltime>
+                <top>$PARAM[top]</top>
+                <visible>$PARAM[visible]</visible>
+                <left>$PARAM[left]</left>
+                <right>$PARAM[right]</right>
+                <height>$PARAM[height]</height>
+                <include>$PARAM[controllayout]</include>
+                <pagecontrol>60</pagecontrol>
+                <viewtype label="$PARAM[viewtype]">$PARAM[viewtypename]</viewtype>
+                <itemlayout height="$PARAM[itemheight]">
+                    <include content="$PARAM[itemlayout]">
+                        <param name="itemheight" value="$PARAM[itemheight]" />
+                    </include>
+                </itemlayout>
+                <focusedlayout height="$PARAM[itemheight]">
+                    <control type="group">
+                        <visible>!Control.HasFocus($PARAM[id]) + !Control.HasFocus($PARAM[altid])</visible>
+                        <include content="$PARAM[itemlayout]">
+                            <param name="itemheight" value="$PARAM[itemheight]" />
+                        </include>
+                    </control>
+                    <control type="group">
+                        <visible>Control.HasFocus($PARAM[id]) | Control.HasFocus($PARAM[altid])</visible>
+                        <include content="$PARAM[itemlayout]">
+                            <param name="fgcolor" value="main_bg" />
+                            <param name="bgcolor" value="main_fg" />
+                            <param name="panelcolor" value="main_fg_100" />
+                            <param name="selectbox" value="true" />
+                            <param name="itemheight" value="$PARAM[itemheight]" />
+                        </include>
+                    </control>
+                </focusedlayout>
+            </control>
+        </definition>
+    </include>
+
     <include name="View_50_Poster">
         <param name="height" default="view_poster_height" />
         <param name="width" default="view_poster_width" />

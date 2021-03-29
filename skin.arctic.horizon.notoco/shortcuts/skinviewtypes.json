@@ -13,6 +13,7 @@
         "500": "Square List",
         "501": "Square Wall",
         "502": "Poster Wall",
+        "503": "Poster List",
         "504": "Landscape Wall",
         "56":  "Banner Wall"
     },
@@ -30,6 +31,7 @@
         "500": "special://skin/extras/viewtypes/list-square.jpg",
         "501": "special://skin/extras/viewtypes/wall-square.jpg",
         "502": "special://skin/extras/viewtypes/wall-posters.jpg",
+        "503": "special://skin/extras/viewtypes/list-posters.jpg",
         "504": "special://skin/extras/viewtypes/wall-landscape.jpg"
     },
     "rules": {
@@ -119,7 +121,7 @@
         },
         "videos": {
             "rule": "Container.Content(videos)",
-            "viewtypes": ["54", "504", "55", "500"],
+            "viewtypes": ["54", "504", "55", "500", "503"],
             "library": "54"
         },
         "sets": {
@@ -129,7 +131,7 @@
         },
         "movies": {
             "rule": "Container.Content(movies)",
-            "viewtypes": ["52", "502", "54", "504", "55", "500", "56", "57"],
+            "viewtypes": ["52", "502", "503", "54", "504", "55", "500", "56", "57"],
             "library": "52"
         },
         "tvshows": {
@@ -149,12 +151,12 @@
         },
         "files": {
             "rule": "Container.Content(files)",
-            "viewtypes": ["55", "500"],
+            "viewtypes": ["55", "500", "503"],
             "library": "55"
         },
         "unknown": {
             "rule": "Container.Content(unknown)",
-            "viewtypes": ["50", "500"],
+            "viewtypes": ["50", "500", "503"],
             "library": "50"
         },
         "playlists": {

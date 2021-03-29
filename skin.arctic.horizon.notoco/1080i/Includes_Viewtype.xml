@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
-    <include name="ViewIDs"><views>50,51,5151,501,55,500,52,5252,502,53,54,5454,504,56,57,58,59</views></include>
+    <include name="ViewIDs"><views>50,51,5151,501,55,500,52,5252,502,503,53,54,5454,504,56,57,58,59</views></include>
     <include name="Viewtype_Info_Right"><right>600</right></include>
     <include name="Viewtype_Info_Right_FixedHome"><right>560</right></include>
 
@@ -125,7 +125,7 @@
             </control>
 
             <control type="group" description="List Height View">
-                <visible>Control.IsVisible(50) | Control.IsVisible(55) | Control.IsVisible(56) | Control.IsVisible(500)</visible>
+                <visible>Control.IsVisible(50) | Control.IsVisible(55) | Control.IsVisible(56) | Control.IsVisible(500) | Control.IsVisible(503)</visible>
                 <include content="Viewtype_BackPanel">
                     <include>Animation_Down</include>
                     <height>720</height>
@@ -164,6 +164,7 @@
             <include condition="$EXP[Exp_View_500_Include]">View_500_SongList</include>
             <include condition="$EXP[Exp_View_501_Include]">View_501_AddonsWall</include>
             <include condition="$EXP[Exp_View_502_Include]">View_502_PosterWall</include>
+            <include condition="$EXP[Exp_View_503_Include]">View_503_PosterList</include>
             <include condition="$EXP[Exp_View_504_Include]">View_504_EpisodeWall</include>
         </control>
     </include>
@@ -1238,7 +1239,7 @@
             <centertop>51%</centertop>
             <right>$PARAM[right]</right>
             <visible>![Control.HasFocus(5090) + [$PARAM[selected]]]</visible>
-            <visible>Control.ISVisible(500)</visible>
+            <visible>Control.ISVisible(500) | Control.IsVisible(503)</visible>
             <visible>String.ISEqual(ListITem.DBtype,song)</visible>
         </control>
         <control type="image">
@@ -1248,7 +1249,7 @@
             <centertop>51%</centertop>
             <right>$PARAM[right]</right>
             <visible>Control.HasFocus(5090) + [$PARAM[selected]]</visible>
-            <visible>Control.ISVisible(500)</visible>
+            <visible>Control.ISVisible(500) | Control.IsVisible(503)</visible>
             <visible>String.ISEqual(ListITem.DBtype,song)</visible>
         </control>
     </include>

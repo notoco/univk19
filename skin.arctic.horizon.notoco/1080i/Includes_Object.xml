@@ -1280,7 +1280,7 @@
         <control type="scrollbar" id="64">
             <onback>50</onback>
             <height>560</height>
-            <top>440</top>
+            <top>440</top>Control.IsVisible(500)
             <width>8</width>
             <centerleft>item_list_height_half</centerleft>
             <onright>50</onright>
@@ -1288,7 +1288,7 @@
             <centerbottom>40</centerbottom>
             <showonepage>false</showonepage>
             <orientation>vertical</orientation>
-            <visible>Control.IsVisible(55) | Control.IsVisible(500)</visible>
+            <visible>Control.IsVisible(55) | Control.IsVisible(500) | Control.IsVisible(503)</visible>
             <texturesliderbackground colordiffuse="main_fg_12" border="4">scrollbar/scrollv.png</texturesliderbackground>
             <texturesliderbar colordiffuse="main_fg_30" border="4">scrollbar/scrollv.png</texturesliderbar>
             <texturesliderbarfocus colordiffuse="main_fg_100" border="4">scrollbar/scrollv.png</texturesliderbarfocus>

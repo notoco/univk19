@@ -539,7 +539,7 @@ msgid "Spotlight"
 msgstr ""
 
 msgctxt "#31106"
-msgid "Ends"
+msgid "Ends "
 msgstr "Zakończenie"
 
 #: /1080i/script-skinshortcuts.xml
@@ -1586,6 +1586,10 @@ msgstr "Ściana krajobrazowa"
 msgctxt "#31360"
 msgid "Square wall"
 msgstr "Ściana kwadratów"
+
+msgctxt "#31361"
+msgid "Poster list"
+msgstr "Lista plakatów"
 
 #: /shortcuts/overrides.xml
 msgctxt "#31367"

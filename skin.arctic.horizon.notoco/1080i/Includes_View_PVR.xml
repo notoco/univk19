@@ -161,6 +161,7 @@
                 <right>30</right>
                 <centertop>35%</centertop>
                 <height>40</height>
+                <align>left</align>
                 <aligny>center</aligny>
                 <textcolor>$PARAM[fgcolor]</textcolor>
                 <selectedcolor>$PARAM[fgcolor]</selectedcolor>
@@ -186,8 +187,8 @@
                 <align>right</align>
                 <centertop>35%</centertop>
                 <height>40</height>
-                    <textcolor>$PARAM[fgcolor]</textcolor>
-                    <selectedcolor>$PARAM[fgcolor]</selectedcolor>
+                <textcolor>$PARAM[fgcolor]</textcolor>
+                <selectedcolor>$PARAM[fgcolor]</selectedcolor>
                 <font>font_small_bold</font>
                 <label>$INFO[ListItem.ChannelNumberLabel]</label>
             </control>
@@ -195,9 +196,9 @@
                 <left>30</left>
                 <right>30</right>
                 <align>right</align>
-                <centertop>70%</centertop>
+                <centertop>90%</centertop>
                 <height>40</height>
-                <aligny>center</aligny>
+                <aligny>bottom</aligny>
                 <textcolor>$PARAM[fgcolor]</textcolor>
                 <selectedcolor>$PARAM[fgcolor]</selectedcolor>
                 <font>font_statusbar</font>
