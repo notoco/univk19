@@ -1582,7 +1582,11 @@ msgstr ""
 #: /1080i/Includes_View_Posters.xml
 msgctxt "#31360"
 msgid "Square wall"
-msgstr ""
+msgstr "Ściana kwadratów"
+
+msgctxt "#31361"
+msgid "Poster list"
+msgstr "Lista plakatów"
 
 #: /shortcuts/overrides.xml
 msgctxt "#31367"
