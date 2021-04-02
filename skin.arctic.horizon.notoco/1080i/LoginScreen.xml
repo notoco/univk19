@@ -10,7 +10,7 @@
             <visible>!String.IsEmpty(Window(home).Property(SkinInitStarted))</visible>
             <control type="image" description="Background">
                 <include>Dimensions_Fullscreen</include>
-                <texture>special://skin/extras/backgrounds/mountains.jpg</texture>
+                <texture>special://skin/extras/backgrounds/desk.jpg</texture>
             </control>
 
             <control type="list" id="52">
