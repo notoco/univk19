@@ -63,7 +63,7 @@
         },
         "seasons": {
             "rule": "Container.Content(seasons)",
-            "viewtypes": ["52", "502", "53", "55"],
+            "viewtypes": ["52", "502", "53", "503", "54", "504", "55", "500", "56", "57", "59"],
             "library": "53"
         },
         "tags": {
@@ -136,12 +136,12 @@
         },
         "tvshows": {
             "rule": "Container.Content(tvshows)",
-            "viewtypes": ["52", "502", "54", "504", "55", "500", "56", "57", "59"],
+            "viewtypes": ["52", "502", "503", "54", "504", "55", "500", "56", "57", "59"],
             "library": "52"
         },
         "episodes": {
             "rule": "Container.Content(episodes)",
-            "viewtypes": ["54", "504", "55"],
+            "viewtypes": ["52", "502", "54", "504", "55", "500", "56", "57", "59"],
             "library": "54"
         },
         "songs": {
