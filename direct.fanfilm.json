@@ -1,0 +1,8 @@
+{
+    "name": "FanFilm",
+    "plugin": "plugin.video.fanfilm",
+    "priority": 500,
+    "play_movie": "plugin://plugin.video.fanfilm/?action=play&select=0&name={name_+}&title={title_+}&year={year}&imdb={imdb}&tmdb={tmdb}",
+    "play_episode": "plugin://plugin.video.fanfilm/?action=play&select=0&name={name_+}title={title_+}&year={year}&imdb={imdb}&tvdb={id}&season={season}&episode={episode}&tvshowtitle={clearname_+}",
+    "is_resolvable": "false"
+}
