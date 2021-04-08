@@ -37,7 +37,7 @@
     "rules": {
         "addons": {
             "rule": "Container.Content(addons)",
-            "viewtypes": ["51", "501", "58", "50", "500"],
+            "viewtypes": ["51", "501", "58", "59", "50", "500"],
             "library": "51",
             "plugins": "500"
         },
@@ -121,27 +121,27 @@
         },
         "videos": {
             "rule": "Container.Content(videos)",
-            "viewtypes": ["54", "504", "55", "500", "503"],
+            "viewtypes": ["50", "54", "504", "55", "500", "503"],
             "library": "54"
         },
         "sets": {
             "rule": "Container.Content(sets)",
-            "viewtypes": ["52", "502", "59", "54", "504", "55", "53"],
+            "viewtypes": ["50", "52", "502", "59", "54", "504", "55", "53"],
             "library": "54"
         },
         "movies": {
             "rule": "Container.Content(movies)",
-            "viewtypes": ["52", "502", "503", "54", "504", "55", "500", "56", "57"],
+            "viewtypes": ["50", "52", "502", "503", "54", "504", "55", "500", "56", "57", "59"],
             "library": "52"
         },
         "tvshows": {
             "rule": "Container.Content(tvshows)",
-            "viewtypes": ["52", "502", "503", "54", "504", "55", "500", "56", "57", "59"],
+            "viewtypes": ["50", "52", "502", "503", "54", "504", "55", "500", "56", "57", "59"],
             "library": "52"
         },
         "episodes": {
             "rule": "Container.Content(episodes)",
-            "viewtypes": ["52", "502", "54", "504", "55", "500", "56", "57", "59"],
+            "viewtypes": ["50", "52", "502", "54", "504", "55", "500", "56", "57", "59"],
             "library": "54"
         },
         "songs": {
@@ -151,7 +151,7 @@
         },
         "files": {
             "rule": "Container.Content(files)",
-            "viewtypes": ["55", "500", "503"],
+            "viewtypes": ["50", "55", "500", "503"],
             "library": "55"
         },
         "unknown": {

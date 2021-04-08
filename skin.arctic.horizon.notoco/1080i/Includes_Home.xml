@@ -1134,8 +1134,8 @@
                 <control type="group">
                     <centertop>100</centertop>
                     <height>100</height>
-                    <left>490</left>
-                    <right>490</right>
+                    <left>-50</left>
+                    <right>390</right>
 
                     <control type="image">
                         <centertop>50%</centertop>
@@ -1158,24 +1158,29 @@
 
                     <!-- Textures for Label Menu -->
                     <include content="Home_Menu_Horizontal_Texture" condition="!Skin.HasSetting(HomeIconicMenu)">
-                        <param name="width" value="940" />
-                        <param name="visible" value="Integer.IsGreater(Container(301).NumItems,3)" />
+                        <param name="width" value="1540" />
+                        <param name="visible" value="Integer.IsGreater(Container(301).NumItems,4)" />
                         <param name="slide" value="0" />
+                    </include>
+                    <include content="Home_Menu_Horizontal_Texture" condition="!Skin.HasSetting(HomeIconicMenu)">
+                        <param name="width" value="1540" />
+                        <param name="visible" value="Integer.IsGreater(Container(301).NumItems,4)" />
+                        <param name="slide" value="100" />
                     </include>
                     <include content="Home_Menu_Horizontal_Texture" condition="!Skin.HasSetting(HomeIconicMenu)">
                         <param name="width" value="740" />
                         <param name="visible" value="Integer.IsEqual(Container(301).NumItems,3)" />
-                        <param name="slide" value="100" />
+                        <param name="slide" value="200" />
                     </include>
                     <include content="Home_Menu_Horizontal_Texture" condition="!Skin.HasSetting(HomeIconicMenu)">
                         <param name="width" value="540" />
                         <param name="visible" value="Integer.IsEqual(Container(301).NumItems,2)" />
-                        <param name="slide" value="200" />
+                        <param name="slide" value="300" />
                     </include>
                     <include content="Home_Menu_Horizontal_Texture" condition="!Skin.HasSetting(HomeIconicMenu)">
                         <param name="width" value="340" />
                         <param name="visible" value="Integer.IsEqual(Container(301).NumItems,1)" />
-                        <param name="slide" value="300" />
+                        <param name="slide" value="400" />
                     </include>
 
                     <!-- Textures for Iconic Menu -->
@@ -1343,7 +1348,7 @@
                                     <font>font_title_mini</font>
                                     <textcolor>main_fg_70</textcolor>
                                     <align>center</align>
-                                    <label>$INFO[ListItem.LAbel]</label>
+                                    <label>$INFO[ListItem.Label]</label>
                                 </control>
                             </control>
                             <control type="group">
@@ -1365,7 +1370,7 @@
                                     <font>font_title_mini</font>
                                     <textcolor>Selected</textcolor>
                                     <align>center</align>
-                                    <label>$INFO[ListItem.LAbel]</label>
+                                    <label>$INFO[ListItem.Label]</label>
                                 </control>
                             </control>
                         </focusedlayout>

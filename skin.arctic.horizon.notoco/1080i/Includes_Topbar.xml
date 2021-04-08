@@ -21,7 +21,7 @@
                     <itemgap>0</itemgap>
                     <orientation>horizontal</orientation>
                     <usecontrolcoords>true</usecontrolcoords>
-                    <visible>!Window.IsVisible(DialogBusy.xml)</visible>
+                    <visible>!Window.IsVisible(DialogBusy.xml) + !Window.IsVisible(Home.xml)</visible>
                     <control type="label" id="$PARAM[id]">
                         <aligny>center</aligny>
                         <font>font_topbar</font>
