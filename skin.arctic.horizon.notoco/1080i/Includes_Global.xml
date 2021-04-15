@@ -131,7 +131,6 @@
             </control>
             <include condition="!Skin.HasSetting(DisableBusyBackground) + System.HasAddon(resource.images.arctic.waves)">Global_Background_BusyLoader</include>
             <nested />
-            <include condition="Skin.HasSetting(DisableBlur)">Global_Background_Overlay</include>
         </control>
     </include>
 
