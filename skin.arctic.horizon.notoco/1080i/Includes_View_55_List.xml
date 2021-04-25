@@ -330,7 +330,7 @@
                 <right>-20</right>
                 <bottom>-20</bottom>
                 <height>600</height>
-                <width>413</width>
+                <width>430</width>
                 <include>Object_PosterBack</include>
                 <control type="group">
                     <include>Defs_Pad</include>
