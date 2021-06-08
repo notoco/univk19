@@ -1,167 +1,112 @@
 # -*- coding: utf-8 -*-
 # GNU General Public License v2.0 (see COPYING or https://www.gnu.org/licenses/gpl-2.0.txt)
-"""This is the actual UpNext script"""
+"""This is the actual Up Next API script"""
 
 from __future__ import absolute_import, division, unicode_literals
-import xbmc
-import xbmcaddon
-import dummydata
-import monitor
-import playbackmanager
-import player
-import state
+from datetime import datetime, timedelta
+from math import ceil
+from xbmc import Monitor
+from xbmcgui import WindowXMLDialog
+from statichelper import from_unicode
+from utils import addon_path, get_setting_bool, localize, localize_time
 
 
-def test_popup(popup_type, simple_style=False):
-    test_episode = dummydata.LIBRARY['episodes'][0]
-    test_next_episode = dummydata.LIBRARY['episodes'][1]
+class TestPopup(WindowXMLDialog):
+    ACTION_PLAYER_STOP = 13
+    ACTION_NAV_BACK = 92
+    progress_step_size = 0
+    current_progress_percent = 100.0
+    progress_control = None
+    pause = False
 
-    # Create test state object
-    test_state = state.UpNextState()
-    # Simulate after file has started
-    test_state.starting = 0
-    # And while it is playing
-    test_state.playing = 1
-    # Use test episode to simulate next playing episode used for popup display
-    test_state.next_item = {
-        'item': test_next_episode,
-        'source': 'library'
-    }
+    def onInit(self):  # pylint: disable=invalid-name
+        self.set_info()
+        self.prepare_progress_control()
 
-    # Choose popup style
-    test_state.simple_mode = bool(simple_style)
-    # Choose popup type
-    if popup_type == 'stillwatching':
-        test_state.played_in_a_row = test_state.played_limit
+        if get_setting_bool('stopAfterClose'):
+            self.getControl(3013).setLabel(localize(30033))  # Stop
+        else:
+            self.getControl(3013).setLabel(localize(30034))  # Close
 
-    # Create test player object
-    test_player = player.UpNextPlayer()
-    # Simulate player state
-    test_player.state.update({
-        # 'external_player': {'value': False, 'force': False},
-        # Simulate file is playing
-        'playing': {'value': True, 'force': True},
-        # 'paused': {'value': False, 'force': False},
-        # Simulate dummy file name
-        'playing_file': {'value': test_episode['file'], 'force': True},
-        'next_file': {'value': test_next_episode['file'], 'force': True},
-        'speed': {'value': 1, 'force': True},
-        # Simulate playtime of endtime minus 10s
-        'time': {'value': test_episode['runtime'] - 10, 'force': True},
-        # Simulate endtime based on dummy episode
-        'total_time': {'value': test_episode['runtime'], 'force': True},
-        # 'next_file': {'value': None, 'force': False},
-        # Simulate episode media type is being played based on dummy episode
-        'media_type': {'value': 'episode', 'force': True},
-        # 'playnext': {'force': False},
-        # Simulate stop to ensure actual playback doesnt stop when popup closes
-        'stop': {'force': True}
-    })
-    # Simulate player state could also be done using the following
-    test_player.state.set('playing', True, force=True)
-    test_player.state.set('playing_file', test_episode['file'], force=True)
-    test_player.state.set('next_file', test_next_episode['file'], force=True)
-    test_player.state.set('speed', 1, force=True)
-    test_player.state.set('time', (test_episode['runtime'] - 10), force=True)
-    test_player.state.set('total_time', test_episode['runtime'], force=True)
-    test_player.state.set('media_type', 'episode', force=True)
-    test_player.state.set('stop', force=True)
+    def set_info(self):
+        self.setProperty('clearart', 'https://fanart.tv/fanart/tv/121361/clearart/game-of-thrones-4fa1349588447.png')
+        self.setProperty('clearlogo', 'https://fanart.tv/fanart/tv/121361/hdtvlogo/game-of-thrones-504c49ed16f70.png')
+        self.setProperty('fanart', 'https://fanart.tv/fanart/tv/121361/showbackground/game-of-thrones-4fd5fa8ed5e1b.jpg')
+        self.setProperty('landscape', 'https://fanart.tv/detailpreview/fanart/tv/121361/tvthumb/game-of-thrones-4f78ce73d617c.jpg')
+        self.setProperty('poster', 'https://fanart.tv/fanart/tv/121361/tvposter/game-of-thrones-521441fd9b45b.jpg')
+        self.setProperty('thumb', 'https://fanart.tv/fanart/tv/121361/showbackground/game-of-thrones-556979e5eda6b.jpg')
 
-    # Create a test playbackmanager and create an actual popup for testing
-    return playbackmanager.UpNextPlaybackManager(
-        monitor=xbmc.Monitor(), player=test_player, state=test_state
-    ).start()
+        self.setProperty('episode', '4')
+        self.setProperty('playcount', '1')
+        self.setProperty('plot', 'Lord Baelish arrives at Renly\'s camp just before he faces off against Stannis. '
+                                 'Daenerys and her company are welcomed into the city of Qarth. Arya, Gendry, and '
+                                 'Hot Pie find themselves imprisoned at Harrenhal.')
+        self.setProperty('rating', '8.9')
+        self.setProperty('season', '2')
+        self.setProperty('seasonepisode', '2x4')
+        self.setProperty('title', 'Garden of Bones')
+        self.setProperty('tvshowtitle', 'Game of Thrones')
+        self.setProperty('year', '2012')
+        self.setProperty('runtime', '50')
+
+    def prepare_progress_control(self):
+        try:
+            self.progress_control = self.getControl(3014)
+        except RuntimeError:
+            return
+        self.progress_control.setPercent(100.0)  # pylint: disable=no-member,useless-suppression
+
+    def update_progress_control(self, timeout, wait):
+        if self.progress_control is None:
+            return
+        self.current_progress_percent -= 100 * wait / timeout
+        self.progress_control.setPercent(self.current_progress_percent)  # pylint: disable=no-member,useless-suppression
+        self.setProperty('remaining', from_unicode('%02d' % ceil((timeout / 1000) * (self.current_progress_percent / 100))))
+        self.setProperty('endtime', from_unicode(localize_time(datetime.now() + timedelta(seconds=50 * 60))))
+
+    def onFocus(self, controlId):  # pylint: disable=invalid-name
+        pass
+
+    def doAction(self):  # pylint: disable=invalid-name
+        pass
+
+    def closeDialog(self):  # pylint: disable=invalid-name
+        self.close()
+
+    def onClick(self, controlId):  # pylint: disable=invalid-name,unused-argument
+        self.close()
+
+    def onAction(self, action):  # pylint: disable=invalid-name
+        if action == self.ACTION_PLAYER_STOP:
+            self.close()
+        elif action == self.ACTION_NAV_BACK:
+            self.close()
 
 
-def test_upnext(popup_type, simple_style=False):
-    test_episode = dummydata.LIBRARY['episodes'][0]
-    test_next_episode = dummydata.LIBRARY['episodes'][1]
-
-    # Create test state object
-    test_state = state.UpNextState()
-    # Simulate after file has started
-    test_state.starting = 0
-    # And while it is playing
-    test_state.playing = 1
-    # Use test episodes to simulate currently/next playing episodes for testing
-    # test_state.item = {
-    #     'item': test_episode,
-    #     'source': 'library'
-    # }
-    # test_state.next_item = {
-    #     'item': test_next_episode,
-    #     'source': 'library'
-    # }
-
-    # Choose popup style
-    test_state.simple_mode = bool(simple_style)
-    # Choose popup type
-    if popup_type == 'stillwatching':
-        test_state.played_in_a_row = test_state.played_limit
-
-    # Create test player object
-    test_player = player.UpNextPlayer()
-    # Simulate player state
-    test_player.state.update({
-        # 'external_player': {'value': False, 'force': False},
-        # Simulate file is playing
-        'playing': {'value': True, 'force': True},
-        # 'paused': {'value': False, 'force': False},
-        # Simulate dummy file name
-        'playing_file': {'value': test_episode['file'], 'force': True},
-        'next_file': {'value': test_next_episode['file'], 'force': True},
-        'speed': {'value': 1, 'force': True},
-        # Simulate playtime to start of dummy episode
-        'time': {'value': 0, 'force': True},
-        # Simulate endtime based on dummy episode
-        'total_time': {'value': test_episode['runtime'], 'force': True},
-        # 'next_file': {'value': None, 'force': False},
-        # Simulate episode media type is being played based on dummy episode
-        'media_type': {'value': 'episode', 'force': True},
-        # 'playnext': {'force': False},
-        # Simulate stop to ensure actual playback doesnt stop when popup closes
-        'stop': {'force': True}
-    })
-    # Simulate player state could also be done using the following
-    test_player.state.set('playing', True, force=True)
-    test_player.state.set('playing_file', test_episode['file'], force=True)
-    test_player.state.set('next_file', test_next_episode['file'], force=True)
-    test_player.state.set('speed', 1, force=True)
-    test_player.state.set('time', 0, force=True)
-    test_player.state.set('total_time', test_episode['runtime'], force=True)
-    test_player.state.set('media_type', 'episode', force=True)
-    test_player.state.set('stop', force=True)
-
-    test_monitor = monitor.UpNextMonitor(
-        player=test_player, state=test_state
-    )
-    test_monitor.start()
-    return test_monitor
+def test_popup(window):
+    popup = TestPopup(window, addon_path(), 'default', '1080i')
+    popup.show()
+    step = 0
+    wait = 100
+    wait_s = wait / 1000
+    timeout = 10000
+    monitor = Monitor()
+    while popup and step < timeout and not monitor.abortRequested():
+        if popup.pause:
+            continue
+        monitor.waitForAbort(wait_s)
+        popup.update_progress_control(timeout, wait)
+        step += wait
 
 
 def open_settings():
-    xbmcaddon.Addon().openSettings()
-    return True
+    from xbmcaddon import Addon
+    Addon().openSettings()
 
 
 def run(argv):
     """Route to API method"""
-
-    # Example usage:
-    #   RunScript(service.upnext,test_window,upnext)
-    #   RunScript(service.upnext,test_window,stillwatching)
-    #   RunScript(service.upnext,test_window,upnext,simple)
-    #   RunScript(service.upnext,test_window,stillwatching,simple)
-    if len(argv) > 2:
-        if argv[1] == 'test_window':
-            test_method = test_popup
-        else:
-            test_method = test_upnext
-        # Fancy style popup
-        if len(argv) == 3:
-            return test_method(argv[2])
-        # Simple style popup
-        if len(argv) == 4:
-            return test_method(argv[2], argv[3])
-        return False
-    return open_settings()
+    if len(argv) == 3 and argv[1] == 'test_window':
+        test_popup(argv[2])
+    else:
+        open_settings()

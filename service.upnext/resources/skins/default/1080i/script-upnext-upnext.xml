@@ -98,7 +98,7 @@
                         <textcolor>eeffffff</textcolor>
                         <shadowcolor>00000000</shadowcolor>
                         <label>$ADDON[service.upnext 30036]</label>
-                        <visible>Integer.IsLessOrEqual(Window.Property(remaining),60)</visible>
+                        <visible>!Integer.IsGreater(Player.TimeRemaining,59)</visible>
                     </control>
                     <control type="label">
                         <width>auto</width>
@@ -108,7 +108,7 @@
                         <textcolor>eeffffff</textcolor>
                         <shadowcolor>00000000</shadowcolor>
                         <label>$ADDON[service.upnext 30008]</label>
-                        <visible>Integer.IsGreater(Window.Property(remaining),60)</visible>
+                        <visible>Integer.IsGreater(Player.TimeRemaining,59)</visible>
                     </control>
                     <!-- Details -->
                     <control type="grouplist">
@@ -180,7 +180,7 @@
                             <pulseonselect>no</pulseonselect>
                         </control>
                         <control type="button" id="3013">
-                            <label>$INFO[Window.Property(stop_close_label)]</label>
+                            <label>$ADDON[service.upnext 30034]</label>
                             <height>56</height>
                             <width min="50">auto</width>
                             <font>font20_title</font>
@@ -197,16 +197,6 @@
                             <alttexturenofocus border="10" colordiffuse="FF212121">button.png</alttexturenofocus>
                             <pulseonselect>no</pulseonselect>
                         </control>
-						<control type="togglebutton" id="3015">
-							<visible>String.IsEqual(Window.Property(shuffle_enable),True)</visible>
-							<selected>String.IsEqual(Window.Property(shuffle_on),True)</selected>
-							<texturenofocus colordiffuse="FF303030">shuffle.png</texturenofocus>
-							<texturefocus colordiffuse="FF172A91">shuffle.png</texturefocus>
-							<alttexturenofocus>shuffle.png</alttexturenofocus>
-							<alttexturefocus colordiffuse="FF172A91">shuffle.png</alttexturefocus>
-							<width>56</width>
-							<height>56</height>
-						</control>
                     </control>
                     <control type="image">
                         <bottom>20</bottom>
@@ -216,20 +206,28 @@
                         <texture colordiffuse="ddffffff">nextupicons/00.png</texture>
                         <animation effect="slide" end="13,-5" time="0" condition="true">Conditional</animation>
                     </control>
-                    <control type="grouplist">
+                    <control type="group">
                         <visible>!Window.IsVisible(extendedprogressdialog)</visible>
                         <animation effect="fade" time="150">VisibleChange</animation>
-						<top>-15</top>
                         <control type="label">
                             <font>font_clock</font>
-							<align>right</align>
-							<height>75</height>
                             <shadowcolor>text_shadow</shadowcolor>
+                            <top>0</top>
+                            <right>20</right>
+                            <height>200</height>
+                            <width>600</width>
+                            <align>right</align>
                             <label>$INFO[System.Time]</label>
                         </control>
                         <control type="label">
-							<font>font12</font>
-							<align>right</align>
+                            <right>24</right>
+                            <top>74</top>
+                            <width>800</width>
+                            <height>100</height>
+                            <align>right</align>
+                            <itemgap>5</itemgap>
+                            <orientation>horizontal</orientation>
+                            <usecontrolcoords>true</usecontrolcoords>
                             <label>$ADDON[service.upnext 30009]</label>
                             <shadowcolor>text_shadow</shadowcolor>
                             <visible>!String.IsEmpty(Window.Property(endtime))</visible>

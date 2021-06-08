@@ -2,376 +2,208 @@
 # GNU General Public License v2.0 (see COPYING or https://www.gnu.org/licenses/gpl-2.0.txt)
 
 from __future__ import absolute_import, division, unicode_literals
-import api
-import dialog
-import utils
+from xbmc import sleep
+from api import Api
+from demo import DemoOverlay
+from player import Player
+from playitem import PlayItem
+from state import State
+from stillwatching import StillWatching
+from upnext import UpNext
+from utils import addon_path, calculate_progress_steps, clear_property, event, get_setting_bool, get_setting_int, log as ulog, set_property
 
 
-class UpNextPlaybackManager(object):  # pylint: disable=useless-object-inheritance
-    """Controller for UpNext popup and playback of next item"""
+class PlaybackManager:
+    _shared_state = {}
 
-    __slots__ = (
-        'monitor',
-        'player',
-        'state',
-        'popup',
-        'running',
-        'sigstop',
-        'sigterm'
-    )
+    def __init__(self):
+        self.__dict__ = self._shared_state
+        self.api = Api()
+        self.play_item = PlayItem()
+        self.state = State()
+        self.player = Player()
+        self.demo = DemoOverlay(12005)
 
-    def __init__(self, monitor, player, state):
-        self.log('Init')
+    def log(self, msg, level=2):
+        ulog(msg, name=self.__class__.__name__, level=level)
 
-        self.monitor = monitor
-        self.player = player
-        self.state = state
-        self.popup = None
-        self.running = False
-        self.sigstop = False
-        self.sigterm = False
-
-    @classmethod
-    def log(cls, msg, level=utils.LOGDEBUG):
-        utils.log(msg, name=cls.__name__, level=level)
-
-    def _create_popup(self, next_item, source=None):
-        # Only use Still Watching? popup if played limit has been reached
-        if self.state.played_limit:
-            show_upnext = self.state.played_limit > self.state.played_in_a_row
-        # Don't show Still Watching? popup if played limit is zero, unless
-        # played in a row count has been set to zero for testing
+    def handle_demo(self):
+        if get_setting_bool('enableDemoMode'):
+            self.log('Up Next DEMO mode enabled, skipping automatically to the end', 0)
+            self.demo.show()
+            try:
+                total_time = self.player.getTotalTime()
+                self.player.seekTime(total_time - 15)
+            except RuntimeError as exc:
+                self.log('Failed to seekTime(): %s' % exc, 0)
         else:
-            show_upnext = self.state.played_limit != self.state.played_in_a_row
+            self.demo.hide()
 
-        self.log('Auto played in a row: {0} of {1}'.format(
-            self.state.played_in_a_row, self.state.played_limit
-        ), utils.LOGINFO)
-
-        # Filename for dialog XML
-        filename = 'script-upnext{0}{1}{2}.xml'.format(
-            '-upnext' if show_upnext else '-stillwatching',
-            '-simple' if self.state.simple_mode else '',
-            '' if self.state.skin_popup else '-original'
-        )
-
-        self.popup = dialog.UpNextPopup(
-            filename,
-            utils.get_addon_path(),
-            'default',
-            '1080i',
-            item=next_item,
-            shuffle=self.state.shuffle if source == 'library' else None,
-            stop_button=self.state.show_stop_button
-        )
-
-        return self._get_popup_state(done=True, show_upnext=show_upnext)
-
-    def _display_popup(self, popup_state):
-        # Get video details, exit if no video playing
-        with self.player as check_fail:
-            total_time = self.player.getTotalTime()
-            play_time = self.player.getTime()
-            check_fail = False
-        if check_fail:
-            return self._get_popup_state(popup_state, done=False)
-
-        # If cue point was provided then UpNext will auto play after a fixed
-        # delay time, rather than waiting for the end of the file
-        if popup_state['play_on_cue']:
-            popup_duration = self.state.auto_play_delay
-            if popup_duration:
-                popup_start = max(play_time, self.state.get_popup_time())
-                total_time = min(popup_start + popup_duration, total_time)
-
-        if not self._show_popup():
-            return self._get_popup_state(popup_state, done=False)
-
-        # Current file can stop, or next file can start, while update loop is
-        # running. Check state and abort popup update if required
-        while (not self.monitor.abortRequested()
-               and self.player.isPlaying()
-               and popup_state['done']
-               and not self.state.starting
-               and self.state.playing
-               and not self.sigstop
-               and not self.sigterm):
-            remaining = total_time - self.player.getTime()
-            popup_state = self._get_popup_state(
-                popup_state,
-                done=self._has_popup(),
-                remaining=remaining
-            )
-
-            # Decrease wait time and increase loop speed to try and avoid
-            # missing the end of video when fast forwarding
-            wait_time = 1 / max(1, self.player.get_speed())
-            self.monitor.waitForAbort(max(0.1, min(wait_time, remaining)))
-
-            # If end of file or user has closed popup then exit update loop
-            remaining -= wait_time
-            if (remaining <= 0
-                    or popup_state['cancel']
-                    or popup_state['play_now']):
-                popup_done = True
-                break
-        else:
-            popup_done = False
-
-        return self._get_popup_state(popup_state, done=popup_done)
-
-    def _get_popup_state(self, old_state=None, **kwargs):
-        default_state = old_state if old_state else {
-            'auto_play': self.state.auto_play,
-            'cancel': False,
-            'done': False,
-            'play_now': False,
-            'play_on_cue': self.state.auto_play and self.state.popup_cue,
-            'show_upnext': False,
-            'shuffle': False,
-            'shuffle_start': False,
-            'stop': False
-        }
-
-        for keyword in kwargs:
-            if keyword in default_state:
-                default_state[keyword] = kwargs[keyword]
-
-        if not self._has_popup():
-            return default_state
-
-        with self.popup as check_fail:
-            remaining = kwargs.get('remaining')
-            if remaining is not None:
-                self.popup.update_progress(remaining)
-
-            current_state = {
-                'auto_play': (
-                    self.state.auto_play
-                    and default_state['show_upnext']
-                    and not self.popup.is_cancel()
-                    and not self.popup.is_playnow()
-                ),
-                'cancel': self.popup.is_cancel(),
-                'done': default_state['done'],
-                'play_now': self.popup.is_playnow(),
-                'play_on_cue': (
-                    self.state.auto_play
-                    and default_state['show_upnext']
-                    and not self.popup.is_cancel()
-                    and not self.popup.is_playnow()
-                    and self.state.popup_cue
-                ),
-                'show_upnext': default_state['show_upnext'],
-                'shuffle': self.popup.is_shuffle(),
-                'shuffle_start': (
-                    not self.state.shuffle
-                    and self.popup.is_shuffle()
-                ),
-                'stop': self.popup.is_stop()
-            }
-            check_fail = False
-        if check_fail:
-            return default_state
-        return current_state
-
-    def _has_popup(self):
-        return hasattr(self, 'popup') and self.popup
-
-    def _play_next_video(self, next_item, source, popup_state):
-        # Primary method is to play next playlist item
-        if source[-len('playlist'):] == 'playlist' or self.state.queued:
-            # Can't just seek to end of file as this triggers inconsistent Kodi
-            # behaviour:
-            # - Will sometimes continue playing past the end of the file
-            #   preventing next file from playing
-            # - Will sometimes play the next file correctly then play it again
-            #   resulting in loss of UpNext state
-            # - Will sometimes play the next file immediately without
-            #   onPlayBackStarted firing resulting in tracking not activating
-            # - Will sometimes work just fine
-            # Can't just wait for next file to play as VideoPlayer closes all
-            # video threads when the current file finishes
-            if popup_state['play_now'] or popup_state['play_on_cue']:
-                api.play_playlist_item(
-                    # Use previously stored next playlist position if available
-                    position=next_item.get('playlist_position', 'next'),
-                    resume=self.state.enable_resume
-                )
-
-        # Fallback addon playback method, used if addon provides play_info
-        elif source[:len('addon')] == 'addon':
-            api.play_addon_item(
-                self.state.data,
-                self.state.encoding,
-                self.state.enable_resume
-            )
-
-        # Fallback library playback method, not normally used
-        else:
-            api.play_kodi_item(next_item, self.state.enable_resume)
-
-        # Determine playback method. Used for logging purposes
-        self.log('Playback requested: {0}, from {1}{2}'.format(
-            popup_state, source, ' using queue' if self.state.queued else ''
-        ))
-
-    def _post_run(self, play_next, keep_playing):
-        # Update playback state
+    def launch_up_next(self):
+        enable_playlist = get_setting_bool('enablePlaylist')
+        episode, source = self.play_item.get_next()
+        self.log('Playlist setting: %s' % enable_playlist)
+        if source == 'playlist' and not enable_playlist:
+            self.log('Playlist integration disabled', 2)
+            return
+        if not episode:
+            # No episode get out of here
+            self.log('Error: no episode could be found to play next...exiting', 1)
+            return
+        self.log('episode details %s' % episode, 2)
+        play_next, keep_playing = self.launch_popup(episode, source)
         self.state.playing_next = play_next
 
         # Dequeue and stop playback if not playing next file
         if not play_next and self.state.queued:
-            self.state.queued = api.dequeue_next_item()
+            self.state.queued = self.api.dequeue_next_item()
         if not keep_playing:
-            self.log('Stopping playback', utils.LOGINFO)
+            self.log('Stopping playback', 2)
             self.player.stop()
 
-        # Reset signals
-        self.sigstop = False
-        self.sigterm = False
-        self.running = False
+        self.api.reset_addon_data()
 
-    def _remove_popup(self):
-        if not self._has_popup():
-            return
-
-        with self.popup:
-            self.popup.close()
-            utils.clear_property('service.upnext.dialog')
-
-        del self.popup
-        self.popup = None
-
-    def _run(self):
-        self.log('Started')
-        self.running = True
-
-        next_item, source = self.state.get_next()
-        # No next item to play, get out of here
-        if not next_item:
-            self.log('Exiting: no next item to play')
-
-            play_next = False
-            keep_playing = True
-            self._post_run(play_next, keep_playing)
-            has_next_item = False
-            return has_next_item
+    def launch_popup(self, episode, source=None):
+        episode_id = episode.get('episodeid')
+        no_play_count = episode.get('playcount') is None or episode.get('playcount') == 0
+        include_play_count = True if self.state.include_watched else no_play_count
+        if not include_play_count or self.state.current_episode_id == episode_id:
+            # play_next = False
+            # keep_playing = True
+            # return play_next, keep_playing
+            # Don't play next file, but keep playing current file
+            return False, True
 
         # Add next file to playlist if existing playlist is not being used
-        if self.state.enable_queue and source[-len('playlist'):] != 'playlist':
-            self.state.queued = api.queue_next_item(self.state.data, next_item)
+        if source != 'playlist':
+            self.state.queued = self.api.queue_next_item(episode)
 
-        # Create Kodi dialog to show UpNext or Still Watching? popup
-        popup_state = self._create_popup(next_item, source)
-        # Display popup and update state of controls
-        popup_state = self._display_popup(popup_state)
-        # Close dialog once we are done with it
-        self._remove_popup()
-
-        # Update played in a row count if auto_play otherwise reset
-        self.state.played_in_a_row = (
-            self.state.played_in_a_row + 1 if popup_state['auto_play'] else 1
-        )
-
-        # Update shuffle state
-        self.state.shuffle = popup_state['shuffle']
-
-        # Signal to Trakt that current item has been watched
-        utils.event(
-            message='NEXTUPWATCHEDSIGNAL',
-            data={'episodeid': self.state.get_episodeid()},
-            encoding='base64'
-        )
-
-        # Popup closed prematurely
-        if not popup_state['done']:
-            self.log('Exiting: popup force closed', utils.LOGWARNING)
-            has_next_item = False
-
-        # Shuffle start request
-        elif popup_state['shuffle_start']:
-            self.log('Exiting: shuffle requested')
-            has_next_item = False
-            popup_state['done'] = False
-
-        elif not (popup_state['auto_play'] or popup_state['play_now']):
-            self.log('Exiting: playback not selected')
-            has_next_item = True
-            popup_state['done'] = False
-
-        if not popup_state['done']:
-            play_next = False
-            # Stop playing if Stop button was clicked on popup, or if Still
-            # Watching? popup was shown (to prevent unwanted playback that can
-            # occur if fast forwarding through popup), or not starting shuffle
-            keep_playing = (
-                not popup_state['stop']
-                and (
-                    popup_state['show_upnext']
-                    or popup_state['shuffle_start']
-                )
-            )
-            self._post_run(play_next, keep_playing)
-
-            # Run again if shuffle started to get new random episode
-            if popup_state['shuffle_start']:
-                return self._run()
-
-            return has_next_item
-
-        # Request playback of next file based on source and type
-        self._play_next_video(next_item, source, popup_state)
-
-        play_next = True
-        keep_playing = True
-        self._post_run(play_next, keep_playing)
-        has_next_item = True
-        return has_next_item
-
-    def _show_popup(self):
-        if not self._has_popup():
-            return False
-
-        with self.popup:
-            self.popup.show()
-            utils.set_property('service.upnext.dialog', 'true')
-            return True
-
-    def start(self, called=[False]):  # pylint: disable=dangerous-default-value
-        # Exit if playbackmanager previously requested
-        if called[0]:
-            has_next_item = False
-            return has_next_item
-        # Stop any existing playbackmanager
-        self.stop()
-        called[0] = True
-
-        # Show popup and get new playback state
-        has_next_item = self._run()
-
-        called[0] = False
-        return has_next_item
-
-    def stop(self, terminate=False):
-        if terminate:
-            self.sigterm = self.running
+        # We have a next up episode choose mode
+        if get_setting_int('simpleMode') == 0:
+            next_up_page = UpNext('script-upnext-upnext-simple.xml', addon_path(), 'default', '1080i')
+            still_watching_page = StillWatching('script-upnext-stillwatching-simple.xml', addon_path(), 'default', '1080i')
         else:
-            self.sigstop = self.running
+            next_up_page = UpNext('script-upnext-upnext.xml', addon_path(), 'default', '1080i')
+            still_watching_page = StillWatching('script-upnext-stillwatching.xml', addon_path(), 'default', '1080i')
 
-        # playbackmanager does not run in a separate thread, but stop() can be
-        # called from another thread
-        while self.running:
-            # Wait until execution has finished to ensure references/resources
-            # can be safely released
-            pass
+        showing_next_up_page, showing_still_watching_page = self.show_popup_and_wait(episode,
+                                                                                     next_up_page,
+                                                                                     still_watching_page)
+        should_play_default, should_play_non_default = self.extract_play_info(next_up_page,
+                                                                              showing_next_up_page,
+                                                                              showing_still_watching_page,
+                                                                              still_watching_page)
+        if not self.state.track:
+            self.log('exit launch_popup early due to disabled tracking', 2)
+            # play_next = False
+            # keep_playing = showing_next_up_page
+            # return play_next, keep_playing
+            # Don't play next file
+            # Stop if Still Watching? popup was shown to prevent unwanted playback when using FF or skip
+            return False, showing_next_up_page
 
-        # Free references/resources
-        if terminate:
-            self._remove_popup()
-            del self.monitor
-            self.monitor = None
-            del self.player
-            self.player = None
-            del self.state
-            self.state = None
+        play_item_option_1 = (should_play_default and self.state.play_mode == 0)
+        play_item_option_2 = (should_play_non_default and self.state.play_mode == 1)
+        if not play_item_option_1 and not play_item_option_2:
+            # play_next = False
+            # keep_playing = next_up_page.is_cancel() if showing_next_up_page else still_watching_page.is_cancel()
+            # keep_playing = keep_playing and not get_setting_bool('stopAfterClose')
+            # return play_next, keep_playing
+            # Don't play next file, and stop current file if no playback option selected
+            return False, (
+                (next_up_page.is_cancel() if showing_next_up_page else still_watching_page.is_cancel())
+                and not get_setting_bool('stopAfterClose')
+            )
+
+        self.log('playing media episode', 2)
+        # Signal to trakt previous episode watched
+        event(message='NEXTUPWATCHEDSIGNAL', data=dict(episodeid=self.state.current_episode_id), encoding='base64')
+        if source == 'playlist' or self.state.queued:
+            # Play playlist media
+            if should_play_non_default:
+                # Only start the next episode if the user asked for it specifically
+                self.player.playnext()
+        elif self.api.has_addon_data():
+            # Play add-on media
+            self.api.play_addon_item()
+        else:
+            # Play local media
+            self.api.play_kodi_item(episode)
+
+        # play_next = True
+        # keep_playing = True
+        # return play_next, keep_playing
+        # Play next file, and keep playing current file
+        return True, True
+
+    def show_popup_and_wait(self, episode, next_up_page, still_watching_page):
+        try:
+            play_time = self.player.getTime()
+            total_time = self.player.getTotalTime()
+        except RuntimeError:
+            self.log('exit early because player is no longer running', 2)
+            return False, False
+        progress_step_size = calculate_progress_steps(total_time - play_time)
+        next_up_page.set_item(episode)
+        next_up_page.set_progress_step_size(progress_step_size)
+        still_watching_page.set_item(episode)
+        still_watching_page.set_progress_step_size(progress_step_size)
+        played_in_a_row_number = get_setting_int('playedInARow')
+        self.log('played in a row settings %s' % played_in_a_row_number, 2)
+        self.log('played in a row %s' % self.state.played_in_a_row, 2)
+        showing_next_up_page = False
+        showing_still_watching_page = False
+        if int(self.state.played_in_a_row) <= int(played_in_a_row_number):
+            self.log('showing next up page as played in a row is %s' % self.state.played_in_a_row, 2)
+            next_up_page.show()
+            set_property('service.upnext.dialog', 'true')
+            showing_next_up_page = True
+        else:
+            self.log('showing still watching page as played in a row %s' % self.state.played_in_a_row, 2)
+            still_watching_page.show()
+            set_property('service.upnext.dialog', 'true')
+            showing_still_watching_page = True
+        while (self.player.isPlaying() and (total_time - play_time > 1)
+               and not next_up_page.is_cancel() and not next_up_page.is_watch_now()
+               and not still_watching_page.is_still_watching() and not still_watching_page.is_cancel()):
+            try:
+                play_time = self.player.getTime()
+                total_time = self.player.getTotalTime()
+            except RuntimeError:
+                if showing_next_up_page:
+                    next_up_page.close()
+                    showing_next_up_page = False
+                if showing_still_watching_page:
+                    still_watching_page.close()
+                    showing_still_watching_page = False
+                break
+
+            remaining = total_time - play_time
+            runtime = episode.get('runtime')
+            if not self.state.pause:
+                if showing_next_up_page:
+                    next_up_page.update_progress_control(remaining=remaining, runtime=runtime)
+                elif showing_still_watching_page:
+                    still_watching_page.update_progress_control(remaining=remaining, runtime=runtime)
+            sleep(100)
+        return showing_next_up_page, showing_still_watching_page
+
+    def extract_play_info(self, next_up_page, showing_next_up_page, showing_still_watching_page, still_watching_page):
+        if showing_next_up_page:
+            next_up_page.close()
+            should_play_default = not next_up_page.is_cancel()
+            should_play_non_default = next_up_page.is_watch_now()
+        elif showing_still_watching_page:
+            still_watching_page.close()
+            should_play_default = still_watching_page.is_still_watching()
+            should_play_non_default = still_watching_page.is_still_watching()
+        else:
+            # FIXME: This is a workaround until we handle this better (see comments in #142)
+            return False, False
+
+        if next_up_page.is_watch_now() or still_watching_page.is_still_watching():
+            self.state.played_in_a_row = 1
+        else:
+            self.state.played_in_a_row += 1
+        clear_property('service.upnext.dialog')
+        return should_play_default, should_play_non_default

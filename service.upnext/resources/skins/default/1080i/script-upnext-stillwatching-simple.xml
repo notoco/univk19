@@ -41,7 +41,7 @@
                         <control type="button" id="10">
                             <label>    $ADDON[service.upnext 30010]</label>
                             <onclick>SendClick(3012)</onclick>
-                            <visible>Integer.IsGreater(Window.Property(remaining),60)</visible>
+                            <visible>Integer.IsGreater(Player.TimeRemaining,59)</visible>
                             <height>56</height>
                             <width min="50">auto</width>
                             <font>font20_title</font>
@@ -61,7 +61,7 @@
                         <control type="button" id="11">
                             <label>    $ADDON[service.upnext 30035]</label>
                             <onclick>SendClick(3012)</onclick>
-                            <visible>Integer.IsLessOrEqual(Window.Property(remaining),60)</visible>
+                            <visible>!Integer.IsGreater(Player.TimeRemaining,59)</visible>
                             <height>56</height>
                             <width min="50">auto</width>
                             <font>font20_title</font>
@@ -79,7 +79,7 @@
                             <pulseonselect>no</pulseonselect>
                         </control>
                         <control type="button" id="3013">
-                            <label>$INFO[Window.Property(stop_close_label)]</label>
+                            <label>$ADDON[service.upnext 30034]</label>
                             <height>56</height>
                             <width min="50">auto</width>
                             <font>font20_title</font>
@@ -96,16 +96,6 @@
                             <alttexturenofocus border="10" colordiffuse="FF212121">button.png</alttexturenofocus>
                             <pulseonselect>no</pulseonselect>
                         </control>
-						<control type="togglebutton" id="3015">
-							<visible>String.IsEqual(Window.Property(shuffle_enable),True)</visible>
-							<selected>String.IsEqual(Window.Property(shuffle_on),True)</selected>
-							<texturenofocus colordiffuse="FF303030">shuffle.png</texturenofocus>
-							<texturefocus colordiffuse="FF172A91">shuffle.png</texturefocus>
-							<alttexturenofocus>shuffle.png</alttexturenofocus>
-							<alttexturefocus colordiffuse="FF172A91">shuffle.png</alttexturefocus>
-							<width>56</width>
-							<height>56</height>
-						</control>
                         <!-- Label -->
                         <control type="label">
                             <width>auto</width>
@@ -123,15 +113,15 @@
                         <aspect>keep</aspect>
                         <texture colordiffuse="ddffffff">nextupicons/30.png</texture>
                         <animation effect="slide" end="13,5" time="0" condition="true">Conditional</animation>
-                        <visible>Integer.IsGreater(Window.Property(remaining),30)</visible>
+                        <visible>Integer.IsGreater(Player.TimeRemaining,30)</visible>
                     </control>
                     <control type="image">
                         <width>46</width>
                         <height>46</height>
                         <aspect>keep</aspect>
-                        <texture colordiffuse="ddffffff">$INFO[Window.Property(remaining),nextupicons/,.png]</texture>
+                        <texture colordiffuse="ddffffff">$INFO[Player.TimeRemaining(ss),nextupicons/,.png]</texture>
                         <animation effect="slide" end="13,5" time="0" condition="true">Conditional</animation>
-                        <visible>!Integer.IsGreater(Window.Property(remaining),30)</visible>
+                        <visible>!Integer.IsGreater(Player.TimeRemaining,30)</visible>
                     </control>
                 </control>
             </control>

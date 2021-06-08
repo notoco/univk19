@@ -4,22 +4,22 @@
 from __future__ import absolute_import, division, unicode_literals
 from datetime import datetime, timedelta
 from platform import machine
-from xbmc import Player
 from xbmcgui import WindowXMLDialog
 from statichelper import from_unicode
-from utils import get_setting_bool, localize, localize_time
+from utils import localize_time
 
 ACTION_PLAYER_STOP = 13
 ACTION_NAV_BACK = 92
 OS_MACHINE = machine()
 
 
-class UpNext(WindowXMLDialog):
+class StillWatching(WindowXMLDialog):
     item = None
     cancel = False
-    watchnow = False
+    stillwatching = False
     progress_step_size = 0
     current_progress_percent = 100
+    progress_control = None
 
     def __init__(self, *args, **kwargs):
         self.action_exitkeys_id = [10, 13]
@@ -32,11 +32,6 @@ class UpNext(WindowXMLDialog):
     def onInit(self):  # pylint: disable=invalid-name
         self.set_info()
         self.prepare_progress_control()
-
-        if get_setting_bool('stopAfterClose'):
-            self.getControl(3013).setLabel(localize(30033))  # Stop
-        else:
-            self.getControl(3013).setLabel(localize(30034))  # Close
 
     def set_info(self):
         episode_info = '{season}x{episode}.'.format(**self.item)
@@ -98,11 +93,11 @@ class UpNext(WindowXMLDialog):
     def is_cancel(self):
         return self.cancel
 
-    def set_watch_now(self, watchnow):
-        self.watchnow = watchnow
+    def set_still_watching(self, stillwatching):
+        self.stillwatching = stillwatching
 
-    def is_watch_now(self):
-        return self.watchnow
+    def is_still_watching(self):
+        return self.stillwatching
 
     def onFocus(self, controlId):  # pylint: disable=invalid-name
         pass
@@ -114,13 +109,11 @@ class UpNext(WindowXMLDialog):
         self.close()
 
     def onClick(self, controlId):  # pylint: disable=invalid-name
-        if controlId == 3012:  # Watch now
-            self.set_watch_now(True)
+        if controlId == 3012:  # Still watching
+            self.set_still_watching(True)
             self.close()
-        elif controlId == 3013:  # Close / Stop
+        elif controlId == 3013:  # Cancel
             self.set_cancel(True)
-            if get_setting_bool('stopAfterClose'):
-                Player().stop()
             self.close()
 
     def onAction(self, action):  # pylint: disable=invalid-name
