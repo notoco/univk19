@@ -237,9 +237,9 @@ v.2.1.0
     </extension>
 </addon>
 
-<addon id="service.upnext" name="Up Next" version="1.1.5" provider-name="im85288">
+<addon id="service.upnext" name="Up Next" version="1.1.5+matrix.1" provider-name="im85288">
     <requires>
-        <import addon="xbmc.python" version="2.25.0"/>
+        <import addon="xbmc.python" version="3.0.0"/>
     </requires>
     <!-- This is needed to get an addon icon -->
     <extension point="xbmc.python.script" library="resources/lib/script_entry.py">

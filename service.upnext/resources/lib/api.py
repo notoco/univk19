@@ -43,20 +43,20 @@ class Api:
             next_item.update(file=self.data.get('play_url'))
 
         if next_item:
-            jsonrpc(method='Playlist.Add', id=0, params=dict(playlistid=0, item=next_item))
+            jsonrpc(method='Playlist.Add', id=0, params=dict(playlistid=1, item=next_item))
 
         return bool(next_item)
 
     @staticmethod
     def dequeue_next_item():
         """Remove unplayed next item from video playlist"""
-        jsonrpc(method='Playlist.Remove', id=0, params=dict(playlistid=0, position=1))
+        jsonrpc(method='Playlist.Remove', id=0, params=dict(playlistid=1, position=1))
         return False
 
     @staticmethod
     def reset_queue():
         """Remove previously played item from video playlist"""
-        jsonrpc(method='Playlist.Remove', id=0, params=dict(playlistid=0, position=0))
+        jsonrpc(method='Playlist.Remove', id=0, params=dict(playlistid=1, position=0))
 
     def get_next_in_playlist(self, position):
         result = jsonrpc(method='Playlist.GetItems', params=dict(
