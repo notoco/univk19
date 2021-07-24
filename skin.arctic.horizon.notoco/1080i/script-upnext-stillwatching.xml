@@ -52,7 +52,7 @@
                         <include content="Object_Info_Title">
                             <param name="font" value="font_title" />
                             <param name="textcolor" value="$VAR[ColorHighlight]" />
-                            <param name="label" value="[COLOR=panel_fg_100]Continue watching in [/COLOR]$INFO[Window.Property(remaining)][COLOR=panel_fg_100] seconds...[/COLOR]" />
+                            <param name="label" value="[COLOR=panel_fg_100]Kontynuuj oglądanie za  [/COLOR]$INFO[Window.Property(remaining)]" />
                         </include>
                         <control type="grouplist">
                             <top>-20</top>
