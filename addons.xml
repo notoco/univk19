@@ -237,7 +237,7 @@ v.2.1.0
     </extension>
 </addon>
 
-<addon id="service.upnext" name="Up Next" version="1.1.5+matrix.1" provider-name="im85288">
+<addon id="service.upnext" name="Up Next" version="1.1.5+matrix.2" provider-name="im85288">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
     </requires>
