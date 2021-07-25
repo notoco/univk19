@@ -40,7 +40,7 @@ class Api:
     def play_kodi_item(episode):
         jsonrpc(method='Player.Open', id=0, params=dict(item=dict(episodeid=episode.get('episodeid'))))
 
-   @staticmethod
+    @staticmethod
     def _get_playerid(playerid_cache=[None]):  # pylint: disable=dangerous-default-value
         """Function to get active player playerid"""
 
@@ -85,7 +85,6 @@ class Api:
 
         return result
 
-
     def queue_next_item(self, episode):
         next_item = {}
         if not self.data:
@@ -102,6 +101,7 @@ class Api:
                     item=next_item
                 )
             )
+
         return bool(next_item)
 
     @staticmethod
@@ -128,6 +128,7 @@ class Api:
                 position=0
             )
         )
+
     def get_next_in_playlist(self, position):
         result = jsonrpc(method='Playlist.GetItems', params=dict(
             playlistid=Api.get_playlistid(),
