@@ -2,7 +2,6 @@
 <settings>
       <category label="Hyperion">
 		<setting id="state" type="bool" default="true" label="State" visible="false"/>
-        <setting id="bright" type="slider" option="int" range="0,5,100" label="Jasność" default="80" />
 <!--		<setting id="startup_notif" type="bool" default="true" label="Startup Notification"/> -->
     </category>
 </settings>

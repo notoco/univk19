@@ -6,14 +6,13 @@ import subprocess
 addon = xbmcaddon.Addon()
 state = addon.getSetting('state')
 icon = addon.getAddonInfo('icon')
-amb_bright = addon.getSetting('bright')
 
 def turn_off():
-    subprocess.Popen("hyperion-remote -L 0", shell=True)
+    subprocess.Popen("hyperion-remote -D GRABBER", shell=True)
     addon.setSetting('state', 'false')
 
 def turn_on():
-    subprocess.Popen("hyperion-remote -L " + amb_bright, shell=True)
+    subprocess.Popen("hyperion-remote -E GRABBER", shell=True)
     addon.setSetting('state', 'true')
 
 def cpu():
