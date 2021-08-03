@@ -8,11 +8,11 @@ state = addon.getSetting('state')
 icon = addon.getAddonInfo('icon')
 
 def turn_off():
-    subprocess.Popen("hyperion-remote -D GRABBER", shell=True)
+    subprocess.Popen("hyperion-remote -D LEDDEVICE", shell=True)
     addon.setSetting('state', 'false')
 
 def turn_on():
-    subprocess.Popen("hyperion-remote -E GRABBER", shell=True)
+    subprocess.Popen("hyperion-remote -E LEDDEVICE", shell=True)
     addon.setSetting('state', 'true')
 
 def cpu():
