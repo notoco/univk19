@@ -1508,6 +1508,7 @@
                         <left>1260</left>
                         <height>345</height>
                         <width>645</width>
+                        <fadetime>400</fadetime>
                         <bordersize>20</bordersize>
                         <bordertexture border="30" colordiffuse="Shadow">common/shadow-20.png</bordertexture>
                         <aspectratio scalediffuse="true" align="left" aligny="bottom">keep</aspectratio>

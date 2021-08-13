@@ -105,6 +105,16 @@
                         <width>560</width>
                     </control>
                     <control type="image">
+                        <texture background="true">$VAR[Image_View_ClearLogo]</texture>
+                        <aspectratio align="right" aligny="bottom" scalediffuse="false">keep</aspectratio>
+                        <visible>!Control.IsVisible(51) + !String.IsEmpty(ListItem.Art(clearlogo))</visible>
+                        <fadetime>400</fadetime>
+                        <right>0</right>
+                        <bottom>500</bottom>
+                        <height>320</height>
+                        <width>560</width>
+                    </control>
+                    <control type="image">
                         <texture background="true">$VAR[Image_DiscArt]</texture>
                         <aspectratio align="right" aligny="bottom" scalediffuse="false">keep</aspectratio>
                         <visible>Control.IsVisible(51)</visible>
