@@ -2,23 +2,385 @@
 # GNU General Public License v2.0 (see COPYING or https://www.gnu.org/licenses/gpl-2.0.txt)
 
 from __future__ import absolute_import, division, unicode_literals
-from utils import get_setting_bool, get_setting_int
+import api
+import constants
+from settings import SETTINGS
+import utils
 
 
-# keeps track of the state parameters
-class State:
-    _shared_state = {}
+class UpNextState(object):  # pylint: disable=useless-object-inheritance,too-many-public-methods
+    """Class encapsulating all state variables and methods"""
 
-    def __init__(self):
-        self.__dict__ = self._shared_state
-        self.play_mode = get_setting_int('autoPlayMode')
-        self.include_watched = get_setting_bool('includeWatched')
-        self.current_tv_show_id = None
-        self.current_episode_id = None
-        self.tv_show_id = None
+    __slots__ = (
+        # Addon data
+        'data',
+        'encoding',
+        # Current video details
+        'current_item',
+        'filename',
+        'total_time',
+        'playcount',
+        'tvshowid',
+        'episodeid',
+        'episode_number',
+        'season_identifier',
+        # Popup state variables
+        'next_item',
+        'popup_time',
+        'popup_cue',
+        'detect_time',
+        'shuffle_on',
+        # Tracking player state variables
+        'starting',
+        'tracking',
+        'played_in_a_row',
+        'queued',
+        'playing_next'
+    )
+
+    def __init__(self, reset=None):
+        self.log('Reset' if reset else 'Init')
+
+        # Addon data
+        self.data = None
+        self.encoding = 'base64'
+        # Current video details
+        self.current_item = None
+        self.filename = None
+        self.total_time = 0
+        self.playcount = 0
+        self.tvshowid = constants.UNKNOWN_DATA
+        self.episodeid = constants.UNKNOWN_DATA
+        self.episode_number = None
+        self.season_identifier = None
+        # Popup state variables
+        self.next_item = None
+        self.popup_time = 0
+        self.popup_cue = False
+        self.detect_time = 0
+        self.shuffle_on = False
+        # Tracking player state variables
+        self.starting = 0
+        self.tracking = False
         self.played_in_a_row = 1
-        self.last_file = None
-        self.track = False
-        self.pause = False
         self.queued = False
         self.playing_next = False
+
+    @classmethod
+    def log(cls, msg, level=utils.LOGDEBUG):
+        utils.log(msg, name=cls.__name__, level=level)
+
+    def reset(self):
+        self.__init__(reset=True)
+
+    def reset_item(self):
+        self.current_item = None
+        self.next_item = None
+
+    def get_tracked_file(self):
+        return self.filename
+
+    def is_tracking(self):
+        return self.tracking
+
+    def set_tracking(self, filename):
+        if filename:
+            self.tracking = True
+            self.filename = filename
+            self.log('Tracking enabled: {0}'.format(filename), utils.LOGINFO)
+        else:
+            self.tracking = False
+            self.filename = None
+            self.log('Tracking disabled')
+
+    def reset_queue(self):
+        if self.queued:
+            self.queued = api.reset_queue()
+
+    def get_next(self):
+        """Get next video to play, based on current video source"""
+
+        next_item = None
+        source = None
+        playlist_position = api.get_playlist_position()
+        addon_type = self.get_addon_type(playlist_position)
+
+        # Next episode from addon data
+        if addon_type:
+            next_item = self.data.get('next_episode')
+            source = constants.ADDON_TYPES[addon_type]
+
+            if (SETTINGS.unwatched_only
+                    and utils.get_int(next_item, 'playcount') > 0):
+                next_item = None
+            self.log('Addon next_episode: {0}'.format(next_item))
+
+        # Next item from non-addon playlist
+        elif playlist_position and not self.shuffle_on:
+            next_item = api.get_next_in_playlist(
+                playlist_position,
+                SETTINGS.unwatched_only
+            )
+            source = 'playlist'
+
+        # Next episode from Kodi library
+        else:
+            next_item, new_season = api.get_next_from_library(
+                self.episodeid,
+                self.tvshowid,
+                SETTINGS.unwatched_only,
+                SETTINGS.next_season,
+                self.shuffle_on
+            )
+            source = 'library'
+            # Show Still Watching? popup if next episode is from next season
+            if new_season:
+                self.played_in_a_row = SETTINGS.played_limit
+
+        if next_item and source:
+            self.next_item = {
+                'details': next_item,
+                'source': source
+            }
+        if not self.next_item:
+            return None, None
+
+        return self.next_item['details'], self.next_item['source']
+
+    def get_detect_time(self):
+        return self.detect_time
+
+    def _set_detect_time(self):
+        # Don't use detection time period if an addon cue point was provided,
+        # or end credits detection is disabled
+        if self.popup_cue or not SETTINGS.detect_enabled:
+            self.detect_time = None
+            return
+
+        # Detection time period starts before normal popup time
+        self.detect_time = max(0, self.popup_time - SETTINGS.detect_period)
+
+    def get_popup_time(self):
+        return self.popup_time
+
+    def set_detected_popup_time(self, detected_time):
+        popup_time = 0
+
+        # Detected popup time overrides addon data and settings
+        if detected_time:
+            # Force popup time to specified play time
+            popup_time = detected_time
+
+            # Enable cue point unless forced off in demo mode
+            self.popup_cue = SETTINGS.demo_cue != constants.SETTING_OFF
+
+        self.popup_time = popup_time
+        self._set_detect_time()
+
+        self.log('Popup: due at {0}s of {1}s (cue: {2})'.format(
+            self.popup_time, self.total_time, self.popup_cue
+        ), utils.LOGINFO)
+
+    def set_popup_time(self, total_time):
+        popup_time = 0
+
+        # Alway use addon data, when available
+        if self.get_addon_type():
+            # Some addons send the time from video end
+            popup_duration = utils.get_int(self.data, 'notification_time', 0)
+            # Some addons send the time from video start (e.g. Netflix)
+            popup_time = utils.get_int(self.data, 'notification_offset', 0)
+
+            # Ensure popup duration is not too short
+            if constants.POPUP_MIN_DURATION <= popup_duration < total_time:
+                popup_time = total_time - popup_duration
+
+            # Ensure popup time is not too close to end of playback
+            if 0 < popup_time <= total_time - constants.POPUP_MIN_DURATION:
+                # Enable cue point unless forced off in demo mode
+                self.popup_cue = SETTINGS.demo_cue != constants.SETTING_OFF
+            # Otherwise ignore popup time from addon data
+            else:
+                popup_time = 0
+
+        # Use addon settings as fallback option
+        if not popup_time:
+            # Time from video end
+            popup_duration = SETTINGS.popup_durations[max(0, 0, *[
+                duration for duration in SETTINGS.popup_durations
+                if total_time > duration
+            ])]
+
+            # Ensure popup duration is not too short
+            if constants.POPUP_MIN_DURATION <= popup_duration < total_time:
+                popup_time = total_time - popup_duration
+            # Otherwise set default popup time
+            else:
+                popup_time = total_time - constants.POPUP_MIN_DURATION
+
+            # Disable cue point unless forced on in demo mode
+            self.popup_cue = SETTINGS.demo_cue == constants.SETTING_ON
+
+        self.popup_time = popup_time
+        self.total_time = total_time
+        self._set_detect_time()
+
+        self.log('Popup: due at {0}s of {1}s (cue: {2})'.format(
+            self.popup_time, self.total_time, self.popup_cue
+        ), utils.LOGINFO)
+
+    def process_now_playing(self, playlist_position, addon_type, media_type):
+        if addon_type:
+            current_item = self._get_addon_now_playing()
+            source = constants.ADDON_TYPES[addon_type]
+
+        elif playlist_position:
+            current_item = api.get_now_playing()
+            source = 'playlist'
+
+        elif media_type == 'episode':
+            current_item = self._get_library_now_playing()
+            source = 'library'
+
+        else:
+            current_item = None
+            source = None
+
+        if current_item and source:
+            self.current_item = {
+                'details': current_item,
+                'source': source
+            }
+        if not self.current_item:
+            return None
+
+        tvshowid = self.get_tvshowid(self.current_item['details'])
+        # Reset played in a row count if new show playing
+        if self.tvshowid != tvshowid:
+            self.log('Reset played count: tvshowid change - {0} to {1}'.format(
+                self.tvshowid, tvshowid
+            ))
+            self.played_in_a_row = 1
+
+        self._set_tvshowid()
+        self._set_episodeid()
+        self._set_episode_number()
+        self._set_playcount()
+        self._set_season_identifier()
+
+        return self.current_item['details']
+
+    def _get_addon_now_playing(self):
+        if self.data:
+            # Fallback to now playing info if addon does not provide current
+            # episode details
+            current_item = self.data.get(
+                'current_episode', api.get_now_playing()
+            )
+        else:
+            current_item = None
+
+        self.log('Addon current_episode: {0}'.format(current_item))
+        if not current_item:
+            return None
+
+        return current_item
+
+    def _get_library_now_playing(self):
+        current_item = api.get_now_playing()
+        if not current_item:
+            return None
+
+        # Get current tvshowid or search in library if detail missing
+        tvshowid = self.get_tvshowid(current_item)
+        if tvshowid == constants.UNKNOWN_DATA:
+            tvshowid = api.get_tvshowid(current_item.get('showtitle'))
+            self.log('Fetched tvshowid: {0}'.format(tvshowid))
+        # Now playing show not found in library
+        if tvshowid == constants.UNKNOWN_DATA:
+            return None
+        current_item['tvshowid'] = tvshowid
+
+        # Get current episodeid or search in library if detail missing
+        episodeid = self.get_episodeid(current_item)
+        if episodeid == constants.UNKNOWN_DATA:
+            episodeid = api.get_episodeid(
+                tvshowid,
+                current_item.get('season'),
+                current_item.get('episode')
+            )
+            self.log('Fetched episodeid: {0}'.format(episodeid))
+        # Now playing episode not found in library
+        if episodeid == constants.UNKNOWN_DATA:
+            return None
+        current_item['episodeid'] = episodeid
+
+        return current_item
+
+    def get_addon_type(self, playlist_position=None):
+        if self.data:
+            addon_type = constants.ADDON_DATA_ERROR
+            if playlist_position:
+                addon_type += constants.ADDON_PLAYLIST
+            if self.data.get('play_url'):
+                addon_type += constants.ADDON_PLAY_URL
+            elif self.data.get('play_info'):
+                addon_type += constants.ADDON_PLAY_INFO
+            return addon_type
+        return None
+
+    def set_addon_data(self, data, encoding='base64'):
+        if data:
+            self.log('Addon data: {0}'.format(data))
+        self.data = data
+        self.encoding = encoding
+
+    def _set_tvshowid(self):
+        self.tvshowid = utils.get_int(self.current_item['details'], 'tvshowid')
+
+    def get_tvshowid(self, item=None):
+        if item:
+            return utils.get_int(item, 'tvshowid')
+        return self.tvshowid
+
+    def _set_episodeid(self):
+        self.episodeid = utils.get_int(
+            self.current_item['details'], 'episodeid',
+            utils.get_int(self.current_item['details'], 'id')
+        )
+
+    def get_episodeid(self, item=None):
+        if item:
+            return utils.get_int(
+                item, 'episodeid',
+                utils.get_int(item, 'id')
+            )
+        return self.episodeid
+
+    def _set_episode_number(self):
+        self.episode_number = utils.get_int(
+            self.current_item['details'], 'episode'
+        )
+
+    def get_episode_number(self):
+        return self.episode_number
+
+    def _set_playcount(self):
+        self.playcount = utils.get_int(
+            self.current_item['details'], 'playcount',
+            0
+        )
+
+    def get_playcount(self):
+        return self.playcount
+
+    def _set_season_identifier(self):
+        showtitle = self.current_item['details'].get('showtitle')
+        season = self.current_item['details'].get('season')
+        if not showtitle or not season or season == constants.UNKNOWN_DATA:
+            self.season_identifier = None
+        else:
+            self.season_identifier = '_'.join((str(showtitle), str(season)))
+
+    def get_season_identifier(self):
+        return self.season_identifier

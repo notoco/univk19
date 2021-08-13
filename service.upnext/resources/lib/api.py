@@ -1,320 +1,620 @@
 # -*- coding: utf-8 -*-
 # GNU General Public License v2.0 (see COPYING or https://www.gnu.org/licenses/gpl-2.0.txt)
+"""Implements helper functions to interact with the Kodi library, player and
+   playlist"""
 
 from __future__ import absolute_import, division, unicode_literals
-from xbmc import sleep, PLAYLIST_VIDEO, PLAYLIST_MUSIC
-from utils import event, get_int, get_setting_bool, get_setting_int, jsonrpc, log as ulog
+import os.path
+import xbmc
+import constants
+import utils
 
 
-class Api:
-    """Main API class"""
-    _shared_state = {}
+EPISODE_PROPERTIES = [
+    'title',
+    'playcount',
+    'season',
+    'episode',
+    'showtitle',
+    # 'originaltitle', # Not used
+    'plot',
+    # 'votes', # Not used
+    'file',
+    'rating',
+    # 'ratings', # Not used, slow
+    # 'userrating', # Not used
+    'resume',
+    'tvshowid',
+    'firstaired',
+    'art',
+    # 'streamdetails', # Not used, slow
+    'runtime',
+    # 'director', # Not used
+    # 'writer', # Not used
+    # 'cast', # Not used, slow
+    'dateadded',
+    'lastplayed'
+]
 
-    PLAYER_PLAYLIST = {
-        'video': PLAYLIST_VIDEO,  # 1
-        'audio': PLAYLIST_MUSIC   # 0
-    }
+TVSHOW_PROPERTIES = [
+    'title',
+    'studio',
+    'year',
+    'plot',
+    # 'cast', # Not used, slow
+    'rating',
+    # 'ratings', # Not used, slow
+    # 'userrating', # Not used
+    # 'votes', # Not used
+    'genre',
+    'episode',
+    'season',
+    'runtime',
+    'mpaa',
+    'premiered',
+    'playcount',
+    'lastplayed',
+    # 'sorttitle', # Not used
+    # 'originaltitle', # Not used
+    'art',
+    # 'tag', # Not used, slow
+    'dateadded',
+    'watchedepisodes',
+    # 'imdbnumber' # Not used
+]
 
-    def __init__(self):
-        """Constructor for Api class"""
-        self.__dict__ = self._shared_state
-        self.data = {}
-        self.encoding = 'base64'
+PLAYER_PLAYLIST = {
+    'video': xbmc.PLAYLIST_VIDEO,  # 1
+    'audio': xbmc.PLAYLIST_MUSIC   # 0
+}
 
-    def log(self, msg, level=2):
-        """Log wrapper"""
-        ulog(msg, name=self.__class__.__name__, level=level)
 
-    def has_addon_data(self):
-        return self.data
+def log(msg, level=utils.LOGDEBUG):
+    """Log wrapper"""
 
-    def reset_addon_data(self):
-        self.data = {}
+    utils.log(msg, name=__name__, level=level)
 
-    def addon_data_received(self, data, encoding='base64'):
-        self.log('addon_data_received called with data %s' % data, 2)
-        self.data = data
-        self.encoding = encoding
 
-    @staticmethod
-    def play_kodi_item(episode):
-        jsonrpc(method='Player.Open', id=0, params=dict(item=dict(episodeid=episode.get('episodeid'))))
+def play_kodi_item(episode, resume=False):
+    """Function to directly play a file from the Kodi library"""
 
-    @staticmethod
-    def _get_playerid(playerid_cache=[None]):  # pylint: disable=dangerous-default-value
-        """Function to get active player playerid"""
+    log('Playing from library: {0}'.format(episode))
+    utils.jsonrpc(
+        method='Player.Open',
+        params={'item': {'episodeid': utils.get_int(episode, 'episodeid')}},
+        options={'resume': resume},
+        no_response=True
+    )
 
-        # We don't need to actually get playerid everytime, cache and reuse instead
-        if playerid_cache[0] is not None:
-            return playerid_cache[0]
 
-        # Sometimes Kodi gets confused and uses a music playlist for video content,
-        # so get the first active player instead, default to video player.
-        result = jsonrpc(method='Player.GetActivePlayers')
-        result = [
-            player for player in result.get('result', [{}])
-            if player.get('type', 'video') in Api.PLAYER_PLAYLIST
-        ]
+def queue_next_item(data=None, episode=None):
+    """Function to add next episode to the UpNext queue"""
 
-        playerid = get_int(result[0], 'playerid') if result else -1
+    next_item = {}
+    play_url = data.get('play_url') if data else None
+    episodeid = (
+        utils.get_int(episode, 'episodeid') if episode
+        else constants.UNKNOWN_DATA
+    )
 
-        if playerid == -1:
-            return None
+    if play_url:
+        next_item.update(file=play_url)
 
-        playerid_cache[0] = playerid
-        return playerid
+    elif episode and episodeid != constants.UNKNOWN_DATA:
+        next_item.update(episodeid=episodeid)
 
-    @staticmethod
-    def get_playlistid(playlistid_cache=[None]):  # pylint: disable=dangerous-default-value
-        """Function to get playlistid of active player"""
-
-        # We don't need to actually get playlistid everytime, cache and reuse instead
-        if playlistid_cache[0] is not None:
-            return playlistid_cache[0]
-
-        result = jsonrpc(
-            method='Player.GetProperties',
-            params={
-                'playerid': Api._get_playerid(playerid_cache=[None]),
-                'properties': ['playlistid'],
-            }
+    if next_item:
+        log('Adding to queue: {0}'.format(next_item))
+        utils.jsonrpc(
+            method='Playlist.Add',
+            params={'playlistid': get_playlistid(), 'item': next_item},
+            no_response=True
         )
-        result = get_int(
-            result.get('result', {}), 'playlistid', Api.PLAYER_PLAYLIST['video']
-        )
+    else:
+        log('Nothing added to queue')
 
-        return result
+    return bool(next_item)
 
-    def queue_next_item(self, episode):
-        next_item = {}
-        if not self.data:
-            next_item.update(episodeid=episode.get('episodeid'))
-        elif self.data.get('play_url'):
-            next_item.update(file=self.data.get('play_url'))
 
-        if next_item:
-            jsonrpc(
-                method='Playlist.Add',
-                id=0,
-                params=dict(
-                    playlistid=Api.get_playlistid(),
-                    item=next_item
-                )
-            )
+def reset_queue():
+    """Function to remove the 1st item from the playlist, used by the UpNext
+       queue for the video that was just played"""
 
-        return bool(next_item)
+    log('Removing previously played item from queue')
+    utils.jsonrpc(
+        method='Playlist.Remove',
+        params={'playlistid': get_playlistid(), 'position': 0},
+        no_response=True
+    )
+    return False
 
-    @staticmethod
-    def dequeue_next_item():
-        """Remove unplayed next item from video playlist"""
-        jsonrpc(
-            method='Playlist.Remove',
-            id=0,
-            params=dict(
-                playlistid=Api.get_playlistid(),
-                position=1
-            )
-        )
-        return False
 
-    @staticmethod
-    def reset_queue():
-        """Remove previously played item from video playlist"""
-        jsonrpc(
-            method='Playlist.Remove',
-            id=0,
-            params=dict(
-                playlistid=Api.get_playlistid(),
-                position=0
-            )
-        )
+def dequeue_next_item():
+    """Function to remove the 2nd item from the playlist, used by the UpNext
+       queue for the next video to be played"""
 
-    def get_next_in_playlist(self, position):
-        result = jsonrpc(method='Playlist.GetItems', params=dict(
-            playlistid=Api.get_playlistid(),
+    log('Removing unplayed next item from queue')
+    utils.jsonrpc(
+        method='Playlist.Remove',
+        params={'playlistid': get_playlistid(), 'position': 1},
+        no_response=True
+    )
+    return False
+
+
+def play_playlist_item(position=0, resume=False):
+    """Function to play episode in playlist"""
+
+    log('Playing from playlist position: {0}'.format(position))
+    if position == 'next':
+        position = get_playlist_position()
+
+    # JSON Player.Open can be too slow but is needed if resuming is enabled
+    # Unfortunately resuming from a playlist item does not seem to work...
+    utils.jsonrpc(
+        method='Player.Open',
+        params={
+            'item': {'playlistid': get_playlistid(), 'position': position}
+        },
+        options={'resume': resume},
+        no_response=True
+    )
+
+
+def get_playlist_position():
+    """Function to get current playlist playback position, where the first item
+       in the playlist is position 1"""
+
+    # Use actual playlistid rather than xbmc.PLAYLIST_VIDEO as Kodi sometimes
+    # plays video content in a music playlist
+    playlistid = get_playlistid(playlistid_cache=[None])
+    if playlistid is None:
+        return None
+
+    playlist = xbmc.PlayList(playlistid)
+    playlist_size = playlist.size()
+    # Use 1 based index value for playlist position
+    position = playlist.getposition() + 1
+
+    # A playlist with only one element has no next item
+    # PlayList().getposition() starts counting from zero
+    if playlist_size > 1 and position < playlist_size:
+        log('playlistid: {0}, position - {1}/{2}'.format(
+            playlistid, position, playlist_size
+        ))
+        return position
+    return None
+
+
+def get_next_in_playlist(position, unwatched_only=False):
+    """Function to get details of next episode in playlist"""
+
+    result = utils.jsonrpc(
+        method='Playlist.GetItems',
+        params={
+            'playlistid': get_playlistid(),
             # limits are zero indexed, position is one indexed
-            limits=dict(start=position, end=position + 1),
-            properties=['art', 'dateadded', 'episode', 'file', 'firstaired', 'lastplayed',
-                        'playcount', 'plot', 'rating', 'resume', 'runtime', 'season',
-                        'showtitle', 'streamdetails', 'title', 'tvshowid', 'writer'],
-        ))
+            'limits': {
+                'start': position,
+                'end': -1 if unwatched_only else position + 1
+            },
+            'properties': EPISODE_PROPERTIES
+        }
+    )
+    items = result.get('result', {}).get('items')
 
-        item = result.get('result', {}).get('items')
+    # Get first unwatched item in the list of remaining playlist entries
+    if unwatched_only and items:
+        position_offset, item = next(
+            (
+                (idx, item) for idx, item in enumerate(items)
+                if utils.get_int(item, 'playcount') < 1
+            ),
+            (0, None)
+        )
+        position += position_offset
+    # Or just get the first item in the list of remaining playlist entries
+    else:
+        item = items[0] if items else None
 
-        # Don't check if next item is an episode, just use it if it is there
-        if not item:  # item.get('type') != 'episode':
-            self.log('Error: no next item found in playlist', 1)
-            return None
-        item = item[0]
-
-        # Playlist item may not have had video info details set
-        # Try and populate required details if missing
-        if not item.get('title'):
-            item['title'] = item.get('label', '')
-        item['episodeid'] = get_int(item, 'id')
-        item['tvshowid'] = get_int(item, 'tvshowid')
-        # If missing season/episode, change to empty string to avoid episode
-        # formatting issues ("S-1E-1") in UpNext popup
-        if get_int(item, 'season') == -1:
-            item['season'] = ''
-        if get_int(item, 'episode') == -1:
-            item['episode'] = ''
-
-        self.log('Next item in playlist: %s' % item, 2)
-        return item
-
-    def play_addon_item(self):
-        if self.data.get('play_url'):
-            self.log('Playing the next episode directly: %(play_url)s' % self.data, 2)
-            jsonrpc(method='Player.Open', params=dict(item=dict(file=self.data.get('play_url'))))
-        else:
-            self.log('Sending %(encoding)s data to add-on to play: %(play_info)s' % dict(encoding=self.encoding, **self.data), 2)
-            event(message=self.data.get('id'), data=self.data.get('play_info'), sender='upnextprovider', encoding=self.encoding)
-
-    def handle_addon_lookup_of_next_episode(self):
-        if not self.data:
-            return None
-        self.log('handle_addon_lookup_of_next_episode episode returning data %(next_episode)s' % self.data, 2)
-        return self.data.get('next_episode')
-
-    def handle_addon_lookup_of_current_episode(self):
-        if not self.data:
-            return None
-        self.log('handle_addon_lookup_of_current episode returning data %(current_episode)s' % self.data, 2)
-        return self.data.get('current_episode')
-
-    def notification_time(self, total_time=None):
-        # Alway use metadata, when available
-        if self.data.get('notification_time'):
-            return int(self.data.get('notification_time'))
-
-        # Some consumers send the offset when the credits start (e.g. Netflix)
-        if total_time and self.data.get('notification_offset'):
-            return total_time - int(self.data.get('notification_offset'))
-
-        # Use a customized notification time, when configured
-        if total_time and get_setting_bool('customAutoPlayTime'):
-            if total_time > 60 * 60:
-                return get_setting_int('autoPlayTimeXL')
-            if total_time > 40 * 60:
-                return get_setting_int('autoPlayTimeL')
-            if total_time > 20 * 60:
-                return get_setting_int('autoPlayTimeM')
-            if total_time > 10 * 60:
-                return get_setting_int('autoPlayTimeS')
-            return get_setting_int('autoPlayTimeXS')
-
-        # Use one global default, regardless of episode length
-        return get_setting_int('autoPlaySeasonTime')
-
-    def get_now_playing(self):
-        # Seems to work too fast loop whilst waiting for it to become active
-        result = dict()
-        while not result.get('result'):
-            result = jsonrpc(method='Player.GetActivePlayers')
-            self.log('Got active player %s' % result, 2)
-
-        if not result.get('result'):
-            return None
-
-        playerid = result.get('result')[0].get('playerid')
-
-        # Get details of the playing media
-        self.log('Getting details of now playing media', 2)
-        result = jsonrpc(method='Player.GetItem', params=dict(
-            playerid=playerid,
-            properties=['episode', 'genre', 'playcount', 'plotoutline', 'season', 'showtitle', 'tvshowid'],
-        ))
-        self.log('Got details of now playing media %s' % result, 2)
-        return result
-
-    def handle_kodi_lookup_of_episode(self, tvshowid, current_file, include_watched, current_episode_id):
-        result = jsonrpc(method='VideoLibrary.GetEpisodes', params=dict(
-            tvshowid=tvshowid,
-            properties=['art', 'dateadded', 'episode', 'file', 'firstaired', 'lastplayed',
-                        'playcount', 'plot', 'rating', 'resume', 'runtime', 'season',
-                        'showtitle', 'streamdetails', 'title', 'tvshowid', 'writer'],
-            sort=dict(method='episode'),
-        ))
-
-        if not result.get('result'):
-            return None
-
-        self.log('Got details of next up episode %s' % result, 2)
-        sleep(100)
-
-        # Find the next unwatched and the newest added episodes
-        return self.find_next_episode(result, current_file, include_watched, current_episode_id)
-
-    def handle_kodi_lookup_of_current_episode(self, tvshowid, current_episode_id):
-        result = jsonrpc(method='VideoLibrary.GetEpisodes', params=dict(
-            tvshowid=tvshowid,
-            properties=['art', 'dateadded', 'episode', 'file', 'firstaired', 'lastplayed',
-                        'playcount', 'plot', 'rating', 'resume', 'runtime', 'season',
-                        'showtitle', 'streamdetails', 'title', 'tvshowid', 'writer'],
-            sort=dict(method='episode'),
-        ))
-
-        if not result.get('result'):
-            return None
-
-        self.log('Find current episode called', 2)
-        sleep(100)
-
-        # Find the next unwatched and the newest added episodes
-        episodes = result.get('result', {}).get('episodes', [])
-        for idx, episode in enumerate(episodes):
-            # Find position of current episode
-            if current_episode_id == episode.get('episodeid'):
-                self.log('Find current episode found episode in position: %d' % idx, 2)
-                return episode
-
-        # No next episode found
-        self.log('No next episode found', 1)
+    # Don't check if next item is an episode, just use it if it is there
+    if not item:  # item.get('type') != 'episode':
+        log('Error: no next item found in playlist', utils.LOGWARNING)
         return None
 
-    @staticmethod
-    def showtitle_to_id(title):
-        result = jsonrpc(method='VideoLibrary.GetTVShows', id='libTvShows', params=dict(properties=['title']))
+    # Playlist item may not have had video info details set
+    # Try and populate required details if missing
+    if not item.get('title'):
+        item['title'] = item.get('label', '')
+    item['episodeid'] = utils.get_int(
+        item, 'episodeid',
+        utils.get_int(item, 'id')
+    )
+    item['tvshowid'] = utils.get_int(item, 'tvshowid')
+    # If missing season/episode, change to empty string to avoid episode
+    # formatting issues ("S-1E-1") in UpNext popup
+    if utils.get_int(item, 'season') == constants.UNKNOWN_DATA:
+        item['season'] = ''
+    if utils.get_int(item, 'episode') == constants.UNKNOWN_DATA:
+        item['episode'] = ''
 
-        for tvshow in result.get('result', {}).get('tvshows', []):
-            if tvshow.get('label') == title:
-                return tvshow.get('tvshowid')
-        return '-1'
+    # Store current playlist position for later use
+    item['playlist_position'] = position
 
-    @staticmethod
-    def get_episode_id(showid, show_season, show_episode):
-        show_season = int(show_season)
-        show_episode = int(show_episode)
-        result = jsonrpc(method='VideoLibrary.GetEpisodes', params=dict(
-            properties=['episode', 'season'],
-            tvshowid=int(showid),
-        ))
+    log('Next item in playlist at position {0}: {1}'.format(position, item))
+    return item
 
-        episodeid = 0
-        for episode in result.get('result', {}).get('episodes', []):
-            if episode.get('episodeid') and episode.get('season') == show_season and episode.get('episode') == show_episode:
-                episodeid = episode.get('episodeid')
 
-        return episodeid
+def play_addon_item(data, encoding, resume=False):
+    """Function to play next addon item, either using JSONRPC Player.Open or by
+       passthrough back to the addon"""
 
-    def find_next_episode(self, result, current_file, include_watched, current_episode_id):
-        found_match = False
-        episodes = result.get('result', {}).get('episodes', [])
-        for episode in episodes:
-            # Find position of current episode
-            if current_episode_id == episode.get('episodeid'):
-                found_match = True
-                continue
-            # Check if it may be a multi-part episode
-            if episode.get('file') == current_file:
-                continue
-            # Skip already watched episodes?
-            if not include_watched and episode.get('playcount') > 0:
-                continue
-            if found_match:
-                return episode
+    play_url = data.get('play_url')
+    if play_url:
+        log('Playing from addon - {0}'.format(play_url))
+        utils.jsonrpc(
+            method='Player.Open',
+            params={'item': {'file': play_url}},
+            options={'resume': resume},
+            no_response=True
+        )
+        return
 
-        # No next episode found
-        self.log('No next episode found', 1)
+    play_info = data.get('play_info')
+    if play_info:
+        log('Sending as {0} to addon - {1}'.format(encoding, play_info))
+        utils.event(
+            message=data.get('id'),
+            data=play_info,
+            sender='upnextprovider',
+            encoding=encoding
+        )
+        return
+
+    log('Error: no addon data available for playback', utils.LOGWARNING)
+
+
+def get_playerid(playerid_cache=[None]):  # pylint: disable=dangerous-default-value
+    """Function to get active player playerid"""
+
+    # We don't need to actually get playerid everytime, cache and reuse instead
+    if playerid_cache[0] is not None:
+        return playerid_cache[0]
+
+    # Sometimes Kodi gets confused and uses a music playlist for video content,
+    # so get the first active player instead, default to video player.
+    result = utils.jsonrpc(
+        method='Player.GetActivePlayers'
+    )
+    result = [
+        player for player in result.get('result', [{}])
+        if player.get('type', 'video') in PLAYER_PLAYLIST
+    ]
+
+    playerid = (
+        utils.get_int(result[0], 'playerid') if result
+        else constants.UNKNOWN_DATA
+    )
+
+    if playerid == constants.UNKNOWN_DATA:
+        log('Error: no active player', utils.LOGWARNING)
         return None
+
+    playerid_cache[0] = playerid
+    return playerid
+
+
+def get_playlistid(playlistid_cache=[None]):  # pylint: disable=dangerous-default-value
+    """Function to get playlistid of active player"""
+
+    # We don't need to actually get playlistid everytime, cache and reuse instead
+    if playlistid_cache[0] is not None:
+        return playlistid_cache[0]
+
+    result = utils.jsonrpc(
+        method='Player.GetProperties',
+        params={
+            'playerid': get_playerid(playerid_cache=[None]),
+            'properties': ['playlistid'],
+        }
+    )
+    result = utils.get_int(
+        result.get('result', {}), 'playlistid', PLAYER_PLAYLIST['video']
+    )
+
+    return result
+
+
+def get_player_speed():
+    """Function to get speed of active player"""
+
+    result = utils.jsonrpc(
+        method='Player.GetProperties',
+        params={
+            'playerid': get_playerid(),
+            'properties': ['speed'],
+        }
+    )
+    result = utils.get_int(result.get('result', {}), 'speed', 1)
+
+    return result
+
+
+def get_now_playing():
+    """Function to get detail of currently playing item"""
+
+    result = utils.jsonrpc(
+        method='Player.GetItem',
+        params={
+            'playerid': get_playerid(),
+            'properties': EPISODE_PROPERTIES,
+        }
+    )
+    result = result.get('result', {}).get('item')
+
+    if not result:
+        log('Error: now playing item info not found', utils.LOGWARNING)
+        return None
+
+    log('Now playing: {0}'.format(result))
+    return result
+
+
+def get_next_from_library(
+        episodeid=constants.UNKNOWN_DATA,
+        tvshowid=None,
+        unwatched_only=False,
+        next_season=True,
+        random=False,
+        episode=None
+):
+    """Function to get show and next episode details from Kodi library"""
+
+    episode = episode.copy() if episode else get_from_library(episodeid)
+
+    if not episode:
+        log('Error: no next episode found, current episode not in library',
+            utils.LOGWARNING)
+        episode = None
+        new_season = False
+        return episode, new_season
+
+    (path, filename) = os.path.split(episode['file'])
+    filters = [
+        # Check that both next filename and path are different to current
+        # to deal with different file naming schemes e.g.
+        # Season 1/Episode 1.mkv
+        # Season 1/Episode 1/video.mkv
+        # Season 1/Episode 1-2-3.mkv
+        {'or': [
+            {
+                'field': 'filename',
+                'operator': 'isnot',
+                'value': filename
+            },
+            {
+                'field': 'path',
+                'operator': 'isnot',
+                'value': path
+            }
+        ]}
+    ]
+
+    if unwatched_only:
+        # Exclude watched episodes
+        filters.append({
+            'field': 'playcount',
+            'operator': 'lessthan',
+            'value': '1'
+        })
+
+    if not random:
+        # Next episode in current season
+        episode_filter = {'and': [
+            {
+                'field': 'season',
+                'operator': 'is',
+                'value': str(episode['season'])
+            },
+            {
+                'field': 'episode',
+                'operator': 'greaterthan',
+                'value': str(episode['episode'])
+            }
+        ]}
+        # Next episode in next season
+        if next_season:
+            episode_filter = [
+                episode_filter,
+                {
+                    'field': 'season',
+                    'operator': 'greaterthan',
+                    'value': str(episode['season'])
+                }
+            ]
+            episode_filter = {'or': episode_filter}
+        filters.append(episode_filter)
+
+    filters = {'and': filters}
+
+    if not tvshowid:
+        tvshowid = episode.get('tvshowid', constants.UNKNOWN_DATA)
+
+    result = utils.jsonrpc(
+        method='VideoLibrary.GetEpisodes',
+        params={
+            'tvshowid': tvshowid,
+            'properties': EPISODE_PROPERTIES,
+            'sort': (
+                {'method': 'random'} if random
+                else {'order': 'ascending', 'method': 'episode'}
+            ),
+            'limits': {'start': 0, 'end': 1},
+            'filter': filters
+        }
+    )
+    result = result.get('result', {}).get('episodes')
+
+    if not result:
+        log('No next episode found in library')
+        episode = None
+        new_season = False
+        return episode, new_season
+
+    log('Next episode from library: {0}'.format(result[0]))
+    new_season = not random and episode['season'] != result[0]['season']
+    episode.update(result[0])
+    return episode, new_season
+
+
+def get_from_library(episodeid, tvshowid=None):
+    """Function to get show and episode details from Kodi library"""
+
+    result = utils.jsonrpc(
+        method='VideoLibrary.GetEpisodeDetails',
+        params={
+            'episodeid': episodeid,
+            'properties': EPISODE_PROPERTIES
+        }
+    )
+    result = result.get('result', {}).get('episodedetails')
+
+    if not result:
+        log('Error: episode info not found in library', utils.LOGWARNING)
+        return None
+    episode = result
+
+    if not tvshowid:
+        tvshowid = episode.get('tvshowid', constants.UNKNOWN_DATA)
+
+    result = utils.jsonrpc(
+        method='VideoLibrary.GetTVShowDetails',
+        params={
+            'tvshowid': tvshowid,
+            'properties': TVSHOW_PROPERTIES
+        }
+    )
+    result = result.get('result', {}).get('tvshowdetails')
+
+    if not result:
+        log('Error: show info not found in library', utils.LOGWARNING)
+        return None
+    result.update(episode)
+
+    log('Episode from library: {0}'.format(result))
+    return result
+
+
+def get_tvshowid(title):
+    """Function to search Kodi library for tshowid by title"""
+
+    result = utils.jsonrpc(
+        method='VideoLibrary.GetTVShows',
+        params={
+            'properties': ['title'],
+            'limits': {'start': 0, 'end': 1},
+            'filter': {
+                'field': 'title',
+                'operator': 'is',
+                'value': title
+            }
+        }
+    )
+    result = result.get('result', {}).get('tvshows')
+
+    if not result:
+        log('Error: tvshowid not found in library', utils.LOGWARNING)
+        return constants.UNKNOWN_DATA
+
+    return utils.get_int(result[0], 'tvshowid')
+
+
+def get_episodeid(tvshowid, season, episode):
+    """Function to search Kodi library for episodeid by tvshowid, season, and
+       episode"""
+
+    filters = [
+        {
+            'field': 'season',
+            'operator': 'is',
+            'value': str(season)
+        },
+        {
+            'field': 'episode',
+            'operator': 'is',
+            'value': str(episode)
+        }
+    ]
+    filters = {'and': filters}
+
+    result = utils.jsonrpc(
+        method='VideoLibrary.GetEpisodes',
+        params={
+            'tvshowid': tvshowid,
+            'properties': EPISODE_PROPERTIES,
+            'limits': {'start': 0, 'end': 1},
+            'filter': filters
+        }
+    )
+    result = result.get('result', {}).get('episodes')
+
+    if not result:
+        log('Error: episodeid not found in library', utils.LOGWARNING)
+        return constants.UNKNOWN_DATA
+
+    return utils.get_int(result[0], 'episodeid')
+
+
+def handle_just_watched(
+        episodeid,
+        playcount,
+        reset_playcount=False,
+        reset_resume=True
+):
+    """Function to update playcount and resume point of just watched video"""
+
+    result = utils.jsonrpc(
+        method='VideoLibrary.GetEpisodeDetails',
+        params={
+            'episodeid': episodeid,
+            'properties': ['playcount', 'resume'],
+        }
+    )
+    result = result.get('result', {}).get('episodedetails')
+
+    if result:
+        actual_playcount = utils.get_int(result, 'playcount', 0)
+        actual_resume = utils.get_int(result.get('resume'), 'position', 0)
+    else:
+        return
+
+    params = {}
+
+    # If Kodi has not updated playcount then UpNext will
+    if reset_playcount:
+        playcount = -1
+    if reset_playcount or actual_playcount == playcount:
+        playcount += 1
+        params['playcount'] = playcount
+
+    # If resume point has been saved then reset it
+    if actual_resume and reset_resume:
+        params['resume'] = {'position': 0}
+
+    # Only update library if playcount or resume point needs to change
+    if params:
+        params['episodeid'] = episodeid
+        utils.jsonrpc(
+            method='VideoLibrary.SetEpisodeDetails',
+            params=params,
+            no_response=True
+        )
+
+    log('Library update: id - {0}{1}{2}{3}'.format(
+        episodeid,
+        ', playcount - {0} to {1}'.format(actual_playcount, playcount)
+        if 'playcount' in params else '',
+        ', resume - {0} to 0'.format(actual_resume)
+        if 'resume' in params else '',
+        '' if params else ', no change'
+    ), utils.LOGDEBUG)

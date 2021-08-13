@@ -1,131 +1,166 @@
 # -*- coding: utf-8 -*-
 # GNU General Public License v2.0 (see COPYING or https://www.gnu.org/licenses/gpl-2.0.txt)
+"""Implements helper functions for addons to interact with UpNext"""
 
 from __future__ import absolute_import, division, unicode_literals
-from datetime import datetime, timedelta
-from platform import machine
-from xbmc import Player
-from xbmcgui import WindowXMLDialog
-from statichelper import from_unicode
-from utils import get_setting_bool, localize, localize_time
-
-ACTION_PLAYER_STOP = 13
-ACTION_NAV_BACK = 92
-OS_MACHINE = machine()
+import xbmc
+import xbmcgui
+import constants
+import utils
 
 
-class UpNext(WindowXMLDialog):
-    item = None
-    cancel = False
-    watchnow = False
-    progress_step_size = 0
-    current_progress_percent = 100
+def log(msg, level=utils.LOGWARNING):
+    utils.log(msg, name=__name__, level=level)
 
-    def __init__(self, *args, **kwargs):
-        self.action_exitkeys_id = [10, 13]
-        self.progress_control = None
-        if OS_MACHINE[0:5] == 'armv7':
-            WindowXMLDialog.__init__(self)
-        else:
-            WindowXMLDialog.__init__(self, *args, **kwargs)
 
-    def onInit(self):  # pylint: disable=invalid-name
-        self.set_info()
-        self.prepare_progress_control()
+def _copy_episode_details(upnext_info):
+    # If next episode information is not provided, fake it
+    if not upnext_info.get('next_episode'):
+        episode = upnext_info['current_episode']
+        episode['episodeid'] = constants.UNKNOWN_DATA
+        episode['art'] = {}
+        # Next provided episode may not be the next consecutive episode so we
+        # can't assume that the episode can simply be incremented, instead set
+        # title to indicate the next episode in the UpNext popup
+        # episode['episode'] = utils.get_int(episode, 'episode') + 1
+        episode['title'] = utils.localize(constants.NEXT_STRING_ID)
+        # Change season and episode info to empty string to avoid episode
+        # formatting issues ("S-1E-1") in UpNext popup
+        episode['season'] = ''
+        episode['episode'] = ''
+        episode['plot'] = ''
+        episode['playcount'] = 0
+        episode['rating'] = 0
+        episode['firstaired'] = ''
+        episode['runtime'] = 0
+        upnext_info['next_episode'] = episode
 
-        if get_setting_bool('stopAfterClose'):
-            self.getControl(3013).setLabel(localize(30033))  # Stop
-        else:
-            self.getControl(3013).setLabel(localize(30034))  # Close
+    # If current episode information is not provided, fake it
+    elif not upnext_info.get('current_episode'):
+        episode = upnext_info['next_episode']
+        episode['episodeid'] = constants.UNKNOWN_DATA
+        episode['art'] = {}
+        episode['title'] = ''
+        episode['season'] = ''
+        episode['episode'] = ''
+        episode['plot'] = ''
+        episode['playcount'] = 0
+        episode['rating'] = 0
+        episode['firstaired'] = ''
+        episode['runtime'] = 0
+        upnext_info['current_episode'] = episode
 
-    def set_info(self):
-        episode_info = '{season}x{episode}.'.format(**self.item)
-        if self.item.get('rating') is None:
-            rating = ''
-        else:
-            rating = str(round(float(self.item.get('rating')), 1))
+    return upnext_info
 
-        if self.item is not None:
-            art = self.item.get('art')
-            self.setProperty('fanart', art.get('tvshow.fanart', ''))
-            self.setProperty('landscape', art.get('tvshow.landscape', ''))
-            self.setProperty('clearart', art.get('tvshow.clearart', ''))
-            self.setProperty('clearlogo', art.get('tvshow.clearlogo', ''))
-            self.setProperty('poster', art.get('tvshow.poster', ''))
-            self.setProperty('thumb', art.get('thumb', ''))
-            self.setProperty('plot', self.item.get('plot', ''))
-            self.setProperty('tvshowtitle', self.item.get('showtitle', ''))
-            self.setProperty('title', self.item.get('title', ''))
-            self.setProperty('season', str(self.item.get('season', '')))
-            self.setProperty('episode', str(self.item.get('episode', '')))
-            self.setProperty('seasonepisode', episode_info)
-            self.setProperty('year', str(self.item.get('firstaired', '')))
-            self.setProperty('rating', rating)
-            self.setProperty('playcount', str(self.item.get('playcount', 0)))
-            self.setProperty('runtime', str(self.item.get('runtime', '')))
 
-    def prepare_progress_control(self):
-        try:
-            self.progress_control = self.getControl(3014)
-        except RuntimeError:  # Occurs when skin does not include progress control
-            pass
-        else:
-            self.progress_control.setPercent(self.current_progress_percent)  # pylint: disable=no-member,useless-suppression
+def create_listitem(episode):
+    """Create a xbmcgui.ListItem from provided episode details"""
 
-    def set_item(self, item):
-        self.item = item
+    kwargs = {
+        'label': episode.get('title', ''),
+        'label2': '',
+        'path': episode.get('file', '')
+    }
+    if utils.supports_python_api(18):
+        kwargs['offscreen'] = True
 
-    def set_progress_step_size(self, progress_step_size):
-        self.progress_step_size = progress_step_size
+    listitem = xbmcgui.ListItem(**kwargs)
+    listitem.setInfo(
+        type='Video',
+        infoLabels={
+            'dbid': episode.get('episodeid', constants.UNKNOWN_DATA),
+            'path': episode.get('file', ''),
+            'title': episode.get('title', ''),
+            'plot': episode.get('plot', ''),
+            'tvshowtitle': episode.get('showtitle', ''),
+            'season': episode.get('season', constants.UNKNOWN_DATA),
+            'episode': episode.get('episode', constants.UNKNOWN_DATA),
+            'rating': str(float(episode.get('rating', 0.0))),
+            'aired': episode.get('firstaired', ''),
+            'premiered': episode.get('firstaired', ''),
+            'year': utils.get_year(episode.get('firstaired', '')),
+            'dateadded': episode.get('dateadded', ''),
+            'lastplayed': episode.get('lastplayed', ''),
+            'playcount': episode.get('playcount', 0),
+            'mediatype': 'episode'
+        }
+    )
+    listitem.setProperty(
+        'tvshowid', str(episode.get('tvshowid', constants.UNKNOWN_DATA))
+    )
+    listitem.setArt(episode.get('art', {}))
+    listitem.setProperty('isPlayable', 'true')
+    listitem.setPath(episode.get('file', ''))
+    if utils.supports_python_api(18):
+        listitem.setIsFolder(False)
 
-    def update_progress_control(self, remaining=None, runtime=None):
-        self.current_progress_percent = self.current_progress_percent - self.progress_step_size
-        try:
-            self.progress_control = self.getControl(3014)
-        except RuntimeError:  # Occurs when skin does not include progress control
-            pass
-        else:
-            self.progress_control.setPercent(self.current_progress_percent)  # pylint: disable=no-member,useless-suppression
+    return listitem
 
-        if remaining:
-            self.setProperty('remaining', from_unicode('%02d' % remaining))
-        if runtime:
-            self.setProperty('endtime', from_unicode(localize_time(datetime.now() + timedelta(seconds=runtime))))
 
-    def set_cancel(self, cancel):
-        self.cancel = cancel
+def send_signal(sender, upnext_info):
+    """Helper function for addons to send data to UpNext"""
 
-    def is_cancel(self):
-        return self.cancel
+    # Exit if not enough addon information provided
+    required_episode_info = ['current_episode', 'next_episode']
+    required_addon_info = ['play_url', 'play_info']
+    if not (any(info in upnext_info for info in required_episode_info)
+            and any(info in upnext_info for info in required_addon_info)):
+        log('Error: Invalid UpNext info - {0}'.format(upnext_info),
+            utils.LOGWARNING)
+        return
 
-    def set_watch_now(self, watchnow):
-        self.watchnow = watchnow
+    # Extract ListItem or InfoTagVideo details for use by UpNext
+    for key, val in upnext_info.items():
+        thumb = ''
+        fanart = ''
+        tvshowid = str(constants.UNKNOWN_DATA)
 
-    def is_watch_now(self):
-        return self.watchnow
+        if isinstance(val, xbmcgui.ListItem):
+            thumb = val.getArt('thumb')
+            fanart = val.getArt('fanart')
+            tvshowid = val.getProperty('tvshowid')
+            val = val.getVideoInfoTag()
 
-    def onFocus(self, controlId):  # pylint: disable=invalid-name
-        pass
+        if not isinstance(val, xbmc.InfoTagVideo):
+            continue
 
-    def doAction(self):  # pylint: disable=invalid-name
-        pass
+        # Use show title as substitute for missing ListItem tvshowid
+        tvshowid = (
+            tvshowid if tvshowid != str(constants.UNKNOWN_DATA)
+            else val.getTVShowTitle()
+        ) or constants.UNKNOWN_DATA
+        # Fallback for available date information
+        firstaired = val.getFirstAired() or val.getPremiered() or val.getYear()
+        # Runtime used to evaluate endtime in UpNext popup, if available
+        runtime = val.getDuration() if utils.supports_python_api(18) else 0
+        # Prefer outline over full plot for UpNext popup
+        plot = val.getPlotOutline() or val.getPlot()
+        # Prefer user rating over scraped rating
+        rating = val.getUserRating() or val.getRating()
 
-    def closeDialog(self):  # pylint: disable=invalid-name
-        self.close()
+        upnext_info[key] = {
+            'episodeid': val.getDbId(),
+            'tvshowid': tvshowid,
+            'title': val.getTitle(),
+            'art': {
+                'thumb': thumb,
+                'tvshow.fanart': fanart,
+            },
+            'season': val.getSeason(),
+            'episode': val.getEpisode(),
+            'showtitle': val.getTVShowTitle(),
+            'plot': plot,
+            'playcount': val.getPlayCount(),
+            'rating': rating,
+            'firstaired': firstaired,
+            'runtime': runtime
+        }
 
-    def onClick(self, controlId):  # pylint: disable=invalid-name
-        if controlId == 3012:  # Watch now
-            self.set_watch_now(True)
-            self.close()
-        elif controlId == 3013:  # Close / Stop
-            self.set_cancel(True)
-            if get_setting_bool('stopAfterClose'):
-                Player().stop()
-            self.close()
+    upnext_info = _copy_episode_details(upnext_info)
 
-    def onAction(self, action):  # pylint: disable=invalid-name
-        if action == ACTION_PLAYER_STOP:
-            self.close()
-        elif action == ACTION_NAV_BACK:
-            self.set_cancel(True)
-            self.close()
+    utils.event(
+        sender=sender,
+        message='upnext_data',
+        data=upnext_info,
+        encoding='base64'
+    )

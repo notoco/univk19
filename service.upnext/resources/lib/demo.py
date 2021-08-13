@@ -1,39 +1,61 @@
 # -*- coding: utf-8 -*-
 # GNU General Public License v2.0 (see COPYING or https://www.gnu.org/licenses/gpl-2.0.txt)
+"""Implements UpNext demo mode functions used for runtime testing UpNext"""
 
 from __future__ import absolute_import, division, unicode_literals
-from xbmcgui import ControlLabel, getScreenHeight, getScreenWidth, Window
-from utils import localize, log as ulog
+import constants
+import plugin
+from settings import SETTINGS
+import upnext
+import utils
 
 
-class DemoOverlay():
-    def __init__(self, windowid):
-        self.window = Window(windowid)
-        self._demolabel = None
-        self.log('initialized')
+def log(msg, level=utils.LOGDEBUG):
+    utils.log(msg, name=__name__, level=level)
 
-    def log(self, msg, level=2):
-        ulog(msg, name=self.__class__.__name__, level=level)
 
-    def show(self):
-        if self._demolabel is not None:
-            return
-        # FIXME: Using a different font does not seem to have much of an impact
-        self._demolabel = ControlLabel(0, getScreenHeight() // 4, getScreenWidth(), 100, localize(30060) + '\n' + localize(30061), font='font36_title', textColor='0xddee9922', alignment=0x00000002)
-        self.window.addControl(self._demolabel)
-        self.log('show', 0)
+def handle_demo_mode(monitor, player, state, now_playing_item, called=[False]):  # pylint: disable=dangerous-default-value
+    if not SETTINGS.demo_mode or called[0]:
+        called[0] = False
+        return
 
-    def hide(self):
-        if self._demolabel is None:
-            return
-        self.window.removeControl(self._demolabel)
-        self._demolabel = None
-        self.log('hide', 0)
+    utils.notification('UpNext demo mode', 'Active')
+    log('Active')
 
-    def _close(self):
-        self.hide()
-        self.log('closed', 0)
+    # Force use of addon data method if demo plugin mode is enabled
+    if state.get_addon_type() is None and SETTINGS.demo_plugin:
+        addon_id = utils.get_addon_id()
+        upnext_info = plugin.generate_data(
+            now_playing_item, addon_id, state
+        )
+        if upnext_info:
+            log('Plugin data sent')
+            called[0] = True
+            upnext.send_signal(addon_id, upnext_info)
 
-    def __del__(self):
-        self.hide()
-        self.log('destroy', 0)
+    # Seek to 15s before end of video
+    if SETTINGS.demo_seek == constants.DEMO_SEEK_15S:
+        seek_time = player.getTotalTime() - 15
+    # Seek to popup start time
+    elif SETTINGS.demo_seek == constants.DEMO_SEEK_POPUP_TIME:
+        seek_time = state.get_popup_time()
+    # Seek to detector start time
+    elif SETTINGS.demo_seek == constants.DEMO_SEEK_DETECT_TIME:
+        seek_time = state.get_detect_time() or state.get_popup_time()
+    else:
+        return
+
+    with player as check_fail:
+        log('Seeking to end')
+        player.seekTime(seek_time)
+
+        # Seek workaround required for AML HW decoder on certain problematic
+        # H.265 encodes to avoid buffer desync and playback hangs
+        monitor.waitForAbort(3)
+        if player.getTime() <= seek_time:
+            log('Seek workaround')
+            player.seekTime(seek_time + 3)
+
+        check_fail = False
+    if check_fail:
+        log('Error: demo seek, nothing playing', utils.LOGWARNING)

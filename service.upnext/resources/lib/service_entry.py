@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 # GNU General Public License v2.0 (see COPYING or https://www.gnu.org/licenses/gpl-2.0.txt)
+"""This is the UpNext service entry point"""
 
 from __future__ import absolute_import, division, unicode_literals
-from monitor import UpNextMonitor
+import monitor
 
-# Start the monitor
-UpNextMonitor().run()
+
+# Start the monitor and wait indefinitely for abort
+monitor.UpNextMonitor().start()
