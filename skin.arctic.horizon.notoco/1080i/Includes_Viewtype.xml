@@ -1412,17 +1412,13 @@
                     <visible>String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,set)</visible>
                     <visible>String.IsEmpty(Container.PluginName)</visible>
                     <!-- LEFT SIDE -->
-                    <control type="label">
-                        <textcolor>$PARAM[fgcolor_100]</textcolor>
-                        <selectedcolor>$PARAM[fgcolor_100]</selectedcolor>
-                        <label>$VAR[Label_List_Left]</label>
-                    </control>
+
                     <control type="image">
                         <animation effect="slide" end="-40" condition="!String.IsEqual(ListItem.DBType,episode)">Conditional</animation>
                         <animation effect="slide" end="-30" condition="String.IsEqual(ListItem.DBType,episode) + !Integer.IsGreater(ListItem.Season,999)">Conditional</animation>
                         <animation effect="slide" end="15" condition="String.IsEqual(ListItem.DBType,episode) + Integer.IsGreater(ListItem.Episode,99)">Conditional</animation>
                         <centertop>50%</centertop>
-                        <left>120</left>
+                        <left>32</left>
                         <width>32</width>
                         <height>32</height>
                         <texture colordiffuse="$PARAM[fgcolor_90]">$VAR[Image_Overlay_List]</texture>
@@ -1431,7 +1427,7 @@
                         <animation effect="slide" end="-40" condition="!String.IsEqual(ListItem.DBType,episode)">Conditional</animation>
                         <animation effect="slide" end="-30" condition="String.IsEqual(ListItem.DBType,episode) + !Integer.IsGreater(ListItem.Season,999)">Conditional</animation>
                         <animation effect="slide" end="15" condition="String.IsEqual(ListItem.DBType,episode) + Integer.IsGreater(ListItem.Episode,99)">Conditional</animation>
-                        <left>172</left>
+                        <left>92</left>
                         <font>font_small_bold</font>
                         <textcolor>$PARAM[fgcolor_100]</textcolor>
                         <selectedcolor>$PARAM[fgcolor_100]</selectedcolor>

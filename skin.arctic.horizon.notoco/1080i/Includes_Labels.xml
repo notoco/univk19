@@ -148,11 +148,11 @@
 
         <value condition="[String.IsEqual(ListItem.DBType,set) | ListItem.IsCollection] + !String.IsEmpty(Window(Home).Property(TMDBHelper.ListItem.Set.Years))">$INFO[Window(Home).Property(TMDBHelper.ListItem.Set.Years),  |  [COLOR=main_fg_100],[/COLOR]]$INFO[Window(Home).Property(TMDBHelper.ListItem.Set.NumItems),  |  [COLOR=main_fg_100], $LOCALIZE[342][/COLOR]]</value>
 
-        <value condition="String.IsEqual(ListItem.DBType,movie)">$INFO[ListItem.Year,  |  [COLOR=main_fg_100],[/COLOR]]$INFO[ListItem.MPAA,  |  [COLOR=main_fg_100],[/COLOR]]$VAR[Label_Duration,  |  [COLOR=main_fg_100],[/COLOR]]$INFO[ListItem.EndTime,  |  [COLOR=main_fg_100]$LOCALIZE[31207] ,[/COLOR]]</value>
+        <value condition="String.IsEqual(ListItem.DBType,movie)">$INFO[ListItem.MPAA,  |  [COLOR=main_fg_100],[/COLOR]]$VAR[Label_Duration,  |  [COLOR=main_fg_100],[/COLOR]]$INFO[ListItem.EndTime,  |  [COLOR=main_fg_100]$LOCALIZE[31207] ,[/COLOR]]</value>
 
-        <value condition="String.IsEqual(ListItem.DBType,tvshow)">$INFO[ListItem.Year,  |  [COLOR=main_fg_100],[/COLOR]]$INFO[ListItem.MPAA,  |  [COLOR=main_fg_100],[/COLOR]]$INFO[ListItem.Property(WatchedEpisodes),  |  [COLOR=main_fg_100]$LOCALIZE[16102] , $LOCALIZE[20163] [/COLOR]]$INFO[ListItem.Property(TotalEpisodes),[COLOR=main_fg_100],[/COLOR]]$VAR[Label_Info_NextAired_Status,  |  [COLOR=main_fg_100],[/COLOR]]</value>
+        <value condition="String.IsEqual(ListItem.DBType,tvshow)">$INFO[ListItem.MPAA,  |  [COLOR=main_fg_100],[/COLOR]]$INFO[ListItem.Property(WatchedEpisodes),  |  [COLOR=main_fg_100]$LOCALIZE[16102] , $LOCALIZE[20163] [/COLOR]]$INFO[ListItem.Property(TotalEpisodes),[COLOR=main_fg_100],[/COLOR]]$VAR[Label_Info_NextAired_Status,  |  [COLOR=main_fg_100],[/COLOR]]</value>
 
-        <value condition="String.IsEqual(ListItem.DBType,season)">$INFO[ListItem.Season,  |  [COLOR=main_fg_100]$LOCALIZE[20373] ,[/COLOR]]$INFO[ListItem.Year,  |  [COLOR=main_fg_100],[/COLOR]]$INFO[ListItem.MPAA,  |  [COLOR=main_fg_100],[/COLOR]]$INFO[ListItem.Property(WatchedEpisodes),  |  [COLOR=main_fg_100]$LOCALIZE[16102] , $LOCALIZE[20163] [/COLOR]]$INFO[ListItem.Property(TotalEpisodes),[COLOR=main_fg_100],[/COLOR]]$VAR[Label_Info_NextAired_Status,  |  [COLOR=main_fg_100],[/COLOR]]</value>
+        <value condition="String.IsEqual(ListItem.DBType,season)">$INFO[ListItem.Season,  |  [COLOR=main_fg_100]$LOCALIZE[20373] ,[/COLOR]]$INFO[ListItem.MPAA,  |  [COLOR=main_fg_100],[/COLOR]]$INFO[ListItem.Property(WatchedEpisodes),  |  [COLOR=main_fg_100]$LOCALIZE[16102] , $LOCALIZE[20163] [/COLOR]]$INFO[ListItem.Property(TotalEpisodes),[COLOR=main_fg_100],[/COLOR]]$VAR[Label_Info_NextAired_Status,  |  [COLOR=main_fg_100],[/COLOR]]</value>
 
         <value condition="String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,video)">$INFO[ListItem.Season,  |  [COLOR=main_fg_100]$LOCALIZE[20373] ,[/COLOR]]$INFO[ListItem.Episode,  |  [COLOR=main_fg_100]$LOCALIZE[20359] ,[/COLOR]]$INFO[ListItem.MPAA,  |  [COLOR=main_fg_100],[/COLOR]]$VAR[Label_Duration,  |  [COLOR=main_fg_100],[/COLOR]]$INFO[ListItem.EndTime,  |  [COLOR=main_fg_100]$LOCALIZE[31207] ,[/COLOR]]</value>
 
@@ -284,7 +284,7 @@
         <value>$INFO[ListItem.Label]</value>
     </variable>
     <variable name="Label_List_Right">
-        <value condition="String.IsEqual(Container.SortMethod,$LOCALIZE[562]) | String.IsEqual(Container.SortMethod,$LOCALIZE[556]) | String.IsEqual(Container.SortMethod,$LOCALIZE[552])">$INFO[ListItem.Rating]</value>
+         <value condition="String.Contains(Container.FolderPath,/tvshows/) | String.Contains(Container.FolderPath,videodb://inprogresstvshows/) | Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes)"> </value>
         <value>$INFO[ListItem.Label2]</value>
     </variable>
 
