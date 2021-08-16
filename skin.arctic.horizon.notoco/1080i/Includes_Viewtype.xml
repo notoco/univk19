@@ -92,9 +92,9 @@
                     <visible>![Control.IsVisible(53) | Control.IsVisible(58) | Control.IsVisible(59)] | [Container.Content(seasons) | Container.Content(artists) | Container.Content(sets) | Container.Content(tvshows)]</visible>
                     <include>Viewtype_Info_Right</include>
                 </include>
-                <control type="group" description="Right Side Artwork">
+               <control type="group" description="Right Side Artwork">
 
-                    <control type="image">
+<!--                <control type="image">
                         <texture background="true">$VAR[Image_ClearArt]</texture>
                         <aspectratio align="right" aligny="bottom" scalediffuse="false">keep</aspectratio>
                         <visible>!Control.IsVisible(51)</visible>
@@ -103,11 +103,15 @@
                         <bottom>400</bottom>
                         <height>320</height>
                         <width>560</width>
-                    </control>
+                    </control> -->
                     <control type="image">
-                        <texture background="true">$VAR[Image_View_ClearLogo]</texture>
-                        <aspectratio align="right" aligny="bottom" scalediffuse="false">keep</aspectratio>
-                        <visible>!Control.IsVisible(51) + !String.IsEmpty(ListItem.Art(clearlogo))</visible>
+                        <!-- <texture background="true">$VAR[Image_Landscape]</texture>
+                        <aspectratio align="right" aligny="bottom" scalediffuse="false">keep</aspectratio> -->
+                        <texture background="true" diffuse="diffuse/landscape-big.png">$VAR[Image_Landscape]</texture>
+                        <bordersize>20</bordersize>
+                        <bordertexture border="30" colordiffuse="Shadow">common/shadow-20.png</bordertexture>
+                        <aspectratio scalediffuse="true" align="left" aligny="bottom">keep</aspectratio>
+                        <visible>String.IsEmpty(ListItem.Art(clearart))</visible>
                         <fadetime>400</fadetime>
                         <right>0</right>
                         <bottom>500</bottom>
