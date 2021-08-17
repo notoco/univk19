@@ -23,10 +23,18 @@
                     <usecontrolcoords>true</usecontrolcoords>
                     <visible>!Window.IsVisible(DialogBusy.xml)</visible>
                     <control type="label" id="$PARAM[id]">
+                        <visible>!Control.IsVisible(5252)</visible>
                         <aligny>center</aligny>
                         <font>font_topbar</font>
                         <textcolor>$PARAM[fgcolor]_100</textcolor>
                         <label>[CAPITALIZE]$PARAM[label][/CAPITALIZE]</label>
+                    </control>
+                    <control type="label" id="$PARAM[id]">
+                        <visible>Control.IsVisible(5252)</visible>
+                        <aligny>center</aligny>
+                        <font>font_topbar</font>
+                        <textcolor>$PARAM[fgcolor]_100</textcolor>
+                        <label>$VAR[Label_Title]</label>
                     </control>
                 </control>
             </control>
