@@ -2,7 +2,6 @@
 # GNU General Public License v2.0 (see COPYING or https://www.gnu.org/licenses/gpl-2.0.txt)
 
 from __future__ import absolute_import, division, unicode_literals
-from copy import copy
 import constants
 import utils
 
@@ -18,15 +17,16 @@ class UpNextSettings(object):  # pylint: disable=useless-object-inheritance
         'demo_mode',
         'demo_plugin',
         'demo_seek',
-        'detector_data_limit',
-        'detector_debug',
-        'detector_threads',
         'detect_enabled',
         'detect_level',
         'detect_matches',
         'detect_mismatches',
         'detect_period',
         'detect_significance',
+        'detector_data_limit',
+        'detector_debug',
+        'detector_save_path',
+        'detector_threads',
         'disabled',
         'enable_playlist',
         'enable_queue',
@@ -59,9 +59,6 @@ class UpNextSettings(object):  # pylint: disable=useless-object-inheritance
     def __contains__(self, item):
         return hasattr(self, item)
 
-    def copy(self):
-        return copy(self)
-
     @classmethod
     def log(cls, msg, level=utils.LOGDEBUG):
         utils.log(msg, name='Settings', level=level)
@@ -71,7 +68,7 @@ class UpNextSettings(object):  # pylint: disable=useless-object-inheritance
         utils.ADDON = utils.get_addon(constants.ADDON_ID)
         utils.LOG_ENABLE_SETTING = utils.get_setting_int('logLevel')
 
-        self.simple_mode = utils.get_setting_int('simpleMode') == 0
+        self.simple_mode = utils.get_setting_bool('simpleMode')
         self.show_stop_button = utils.get_setting_bool('stopAfterClose')
         self.skin_popup = utils.get_setting_bool('enablePopupSkin')
         self.popup_position = constants.POPUP_POSITIONS[
@@ -90,7 +87,7 @@ class UpNextSettings(object):  # pylint: disable=useless-object-inheritance
             )[2:]
         self.popup_accent_colour = accent_colour
 
-        self.auto_play = utils.get_setting_int('autoPlayMode') == 0
+        self.auto_play = utils.get_setting_int('autoPlayMode') == 1
         self.played_limit = (
             utils.get_setting_int('playedInARow')
             if self.auto_play and utils.get_setting_bool('enableStillWatching')
@@ -122,6 +119,7 @@ class UpNextSettings(object):  # pylint: disable=useless-object-inheritance
         self.disabled = utils.get_setting_bool('disableNextUp')
         self.enable_queue = utils.get_setting_bool('enableQueue')
 
+        self.detector_save_path = utils.get_setting('detectorSavePath')
         self.detector_threads = utils.get_setting_int('detectorThreads')
         self.detector_data_limit = utils.get_setting_int('detectorDataLimit')
         self.detect_significance = utils.get_setting_int('detectSignificance')

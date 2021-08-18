@@ -16,24 +16,26 @@ EPISODE_PROPERTIES = [
     'season',
     'episode',
     'showtitle',
-    # 'originaltitle', # Not used
+    # 'originaltitle',  # Not used
     'plot',
-    # 'votes', # Not used
+    # 'votes',  # Not used
     'file',
     'rating',
-    # 'ratings', # Not used, slow
-    # 'userrating', # Not used
+    # 'ratings',  # Not used, slow
+    # 'userrating',  # Not used
     'resume',
     'tvshowid',
     'firstaired',
     'art',
-    # 'streamdetails', # Not used, slow
+    # 'streamdetails',  # Not used, slow
     'runtime',
-    # 'director', # Not used
-    # 'writer', # Not used
-    # 'cast', # Not used, slow
+    # 'director',  # Not used
+    # 'writer',  # Not used
+    # 'cast',  # Not used, slow
     'dateadded',
-    'lastplayed'
+    'lastplayed',
+    'mediapath',
+    # 'dynpath',  # Not used
 ]
 
 TVSHOW_PROPERTIES = [
@@ -41,11 +43,11 @@ TVSHOW_PROPERTIES = [
     'studio',
     'year',
     'plot',
-    # 'cast', # Not used, slow
+    # 'cast',  # Not used, slow
     'rating',
-    # 'ratings', # Not used, slow
-    # 'userrating', # Not used
-    # 'votes', # Not used
+    # 'ratings',  # Not used, slow
+    # 'userrating',  # Not used
+    # 'votes',  # Not used
     'genre',
     'episode',
     'season',
@@ -54,13 +56,13 @@ TVSHOW_PROPERTIES = [
     'premiered',
     'playcount',
     'lastplayed',
-    # 'sorttitle', # Not used
-    # 'originaltitle', # Not used
+    # 'sorttitle',  # Not used
+    # 'originaltitle',  # Not used
     'art',
-    # 'tag', # Not used, slow
+    # 'tag',  # Not used, slow
     'dateadded',
     'watchedepisodes',
-    # 'imdbnumber' # Not used
+    # 'imdbnumber',  # Not used
 ]
 
 PLAYER_PLAYLIST = {
@@ -245,13 +247,13 @@ def get_next_in_playlist(position, unwatched_only=False):
     return item
 
 
-def play_addon_item(data, encoding, resume=False):
-    """Function to play next addon item, either using JSONRPC Player.Open or by
-       passthrough back to the addon"""
+def play_plugin_item(data, encoding, resume=False):
+    """Function to play next plugin item, either using JSONRPC Player.Open or
+       by passthrough back to the plugin"""
 
     play_url = data.get('play_url')
     if play_url:
-        log('Playing from addon - {0}'.format(play_url))
+        log('Playing from plugin - {0}'.format(play_url))
         utils.jsonrpc(
             method='Player.Open',
             params={'item': {'file': play_url}},
@@ -262,7 +264,7 @@ def play_addon_item(data, encoding, resume=False):
 
     play_info = data.get('play_info')
     if play_info:
-        log('Sending as {0} to addon - {1}'.format(encoding, play_info))
+        log('Sending as {0} to plugin - {1}'.format(encoding, play_info))
         utils.event(
             message=data.get('id'),
             data=play_info,
@@ -271,7 +273,7 @@ def play_addon_item(data, encoding, resume=False):
         )
         return
 
-    log('Error: no addon data available for playback', utils.LOGWARNING)
+    log('Error: no plugin data available for playback', utils.LOGWARNING)
 
 
 def get_playerid(playerid_cache=[None]):  # pylint: disable=dangerous-default-value
@@ -340,14 +342,16 @@ def get_player_speed():
     return result
 
 
-def get_now_playing():
+def get_now_playing(properties=None):
     """Function to get detail of currently playing item"""
 
     result = utils.jsonrpc(
         method='Player.GetItem',
         params={
             'playerid': get_playerid(),
-            'properties': EPISODE_PROPERTIES,
+            'properties': (
+                EPISODE_PROPERTIES if properties is None else properties
+            ),
         }
     )
     result = result.get('result', {}).get('item')
@@ -511,7 +515,7 @@ def get_tvshowid(title):
     result = utils.jsonrpc(
         method='VideoLibrary.GetTVShows',
         params={
-            'properties': ['title'],
+            'properties': [],
             'limits': {'start': 0, 'end': 1},
             'filter': {
                 'field': 'title',
@@ -551,7 +555,7 @@ def get_episodeid(tvshowid, season, episode):
         method='VideoLibrary.GetEpisodes',
         params={
             'tvshowid': tvshowid,
-            'properties': EPISODE_PROPERTIES,
+            'properties': [],
             'limits': {'start': 0, 'end': 1},
             'filter': filters
         }

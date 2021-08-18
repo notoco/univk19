@@ -8,21 +8,15 @@ import os.path
 import timeit
 from PIL import Image
 import xbmc
+from settings import SETTINGS
 import constants
 import file_utils
-from settings import SETTINGS
 import utils
 
 
 # Create directory where all stored hashes will be saved
-SAVE_PATH = os.path.join(
-    file_utils.translate_path(
-        'special://profile/addon_data/{0}'.format(utils.get_addon_id())
-    ),
-    'detector',
-    ''
-)
-file_utils.create_directory(SAVE_PATH)
+_SAVE_PATH = file_utils.translate_path(SETTINGS.detector_save_path)
+file_utils.create_directory(_SAVE_PATH)
 
 
 class UpNextHashStore(object):  # pylint: disable=useless-object-inheritance
@@ -87,7 +81,7 @@ class UpNextHashStore(object):  # pylint: disable=useless-object-inheritance
 
     def load(self, identifier):
         filename = file_utils.make_legal_filename(identifier, suffix='.json')
-        target = os.path.join(SAVE_PATH, filename)
+        target = os.path.join(_SAVE_PATH, filename)
         try:
             with open(target, mode='r') as target_file:
                 hashes = json.load(target_file)
@@ -129,7 +123,7 @@ class UpNextHashStore(object):  # pylint: disable=useless-object-inheritance
         }
 
         filename = file_utils.make_legal_filename(identifier, suffix='.json')
-        target = os.path.join(SAVE_PATH, filename)
+        target = os.path.join(_SAVE_PATH, filename)
         try:
             with open(target, mode='w') as target_file:
                 json.dump(output, target_file, indent=4)
