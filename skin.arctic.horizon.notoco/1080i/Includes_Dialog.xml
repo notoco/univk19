@@ -89,7 +89,7 @@
                             <right>30</right>
                             <aligny>center</aligny>
                             <textcolor>dialog_fg_70</textcolor>
-                            <label>[CAPITALIZE]$INFO[ListItem.Label][/CAPITALIZE]</label>
+                            <label>$INFO[ListItem.Label]</label>
                         </control>
                         <include content="Object_Control" condition="$PARAM[include-icon]">
                             <param name="type" value="image" />
@@ -112,7 +112,7 @@
                             <right>30</right>
                             <aligny>center</aligny>
                             <textcolor>Selected</textcolor>
-                            <label>[CAPITALIZE]$INFO[ListItem.Label][/CAPITALIZE]</label>
+                            <label>$INFO[ListItem.Label]</label>
                         </control>
                         <include content="Object_Control" condition="$PARAM[include-icon]">
                             <param name="type" value="image" />
