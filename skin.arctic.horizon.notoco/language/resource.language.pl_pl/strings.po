@@ -115,7 +115,7 @@ msgstr "Ukryj wszystkie oceny"
 #: /1080i/script-globalsearch-main.xml
 msgctxt "#31020"
 msgid "mins"
-msgstr "minuty"
+msgstr "min."
 
 #: /1080i/SkinSettings.xml
 msgctxt "#31021"
@@ -140,7 +140,7 @@ msgstr "Styl rozdzielacza ekranu"
 #: /1080i/Includes_Labels.xml
 msgctxt "#31025"
 msgid "Items"
-msgstr "Przedmioty"
+msgstr "Pozycje"
 
 #: /1080i/SkinSettings.xml
 msgctxt "#31026"
@@ -265,7 +265,7 @@ msgstr "Dostosuj"
 #: /1080i/script-skinshortcuts.xml
 msgctxt "#31050"
 msgid "Default search items"
-msgstr "Domyślne elementy wyszukiwania"
+msgstr "Domyślne pozycje wyszukiwania"
 
 #: /1080i/DialogVideoInfo.xml
 msgctxt "#31051"
@@ -325,7 +325,7 @@ msgstr "Pokaż więcej"
 #: /shortcuts/template.xml
 msgctxt "#31062"
 msgid "Browse more items in this list"
-msgstr "Przeglądaj więcej elementów na tej liście"
+msgstr "Przeglądaj więcej pozycji na tej liście"
 
 #: /1080i/SkinSettings.xml
 msgctxt "#31063"
@@ -691,7 +691,7 @@ msgstr "Wideo na pełnym ekranie"
 #: /1080i/SkinSettings.xml
 msgctxt "#31138"
 msgid "List items"
-msgstr "Lista przedmiotów"
+msgstr "Lista pozycji"
 
 #: /1080i/SkinSettings.xml
 msgctxt "#31139"
@@ -735,7 +735,7 @@ msgstr "Opcje ogólne"
 #: /1080i/SkinSettings.xml
 msgctxt "#31147"
 msgid "Items and views"
-msgstr "Przedmioty i widoki"
+msgstr "Pozycje i widoki"
 
 #: /1080i/SkinSettings.xml
 msgctxt "#31148"
@@ -1091,7 +1091,7 @@ msgstr "Sekundy"
 #: /1080i/SkinSettings.xml
 msgctxt "#31220"
 msgid "Minute"
-msgstr "Minuty"
+msgstr "Minuta"
 
 #: /1080i/SkinSettings.xml
 msgctxt "#31221"
@@ -1214,7 +1214,7 @@ msgstr "Kanały PVR"
 #: /1080i/SkinSettings.xml
 msgctxt "#31245"
 msgid "Display the \"Show More...\" widget item"
-msgstr "Wyświetl element \"Pokaż więcej ...\" widżetu"
+msgstr "Wyświetl widżet \"Pokaż więcej ...\""
 
 #: /shortcuts/overrides.xml
 msgctxt "#31246"
