@@ -107,7 +107,7 @@
                         <include content="Object_Info_Button">
                             <param name="id" value="4013" />
                             <param name="groupid" value="5013" />
-                            <param name="label" value="$ADDON[service.upnext 30034]" />
+                            <param name="label" value="$INFO[Window.Property(stop_close_label)]" />
                             <param name="icon" value="special://skin/extras/icons/disabled.png" />
                             <param name="visible" value="true" />
                             <param name="onup" value="" />
