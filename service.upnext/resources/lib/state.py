@@ -50,8 +50,8 @@ class UpNextState(object):  # pylint: disable=useless-object-inheritance,too-man
         self.filename = None
         self.total_time = 0
         self.playcount = 0
-        self.tvshowid = constants.UNKNOWN_DATA
-        self.episodeid = constants.UNKNOWN_DATA
+        self.tvshowid = constants.UNDEFINED
+        self.episodeid = constants.UNDEFINED
         self.episode_number = None
         self.season_identifier = None
         # Popup state variables
@@ -160,7 +160,10 @@ class UpNextState(object):  # pylint: disable=useless-object-inheritance,too-man
             return
 
         # Detection time period starts before normal popup time
-        self.detect_time = max(0, self.popup_time - SETTINGS.detect_period)
+        self.detect_time = max(
+            0,
+            self.popup_time - (SETTINGS.detect_period * self.total_time / 3600)
+        )
 
     def get_popup_time(self):
         return self.popup_time
@@ -296,17 +299,17 @@ class UpNextState(object):  # pylint: disable=useless-object-inheritance,too-man
 
         # Get current tvshowid or search in library if detail missing
         tvshowid = self.get_tvshowid(current_item)
-        if tvshowid == constants.UNKNOWN_DATA:
+        if tvshowid == constants.UNDEFINED:
             tvshowid = api.get_tvshowid(current_item.get('showtitle'))
             self.log('Fetched tvshowid: {0}'.format(tvshowid))
         # Now playing show not found in library
-        if tvshowid == constants.UNKNOWN_DATA:
+        if tvshowid == constants.UNDEFINED:
             return None
         current_item['tvshowid'] = tvshowid
 
         # Get current episodeid or search in library if detail missing
         episodeid = self.get_episodeid(current_item)
-        if episodeid == constants.UNKNOWN_DATA:
+        if episodeid == constants.UNDEFINED:
             episodeid = api.get_episodeid(
                 tvshowid,
                 current_item.get('season'),
@@ -314,7 +317,7 @@ class UpNextState(object):  # pylint: disable=useless-object-inheritance,too-man
             )
             self.log('Fetched episodeid: {0}'.format(episodeid))
         # Now playing episode not found in library
-        if episodeid == constants.UNKNOWN_DATA:
+        if episodeid == constants.UNDEFINED:
             return None
         current_item['episodeid'] = episodeid
 
@@ -348,16 +351,14 @@ class UpNextState(object):  # pylint: disable=useless-object-inheritance,too-man
 
     def _set_episodeid(self):
         self.episodeid = utils.get_int(
-            self.current_item['details'], 'episodeid',
-            utils.get_int(self.current_item['details'], 'id')
-        )
+            self.current_item['details'], 'id', None
+        ) or utils.get_int(self.current_item['details'], 'episodeid')
 
     def get_episodeid(self, item=None):
         if item:
             return utils.get_int(
-                item, 'episodeid',
-                utils.get_int(item, 'id')
-            )
+                item, 'episodeid', None
+            ) or utils.get_int(item, 'id')
         return self.episodeid
 
     def _set_episode_number(self):
@@ -370,8 +371,7 @@ class UpNextState(object):  # pylint: disable=useless-object-inheritance,too-man
 
     def _set_playcount(self):
         self.playcount = utils.get_int(
-            self.current_item['details'], 'playcount',
-            0
+            self.current_item['details'], 'playcount', 0
         )
 
     def get_playcount(self):
@@ -380,7 +380,7 @@ class UpNextState(object):  # pylint: disable=useless-object-inheritance,too-man
     def _set_season_identifier(self):
         showtitle = self.current_item['details'].get('showtitle')
         season = self.current_item['details'].get('season')
-        if not showtitle or not season or season == constants.UNKNOWN_DATA:
+        if not showtitle or not season or season == constants.UNDEFINED:
             self.season_identifier = None
         else:
             self.season_identifier = '_'.join((str(showtitle), str(season)))
