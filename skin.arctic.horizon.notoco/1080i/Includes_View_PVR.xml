@@ -530,15 +530,16 @@
 
     <include name="View_PVR_Guide_Info">
         <control type="image">
-                <top>-25</top>
-                <right>4</right>
-                <left>1350</left>
-                <bordersize>20</bordersize>
-                <texture>$INFO[Container(10).ListItem.Icon]</texture>
-                <aspectratio aligny="center" align="right">keep</aspectratio>
-                <width>300</width>
-                <height>300</height>
-            </control>
+            <top>-25</top>
+            <right>4</right>
+            <left>1350</left>
+            <bordersize>20</bordersize>
+            <fadetime>400</fadetime>
+            <texture>$INFO[Container(10).ListItem.Icon]</texture>
+            <aspectratio aligny="center" align="right">keep</aspectratio>
+            <width>300</width>
+            <height>300</height>
+        </control>
         <control type="grouplist">
             <orientation>vertical</orientation>
             <usecontrolcoords>true</usecontrolcoords>
