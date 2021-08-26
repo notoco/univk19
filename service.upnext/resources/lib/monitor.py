@@ -22,6 +22,7 @@ class UpNextMonitor(xbmc.Monitor, object):  # pylint: disable=useless-object-inh
         '_monitoring',
         '_queue_length',
         '_started',
+        '_lock',
         'detector',
         'player',
         'popuphandler',
@@ -37,6 +38,7 @@ class UpNextMonitor(xbmc.Monitor, object):  # pylint: disable=useless-object-inh
         self._monitoring = False
         self._queue_length = 0
         self._started = False
+        self._lock = utils.create_lock()
 
         self.detector = None
         self.player = None
@@ -114,7 +116,6 @@ class UpNextMonitor(xbmc.Monitor, object):  # pylint: disable=useless-object-inh
 
             # Handle demo mode functionality and notification
             demo.handle_demo_mode(
-                monitor=self,
                 player=self.player,
                 state=self.state,
                 now_playing_item=now_playing_item
@@ -184,6 +185,34 @@ class UpNextMonitor(xbmc.Monitor, object):  # pylint: disable=useless-object-inh
         else:
             self.state.reset_item()
 
+    def _event_handler_upnext_trigger(self, **_kwargs):
+        # Remove remnants from previous operations
+        self._stop_popuphandler()
+
+        # Get playback details and use VideoPlayer.Time infolabel over
+        # xbmc.Player.getTime() as the infolabel appears to update quicker
+        playback = self._get_playback_details(use_infolabel=True)
+
+        # Exit if not playing, paused, or rewinding
+        if not playback or playback['speed'] < 1:
+            self.log('Skip trigger: nothing playing', utils.LOGINFO)
+            return
+
+        # Determine time until popup is required, scaled to real time
+        popup_delay = utils.calc_wait_time(
+            end_time=self.state.get_popup_time(),
+            start_time=playback['time'],
+            rate=playback['speed']
+        )
+
+        # Schedule popuphandler to start when required
+        if popup_delay is not None:
+            self.log('Popuphandler starting in {0}s'.format(popup_delay))
+            self.popuphandler = utils.run_threaded(
+                self._launch_popup,
+                delay=popup_delay
+            )
+
     def _event_handler_upnext_signal(self, **kwargs):
         # Clear queue to stop processing additional queued events
         self._queue_length = 0
@@ -227,11 +256,11 @@ class UpNextMonitor(xbmc.Monitor, object):  # pylint: disable=useless-object-inh
         self.log('Detector started at {time}s of {duration}s'.format(
             **playback), utils.LOGINFO)
         if not isinstance(self.detector, detector.UpNextDetector):
-            self.detector = detector.UpNextDetector(
-                monitor=self,
-                player=self.player,
-                state=self.state
-            )
+            with self._lock:
+                self.detector = detector.UpNextDetector(
+                    player=self.player,
+                    state=self.state
+                )
         self.detector.start()
 
     def _launch_popup(self):
@@ -248,12 +277,11 @@ class UpNextMonitor(xbmc.Monitor, object):  # pylint: disable=useless-object-inh
             **playback), utils.LOGINFO)
         if not isinstance(self.popuphandler, popuphandler.UpNextPopupHandler):
             self.popuphandler = popuphandler.UpNextPopupHandler(
-                monitor=self,
                 player=self.player,
                 state=self.state
             )
         # Check if popuphandler found a video to play next
-        has_next_item = self.popuphandler.start()
+        has_next_item = self.popuphandler.start()  # pylint: disable=assignment-from-no-return
         # And check whether popup/playback was cancelled/stopped by the user
         playback_cancelled = (
             has_next_item
@@ -316,14 +344,14 @@ class UpNextMonitor(xbmc.Monitor, object):  # pylint: disable=useless-object-inh
             return
 
         # Determine time until popup is required, scaled to real time
-        popup_delay = utils.wait_time(
+        popup_delay = utils.calc_wait_time(
             end_time=self.state.get_popup_time(),
             start_time=playback['time'],
             rate=playback['speed']
         )
 
         # Determine time until detector is required, scaled to real time
-        detector_delay = utils.wait_time(
+        detector_delay = utils.calc_wait_time(
             end_time=self.state.get_detect_time(),
             start_time=playback['time'],
             rate=playback['speed']
@@ -403,9 +431,9 @@ class UpNextMonitor(xbmc.Monitor, object):  # pylint: disable=useless-object-inh
         self._started = False
 
     EVENTS_MAP = {
-        'Other.upnext_credits_detected': _event_handler_player_general,
+        'Other.upnext_credits_detected': _event_handler_upnext_trigger,
         'Other.upnext_data': _event_handler_upnext_signal,
-        'Other.upnext_trigger': _event_handler_player_general,
+        'Other.upnext_trigger': _event_handler_upnext_trigger,
         'Other.OnAVStart': _event_handler_player_start,
         'Player.OnPause': _event_handler_player_general,
         'Player.OnResume': _event_handler_player_general,

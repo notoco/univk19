@@ -32,7 +32,7 @@ class UpNextHashStore(object):  # pylint: disable=useless-object-inheritance
     )
 
     def __init__(self, **kwargs):
-        self.version = kwargs.get('version', '0.2')
+        self.version = kwargs.get('version', 0.2)
         self.hash_size = kwargs.get('hash_size', (8, 8))
         self.seasonid = kwargs.get('seasonid', '')
         self.episode_number = kwargs.get(
@@ -83,7 +83,7 @@ class UpNextHashStore(object):  # pylint: disable=useless-object-inheritance
         filename = file_utils.make_legal_filename(identifier, suffix='.json')
         target = os.path.join(_SAVE_PATH, filename)
         try:
-            with open(target, mode='r') as target_file:
+            with open(target, mode='r', encoding='utf-8') as target_file:
                 hashes = json.load(target_file)
         except (IOError, OSError, TypeError, ValueError):
             self.log('Could not load stored hashes from {0}'.format(target))
@@ -92,7 +92,7 @@ class UpNextHashStore(object):  # pylint: disable=useless-object-inheritance
         if not hashes:
             return False
 
-        self.version = hashes.get('version', self.version)
+        self.version = float(hashes.get('version', self.version))
         self.hash_size = hashes.get('hash_size', self.hash_size)
         if 'data' in hashes:
             hash_size = self.hash_size[0] * self.hash_size[1]
@@ -125,7 +125,7 @@ class UpNextHashStore(object):  # pylint: disable=useless-object-inheritance
         filename = file_utils.make_legal_filename(identifier, suffix='.json')
         target = os.path.join(_SAVE_PATH, filename)
         try:
-            with open(target, mode='w') as target_file:
+            with open(target, mode='w', encoding='utf-8') as target_file:
                 json.dump(output, target_file, indent=4)
                 self.log('Hashes saved to {0}'.format(target))
         except (IOError, OSError, TypeError, ValueError):
@@ -142,7 +142,6 @@ class UpNextDetector(object):  # pylint: disable=useless-object-inheritance
         'capturer',
         'hashes',
         'past_hashes',
-        'monitor',
         'player',
         'state',
         'threads',
@@ -156,16 +155,16 @@ class UpNextDetector(object):  # pylint: disable=useless-object-inheritance
         'hash_index',
         'match_counts',
         # Signals
+        '_lock',
         '_running',
         '_sigstop',
         '_sigterm'
     )
 
-    def __init__(self, monitor, player, state):
+    def __init__(self, player, state):
         self.log('Init')
 
         self.capturer = xbmc.RenderCapture()
-        self.monitor = monitor
         self.player = player
         self.state = state
         self.threads = []
@@ -174,6 +173,7 @@ class UpNextDetector(object):  # pylint: disable=useless-object-inheritance
             'hits': 0,
             'misses': 0
         }
+        self._lock = utils.create_lock()
         self._init_hashes()
 
         self._running = False
@@ -263,7 +263,10 @@ class UpNextDetector(object):  # pylint: disable=useless-object-inheritance
         ).convert('L')
         # Resize to reduce number of pixels processed for hashing
         if output_size != input_size:
-            image = image.resize(output_size, resample=Image.BOX)
+            image = image.resize(
+                output_size,
+                resample=SETTINGS.detector_resize_method
+            )
 
         return image
 
@@ -355,9 +358,8 @@ class UpNextDetector(object):  # pylint: disable=useless-object-inheritance
         # regions of deviation
         if stats['previous'] >= SETTINGS.detect_level:
             stats['possible_match'] = True
-            stats['is_match'] = (
-                stats['significance'] <= self.significance_level
-            )
+            if stats['significance'] <= self.significance_level:
+                stats['is_match'] = True
         # Unless debugging, return if match found, otherwise continue checking
         if stats['is_match'] and not SETTINGS.detector_debug:
             self._hash_match_hit()
@@ -365,7 +367,8 @@ class UpNextDetector(object):  # pylint: disable=useless-object-inheritance
 
         # Get all previous hash indexes for episodes other than the current
         # episode and where the hash timestamps are approximately equal (+/- an
-        # index_offset)
+        # index offset)
+        invalid_episode_idx = constants.UNDEFINED
         current_episode_idx = self.hash_index['current'][2]
         # Offset equal to the number of matches required for detection
         offset = self.match_number
@@ -375,21 +378,19 @@ class UpNextDetector(object):  # pylint: disable=useless-object-inheritance
         # Matching time period from end of file
         min_end_time = self.hash_index['current'][0] - offset
         max_end_time = self.hash_index['current'][0] + offset
+        # Limit selection criteria for old hash storage format
+        if self.past_hashes.version < 0.2:
+            invalid_episode_idx = 0
+            min_start_time = constants.UNDEFINED
+            max_start_time = constants.UNDEFINED
 
         old_hash_indexes = [
             hash_idx for hash_idx in self.past_hashes.data
-            if ((
-                # Selection conditions for v0.2 hash file format
-                constants.UNDEFINED != hash_idx[2] != current_episode_idx
-                and (
-                    min_start_time <= hash_idx[1] <= max_start_time
-                    or min_end_time <= hash_idx[0] <= max_end_time
-                )
-            ) if len(hash_idx) == 3 else (
-                # Selection conditions for v0.1 hash file format
-                0 != hash_idx[1] != current_episode_idx
-                and min_end_time <= hash_idx[0] <= max_end_time
-            ))
+            if invalid_episode_idx != hash_idx[-1] != current_episode_idx
+            and (
+                min_start_time <= hash_idx[-2] <= max_start_time
+                or min_end_time <= hash_idx[0] <= max_end_time
+            )
         ]
 
         old_hash_index = None
@@ -414,26 +415,25 @@ class UpNextDetector(object):  # pylint: disable=useless-object-inheritance
         return stats
 
     def _hash_match_hit(self):
-        self.match_counts['hits'] += 1
-        self.match_counts['misses'] = 0
-        self.match_counts['detected'] = (
-            self.match_counts['hits'] >= self.match_number
-        )
-
-        if self.credits_detected():
-            self.log('Credits detected')
-            self._sigstop = self._running
+        with self._lock:
+            self.match_counts['hits'] += 1
+            self.match_counts['misses'] = 0
+            self.match_counts['detected'] = (
+                self.match_counts['hits'] >= self.match_number
+            )
 
     def _hash_match_miss(self):
-        self.match_counts['misses'] += 1
-
-        if self.match_counts['misses'] >= self.mismatch_number:
-            self._hash_match_reset()
+        with self._lock:
+            self.match_counts['misses'] += 1
+            if self.match_counts['misses'] < self.mismatch_number:
+                return
+        self._hash_match_reset()
 
     def _hash_match_reset(self):
-        self.match_counts['hits'] = 0
-        self.match_counts['misses'] = 0
-        self.match_counts['detected'] = False
+        with self._lock:
+            self.match_counts['hits'] = 0
+            self.match_counts['misses'] = 0
+            self.match_counts['detected'] = False
 
     def _init_hashes(self):
         # Limit captured data to increase processing speed
@@ -460,7 +460,6 @@ class UpNextDetector(object):  # pylint: disable=useless-object-inheritance
         hash_size[0] = int(hash_size[0] - hash_size[0] % 2)
         # Hashes for currently playing episode
         self.hashes = UpNextHashStore(
-            version='0.1',
             hash_size=hash_size,
             seasonid=self.state.get_season_identifier(),
             episode_number=self.state.get_episode_number(),
@@ -512,8 +511,8 @@ class UpNextDetector(object):  # pylint: disable=useless-object-inheritance
             profiler = utils.Profiler()
 
         play_time = 0
-        while not (self.monitor.abortRequested()
-                   or self._sigterm or self._sigstop):
+        abort = False
+        while not (abort or self._sigterm or self._sigstop):
             loop_time = timeit.default_timer()
 
             with self.player as check_fail:
@@ -545,7 +544,7 @@ class UpNextDetector(object):  # pylint: disable=useless-object-inheritance
                     max_size=SETTINGS.detector_data_limit
                 )
 
-                self.monitor.waitForAbort(SETTINGS.detector_threads)
+                abort = utils.wait(SETTINGS.detector_threads)
                 continue
 
             # Convert captured video frame from a nominal default 484x272 BGRA
@@ -600,13 +599,13 @@ class UpNextDetector(object):  # pylint: disable=useless-object-inheritance
             self.hashes.data[self.hash_index['current']] = image_hash
             self.hash_index['previous'] = self.hash_index['current']
 
+            # Store timestamps if credits are detected
+            if self.credits_detected():
+                self.update_timestamp(play_time)
+
             # Wait until loop execution time of 1 s/loop/thread has elapsed
             loop_time = timeit.default_timer() - loop_time
-            self.monitor.waitForAbort(max(
-                0.1, SETTINGS.detector_threads - loop_time
-            ))
-        else:
-            self.update_timestamp(play_time)
+            abort = utils.wait(max(0.1, SETTINGS.detector_threads - loop_time))
 
         # Reset thread signals
         self.log('Stopped')
@@ -693,8 +692,6 @@ class UpNextDetector(object):  # pylint: disable=useless-object-inheritance
             # Delete reference to instances if detector will not be restarted
             del self.capturer
             self.capturer = None
-            del self.monitor
-            self.monitor = None
             del self.player
             self.player = None
             del self.state
@@ -707,15 +704,19 @@ class UpNextDetector(object):  # pylint: disable=useless-object-inheritance
             return
 
         self.past_hashes.hash_size = self.hashes.hash_size
-        # If credit were detected only store the previous 5s worth of hashes to
+        # If credit were detected only store the previous +/- 5s of hashes to
         # reduce false positives when comparing to other episodes
         if self.match_counts['detected']:
             # Offset equal to the number of matches required for detection
-            detect_offset = self.hash_index['detected_at'] + self.match_number
+            offset = self.match_number
+            # Matching time period from end of file
+            min_end_time = self.hash_index['detected_at'] - offset
+            max_end_time = self.hash_index['detected_at'] + offset
+
             self.past_hashes.data.update({
                 hash_index: self.hashes.data[hash_index]
                 for hash_index in self.hashes.data
-                if hash_index[0] <= detect_offset
+                if min_end_time <= hash_index[0] <= max_end_time
             })
             self.past_hashes.timestamps.update(self.hashes.timestamps)
         # Otherwise store all hashes for comparison with other episodes
@@ -725,14 +726,13 @@ class UpNextDetector(object):  # pylint: disable=useless-object-inheritance
         self.past_hashes.save(self.hashes.seasonid)
 
     def update_timestamp(self, play_time):
-        # No credits detected at play_time
-        if not self.credits_detected() or not play_time:
-            return
         # Timestamp already stored
         if self.hash_index['detected_at']:
             return
 
-        self.hash_index['detected_at'] = self.hash_index['current'][0]
-        self.hashes.timestamps[self.hashes.episode_number] = play_time
-        self.state.set_detected_popup_time(play_time)
-        utils.event('upnext_credits_detected')
+        with self._lock:
+            self.log('Credits detected')
+            self.hash_index['detected_at'] = self.hash_index['current'][0]
+            self.hashes.timestamps[self.hashes.episode_number] = play_time
+            self.state.set_detected_popup_time(play_time)
+            utils.event('upnext_credits_detected')
