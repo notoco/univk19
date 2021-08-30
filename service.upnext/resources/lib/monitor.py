@@ -191,6 +191,21 @@ class UpNextMonitor(xbmc.Monitor, object):  # pylint: disable=useless-object-inh
         else:
             self.state.reset_item()
 
+    def _event_handler_screensaver_off(self, **kwargs):
+        # Don't handle event if Kodi is shutting down
+        data, _ = utils.decode_data(serialised_json=kwargs.get('data'))
+        if data and data.get('shuttingdown'):
+            return
+
+        # Delay event handler execution to allow events to queue up
+        self.waitForAbort(1)
+        # Only process this event if it is the last in the queue
+        if self._queue_length != 1:
+            return
+
+        # Restart tracking if previously enabled
+        self._start_tracking()
+
     def _event_handler_upnext_trigger(self, **_kwargs):
         # Remove remnants from previous operations
         self._stop_popuphandler()
@@ -305,9 +320,8 @@ class UpNextMonitor(xbmc.Monitor, object):  # pylint: disable=useless-object-inh
         # by the user, then restart tracking loop to allow detector to
         # restart, or to launch popup at default time
         if self.detector.credits_detected() and playback_cancelled:
-            # Restart detector and reset match counts
+            # Reset detector match counts
             self.detector.reset()
-            self.detector.start()
 
             # Reset popup time, restart tracking, and trigger a new popup
             self.state.set_popup_time(playback['duration'])
@@ -439,6 +453,7 @@ class UpNextMonitor(xbmc.Monitor, object):  # pylint: disable=useless-object-inh
         'Other.upnext_data': _event_handler_upnext_signal,
         'Other.upnext_trigger': _event_handler_upnext_trigger,
         'Other.OnAVStart': _event_handler_player_start,
+        'GUI.OnScreensaverDeactivated': _event_handler_screensaver_off,
         'Player.OnPause': _event_handler_player_general,
         'Player.OnResume': _event_handler_player_general,
         'Player.OnSpeedChanged': _event_handler_player_general,
@@ -482,12 +497,6 @@ class UpNextMonitor(xbmc.Monitor, object):  # pylint: disable=useless-object-inh
         handler(self, sender=sender, data=data)
         if self._queue_length:
             self._queue_length -= 1
-
-    def onScreensaverDeactivated(self):  # pylint: disable=invalid-name
-        if SETTINGS.disabled:
-            return
-
-        self._start_tracking()
 
     def onSettingsChanged(self):  # pylint: disable=invalid-name
         SETTINGS.update()

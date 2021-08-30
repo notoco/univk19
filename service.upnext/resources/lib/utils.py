@@ -30,8 +30,7 @@ class Profiler(object):  # pylint: disable=useless-object-inheritance
     from functools import wraps
 
     def __init__(self):
-        self._profiler = self.Profile()
-        self._profiler.enable()
+        self._create_profiler()
 
     @classmethod
     def profile(cls, func):
@@ -45,7 +44,7 @@ class Profiler(object):  # pylint: disable=useless-object-inheritance
 
             profiler = cls()
             result = func(*args, **kwargs)
-            profiler.disable()
+            stats = profiler.get_stats()
 
             name = getattr(func, '__qualname__', None)
             if name:
@@ -70,11 +69,15 @@ class Profiler(object):  # pylint: disable=useless-object-inheritance
             else:
                 name = func.__name__
 
-            log(profiler.get_stats(), name=name, level=LOGDEBUG)
+            log(stats, name=name, level=LOGDEBUG)
 
             return result
 
         return wrapper
+
+    def _create_profiler(self):
+        self._profiler = self.Profile()
+        self._profiler.enable()
 
     def disable(self):
         self._profiler.disable()
@@ -82,20 +85,30 @@ class Profiler(object):  # pylint: disable=useless-object-inheritance
     def enable(self):
         self._profiler.enable()
 
-    def get_stats(self, flush=True):
+    def get_stats(self, flush=True, reuse=False):
         self.disable()
 
         output_stream = self.StringIO()
-        self.Stats(
-            self._profiler,
-            stream=output_stream
-        ).sort_stats('cumulative').print_stats(20)
+        try:
+            self.Stats(
+                self._profiler,
+                stream=output_stream
+            ).sort_stats('cumulative').print_stats(20)
+        # Occurs when no stats were able to be generated from profiler
+        except TypeError:
+            pass
         output = output_stream.getvalue()
         output_stream.close()
 
-        if flush:
-            self._profiler = self.Profile()
-        self.enable()
+        if not reuse:
+            # If profiler is not being reused then do nothing
+            pass
+        elif flush:
+            # If stats are flushed then create a new profiler
+            self._create_profiler()
+        else:
+            # If stats are accumulating then re-enable existing profiler
+            self.enable()
 
         return output
 
@@ -251,16 +264,15 @@ def encode_data(data, encoding='base64'):
     return encoded_data
 
 
-def decode_data(encoded_data, compat_mode=True):
+def decode_data(encoded_data=None, serialised_json=None, compat_mode=True):
     """Decode JSON data coming from a notification event"""
 
-    decoded_json = None
     decoded_data = None
     encoding = None
 
     # Compatibility with Addon Signals which wraps serialised data in square
     # brackets to generate an array/list
-    if compat_mode:
+    if compat_mode and encoded_data:
         try:
             encoded_data = json.loads(encoded_data)[0]
         except (IndexError, TypeError, ValueError):
@@ -274,19 +286,19 @@ def decode_data(encoded_data, compat_mode=True):
 
         for encoding, decode_method in decode_methods.items():
             try:
-                decoded_json = decode_method(encoded_data)
+                serialised_json = decode_method(encoded_data)
                 break
             except (TypeError, binascii.Error):
                 pass
         else:
             encoding = None
 
-    if decoded_json:
+    if serialised_json:
         try:
             # NOTE: With Python 3.5 and older json.loads() does not support
             # bytes or bytearray, so we convert to unicode
-            decoded_json = statichelper.to_unicode(decoded_json)
-            decoded_data = json.loads(decoded_json)
+            serialised_json = statichelper.to_unicode(serialised_json)
+            decoded_data = json.loads(serialised_json)
         except (TypeError, ValueError):
             pass
 
