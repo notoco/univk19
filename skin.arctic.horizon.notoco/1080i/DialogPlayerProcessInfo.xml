@@ -5,7 +5,7 @@
     <controls>
 
         <include content="Object_ShadowSpot_Group">
-            <param name="width" value="1100" />
+            <param name="width" value="1600" />
             <param name="height" value="360" />
             <include content="Object_ShadowSpot_Grouplist">
                 <include content="Object_ShadowSpot_Label">
@@ -28,7 +28,7 @@
                 </include>
                 <control type="progress">
                     <top>5</top>
-                    <width>800</width>
+                    <width>1400</width>
                     <height>10</height>
                     <left>0</left>
                     <info>System.CpuUsage</info>
@@ -38,7 +38,7 @@
                 </include>
                 <control type="progress">
                     <top>5</top>
-                    <width>800</width>
+                    <width>1400</width>
                     <height>10</height>
                     <left>0</left>
                     <info>Player.CacheLevel</info>
