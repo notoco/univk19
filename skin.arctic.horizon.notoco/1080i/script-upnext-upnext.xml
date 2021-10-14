@@ -98,7 +98,7 @@
                         <include content="Object_Info_Button">
                             <param name="id" value="3012" />
                             <param name="groupid" value="5012" />
-                            <param name="label" value="$ADDON[service.upnext 30006]" />
+                            <param name="label" value="Oglądaj teraz" />
                             <param name="icon" value="special://skin/extras/icons/play3.png" />
                             <param name="visible" value="true" />
                             <param name="onup" value="" />

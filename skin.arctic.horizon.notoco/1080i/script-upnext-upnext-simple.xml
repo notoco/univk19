@@ -6,8 +6,8 @@
     <include>Animation_FadeIn</include>
     <controls>
         <control type="image">
-            <height>240</height>
-            <top>0</top>
+            <height>120</height>
+            <top>-40</top>
             <texture flipy="true">common/dim-osd.png</texture>
         </control>
         <control type="group">
@@ -16,9 +16,9 @@
             </include>
             <control type="grouplist" id="20">
                 <left>-20</left>
-                <top>-20</top>
+                <top>-80</top>
                 <align>left</align>
-                <height>120</height>
+                <height>80</height>
                 <orientation>horizontal</orientation>
                 <usecontrolcoords>true</usecontrolcoords>
                 <itemgap>-10</itemgap>
