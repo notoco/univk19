@@ -544,7 +544,7 @@
             <orientation>vertical</orientation>
             <usecontrolcoords>true</usecontrolcoords>
             <itemgap>0</itemgap>
-            <height>275</height>
+            <height>400</height>
             <right>520</right>
             <include content="Object_Info_Title">
                 <param name="label" value="$VAR[Label_PVRGuide_Title]" />
@@ -575,11 +575,11 @@
                 <visible>Control.HasFocus(9400)</visible>
             </include>
             <include content="Object_Info_Plot">
-                <param name="height" value="120" />
+                <param name="height" value="160" />
                 <visible>!Control.HasFocus(9400)</visible>
             </include>
             <include content="Object_Info_Plot">
-                <param name="height" value="120" />
+                <param name="height" value="160" />
                 <param name="label" value="$INFO[ListItem.NextPlot]" />
                 <visible>Control.HasFocus(9400)</visible>
             </include>
