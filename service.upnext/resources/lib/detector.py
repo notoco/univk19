@@ -42,7 +42,7 @@ class UpNextHashStore(object):
             'episode_number', constants.UNDEFINED
         )
         self.data = kwargs.get('data', {})
-        self.timestamps = kwargs.get('timestamps', {})
+        self.timestamps = kwargs.get('timestamps', {self.episode_number: None})
 
     @staticmethod
     def int_to_hash(val, hash_size):
@@ -143,31 +143,36 @@ class UpNextHashStore(object):
                      utils.LOGWARNING)
         return output
 
-    def window(self, hash_index, size, include_all=False):
-        # Get all hash indexes for episodes where the hash timestamps are
-        # approximately equal (+/- an index offset)
-        invalid_idx = constants.UNDEFINED
-        current_idx = constants.UNDEFINED if include_all else hash_index[2]
-        # Matching time period from start of file
-        min_start_time = hash_index[1] - size
-        max_start_time = hash_index[1] + size
-        # Matching time period from end of file
-        min_end_time = hash_index[0] - size
-        max_end_time = hash_index[0] + size
+    def window(self, hash_index,
+               size=SETTINGS.detect_matches, all_episodes=False):
+        """Get sets of hashes, either from all episodes or only from the first
+        and last episodes, where the timestamps are approximately equal (+/- an
+        adjustable offset) to the timestamps of the reference hash index"""
 
-        # Limit selection criteria for old hash storage format
-        if self.version < 0.2:
-            invalid_idx = 0
-            min_start_time = constants.UNDEFINED
-            max_start_time = constants.UNDEFINED
+        end_time, start_time, episode = hash_index
+
+        if all_episodes:
+            excluded_episodes = [constants.UNDEFINED]
+            selected_episodes = self.timestamps.keys()
+        else:
+            excluded_episodes = [constants.UNDEFINED, episode]
+            selected_episodes = {min(self.timestamps), max(self.timestamps)}
+
+        # Matching time period from start of file
+        min_start_time = start_time - size
+        max_start_time = start_time + size
+        # Matching time period from end of file
+        min_end_time = end_time - size
+        max_end_time = end_time + size
 
         return {
-            hash_index: self.data[hash_index]
-            for hash_index in self.data
-            if invalid_idx != hash_index[-1] != current_idx
+            (end_time, start_time, episode): self.data[hash_index]
+            for end_time, start_time, episode in self.data
+            if episode in selected_episodes
+            and episode not in excluded_episodes
             and (
-                min_start_time <= hash_index[-2] <= max_start_time
-                or min_end_time <= hash_index[0] <= max_end_time
+                min_start_time <= start_time <= max_start_time
+                or min_end_time <= end_time <= max_end_time
             )
         }
 
@@ -219,10 +224,10 @@ class UpNextDetector(object):
 
     @staticmethod
     def _and(bit1, bit2):
-        return bool(bit1 and bit2)
+        return 1 if (bit1 and bit2) else 0
 
     @staticmethod
-    def _eq(bit1, bit2):
+    def _eq_biased(bit1, bit2):
         return (bit1 == bit2) * (1 if bit2 else 0.5)
 
     @staticmethod
@@ -231,7 +236,7 @@ class UpNextDetector(object):
 
     @staticmethod
     def _xor(bit1, bit2):
-        return bool((bit1 or bit2) and (bit2 != bit1 is not None))
+        return 1 if ((bit1 or bit2) and (bit2 != bit1 is not None)) else 0
 
     @staticmethod
     def _calc_median(vals):
@@ -252,8 +257,8 @@ class UpNextDetector(object):
         border_token = (0, )
         ignore_token = (None, )
 
-        pad_width = min(int(3 * hash_width / 16), 3)
-        pad_width_alt = min(int(2 * hash_width / 16), 2)
+        pad_width = (3 * hash_width // 16) - (hash_width // 16)
+        pad_width_alt = (2 * hash_width // 16) - (hash_width // 16)
 
         return (
             border_token * hash_width * pad_height
@@ -337,14 +342,16 @@ class UpNextDetector(object):
 
     @staticmethod
     def _image_process(image, image_operations, save_file=None):
-        for step, operation in enumerate(image_operations):
-            num_params = len(operation)
-            method = operation[0]
-            args = operation[1] if num_params > 1 else []
+        image = image.copy()
+        for step, args in enumerate(image_operations):
+            method = args.pop(0)
             image = method(image, *args) or image
-            if save_file:
+            if save_file and SETTINGS.detector_debug_save:
                 target = file_utils.get_legal_filename(
-                    '{0}_{1}_{2}'.format(save_file, step, method.__name__),
+                    '{0}_{1}_{2}_{3}'.format(
+                        save_file, step, method.__name__,
+                        [arg for arg in args if isinstance(arg, (str, int))]
+                    ),
                     prefix=SETTINGS.detector_save_path, suffix='.bmp'
                 )
                 try:
@@ -373,34 +380,31 @@ class UpNextDetector(object):
         image = cls._image_process(
             image,
             image_operations=[
-                [image_utils.image_format, [image_size]],
-                [image_utils.image_filter, [image_utils.UNSHARP_MASK]],
-                [image_utils.image_bit_depth, [3]],
+                [image_utils.image_format, image_size],
             ],
-            save_file='image'
+            save_file='1_image'
         )
-
         image_hash = cls._calc_image_hash(image_utils.image_resize(
             image, hash_size
         ))
 
-        if not SETTINGS.detector_filter:
-            return image_hash, image_hash
-
-        significance = 100 * sum(image_hash) / len(image_hash)
-        if significance < SETTINGS.detect_significance:
+        if (not SETTINGS.detector_filter or SETTINGS.detect_significance >
+                100 * sum(image_hash) / len(image_hash)):
             return image_hash, image_hash
 
         filtered_image = cls._image_process(
             image,
             image_operations=[
-                [image_utils.image_auto_level, [87.5, 100, True]],
-                [image_utils.image_filter, [image_utils.FIND_EDGES]],
-                [image_utils.image_multiply_mask, [image]],
-                [image_utils.image_filter, [image_utils.DETAIL_FILTER, True]],
-                [image_utils.image_auto_level],
+                [image_utils.image_auto_contrast],
+                [image_utils.image_filter, 'GaussianBlur,3'],
+                [image_utils.image_filter, 'UnsharpMask,2,100,16',
+                 'FADE_OUT', image],
+                [image_utils.image_conditional_filter,
+                 (((63, 255, 0, 255),), ()), 'THRESHOLD',
+                 ('MedianFilter,3', 'ALL', None, True)],
+                [image_utils.image_multiply_mask, image, 50],
             ],
-            save_file='filter'
+            save_file='2_filter'
         )
         filtered_hash = cls._calc_image_hash(image_utils.image_resize(
             filtered_image, hash_size
@@ -433,7 +437,7 @@ class UpNextDetector(object):
             return 0
 
         # Check whether each pixel is equal
-        bits_eq = sum(map(cls._eq, baseline_hash, compare_hash))
+        bits_eq = sum(map(cls._eq_biased, baseline_hash, compare_hash))
         bits_xor = map(cls._xor, baseline_hash, compare_hash)
         bits_xor_baseline = sum(map(cls._and, bits_xor, baseline_hash))
         bits_xor_compare = sum(map(cls._and, bits_xor, compare_hash))
@@ -544,7 +548,7 @@ class UpNextDetector(object):
             self._hash_match_hit()
             return stats
 
-        old_hashes = self.past_hashes.window(self.hash_index['current'], 60)
+        old_hashes = self.past_hashes.window(self.hash_index['current'])
         for self.hash_index['episodes'], old_hash in old_hashes.items():
             stats['episodes'] = self._hash_similarity(
                 old_hash,
@@ -619,12 +623,15 @@ class UpNextDetector(object):
             # background stored as first hash. Masked significance weights
             # stored as second hash.
             data={
-                self.hash_index['credits_small']:
-                    self._generate_initial_hash(*hash_size, pad_height=2),
-                self.hash_index['credits_large']:
-                    self._generate_initial_hash(*hash_size),
+                self.hash_index['credits_small']: self._generate_initial_hash(
+                    *hash_size,
+                    pad_height=(hash_size[1] // 4)
+                ),
+                self.hash_index['credits_large']: self._generate_initial_hash(
+                    *hash_size,
+                    pad_height=(hash_size[1] // 8)
+                ),
             },
-            timestamps={}
         )
 
         # Hashes from previously played episodes
@@ -651,37 +658,28 @@ class UpNextDetector(object):
             self.queue.all_tasks_done.notify_all()
             self.queue.unfinished_tasks = 0
 
-    def _queue_flush(self):
-        if not self.workers or not self.queue:
-            return
-
-        for worker in self.workers:
-            if worker.is_alive():
-                try:
-                    self.queue.put_nowait(None)
-                except queue.Full:
-                    pass
-
     def _queue_init(self):
         del self.queue
         self.queue = queue.Queue(maxsize=SETTINGS.detector_threads)
 
     def _queue_push(self):
-        capturer, size = self.queue.get()
+        capturer, size = self._queue_pull()
 
         abort = False
         while not (abort or self._sigterm.is_set() or self._sigstop.is_set()):
             loop_start = timeit.default_timer()
+
+            with self.player as check_fail:
+                check_fail = self.player.get_speed() != 1
+            if check_fail:
+                self.log('Stop capture: nothing playing')
+                break
 
             capturer.capture(*size)
             image = capturer.getImage()
 
             # Capture failed or was skipped, retry with less data
             if not image or image[-1] != 255:
-                if not self.player.isPlaying():
-                    self.log('Stop capture: nothing playing')
-                    break
-
                 self.log('Capture failed using {0}kB data limit'.format(
                     SETTINGS.detector_data_limit
                 ), utils.LOGWARNING)
@@ -704,14 +702,29 @@ class UpNextDetector(object):
                 if loop_time >= self.capture_interval:
                     raise queue.Full
                 abort = utils.wait(self.capture_interval - loop_time)
+            except AttributeError:
+                self.log('Stop capture: detector stopped')
+                break
             except queue.Full:
                 self.log('Capture/detection desync', utils.LOGWARNING)
                 abort = utils.abort_requested()
                 continue
 
         del capturer
-        self.queue.task_done()
+        self._queue_task_done()
         self._queue_clear()
+
+    def _queue_pull(self, timeout=None):
+        if not self.queue:
+            return None
+
+        return self.queue.get(timeout=timeout)
+
+    def _queue_task_done(self):
+        if not self.queue or not self.queue.unfinished_tasks:
+            return
+
+        self.queue.task_done()
 
     def _worker(self):
         """Detection loop captures Kodi render buffer every 1s to create an
@@ -728,17 +741,6 @@ class UpNextDetector(object):
             profiler = utils.Profiler()
 
         while not (self._sigterm.is_set() or self._sigstop.is_set()):
-            try:
-                image, size = self.queue.get(timeout=SETTINGS.detector_threads)
-                if not isinstance(image, bytearray):
-                    raise queue.Empty
-            except TypeError:
-                self.log('Queue empty - exiting')
-                break
-            except queue.Empty:
-                self.log('Queue empty - retry')
-                continue
-
             with self.player as check_fail:
                 play_time = self.player.getTime()
                 self.hash_index['current'] = (
@@ -747,12 +749,21 @@ class UpNextDetector(object):
                     self.hashes.episode_number
                 )
                 # Only capture if playing at normal speed
-                # check_fail = self.player.get_speed() != 1
-                check_fail = False
+                check_fail = self.player.get_speed() != 1
             if check_fail:
                 self.log('No file is playing')
-                self.queue.task_done()
                 break
+
+            try:
+                image, size = self._queue_pull(SETTINGS.detector_threads)
+                if not isinstance(image, bytearray):
+                    raise queue.Empty
+            except TypeError:
+                self.log('Queue empty - exiting')
+                break
+            except queue.Empty:
+                self.log('Queue empty - retry')
+                continue
 
             image_hash, filtered_hash = self._create_hashes(
                 image, size, self.hashes.hash_size
@@ -797,7 +808,26 @@ class UpNextDetector(object):
             # Store timestamps if credits are detected
             self.update_timestamp(play_time)
 
-            self.queue.task_done()
+            self._queue_task_done()
+
+        self._queue_task_done()
+
+    def _worker_release(self):
+        if not self.workers or not self.queue:
+            return
+
+        for idx, worker in enumerate(self.workers):
+            if worker.is_alive():
+                try:
+                    self.queue.put_nowait(None)
+                except queue.Full:
+                    pass
+                worker.join(SETTINGS.detector_threads * self.capture_interval)
+
+            if worker.is_alive():
+                self.log('Worker {0}({1}) is taking too long to stop'.format(
+                    idx, worker.ident
+                ), utils.LOGWARNING)
 
     def is_alive(self):
         return self._running.is_set()
@@ -862,7 +892,7 @@ class UpNextDetector(object):
 
         self._running.set()
         self.queue.join()
-        self._queue_flush()
+        self._worker_release()
 
         self.log('Stopped')
         self._running.clear()
@@ -877,14 +907,8 @@ class UpNextDetector(object):
             else:
                 self._sigstop.set()
 
-            self._queue_flush()
-            for idx, worker in enumerate(self.workers or []):
-                if worker.is_alive():
-                    worker.join(5)
-                if worker.is_alive():
-                    self.log('Worker {0}({1}) failed to stop cleanly'.format(
-                        idx, worker.ident
-                    ), utils.LOGWARNING)
+            self._queue_clear()
+            self._worker_release()
 
         # Free references/resources
         with self._lock:
@@ -908,16 +932,12 @@ class UpNextDetector(object):
             return
 
         self.past_hashes.hash_size = self.hashes.hash_size
+        self.past_hashes.timestamps.update(self.hashes.timestamps)
         # If credit were detected only store the previous +/- 5s of hashes to
         # reduce false positives when comparing to other episodes
-        if self.match_counts['detected']:
-            self.past_hashes.data.update(self.hashes.window(
-                self.hash_index['detected_at'], 5, include_all=True
-            ))
-            self.past_hashes.timestamps.update(self.hashes.timestamps)
-        # Otherwise store all hashes for comparison with other episodes
-        else:
-            self.past_hashes.data.update(self.hashes.data)
+        self.past_hashes.data.update(self.hashes.window(
+            self.hash_index['detected_at'], all_episodes=True
+        ) if self.match_counts['detected'] else self.hashes.data)
 
         self.past_hashes.save(self.hashes.seasonid)
 

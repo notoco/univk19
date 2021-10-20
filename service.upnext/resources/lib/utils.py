@@ -95,7 +95,7 @@ class Profiler(object):
             self.Stats(
                 self._profiler,
                 stream=output_stream
-            ).sort_stats('cumulative').print_stats(20)
+            ).strip_dirs().sort_stats('cumulative').print_stats(20)
         # Occurs when no stats were able to be generated from profiler
         except TypeError:
             pass
@@ -115,7 +115,12 @@ class Profiler(object):
         return output
 
 
-ADDON = xbmcaddon.Addon(constants.ADDON_ID)
+# Not sure why this is needed but Kodi sometimes thinks the addon is disabled
+# when it is starting the service. Some kind of race condition?
+try:
+    ADDON = xbmcaddon.Addon(constants.ADDON_ID)
+except RuntimeError:
+    ADDON = xbmcaddon.Addon()
 _KODI_VERSION = float(xbmc.getInfoLabel('System.BuildVersion').split()[0])
 
 

@@ -17,10 +17,6 @@
                 <include>View_Pad</include>
                 <control type="group">
                     <include condition="Skin.HasSetting(PVRGuide.Info)">View_PVR_Guide_Top</include>
-                    <include content="View_PVR_ChannelGroups">
-                        <ondown>10</ondown>
-                        <onup>10</onup>
-                    </include>
                     <include>View_PVR_EpgGrid</include>
                 </control>
                 <include condition="Skin.HasSetting(PVRGuide.Info)">View_PVR_Guide_Info</include>

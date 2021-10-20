@@ -299,6 +299,10 @@ msgctxt "#30701"
 msgid "Troubleshooting"
 msgstr ""
 
+msgctxt "#30702"
+msgid "Start delay"
+msgstr ""
+
 msgctxt "#30703"
 msgid "Disable UpNext"
 msgstr ""
@@ -425,6 +429,10 @@ msgstr ""
 
 msgctxt "#30825"
 msgid "Enable detector debug logging and profiling"
+msgstr ""
+
+msgctxt "#30826"
+msgid "Enable saving detector debug image output"
 msgstr ""
 
 msgctxt "#30830"

@@ -25,6 +25,7 @@ class UpNextSettings(object):
         'detect_significance',
         'detector_data_limit',
         'detector_debug',
+        'detector_debug_save',
         'detector_filter',
         'detector_resize_method',
         'detector_save_path',
@@ -42,6 +43,7 @@ class UpNextSettings(object):
         'show_stop_button',
         'simple_mode',
         'skin_popup',
+        'start_delay',
         'start_trigger',
         'unwatched_only',
     )
@@ -73,9 +75,9 @@ class UpNextSettings(object):
         self.simple_mode = utils.get_setting_bool('simpleMode')
         self.show_stop_button = utils.get_setting_bool('stopAfterClose')
         self.skin_popup = utils.get_setting_bool('enablePopupSkin')
-        self.popup_position = constants.POPUP_POSITIONS[
+        self.popup_position = constants.POPUP_POSITIONS.get(
             utils.get_setting_int('popupPosition', default=0)
-        ]
+        )
 
         accent_colour = constants.POPUP_ACCENT_COLOURS.get(
             utils.get_setting_int('popupAccentColour', default=0)
@@ -117,6 +119,7 @@ class UpNextSettings(object):
         self.detect_enabled = utils.get_setting_bool('detectPlayTime')
         self.detect_period = utils.get_setting_int('detectPeriod')
 
+        self.start_delay = utils.get_setting_int('startDelay')
         self.disabled = utils.get_setting_bool('disableNextUp')
         self.enable_queue = utils.get_setting_bool('enableQueue')
 
@@ -126,7 +129,7 @@ class UpNextSettings(object):
         self.detector_data_limit = data_limit - data_limit % 8
         self.detector_filter = utils.get_setting_bool('detectorFilter')
         self.detector_resize_method = constants.PIL_RESIZE_METHODS.get(
-            utils.get_setting_int('detectorResizeMethod', default=1)
+            utils.get_setting_int('detectorResizeMethod', default=3)
         )
         self.detect_level = utils.get_setting_int('detectLevel')
         self.detect_significance = utils.get_setting_int('detectSignificance')
@@ -141,6 +144,7 @@ class UpNextSettings(object):
         )
 
         self.detector_debug = utils.get_setting_bool('detectorDebug')
+        self.detector_debug_save = utils.get_setting_bool('detectorDebugSave')
         self.start_trigger = utils.get_setting_bool('startTrigger')
 
 

@@ -39,6 +39,7 @@
 	</category>
 	<category label="30700"> <!-- Expert -->
 		<setting label="30701" type="lsep"/> <!-- Troubleshooting -->
+        <setting label="30702" type="slider" id="startDelay" default="5" range="1,1,10" option="int"/>
 		<setting label="30703" type="bool" id="disableNextUp" default="false"/>
 		<setting label="30705" type="enum" id="logLevel" lvalues="30042|30043|30044" default="0"/>
 		<setting label="30707" type="bool" id="enableQueue" default="true"/>
@@ -47,7 +48,7 @@
 		<setting label="30732" type="slider" id="detectorThreads" default="2" range="2,1,6" option="int"/>
 		<setting label="30733" type="slider" id="detectorDataLimit" default="16" range="8,8,256" option="int"/>
 		<setting label="30734" type="bool" id="detectorFilter" default="true"/>
-		<setting label="30735" type="enum" id="detectorResizeMethod" lvalues="30736|30737|30738|30739|30740|30741" default="1"/>
+		<setting label="30735" type="enum" id="detectorResizeMethod" lvalues="30736|30737|30738|30739|30740|30741" default="3"/>
 		<setting label="30742" type="slider" id="detectLevel" default="90" range="50,1,100" option="int"/>
 		<setting label="30743" type="slider" id="detectSignificance" default="25" range="1,1,50" option="int"/>
 		<setting label="30744" type="slider" id="detectMatches" default="5" range="1,1,10" option="int"/>
@@ -66,6 +67,7 @@
 		<setting label="30821" type="bool" id="demoPlugin" default="false" subsetting="true" enable="eq(-3,true)"/>
 		<setting label="30823" type="lsep"/> <!-- Additional developer settings -->
 		<setting label="30825" type="bool" id="detectorDebug" default="false"/>
+        <setting label="30826" type="bool" id="detectorDebugSave" default="false"/>
 		<setting label="30830" type="bool" id="startTrigger" default="false"/>
 	</category>
 </settings>
