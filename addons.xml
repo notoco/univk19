@@ -71,7 +71,7 @@
 </extension>
 </addon>
 
-<addon id="skin.arctic.horizon.notoco" name="Arctic Horizon Notoco" provider-name="jurialmunkey+notoco" version="2021.10.20.0">
+<addon id="skin.arctic.horizon.notoco" name="Arctic Horizon Notoco" provider-name="jurialmunkey+notoco" version="2021.10.26.0">
     <requires>
         <import addon="xbmc.gui" version="5.15.0" />
         <import addon="script.skinshortcuts" version="0.4.0" />
