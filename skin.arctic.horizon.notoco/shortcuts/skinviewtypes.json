@@ -181,7 +181,7 @@
         },
         "none": {
             "rule": "Container.Content() + !Window.IsVisible(MyPVRTimers.xml) + !Window.IsVisible(MyPVRSearch.xml) + !Window.IsVisible(MyPVRRecordings.xml)",
-            "viewtypes": ["50", "500"],
+            "viewtypes": ["50", "51", "52", "502", "503", "54", "504", "55", "500", "56", "57", "58", "59"],
             "library": "50",
             "plugins": "500"
         }
