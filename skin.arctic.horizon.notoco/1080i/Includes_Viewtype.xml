@@ -100,7 +100,7 @@
                         <visible>!Control.IsVisible(51)</visible>
                         <fadetime>400</fadetime>
                         <right>0</right>
-                        <bottom>600</bottom>
+                        <bottom>500</bottom>
                         <height>320</height>
                         <width>560</width>
                     </control>
@@ -114,7 +114,7 @@
                         <visible>[!Control.IsVisible(51) + String.IsEmpty(ListItem.Art(clearlogo)) + !Container.Content(episodes)]</visible>
                         <fadetime>400</fadetime>
                         <right>0</right>
-                        <bottom>500</bottom>
+                        <bottom>450</bottom>
                         <height>320</height>
                         <width>560</width>
                     </control>
