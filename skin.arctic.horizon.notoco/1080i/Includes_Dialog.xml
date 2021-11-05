@@ -151,7 +151,8 @@
                 <right>view_pad</right>
                 <height>view_header</height>
                 <control type="image" description="Back">
-                    <left>-16</left>
+                    <left>-40</left>
+                    <top>-40</top>
                     <centertop>50%</centertop>
                     <width>80</width>
                     <height>80</height>
@@ -161,7 +162,8 @@
                 </control>
                 <control type="group">
                     <description>Busy animation</description>
-                    <left>-16</left>
+                    <left>-40</left>
+                    <top>-40</top>
                     <centertop>50%</centertop>
                     <width>80</width>
                     <height>80</height>
@@ -174,26 +176,6 @@
                         <texture colordiffuse="$VAR[ColorGradient]">dialog/loading-spinner.png</texture>
                         <aspectratio>keep</aspectratio>
                         <animation effect="fade" condition="true" start="75" end="0" pulse="true" time="1000">Conditional</animation>
-                    </control>
-                </control>
-                <control type="group">
-                    <left>70</left>
-                    <centertop>50%</centertop>
-                    <height>72</height>
-                    <control type="label">
-                        <centertop>33%</centertop>
-                        <height>26</height>
-                        <label>$PARAM[header]</label>
-                        <align>left</align>
-                        <font>font_statusbar_bold</font>
-                        <textcolor>main_fg_100</textcolor>
-                    </control>
-                    <control type="label">
-                        <centerbottom>33%</centerbottom>
-                        <height>26</height>
-                        <label>$PARAM[subheader]</label>
-                        <font>font_statusbar</font>
-                        <textcolor>main_fg_100</textcolor>
                     </control>
                 </control>
             </control>
