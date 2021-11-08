@@ -273,7 +273,7 @@
                             <visible>VideoPlayer.Content(movies) | VideoPlayer.Content(episodes)</visible>
                         </include>
 
-                        <control type="textbox">
+<!--                        <control type="textbox">
                             <top>15</top>
                             <height max="125">auto</height>
                             <font>font_plotbox</font>
@@ -281,7 +281,7 @@
                             <label>$INFO[VideoPlayer.Plot,, ]$INFO[MusicPlayer.Property(Artist_Description),, ]$INFO[MusicPlayer.Property(Album_Description)]</label>
                             <visible>!String.IsEmpty(VideoPlayer.Plot) | !String.IsEmpty(MusicPlayer.Property(Artist_Description)) | !String.IsEmpty(MusicPlayer.Property(Album_Description))</visible>
                         </control>
-
+-->
                     </control>
                 </control>
             </control>
