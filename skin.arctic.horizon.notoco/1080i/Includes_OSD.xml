@@ -135,7 +135,7 @@
                 <control type="group" description="info">
                     <left>view_pad</left>
                     <right>view_pad</right>
-                    <bottom>200</bottom>
+                    <bottom>80</bottom>
                     <!-- Artwork -->
                     <control type="group">
                         <!-- <right>0</right> -->
@@ -157,7 +157,7 @@
                     <control type="grouplist">
                         <include condition="!String.IsEmpty(Player.Art(poster)) | !String.IsEmpty(Player.Art(tvshow.poster)) | !String.IsEmpty(MusicPlayer.Cover)">OSD_Video_Seekbar_Left</include>
                         <usecontrolcoords>true</usecontrolcoords>
-                        <bottom>-7</bottom>
+                        <bottom>127</bottom>
                         <right>0</right>
                         <align>bottom</align>
                         <itemgap>0</itemgap>
@@ -369,7 +369,7 @@
         <control type="group">
             <bottom>view_pad</bottom>
             <height>item_list_height_half</height>
-            <left>view_pad</left>
+            <left>440</left>
             <right>view_pad</right>
             <control type="label">
                 <textcolor>panel_fg_100</textcolor>
@@ -418,7 +418,7 @@
     <include name="OSD_Progress_Bar">
         <control type="group">
             <height>12</height>
-            <left>view_pad</left>
+            <left>440</left>
             <right>view_pad</right>
             <bottom>148</bottom>
             <!-- <centerbottom>160</centerbottom> -->
