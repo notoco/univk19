@@ -991,7 +991,7 @@
                     <font>font_small_mono</font>
                     <shadowcolor>ff000000</shadowcolor>
                     <align>right</align>
-                    <label>$INFO[ListItem.Icon][COLOR=FFFFFF00]  II[/COLOR][CR]$INFO[ListItem.ActualIcon][COLOR=FFFFFF00]  IT[/COLOR][CR]$INFO[ListItem.Art(thumb)][COLOR=FFFFFF00]  AI[/COLOR][CR]$INFO[ListItem.Art(poster)][COLOR=FFFFFF00]  IP[/COLOR][CR]$INFO[ListItem.Art(fanart)][COLOR=FFFFFF00]  IF[/COLOR][CR]$INFO[ListItem.Art(tvshow.poster)][COLOR=FFFFFF00]  TP[/COLOR][CR]$INFO[ListItem.Art(tvshow.fanart)][COLOR=FFFFFF00]  TF[/COLOR][CR]$INFO[Window(Home).Property(TMDbHelper.ListItem.BlurImage)][COLOR=FFFFFF00]  BI[/COLOR][CR]$INFO[Window(Home).Property(TMDbHelper.Blur.SourceImage)][COLOR=FFFFFF00]  BS[/COLOR][CR]$INFO[Window(Home).Property(TMDbHelper.Blur.Fallback)][COLOR=FFFFFF00]  BF[/COLOR]</label>
+                    <label>$INFO[ListItem.Icon][COLOR=FFFFFF00]  Icon[/COLOR][CR]$INFO[ListItem.ActualIcon][COLOR=FFFFFF00]  ActualIcon[/COLOR][CR]$INFO[ListItem.Art(thumb)][COLOR=FFFFFF00]  thumb[/COLOR][CR]$INFO[ListItem.Art(poster)][COLOR=FFFFFF00]  poster[/COLOR][CR]$INFO[ListItem.Art(fanart)][COLOR=FFFFFF00]  fanart[/COLOR][CR]$INFO[ListItem.Art(tvshow.poster)][COLOR=FFFFFF00]  tvshow.poster[/COLOR][CR]$INFO[ListItem.Art(tvshow.fanart)][COLOR=FFFFFF00]  tvshow.fanart[/COLOR][CR]$INFO[Window(Home).Property(TMDbHelper.ListItem.BlurImage)][COLOR=FFFFFF00]  BlurImage[/COLOR][CR]$INFO[Window(Home).Property(TMDbHelper.Blur.SourceImage)][COLOR=FFFFFF00]  Blur.SourceImage[/COLOR][CR]$INFO[Window(Home).Property(TMDbHelper.Blur.Fallback)][COLOR=FFFFFF00]  Blur.Fallback[/COLOR]</label>
                 </control>
             </control>
 

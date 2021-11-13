@@ -151,13 +151,23 @@
                             <bordersize>20</bordersize>
                             <bordertexture border="30" colordiffuse="Shadow">common/shadow-20.png</bordertexture>
                             <aspectratio scalediffuse="true" align="left" aligny="bottom">keep</aspectratio>
-                            <visible>!String.IsEmpty(Player.Art(poster)) | !String.IsEmpty(Player.Art(tvshow.poster)) | !String.IsEmpty(MusicPlayer.Cover)</visible>
+                            <visible>!String.IsEmpty(Player.Art(poster)) | !String.IsEmpty(Player.Art(tvshow.poster)) | !String.IsEmpty(MusicPlayer.Cover) | !String.IsEmpty(Player.Art(thumb)</visible>
                             <texture background="true" diffuse="diffuse/poster-big.png">$VAR[Image_OSD_Artwork]</texture>
+                        </control>
+                        <control type="image">
+                            <include content="Defs_Pad">
+                                <param name="pad" value="-20" />
+                            </include>
+                            <bordersize>20</bordersize>
+                            <bordertexture border="30" colordiffuse="Shadow">common/shadow-20.png</bordertexture>
+                            <aspectratio scalediffuse="true" align="left" aligny="bottom">keep</aspectratio>
+                            <visible>!String.IsEmpty(Pvr.EPGEventIcon)</visible>
+                            <texture background="true" diffuse="diffuse/poster-big.png">$INFO[Pvr.EPGEventIcon]</texture>
                         </control>
                     </control>
                     <!-- Info -->
                     <control type="grouplist">
-                        <include condition="!String.IsEmpty(Player.Art(poster)) | !String.IsEmpty(Player.Art(tvshow.poster)) | !String.IsEmpty(MusicPlayer.Cover)">OSD_Video_Seekbar_Left</include>
+                        <left>360</left>
                         <usecontrolcoords>true</usecontrolcoords>
                         <bottom>127</bottom>
                         <right>0</right>
@@ -371,8 +381,7 @@
         <control type="group">
             <bottom>view_pad</bottom>
             <height>item_list_height_half</height>
-            <left>view_pad</left>
-            <include condition="!String.IsEmpty(Player.Art(poster)) | !String.IsEmpty(Player.Art(tvshow.poster)) | !String.IsEmpty(MusicPlayer.Cover)">OSD_Video_NOTV</include>
+            <left>440</left>
             <right>view_pad</right>
             <control type="label">
                 <textcolor>panel_fg_100</textcolor>
@@ -421,8 +430,7 @@
     <include name="OSD_Progress_Bar">
         <control type="group">
             <height>12</height>
-            <left>view_pad</left>
-            <include condition="!String.IsEmpty(Player.Art(poster)) | !String.IsEmpty(Player.Art(tvshow.poster)) | !String.IsEmpty(MusicPlayer.Cover)">OSD_Video_NOTV</include>
+            <left>440</left>
             <right>view_pad</right>
             <bottom>148</bottom>
             <!-- <centerbottom>160</centerbottom> -->
