@@ -152,7 +152,7 @@
                             <bordertexture border="30" colordiffuse="Shadow">common/shadow-20.png</bordertexture>
                             <aspectratio scalediffuse="true" align="left" aligny="bottom">keep</aspectratio>
                             <visible>!String.IsEmpty(Player.Art(poster)) | !String.IsEmpty(Player.Art(tvshow.poster)) | !String.IsEmpty(MusicPlayer.Cover) | !String.IsEmpty(Player.Art(thumb)</visible>
-                            <texture background="true" diffuse="diffuse/poster-big.png">$VAR[Image_OSD_Artwork]</texture>
+                            <texture background="true" diffuse="diffuse/poster-big.png">$VAR[Image_OSD_Artwork] | String.IsEmpty(Pvr.EPGEventIcon)</texture>
                         </control>
                         <control type="image">
                             <include content="Defs_Pad">
