@@ -110,12 +110,12 @@
             <animation effect="fade" start="0" end="100" time="300">VisibleChange</animation>
             <animation effect="fade" start="0" end="100" time="300" condition="![Player.Seeking | Player.DisplayAfterSeek | Player.Paused | Player.Forwarding | Player.Rewinding | Player.ShowInfo | Window.IsActive(musicosd) | Window.IsActive(videoosd) | Window.IsActive(DialogFullScreenInfo.xml)]">WindowOpen</animation>
             <control type="image">
-                <height>400</height>
+                <height>340</height>
                 <bottom>0</bottom>
-                <texture>common/dim-osd.png</texture>
+                <texture>common/dim-overlay.png</texture>
             </control>
 
-            <!-- Overlay -->
+            <!-- Overlay 
             <control type="image">
                 <bottom>0</bottom>
                 <top>0</top>
@@ -124,7 +124,7 @@
                 <visible>!Window.IsVisible(DialogPlayerProcessInfo.xml)</visible>
                 <include>Animation_FadeIn</include>
                 <include>Animation_FadeOut</include>
-            </control>
+            </control> -->
 
             <!-- Large Info OSD -->
             <control type="group">
@@ -353,20 +353,6 @@
         <control type="group">
             <include>Animation_FadeInOut</include>
             <visible>String.IsEmpty(Player.SeekNumeric) + String.IsEmpty(PVR.ChannelNumberInput)</visible>
-            <control type="group">
-                <top>30</top>
-                <height>120</height>
-                <width>500</width>
-                <right>0</right>
-                <control type="image">
-                    <left>-400</left>
-                    <right>-700</right>
-                    <top>-200</top>
-                    <bottom>-100</bottom>
-                    <aspectratio>stretch</aspectratio>
-                    <texture>common/shadowspot.png</texture>
-                </control>
-            </control>
             <include condition="!Skin.HasSetting(DisableClock)" content="Topbar_Right">
                 <param name="fgcolor" value="panel_fg" />
             </include>
