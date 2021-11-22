@@ -294,7 +294,7 @@
         <include content="$PARAM[buttoninclude]">
             <param name="id" value="8109" />
             <param name="groupid" value="8009" />
-            <param name="label" value="Options" />
+            <param name="label" value="Opcje" />
             <param name="icon" value="special://skin/extras/icons/playlist.png" />
             <param name="visible" value="!Skin.HasSetting(KioskMode)" />
             <ondown>50</ondown>
