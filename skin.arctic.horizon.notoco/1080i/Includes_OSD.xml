@@ -110,7 +110,7 @@
             <animation effect="fade" start="0" end="100" time="300">VisibleChange</animation>
             <animation effect="fade" start="0" end="100" time="300" condition="![Player.Seeking | Player.DisplayAfterSeek | Player.Paused | Player.Forwarding | Player.Rewinding | Player.ShowInfo | Window.IsActive(musicosd) | Window.IsActive(videoosd) | Window.IsActive(DialogFullScreenInfo.xml)]">WindowOpen</animation>
             <control type="image">
-                <height>340</height>
+                <height>300</height>
                 <bottom>0</bottom>
                 <texture>common/dim-overlay.png</texture>
             </control>
@@ -141,9 +141,10 @@
                     <!-- Artwork -->
                     <control type="group">
                         <!-- <right>0</right> -->
-                        <bottom>0</bottom>
-                        <width>320</width>
-                        <height>480</height>
+                        <bottom>-40</bottom>
+                        <left>-40</left>
+                        <width>352</width>
+                        <height>528</height>
                         <control type="image">
                             <include content="Defs_Pad">
                                 <param name="pad" value="-20" />
@@ -169,7 +170,7 @@
                     <control type="grouplist">
                         <left>360</left>
                         <usecontrolcoords>true</usecontrolcoords>
-                        <bottom>127</bottom>
+                        <bottom>100</bottom>
                         <right>0</right>
                         <align>bottom</align>
                         <itemgap>0</itemgap>
