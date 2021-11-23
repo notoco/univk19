@@ -3,6 +3,7 @@
 
 from __future__ import absolute_import, division, unicode_literals
 import constants
+import file_utils
 import utils
 
 
@@ -123,13 +124,18 @@ class UpNextSettings(object):
         self.disabled = utils.get_setting_bool('disableNextUp')
         self.enable_queue = utils.get_setting_bool('enableQueue')
 
-        self.detector_save_path = utils.get_setting('detectorSavePath')
+        # Create valid directory here so that it can be used whenever settings
+        # are changed rather than only when a module is imported i.e. on addon
+        # start/restart
+        self.detector_save_path = file_utils.make_legal_path(
+            utils.get_setting('detectorSavePath')
+        )
         self.detector_threads = utils.get_setting_int('detectorThreads')
         data_limit = utils.get_setting_int('detectorDataLimit')
         self.detector_data_limit = data_limit - data_limit % 8
         self.detector_filter = utils.get_setting_bool('detectorFilter')
         self.detector_resize_method = constants.PIL_RESIZE_METHODS.get(
-            utils.get_setting_int('detectorResizeMethod', default=3)
+            utils.get_setting_int('detectorResizeMethod', default=1)
         )
         self.detect_level = utils.get_setting_int('detectLevel')
         self.detect_significance = utils.get_setting_int('detectSignificance')
@@ -144,7 +150,10 @@ class UpNextSettings(object):
         )
 
         self.detector_debug = utils.get_setting_bool('detectorDebug')
-        self.detector_debug_save = utils.get_setting_bool('detectorDebugSave')
+        self.detector_debug_save = (
+            self.detector_save_path
+            and utils.get_setting_bool('detectorDebugSave')
+        )
         self.start_trigger = utils.get_setting_bool('startTrigger')
 
 
