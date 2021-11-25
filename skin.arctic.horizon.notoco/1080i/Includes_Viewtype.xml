@@ -120,7 +120,7 @@
                     <control type="image">
                         <texture background="true">$INFO[ListItem.Art(fanart)]</texture>
                         <aspectratio align="center" aligny="bottom" scalediffuse="false">keep</aspectratio>
-                        <visible>[!Control.IsVisible(51) + String.IsEmpty(ListItem.Art(clearlogo)) + !Container.Content(episodes)]</visible>
+                        <visible>[!Control.IsVisible(51) + !Container.Content(episodes)]</visible>
                         <fadetime>400</fadetime>
                         <right>0</right>
                         <bottom>500</bottom>
