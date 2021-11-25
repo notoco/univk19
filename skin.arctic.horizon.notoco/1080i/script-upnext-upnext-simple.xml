@@ -25,11 +25,12 @@
                 <include content="Object_Info_Button">
                     <param name="id" value="3012" />
                     <param name="groupid" value="5012" />
-                    <param name="label" value="Następny za [COLOR=$VAR[ColorHighlight]]$INFO[Window.Property(remaining)][/COLOR]..." />
+                    <param name="label" value="Następny" />
                     <param name="icon" value="special://skin/extras/icons/play3.png" />
                     <param name="visible" value="true" />
                     <param name="onup" value="" />
                     <param name="ondown" value="" />
+                    <!--  za [COLOR=$VAR[ColorHighlight]]$INFO[Window.Property(remaining)][/COLOR]... -->
                 </include>
                 <include content="Object_Info_Button">
                     <param name="id" value="4013" />
