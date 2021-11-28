@@ -746,7 +746,6 @@
 
     <!-- Busy Spinner -->
     <include name="Defs_BusySpinner">
-        <param name="label" default="$LOCALIZE[20186]..." />
         <param name="textcolor" default="ffededed" />
         <definition>
             <control type="group">
@@ -781,18 +780,6 @@
                         <aspectratio>keep</aspectratio>
                         <animation effect="fade" condition="true" start="75" end="0" pulse="true" time="1000">Conditional</animation>
                     </control>
-                </control>
-                <control type="label">
-                    <description>Busy label</description>
-                    <left>80</left>
-                    <centertop>50%</centertop>
-                    <width>720</width>
-                    <height>80</height>
-                    <aligny>center</aligny>
-                    <align>left</align>
-                    <font>font_tiny</font>
-                    <label>$PARAM[label]</label>
-                    <textcolor>$PARAM[textcolor]</textcolor>
                 </control>
             </control>
         </definition>

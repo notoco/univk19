@@ -136,14 +136,12 @@
     </include>
 
     <include name="Dialog_Busy">
-        <param name="header" default="Pracuję..." />
-        <param name="subheader" default="Proszę czekać..." />
         <definition>
         <control type="image">
             <include content="Defs_Pad"><param name="pad" value="-24" /></include>
             <bordertexture border="32">common/shadow-dialog-24.png</bordertexture>
             <bordersize>24</bordersize>
-            <texture border="16" colordiffuse="main_bg_12">common/dialog.png</texture>
+            <texture border="16" colordiffuse="e7000000">common/dialog.png</texture>
         </control>
             <control type="group">
                 <top>50%</top>
