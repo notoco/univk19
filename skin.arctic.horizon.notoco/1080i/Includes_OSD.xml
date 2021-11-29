@@ -198,63 +198,10 @@
                                     <fadetime>100</fadetime>
                                     <centertop>50%</centertop>
                                     <width>64</width>
-                                    <height>56</height>
-                                    <aspectratio align="left">keep</aspectratio>
-                                    <texture colordiffuse="panel_fg_100">flags/$VAR[Defs_ColorMode_Dir]/other/3D.png</texture>
-                                    <visible>VideoPlayer.IsStereoscopic</visible>
-                                </control>
-                                <control type="image">
-                                    <fadetime>100</fadetime>
-                                    <centertop>50%</centertop>
-                                    <width>71</width>
-                                    <height>56</height>
-                                    <aspectratio align="left">keep</aspectratio>
-                                    <texture colordiffuse="panel_fg_100">$VAR[Image_VideoPlayer_RipSource]</texture>
-                                </control>
-                                <control type="image">
-                                    <fadetime>100</fadetime>
-                                    <centertop>50%</centertop>
-                                    <width>64</width>
                                     <height>42</height>
                                     <aspectratio>keep</aspectratio>
                                     <texture colordiffuse="panel_fg_100">flags/$VAR[Defs_ColorMode_Dir]/resolution/$INFO[VideoPlayer.VideoResolution,,.png]</texture>
                                     <visible>!String.IsEmpty(VideoPlayer.VideoResolution)</visible>
-                                </control>
-                                <control type="image">
-                                    <fadetime>100</fadetime>
-                                    <centertop>50%</centertop>
-                                    <width>71</width>
-                                    <height>48</height>
-                                    <aspectratio>keep</aspectratio>
-                                    <texture colordiffuse="panel_fg_100">flags/$VAR[Defs_ColorMode_Dir]/source/$INFO[VideoPlayer.VideoCodec,,.png]</texture>
-                                    <visible>!String.IsEmpty(VideoPlayer.VideoCodec)</visible>
-                                </control>
-                                <control type="group">
-                                    <width>71</width>
-                                    <height>48</height>
-                                    <centertop>50%</centertop>
-                                    <visible>!String.IsEmpty(Player.Process(VideoFPS)) + Integer.IsGreater(Player.Process(VideoFPS),0)</visible>
-                                    <control type="image">
-                                        <texture colordiffuse="panel_fg_100">flags/$VAR[Defs_ColorMode_Dir]/other/fps.png</texture>
-                                        <aspectratio align="center">keep</aspectratio>
-                                    </control>
-                                    <control type="label">
-                                        <height>24</height>
-                                        <bottom>2</bottom>
-                                        <textcolor>panel_fg_100</textcolor>
-                                        <font>font_fps</font>
-                                        <label>$INFO[Player.Process(VideoFPS)]</label>
-                                        <align>center</align>
-                                        <aligny>center</aligny>
-                                    </control>
-                                </control>
-                                <control type="image">
-                                    <fadetime>100</fadetime>
-                                    <centertop>50%</centertop>
-                                    <width>71</width>
-                                    <height>48</height>
-                                    <aspectratio>keep</aspectratio>
-                                    <texture colordiffuse="panel_fg_100">$VAR[Image_VideoPlayer_AudioCodec]</texture>
                                 </control>
                                 <control type="image">
                                     <fadetime>100</fadetime>
@@ -642,7 +589,7 @@
             <textoffsetx>0</textoffsetx>
             <texturefocus colordiffuse="$VAR[ColorHighlight]">osd/audio-settings.png</texturefocus>
             <texturenofocus colordiffuse="panel_fg_70">osd/audio-settings.png</texturenofocus>
-            <onclick>AudioNextLanguage</onclick>
+            <onclick>ActivateWindow(osdaudiosettings)</onclick>
             <include>OSD_Button_OnFocus</include>
             <visible>Window.IsVisible(videoosd)</visible>
             <visible>!VideoPlayer.Content(musicvideos)</visible>
