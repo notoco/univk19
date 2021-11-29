@@ -11,7 +11,7 @@
             </include>
             <control type="grouplist" id="20">
                 <left>-20</left>
-                <top>-80</top>
+                <top>-60</top>
                 <align>left</align>
                 <height>80</height>
                 <orientation>horizontal</orientation>
