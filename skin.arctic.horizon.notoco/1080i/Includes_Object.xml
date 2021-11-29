@@ -782,7 +782,7 @@
         <control type="group">
             <visible>$PARAM[visible]</visible>
             <control type="image">
-                <texture colordiffuse="$PARAM[colordiffuse-texture]" border="50,50,0,50">$PARAM[texture]</texture>
+                <texture colordiffuse="$PARAM[colordiffuse-texture]" border="40,40,0,40">$PARAM[texture]</texture>
                 <right>24</right>
             </control>
             <control type="image">
@@ -804,7 +804,7 @@
             <control type="group" id="$PARAM[groupid]">
                 <left>0</left>
                 <width>100</width>
-                <height>100</height>
+                <height>80</height>
                 <visible>$PARAM[visible]</visible>
                 <include content="Object_Info_Button_Left">
                     <param name="visible" value="Control.HasFocus($PARAM[id]) | $PARAM[focused]" />
@@ -825,9 +825,9 @@
                 <left>-14</left>
                 <width>$PARAM[width]</width>
                 <visible>$PARAM[visible]</visible>
-                <height>100</height>
-                <texturenofocus border="0,50,50,50" flipx="true" colordiffuse="main_fg_12">common/button-view-nf.png</texturenofocus>
-                <texturefocus border="0,50,50,50" flipx="true" colordiffuse="Selected">common/button-view-fo.png</texturefocus>
+                <height>80</height>
+                <texturenofocus border="0,40,40,40" flipx="true" colordiffuse="main_fg_12">common/button-view-nf.png</texturenofocus>
+                <texturefocus border="0,40,40,40" flipx="true" colordiffuse="Selected">common/button-view-fo.png</texturefocus>
                 <font>font_info_buttons</font>
                 <label>$PARAM[label][COLOR=00ffffff]------[/COLOR]</label>
                 <align>left</align>

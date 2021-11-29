@@ -5,11 +5,6 @@
     <onload>Dialog.Close(videoosd,true)</onload>
     <include>Animation_FadeIn</include>
     <controls>
-        <control type="image">
-            <height>120</height>
-            <top>-40</top>
-            <texture flipy="true">common/dim-osd.png</texture>
-        </control>
         <control type="group">
             <include content="View_Pad">
                 <param name="top" value="view_pad" />
