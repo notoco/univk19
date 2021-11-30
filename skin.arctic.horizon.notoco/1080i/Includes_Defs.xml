@@ -746,7 +746,6 @@
 
     <!-- Busy Spinner -->
     <include name="Defs_BusySpinner">
-        <param name="textcolor" default="ffededed" />
         <definition>
             <control type="group">
                 <height>80</height>
@@ -776,7 +775,7 @@
                         <aspectratio>keep</aspectratio>
                     </control>
                     <control type="image">
-                        <texture colordiffuse="#000000">dialog/loading-spinner.png</texture>
+                        <texture colordiffuse="#BFBFBF">dialog/loading-spinner.png</texture>
                         <aspectratio>keep</aspectratio>
                         <animation effect="fade" condition="true" start="75" end="0" pulse="true" time="1000">Conditional</animation>
                     </control>
