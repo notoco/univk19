@@ -72,10 +72,7 @@
                     <control type="group">
                         <top>50</top>
                         <height>item_cast_height</height>
-                        <include content="Defs_BusySpinner" condition="$PARAM[spinner-visible]">
-                            <param name="label" value="$LOCALIZE[31428]..." />
-                            <param name="textcolor" value="main_fg_70" />
-                        </include>
+                        <include content="Defs_BusySpinner" condition="$PARAM[spinner-visible]"/>
                         <visible>Container($PARAM[id]).IsUpdating</visible>
                         <visible>Integer.IsEqual(Container($PARAM[id]).NumAllItems,0) | $PARAM[showonupdate]</visible>
                     </control>

@@ -886,9 +886,7 @@
                         <animation effect="fade" start="0" end="100" time="300">VisibleChange</animation>
                         <visible>Container(5610).IsUpdating</visible>
                         <visible>Integer.IsEqual(Container(5610).NumAllItems,0)</visible>
-                        <include content="Defs_BusySpinner">
-                            <param name="textcolor" value="main_fg_70" />
-                        </include>
+                        <include content="Defs_BusySpinner"/>
                     </control>
                     <control type="group">
                         <bottom>250</bottom>

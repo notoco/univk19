@@ -46,9 +46,7 @@
                         <centerleft>50%</centerleft>
                         <width>240</width>
                         <visible>Container(550).IsUpdating</visible>
-                        <include content="Defs_BusySpinner">
-                            <param name="label" value="$LOCALIZE[31428]..." />
-                        </include>
+                        <include content="Defs_BusySpinner"/>
                     </control>
                 </control>
             </control>
