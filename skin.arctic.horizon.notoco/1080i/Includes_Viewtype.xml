@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
     <include name="ViewIDs"><views>50,51,5151,501,55,500,52,5252,502,503,53,54,5454,504,56,57,58,59</views></include>
-    <include name="Viewtype_Info_Right"><right>600</right></include>
+    <include name="Viewtype_Info_Right"><right>620</right></include>
     <include name="Viewtype_Info_Right_FixedHome"><right>560</right></include>
 
     <include name="Viewtypes">
@@ -112,20 +112,22 @@
                         <aspectratio scalediffuse="true" align="center" aligny="bottom">keep</aspectratio>
                         <visible>[!Control.IsVisible(51) + String.IsEmpty(ListItem.Art(clearlogo)) + Container.Content(episodes)]</visible>
                         <fadetime>400</fadetime>
-                        <right>0</right>
-                        <bottom>450</bottom>
-                        <height>320</height>
-                        <width>560</width>
+                        <right>-28</right>
+                        <bottom>435</bottom>
+                        <height>384</height>
+                        <width>672</width>
                     </control>
                     <control type="image">
-                        <texture background="true">$INFO[ListItem.Art(fanart)]</texture>
-                        <aspectratio align="center" aligny="bottom" scalediffuse="false">keep</aspectratio>
+                        <texture background="true" diffuse="diffuse/landscape-big.png">$INFO[ListItem.Art(fanart)]</texture>
+                        <bordersize>20</bordersize>
+                        <bordertexture border="30" colordiffuse="Shadow">common/shadow-20.png</bordertexture>
+                        <aspectratio scalediffuse="true" align="center" aligny="bottom">keep</aspectratio>
                         <visible>[!Control.IsVisible(51) + String.IsEmpty(ListItem.Art(clearlogo)) + !Container.Content(episodes)]</visible>
                         <fadetime>400</fadetime>
-                        <right>0</right>
-                        <bottom>500</bottom>
-                        <height>320</height>
-                        <width>560</width>
+                        <right>-28</right>
+                        <bottom>435</bottom>
+                        <height>384</height>
+                        <width>672</width>
                     </control>
                     <control type="image">
                         <texture background="true">$VAR[Image_DiscArt]</texture>

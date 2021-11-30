@@ -1500,22 +1500,20 @@
                         <param name="plotheight" value="$PARAM[plotheight]" />
                         <param name="plotheight-nr" value="$PARAM[plotheight-nr]" />
                     </include>
-                </control>
-                <control type="group">
+            	</control>
                    <control type="image">
                         <visible>!String.IsEmpty(ListItem.EPGEventIcon)</visible>
                         <top>-420</top>
                         <left>1260</left>
-                        <height>345</height>
-                        <width>645</width>
+                        <height>384</height>
+                        <width>672</width>
                         <fadetime>400</fadetime>
                         <bordersize>20</bordersize>
                         <bordertexture border="30" colordiffuse="Shadow">common/shadow-20.png</bordertexture>
-                        <aspectratio scalediffuse="true" align="left" aligny="bottom">keep</aspectratio>
+                        <aspectratio scalediffuse="true" align="center" aligny="bottom">keep</aspectratio>
                         <texture background="true" diffuse="diffuse/landscape-big.png">$INFO[ListItem.EPGEventIcon]</texture>
                     </control>
-                </control>
-                <control type="group">
+
                    <control type="image">
                         <visible>String.IsEmpty(ListItem.EPGEventIcon)</visible>
                         <top>-420</top>
@@ -1525,7 +1523,6 @@
                         <width>300</width>
                         <height>300</height>
                     </control>
-                </control>
             </control>
         </definition>
     </include>
