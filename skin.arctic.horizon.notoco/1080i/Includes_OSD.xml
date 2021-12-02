@@ -141,7 +141,7 @@
                     <!-- Artwork -->
                     <control type="group">
                         <!-- <right>0</right> -->
-                        <bottom>-40</bottom>
+                        <bottom>-20</bottom>
                         <left>-40</left>
                         <width>352</width>
                         <height>528</height>
@@ -149,8 +149,6 @@
                             <include content="Defs_Pad">
                                 <param name="pad" value="-20" />
                             </include>
-                            <bordersize>20</bordersize>
-                            <bordertexture border="30" colordiffuse="Shadow">common/shadow-20.png</bordertexture>
                             <aspectratio scalediffuse="true" align="left" aligny="bottom">keep</aspectratio>
                             <visible>!String.IsEmpty(Player.Art(poster)) | !String.IsEmpty(Player.Art(tvshow.poster)) | !String.IsEmpty(MusicPlayer.Cover) | !String.IsEmpty(Player.Art(thumb) | String.IsEmpty(Pvr.EPGEventIcon)</visible>
                             <texture background="true" diffuse="diffuse/poster-big.png">$VAR[Image_OSD_Artwork]</texture>
@@ -220,6 +218,19 @@
                                     <aspectratio>keep</aspectratio>
                                     <texture colordiffuse="panel_fg_100">$INFO[VideoPlayer.AudioChannels,flags/monochrome/channels/,.png]</texture>
                                     <visible>Skin.HasSetting(EnableMonochromeFlags)</visible>
+                                </control>
+                                 <control type="label">
+                                    <centertop>50%</centertop>
+                                    <description>Audio</description>
+                                    <width>48</width>
+                                    <height>48</height>
+                                    <label>$INFO[VideoPlayer.AudioLanguage,[UPPERCASE],[/UPPERCASE]]</label>
+                                    <label>POL</label>
+                                    <textcolor>panel_fg_100</textcolor>
+                                    <font>font_info_buttons</font>
+                                    <align>right</align>
+                                    <aligny>top</aligny>
+                                    <visible>!String.IsEmpty(VideoPlayer.AudioLanguage)</visible>
                                 </control>
                             </control>
                         </control>
