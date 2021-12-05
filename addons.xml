@@ -245,6 +245,61 @@ v.2.1.0
 	</extension>
 </addon>
 
+<addon id="service.hyperion.ng"
+       name="Hyperion.NG"
+       version="n19.3.108"
+       provider-name="Team CoreELEC">
+  <requires>
+    <import addon="xbmc.python" version="3.0.0"/>
+
+  </requires>
+  <extension point="xbmc.service" library="default.py">
+    <provides></provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>Hyperion.NG: an AmbiLight controller</summary>
+    <description>
+Hyperion.NG(2.0.0-alpha.11) is an modern opensource AmbiLight implementation.
+    </description>
+    <disclaimer>
+
+    </disclaimer>
+    <platform>all</platform>
+    <news>
+107
+- Update to 2.0.0-alpha.10 + Amlogic Fixup
+106
+- Update to 2.0.0-alpha.9
+105
+- Update to 2.0.0-alpha.8
+104
+- Update to 2.0.0-alpha.7
+103
+- Update to fe728b15:
+    Use embed qjpeg plugin for WebUI preview
+    Enable external V4L2 Grabber for AMLogic devices
+    Addon cleaned up
+102
+- Update to 6b983c7a:
+    Use 'hyperion.db' instead of 'hyperion.config.json'
+101
+- Add Platform script
+100
+- Initial Release @e438bc6
+    </news>
+    <assets>
+      <icon>resources/icon.png</icon>
+      <fanart>resources/fanart.png</fanart>
+<screenshot>resources/screenshot-01.jpg</screenshot>
+<screenshot>resources/screenshot-02.jpg</screenshot>
+<screenshot>resources/screenshot-03.jpg</screenshot>
+<screenshot>resources/screenshot-04.jpg</screenshot>
+<screenshot>resources/screenshot-05.jpg</screenshot>
+
+    </assets>
+  </extension>
+</addon>
+
 <addon id="service.upnext" name="UpNext" version="2.0.0+dev.24" provider-name="im85288">
     <requires>
         <import addon="xbmc.python" version="3.0.0" optional="true"/>
