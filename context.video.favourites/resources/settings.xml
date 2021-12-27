@@ -1,0 +1,5 @@
+<settings>
+<category label="Appearance">
+<setting id="advanced" label="Show Advanced Commands" type="bool" default="false" />
+</category>
+</settings>
