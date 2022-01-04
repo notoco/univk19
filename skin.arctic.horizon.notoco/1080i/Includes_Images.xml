@@ -165,6 +165,7 @@
     </variable>
 
     <variable name="Image_OSD_Artwork">
+        <value condition="!String.IsEmpty(Player.Art(season.poster))">$INFO[Player.Art(season.poster)]</value>
         <value condition="!String.IsEmpty(Player.Art(tvshow.poster))">$INFO[Player.Art(tvshow.poster)]</value>
         <value condition="!String.IsEmpty(Player.Art(poster))">$INFO[Player.Art(poster)]</value>
         <value condition="!String.IsEmpty(VideoPlayer.Cover) + String.IsEmpty(Pvr.EPGEventIcon)">$INFO[VideoPlayer.Cover]</value>
