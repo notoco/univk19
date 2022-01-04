@@ -33,9 +33,9 @@ if __name__ == '__main__':
         if (osd == True):  
             xbmc.executebuiltin("Action(Info)")
         else:
-            xbmc.executebuiltin("Action(Stop)")
+            xbmc.executebuiltin("PlayerControl(Stop)")
         if (pause == True):  
-            xbmc.executebuiltin("Action(Play)")
+            xbmc.executebuiltin("PlayerControl(Play)")
             
 #EPG
     elif arg == "epg":
