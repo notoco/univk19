@@ -36,6 +36,7 @@ if __name__ == '__main__':
             xbmc.executebuiltin("PlayerControl(Stop)")
         if (pause == True):  
             xbmc.executebuiltin("PlayerControl(Play)")
+            xbmc.executebuiltin("Action(Info)")
             
 #EPG
     elif arg == "epg":
