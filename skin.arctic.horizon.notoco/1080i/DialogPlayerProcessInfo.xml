@@ -5,20 +5,14 @@
     <controls>
 
         <include content="Object_ShadowSpot_Group">
-            <param name="width" value="1600" />
-            <param name="height" value="360" />
+            <param name="width" value="1920" />
+            <param name="height" value="280" />
             <include content="Object_ShadowSpot_Grouplist">
                 <include content="Object_ShadowSpot_Label">
-                    <param name="label" value="$INFO[Player.Process(videodecoder),[COLOR panel_fg_100]$LOCALIZE[31279]:[/COLOR] ]$VAR[Label_VideoHWDecoder, (,)]" />
+                    <param name="label" value="$INFO[Player.Process(videodecoder),[COLOR panel_fg_100]$LOCALIZE[31279]:[/COLOR] ]$VAR[Label_VideoHWDecoder, (,)]    $INFO[Player.Process(pixformat),[COLOR panel_fg_100]$LOCALIZE[31280]:[/COLOR] ]" />
                 </include>
                 <include content="Object_ShadowSpot_Label">
-                    <param name="label" value="$INFO[Player.Process(pixformat),[COLOR panel_fg_100]$LOCALIZE[31280]:[/COLOR] ]" />
-                </include>
-                <include content="Object_ShadowSpot_Label">
-                    <param name="label" value="$INFO[Player.Process(deintmethod),[COLOR panel_fg_100]$LOCALIZE[16038]:[/COLOR] ]" />
-                </include>
-                <include content="Object_ShadowSpot_Label">
-                    <param name="label" value="$INFO[Player.Process(videowidth),[COLOR panel_fg_100]$LOCALIZE[38031]:[/COLOR] ,x]$INFO[Player.Process(videoheight),, px]$INFO[Player.Process(videodar),$COMMA , AR]$INFO[Player.Process(videofps),$COMMA , FPS]" />
+                    <param name="label" value="$INFO[Player.Process(deintmethod),[COLOR panel_fg_100]$LOCALIZE[16038]:[/COLOR] ]    $INFO[Player.Process(videowidth),[COLOR panel_fg_100]$LOCALIZE[38031]:[/COLOR] ,x]$INFO[Player.Process(videoheight),, px]$INFO[Player.Process(videodar),$COMMA , AR]$INFO[Player.Process(videofps),$COMMA , FPS]" />
                 </include>
                 <include content="Object_ShadowSpot_Label">
                     <param name="label" value="[COLOR panel_fg_100]$LOCALIZE[460]:[/COLOR] $INFO[Player.Process(audiochannels),,$COMMA ]$INFO[Player.Process(audiodecoder)]$INFO[Player.Process(audiobitspersample),$COMMA , bits]$INFO[Player.Process(audiosamplerate),$COMMA , Hz]   [COLOR panel_fg_100]język:[/COLOR] $INFO[VideoPlayer.AudioLanguage]" />
@@ -28,7 +22,7 @@
                 </include>
                 <control type="progress">
                     <top>5</top>
-                    <width>1400</width>
+                    <width>1860</width>
                     <height>10</height>
                     <left>0</left>
                     <info>System.CpuUsage</info>
@@ -38,7 +32,7 @@
                 </include>
                 <control type="progress">
                     <top>5</top>
-                    <width>1400</width>
+                    <width>1860</width>
                     <height>10</height>
                     <left>0</left>
                     <info>Player.CacheLevel</info>
