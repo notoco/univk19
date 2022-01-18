@@ -43,7 +43,7 @@
         <font>
             <name>font_button</name>
             <style>uppercase</style>
-            <filename>Arial-Caps.ttf</filename>
+            <filename>Arial.ttf</filename>
             <size>24</size>
         </font>
         <font>
@@ -80,7 +80,7 @@
         <font>
             <name>font_mini</name>
             <style>uppercase</style>
-            <filename>Arial-Caps.ttf</filename>
+            <filename>Arial.ttf</filename>
             <size>20</size>
         </font>
 
