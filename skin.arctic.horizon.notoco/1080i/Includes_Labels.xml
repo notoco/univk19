@@ -345,8 +345,8 @@
     </variable>
 
     <variable name="Label_OSD_Duration">
-        <value condition="PVR.IsPlayingTV + !String.IsEmpty(PVR.EpgEventDuration)">$INFO[PVR.EpgEventDuration]</value>
-        <value>$INFO[Player.Duration]</value>
+        <value condition="PVR.IsPlayingTV + !String.IsEmpty(PVR.EpgEventDuration)">$INFO[PVR.EpgEventRemainingTime]</value>
+        <value>$INFO[Player.TimeRemaining]</value>
     </variable>
 
     <variable name="Label_OSD_FinishTime">
