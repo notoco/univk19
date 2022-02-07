@@ -11,14 +11,14 @@ state = addon.getSetting('state')
 icon = addon.getAddonInfo('icon')
 
 def turn_off():
-    data = '{"command":"componentstate", "componentstate":{"component": "LEDDEVICE", "state": false }, "tan":1}'
-    response = requests.post('http://localhost:8090/json-rpc', headers=headers, data=data)
+    data = {"command":"componentstate", "componentstate":{"component": "LEDDEVICE", "state": False }, "tan":1}
+    response = requests.post('http://localhost:8090/json-rpc', headers=headers, json=data)
     addon.setSetting('state', 'false')
 
 def turn_on():
     #subprocess.Popen("hyperion-remote -E LEDDEVICE", shell=True)
-    data = '{"command":"componentstate", "componentstate":{"component": "LEDDEVICE", "state": true }, "tan":1}'
-    response = requests.post('http://localhost:8090/json-rpc', headers=headers, data=data)
+    data = {"command":"componentstate", "componentstate":{"component": "LEDDEVICE", "state": True }, "tan":1}
+    response = requests.post('http://localhost:8090/json-rpc', headers=headers, json=data)
     addon.setSetting('state', 'true')
 
 def cpu():
