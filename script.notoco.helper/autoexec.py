@@ -4,6 +4,6 @@ import control
 state = control.get_setting('state')
 
 if state == 'true':
-    control.turn_on()
+    control.ambilight_turn_on()
 else:
-    control.turn_off()
+    control.ambilight_turn_off()

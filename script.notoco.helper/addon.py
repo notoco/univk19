@@ -15,16 +15,20 @@ if __name__ == '__main__':
        pass
 # AMBILIGHT
     if arg == "amb_on":
-        control.turn_on()
+        control.ambilight_turn_on()
     elif arg == "amb_off":
-        control.turn_off()
+        control.ambilight_turn_off()
     elif arg == "amb_switch":
         if state == 'true':
-            control.turn_off()
+            control.ambilight_turn_off()
             control.send_notification("Ambilight", "Wyłączono podświetlenie")
         else:
-            control.turn_on()
+            control.ambilight_turn_on()
             control.send_notification("Ambilight", "Włączono podświetlenie")
+    elif arg == "amb_up":
+        control.ambilight_bright_up()
+    elif arg == "amb_down":
+        control.ambilight_bright_down()
 
 #ESC
     elif arg == "esc":

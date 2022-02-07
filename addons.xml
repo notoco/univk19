@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="script.notoco.helper" name="pomocnik notoco" version="1.4.0" provider-name="notoco">
+<addon id="script.notoco.helper" name="pomocnik notoco" version="1.4.2" provider-name="notoco">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests"/>
@@ -283,7 +283,7 @@ provider-name="primaeval">
 
 <addon id="service.hyperion.ng"
        name="Hyperion.NG"
-       version="n19.3.108"
+       version="19.3.108"
        provider-name="Team CoreELEC">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>

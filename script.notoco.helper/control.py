@@ -10,16 +10,33 @@ addon = xbmcaddon.Addon()
 state = addon.getSetting('state')
 icon = addon.getAddonInfo('icon')
 
-def turn_off():
+def ambilight_turn_off():
     data = {"command":"componentstate", "componentstate":{"component": "LEDDEVICE", "state": False }, "tan":1}
     response = requests.post('http://localhost:8090/json-rpc', headers=headers, json=data)
     addon.setSetting('state', 'false')
 
-def turn_on():
-    #subprocess.Popen("hyperion-remote -E LEDDEVICE", shell=True)
+def ambilight_turn_on():
     data = {"command":"componentstate", "componentstate":{"component": "LEDDEVICE", "state": True }, "tan":1}
     response = requests.post('http://localhost:8090/json-rpc', headers=headers, json=data)
     addon.setSetting('state', 'true')
+
+def ambilight_bright_up():
+    bright = int(addon.getSetting('bright'))
+    if bright < 100:
+        bright = bright+10
+        data = {"command":"adjustment", "adjustment":{"brightness": bright }, "tan":1}
+        response = requests.post('http://localhost:8090/json-rpc', headers=headers, json=data)
+        addon.setSetting('bright', str(bright))
+        send_notification("Ambilight", "+10")
+
+def ambilight_bright_down():
+    bright = int(addon.getSetting('bright'))
+    if bright > 10:
+        bright = bright-10
+        data = {"command":"adjustment", "adjustment":{"brightness": bright }, "tan":1}
+        response = requests.post('http://localhost:8090/json-rpc', headers=headers, json=data)
+        addon.setSetting('bright', str(bright))
+        send_notification("Ambilight", "-10")
 
 def cpu():
     send_notification("", "[B]CPU:[/B] $INFO[System.CPUUsage]  [B]Temperatura:[/B] $INFO[System.CPUTemperature]   [B]RAM:[/B] $INFO[System.memory(used.percent)] [B]Up:[/B] $INFO[System.Uptime]")
