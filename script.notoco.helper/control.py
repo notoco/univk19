@@ -1,18 +1,24 @@
 # -*- coding: utf-8 -*-
 import xbmcaddon
 import xbmcgui
-import subprocess
+import requests
 
+headers = {
+    'Content-Type': 'application/json',
+}
 addon = xbmcaddon.Addon()
 state = addon.getSetting('state')
 icon = addon.getAddonInfo('icon')
 
 def turn_off():
-    subprocess.Popen("hyperion-remote -D LEDDEVICE", shell=True)
+    data = '{"command":"componentstate", "componentstate":{"component": "LEDDEVICE", "state": false }, "tan":1}'
+    response = requests.post('http://localhost:8090/json-rpc', headers=headers, data=data)
     addon.setSetting('state', 'false')
 
 def turn_on():
-    subprocess.Popen("hyperion-remote -E LEDDEVICE", shell=True)
+    #subprocess.Popen("hyperion-remote -E LEDDEVICE", shell=True)
+    data = '{"command":"componentstate", "componentstate":{"component": "LEDDEVICE", "state": true }, "tan":1}'
+    response = requests.post('http://localhost:8090/json-rpc', headers=headers, data=data)
     addon.setSetting('state', 'true')
 
 def cpu():
