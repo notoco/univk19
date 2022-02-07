@@ -27,7 +27,7 @@ def ambilight_bright_up():
         data = {"command":"adjustment", "adjustment":{"brightness": bright }, "tan":1}
         response = requests.post('http://localhost:8090/json-rpc', headers=headers, json=data)
         addon.setSetting('bright', str(bright))
-        send_notification("Ambilight", "+10")
+        send_notification("Ambilight", "Jasność: "+str(bright))
 
 def ambilight_bright_down():
     bright = int(addon.getSetting('bright'))
@@ -36,7 +36,7 @@ def ambilight_bright_down():
         data = {"command":"adjustment", "adjustment":{"brightness": bright }, "tan":1}
         response = requests.post('http://localhost:8090/json-rpc', headers=headers, json=data)
         addon.setSetting('bright', str(bright))
-        send_notification("Ambilight", "-10")
+        send_notification("Ambilight", "Jasność: "+str(bright))
 
 def cpu():
     send_notification("", "[B]CPU:[/B] $INFO[System.CPUUsage]  [B]Temperatura:[/B] $INFO[System.CPUTemperature]   [B]RAM:[/B] $INFO[System.memory(used.percent)] [B]Up:[/B] $INFO[System.Uptime]")
