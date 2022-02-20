@@ -85,7 +85,7 @@
                 <include content="View_Info_Grouplist" description="Top Section Info">
                     <param name="container" value="Container." />
                     <top>-75</top>
-                    <height>285</height>
+                    <height>400</height>
                     <visible>!Control.HasFocus(530)</visible>
                     <visible>!Control.HasFocus(580)</visible>
                     <visible>!Control.HasFocus(590)</visible>

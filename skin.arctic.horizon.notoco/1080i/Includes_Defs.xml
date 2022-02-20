@@ -367,7 +367,7 @@
         <orientation>horizontal</orientation>
         <usecontrolcoords>true</usecontrolcoords>
         <itemgap>-10</itemgap>
-        <bottom>400</bottom>
+        <bottom>360</bottom>
     </include>
 
     <include name="Defs_Settings_OnLoad">
