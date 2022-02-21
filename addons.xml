@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="script.notoco.helper" name="pomocnik notoco" version="1.4.5" provider-name="notoco">
+<addon id="script.notoco.helper" name="pomocnik notoco" version="1.4.3" provider-name="notoco">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests"/>
-        <import addon="script.module.kodipl" version="0.0.2" />
     </requires>
     <extension point="xbmc.python.script" library="addon.py" />
     <extension point="xbmc.service" library="autoexec.py" />
