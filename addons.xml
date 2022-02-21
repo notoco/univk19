@@ -281,6 +281,31 @@ provider-name="primaeval">
 </extension>
 </addon>
 
+<addon id="script.module.libka" name="Kodi-PL Module" version="0.0.8" provider-name="rysson">
+	<requires>
+		<import addon="xbmc.python" version="3.0.0" />
+		<import addon="script.module.requests" />
+		<import addon="script.module.urllib3" />
+		<!-- <import addon="script.module.inputstreamhelper" version="0.3.3"/> -->
+	</requires>
+	<extension point="xbmc.python.module" library="lib">
+	</extension>
+	<extension point="xbmc.addon.metadata">
+		<summary lang="en_GB">Helper library for Kodi-PL Addons</summary>
+		<summary lang="pl_PL">Biblioteka dla dodatków Kodi-PL</summary>
+		<platform>all</platform>
+		<license>MIT</license>
+		<source>https://github.com/kodi-pl/kodipl/script.module.kodipl</source>
+		<news>v0.0.4
+[add] storage
+[new] settings, search, routing module
+[fix] routes, menu, folder etc.
+v0.0.2
+[new] drop support for PY2 and K18
+[new] initial</news>
+	</extension>
+</addon>
+
 <addon id="service.hyperion.ng"
        name="Hyperion.NG"
        version="19.3.108"
@@ -332,6 +357,32 @@ Hyperion.NG(2.0.0-alpha.11) is an modern opensource AmbiLight implementation.
 <screenshot>resources/screenshot-04.jpg</screenshot>
 <screenshot>resources/screenshot-05.jpg</screenshot>
 
+    </assets>
+  </extension>
+</addon>
+
+<addon id="plugin.video.odysee" name="Odysee (Unofficial)" version="1.0.3" provider-name="heppen">
+  <requires>
+    <import addon="xbmc.python" version="3.0.0"/>
+    <import addon="xbmc.addon" version="18.9.701"/>
+    <import addon="script.module.libka" version="0.0.2"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="addon.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en_GB">Video add-on for Odysee</summary>
+    <description lang="en_GB">This is Unofficial add-on for Odysee</description>
+    <disclaimer lang="en_GB">This is an unofficial add-on that only allows you to view content. For full content, please visit the official site.</disclaimer>
+    <language>en</language>
+    <platform>all</platform>
+    <license>GPL-2.0</license>
+    <website>https://odysee.com</website>
+    <source>https://github.com/kodi-pl-addons/plugin.video.odysee</source>
+    <news>Rewritten Search function using KodiPL library module</news>
+    <assets>
+        <icon>resources/icon.png</icon>
+        <fanart>resources/fanart.jpg</fanart>
     </assets>
   </extension>
 </addon>
