@@ -326,7 +326,7 @@
         <!-- Progress Text -->
         <control type="group">
             <bottom>view_pad</bottom>
-            <height>item_list_height_half</height>
+            <height>60</height>
             <left>440</left>
             <right>view_pad</right>
             <control type="label">
@@ -356,17 +356,7 @@
                 <control type="label">
                     <textcolor>panel_fg_100</textcolor>
                     <include>OSD_Menubar_Items</include>
-                    <label>Minęło: $VAR[Label_OSD_Time]</label>
-                </control>
-                <control type="label">
-                    <textcolor>$VAR[ColorHighlight]</textcolor>
-                    <include>OSD_Menubar_Items</include>
-                    <label>|</label>
-                </control>
-                <control type="label">
-                    <textcolor>panel_fg_100</textcolor>
-                    <include>OSD_Menubar_Items</include>
-                    <label>Do końca: $VAR[Label_OSD_Duration]</label>
+                    <label>Minęło: $VAR[Label_OSD_Time][CR]Do końca: $VAR[Label_OSD_Duration]</label>
                 </control>
             </control>
         </control>
