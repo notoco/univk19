@@ -115,17 +115,6 @@
                 <texture>common/dim-overlay.png</texture>
             </control>
 
-            <!-- Overlay 
-            <control type="image">
-                <bottom>0</bottom>
-                <top>0</top>
-                <texture>common/dim-gradient.png</texture>
-                <visible>Window.IsVisible(1143) | [$EXP[Exp_VideoOSD_LargeInfo] + !Skin.HasSetting(DisableOSDInfo)]</visible>
-                <visible>!Window.IsVisible(DialogPlayerProcessInfo.xml)</visible>
-                <include>Animation_FadeIn</include>
-                <include>Animation_FadeOut</include>
-            </control> -->
-
             <!-- Large Info OSD -->
             <control type="group">
                 <visible>$EXP[Exp_VideoOSD_LargeInfo] | $EXP[Exp_VideoOSD_SmallInfo]</visible>
@@ -245,49 +234,9 @@
                             <height>76</height>
                             <visible>VideoPlayer.Content(movies) | VideoPlayer.Content(episodes)</visible>
                         </include>
-
-<!--                        <control type="textbox">
-                            <top>15</top>
-                            <height max="125">auto</height>
-                            <font>font_plotbox</font>
-                            <textcolor>panel_fg_70</textcolor>
-                            <label>$INFO[VideoPlayer.Plot,, ]$INFO[MusicPlayer.Property(Artist_Description),, ]$INFO[MusicPlayer.Property(Album_Description)]</label>
-                            <visible>!String.IsEmpty(VideoPlayer.Plot) | !String.IsEmpty(MusicPlayer.Property(Artist_Description)) | !String.IsEmpty(MusicPlayer.Property(Album_Description))</visible>
-                        </control>
--->
                     </control>
                 </control>
             </control>
-
-            <!-- Small Info OSD 
-            <control type="group">
-                <visible>$EXP[Exp_VideoOSD_SmallInfo]</visible>
-                <visible>!Window.IsVisible(DialogPlayerProcessInfo.xml)</visible>
-                <visible>!Window.IsVisible(1143)</visible>
-                <include>Animation_FadeIn</include>
-                <include>Animation_FadeOut</include>
-                <control type="group" description="info">
-                    <left>view_pad</left>
-                    <right>view_pad</right>
-                    <bottom>200</bottom>
-=                    <control type="grouplist">
-                        <usecontrolcoords>true</usecontrolcoords>
-                        <bottom>-7</bottom>
-                        <right>0</right>
-                        <align>bottom</align>
-                        <itemgap>0</itemgap>
-                        <include content="Object_Info_Title">
-                            <param name="label" value="$VAR[Label_OSD_Title]" />
-                            <param name="textcolor" value="panel_fg_100" />
-                        </include>
-                        <include content="Object_Info_Line">
-                            <param name="label" value="$VAR[Label_56560_InfoLine]" />
-                            <param name="image" value="$VAR[Image_56560_VideoQuality]" />
-                            <param name="textcolor" value="panel_fg_100" />
-                        </include>
-                    </control>
-                </control>
-            </control>-->
             <include>OSD_Clock</include>
             <include>OSD_Progress_Text</include>
             <include>OSD_Progress_Bar</include>
@@ -353,6 +302,7 @@
                 <usecontrolcoords>true</usecontrolcoords>
                 <orientation>horizontal</orientation>
                 <control type="label">
+                    <align>right</align>
                     <textcolor>panel_fg_100</textcolor>
                     <include>OSD_Menubar_Items</include>
                     <label>Minęło: $VAR[Label_OSD_Time][CR]Do końca: $VAR[Label_OSD_Duration]</label>
