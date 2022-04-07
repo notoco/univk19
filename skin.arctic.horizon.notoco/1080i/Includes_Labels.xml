@@ -235,6 +235,14 @@
         <value>$INFO[System.Time,$LOCALIZE[555] ,]</value>
     </variable>
 
+    <variable name="Label_NowPlaying_Sublabel2">
+        <value condition="!String.IsEmpty(MusicPlayer.Artist)">$INFO[System.Time,$LOCALIZE[555] ,]$INFO[MusicPlayer.Artist,  •  ,]$INFO[Player.Time,  •  ,]$INFO[Player.Duration, / ,]</value>
+        <value condition="!String.IsEmpty(PVR.EpgEventFinishTime) + !String.IsEqual(PVR.EpgEventFinishTime,System.Time)">$INFO[PVR.EpgEventFinishTime, $LOCALIZE[31207] ,]</value>
+        <value condition="!String.IsEmpty(VideoPlayer.EndTime) + !String.IsEqual(VideoPlayer.EndTime,System.Time)">$INFO[VideoPlayer.EndTime, $LOCALIZE[31207] ,]</value>
+        <value condition="!String.IsEmpty(Player.FinishTime) + !String.IsEqual(Player.FinishTime,System.Time)">$INFO[Player.FinishTime, $LOCALIZE[31207] ,]</value>
+        <value>$INFO[System.Time,$LOCALIZE[555] ,]</value>
+    </variable>
+
     <variable name="Label_PVRGuide_Title">
         <value condition="Control.HasFocus(9400) + !String.IsEmpty(ListItem.NextTitle)">$INFO[ListItem.NextTitle]</value>
         <value condition="!Control.HasFocus(9400) + !String.IsEmpty(ListItem.Title)">$INFO[ListItem.Title]</value>

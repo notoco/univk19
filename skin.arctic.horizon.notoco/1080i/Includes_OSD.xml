@@ -342,9 +342,8 @@
                 <control type="label">
                     <align>center</align>
                     <scroll>true</scroll>
-                    <textcolor>$VAR[ColorHighlight]</textcolor>
                     <include>OSD_Menubar_Items</include>
-                    <label>$VAR[Label_OSD_FinishTime,[COLOR=panel_fg_100]$LOCALIZE[31002] ,[/COLOR]]</label>
+                    <label>$VAR[Label_NowPlaying_Sublabel2]</label>
                     <animation effect="fade" end="100" start="0" delay="300" time="1" reversible="false">Visible</animation>
                 </control>
             </control>
