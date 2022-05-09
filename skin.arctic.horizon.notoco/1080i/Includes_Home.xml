@@ -1446,7 +1446,7 @@
                 <param name="starrating" value="Container(56560).ListItemAbsolute(0).Property(Rating)" />
                 <visible>String.IsEqual(Container(56560).ListItemAbsolute(0).Property(DBType),movie) | String.IsEqual(Container(56560).ListItemAbsolute(0).Property(DBType),episode) | String.IsEqual(Container(56560).ListItemAbsolute(0).Property(DBType),tvshow) | String.IsEqual(Container(56560).ListItemAbsolute(0).Property(DBType),season) | String.IsEqual(Container(56560).ListItemAbsolute(0).Property(DBType),set)</visible>
             </include>
-            <include content="View_Info_Grouplist_Plotbox" condition="!Skin.HasSetting(DisableAllRatings)">
+            <!--<include content="View_Info_Grouplist_Plotbox" condition="!Skin.HasSetting(DisableAllRatings)">
                 <param name="episodetitle" value="$INFO[Container(56560).ListItemAbsolute(0).Property(Title)]" />
                 <param name="episodetitle-visible" value="!String.IsEmpty(Container(56560).ListItemAbsolute(0).Property(Title)) + String.IsEqual(Container(56560).ListItemAbsolute(0).Property(DBType),episode)" />
                 <param name="plot" value="$VAR[Label_Home_Plot]" />
@@ -1461,7 +1461,7 @@
                 <visible>![String.IsEqual(Container(56560).ListItemAbsolute(0).Property(DBType),movie) | String.IsEqual(Container(56560).ListItemAbsolute(0).Property(DBType),episode) | String.IsEqual(Container(56560).ListItemAbsolute(0).Property(DBType),tvshow) | String.IsEqual(Container(56560).ListItemAbsolute(0).Property(DBType),season) | String.IsEqual(Container(56560).ListItemAbsolute(0).Property(DBType),set)] | Skin.HasSetting(DisableAllRatings)</visible>
                 <height>$PARAM[plotheight-nr]</height>
                 <top>15</top>
-            </include>
+            </include> -->
         </definition>
     </include>
 
