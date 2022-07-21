@@ -556,28 +556,11 @@
                 </control>
                 <control type="grouplist">
                     <top>-150</top>
-                    <left>0</left>
+                    <left>10</left>
                     <orientation>horizontal</orientation>
                     <align>left</align>
                     <itemgap>20</itemgap>
                     <usecontrolcoords>true</usecontrolcoords>
-                    <control type="image">
-                        <fadetime>100</fadetime>
-                        <centertop>50%</centertop>
-                        <width>64</width>
-                        <height>56</height>
-                        <aspectratio align="left">keep</aspectratio>
-                        <texture colordiffuse="panel_fg_100">flags/monochrome/other/3D.png</texture>
-                        <visible>VideoPlayer.IsStereoscopic</visible>
-                    </control>
-                    <control type="image">
-                        <fadetime>100</fadetime>
-                        <centertop>50%</centertop>
-                        <width>62</width>
-                        <height>56</height>
-                        <aspectratio align="left">keep</aspectratio>
-                        <texture colordiffuse="panel_fg_100">$VAR[Image_VideoPlayer_RipSource]</texture>
-                    </control>
                     <control type="image">
                         <fadetime>100</fadetime>
                         <centertop>50%</centertop>
@@ -647,7 +630,20 @@
                         <include content="Defs_Progress_Colorfade">
                         <param name="id" value="6655" />
                         </include>
-                    </control>  
+                    </control>
+                     <control type="label">
+                        <centertop>50%</centertop>
+                        <description>Audio</description>
+                        <width>48</width>
+                        <height>48</height>
+                        <label>$INFO[VideoPlayer.AudioLanguage,[UPPERCASE],[/UPPERCASE]]</label>
+                        <label>POL</label>
+                        <textcolor>panel_fg_100</textcolor>
+                        <font>font_info_buttons</font>
+                        <align>right</align>
+                        <aligny>top</aligny>
+                        <visible>!String.IsEmpty(VideoPlayer.AudioLanguage)</visible>
+                    </control>
                 </control>
                 <control type="textbox">
                     <font>font_plotbox</font>
