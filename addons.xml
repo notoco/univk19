@@ -336,7 +336,7 @@ Hyperion.NG(2.0.0-alpha.11) is an modern opensource AmbiLight implementation.
   </extension>
 </addon>
 
-<addon id="skin.arctic.zephyr.2.notoco" name="Arctic Zephyr 2 Notoco" provider-name="jurialmunkey+notoco" version="2021.08.13.0">
+<addon id="skin.arctic.zephyr.2.notoco" name="Arctic Zephyr 2 Notoco" provider-name="jurialmunkey+notoco" version="2022.07.21.0">
     <requires>
         <import addon="xbmc.gui" version="5.15.0" />
         <import addon="script.skinshortcuts" version="1.1.1" />
