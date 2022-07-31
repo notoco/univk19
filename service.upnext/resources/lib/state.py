@@ -73,7 +73,7 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
         utils.log(msg, name=cls.__name__, level=level)
 
     def reset(self):
-        self.__init__(reset=True)
+        self.__init__(reset=True)  # pylint: disable=unnecessary-dunder-call
 
     def reset_item(self):
         self.current_item = None
@@ -127,12 +127,16 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
 
         # Next episode from Kodi library
         else:
-            next_item, new_season = api.get_next_from_library(
+            current_item = api.get_from_library(
                 self.episodeid,
-                self.tvshowid,
-                SETTINGS.unwatched_only,
-                SETTINGS.next_season,
-                self.shuffle_on
+                self.tvshowid
+            )
+            next_item, new_season = api.get_next_from_library(
+                episode=current_item,
+                tvshowid=self.tvshowid,
+                unwatched_only=SETTINGS.unwatched_only,
+                next_season=SETTINGS.next_season,
+                random=self.shuffle_on
             )
             source = 'library'
             # Show Still Watching? popup if next episode is from next season
@@ -243,12 +247,13 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
             current_item = api.get_now_playing()
             source = 'playlist'
 
-            if not current_item.get('showtitle'):
-                current_item['showtitle'] = '_playlist'
-            if current_item.get('season') == constants.UNDEFINED:
-                current_item['season'] = 0
-            if current_item.get('episode') == constants.UNDEFINED:
-                current_item['episode'] = playlist_position
+            if current_item:
+                if not current_item.get('showtitle'):
+                    current_item['showtitle'] = '_playlist'
+                if current_item.get('season') == constants.UNDEFINED:
+                    current_item['season'] = 0
+                if current_item.get('episode') == constants.UNDEFINED:
+                    current_item['episode'] = playlist_position
 
         elif media_type == 'episode':
             current_item = self._get_library_now_playing()

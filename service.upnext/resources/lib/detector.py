@@ -295,22 +295,11 @@ class UpNextDetector(object):
         )
 
     @staticmethod
-    def _get_video_aspect_ratio(_cache=[None]):  # pylint: disable=dangerous-default-value
-        if not _cache[0]:
-            _cache[0] = float(xbmc.getInfoLabel('Player.Process(VideoDAR)'))
-
-        return _cache[0]
-
-    @staticmethod
-    def _get_video_capture_resolution(max_size=None, aspect_ratio=1):
-        """Method to detect playing video resolution and aspect ratio and
-           return a scaled down resolution tuple and aspect ratio for use in
+    def _get_video_capture_resolution(max_size=None):
+        """Method to return a scaled down capture resolution tuple for use in
            capturing the video frame buffer at a specific size/resolution"""
 
-        width = xbmc.getInfoLabel('Player.Process(VideoWidth)')
-        width = int(width.replace(',', ''))
-        height = xbmc.getInfoLabel('Player.Process(VideoHeight)')
-        height = int(height.replace(',', ''))
+        width, height, aspect_ratio = UpNextDetector._get_video_resolution()
 
         # Capturing render buffer at higher resolution captures more detail
         # depending on Kodi scaling function used, but slows down processing.
@@ -322,55 +311,62 @@ class UpNextDetector(object):
 
         return width, height
 
-    @classmethod
-    def _create_hashes(cls, image_data, image_size, hash_size):
-        image = image_utils.process(
-            None,
-            pipeline=[
-                [image_utils.import_data, image_data, image_size],
-            ],
-            save_file='1_image'
-        )
+    @staticmethod
+    def _get_video_resolution():
+        """Method to detect playing video resolution and aspect ratio"""
 
+        width = xbmc.getInfoLabel('Player.Process(VideoWidth)')
+        width = int(width.replace(',', ''))
+        height = xbmc.getInfoLabel('Player.Process(VideoHeight)')
+        height = int(height.replace(',', ''))
+        aspect_ratio = width / height
+
+        return width, height, aspect_ratio
+
+    @staticmethod
+    def _create_hash(image, hash_size, output_file=None):
         image_hash = image_utils.process(
             image,
-            pipeline=[
+            queue=[
                 [image_utils.resize, hash_size],
-                [image_utils.create_hash],
+                [image_utils.points_of_interest],
                 [image_utils.export_data],
             ],
-            save_file='3_hash_image'
+            save_file=output_file
         )
 
-        if (not SETTINGS.detector_filter
-                or SETTINGS.detect_significance
-                > 100 * sum(image_hash) / len(image_hash)):
-            return image_hash, image_hash
+        return image_hash
+
+    @classmethod
+    def _create_images(cls, image_data, image_size):
+        image = image_utils.process(
+            image_data,
+            queue=[
+                [image_utils.import_data, image_size],
+                [image_utils.auto_level, 5, 95, (0.33, None)],
+            ],
+            # save_file='1_image'
+        )
 
         filtered_image = image_utils.process(
             image,
-            pipeline=[
-                [image_utils.adaptive_contrast, 8, (5, 95, (0.33, None))],
-                [image_utils.apply_filter, 'GaussianBlur,3'],
-                [image_utils.apply_filter, 'UnsharpMask,2,100,16',
-                 'FADE_OUT', image],
-                [image_utils.deviation, 75, 32],
+            queue=[
+                [image_utils.posterise, 3],
+                [image_utils.adaptive_filter, (8, 1, True),
+                 image_utils.auto_level, (5, 95, (0.33, None))],
+                [image_utils.apply_filter,
+                 'UnsharpMask,20,400,64', 'TRIM'],
+                [image_utils.apply_filter,
+                 'RankFilter,5,50', 'TRIM', None, 'difference'],
                 [image_utils.detail_reduce, image, 50],
+                [image_utils.apply_filter,
+                 'GaussianBlur,5', 'TRIM', None, 'multiply'],
+                [image_utils.threshold],
             ],
-            save_file='2_filter'
+            # save_file='2_filter'
         )
 
-        filtered_hash = image_utils.process(
-            filtered_image,
-            pipeline=[
-                [image_utils.resize, hash_size],
-                [image_utils.create_hash],
-                [image_utils.export_data],
-            ],
-            save_file='4_hash_filter'
-        )
-
-        return image_hash, filtered_hash
+        return image, filtered_image
 
     @classmethod
     def _hash_fuzz(cls, image_hash, masking_hash, factor=5):
@@ -384,7 +380,7 @@ class UpNextDetector(object):
 
     @classmethod
     def _hash_similarity(cls, baseline_hash, image_hash, filtered_hash=None):
-        """Method to compare the similarity between two image hashes"""
+        """Method to compare the similarity between image hashes"""
 
         # Check that hashes are not empty and that dimensions are equal
         if not baseline_hash or not image_hash:
@@ -422,22 +418,18 @@ class UpNextDetector(object):
         return similarity - uncertainty
 
     @classmethod
-    def _print_hashes(cls, hashes, size=None, prefix=''):
+    def _print_hashes(cls, hashes, size, prefix=''):
         """Method to print image hashes, side by side, to the Kodi log"""
 
-        if hashes:
-            hashes = [image_hash for image_hash in hashes if image_hash]
         if not hashes:
             return
 
-        num_bits = len(hashes[0])
-        hashes = [image_hash for image_hash in hashes
-                  if len(image_hash) == num_bits]
-
-        if not size:
-            size = int(num_bits ** 0.5)
-            size = [size, size]
+        num_bits = size[0] * size[1]
         row_length = size[0]
+
+        hashes = [image_hash if image_hash and len(image_hash) == num_bits
+                  else (0, ) * num_bits
+                  for image_hash in hashes]
 
         cls.log('\n\t\t\t'.join([
             prefix,
@@ -457,39 +449,64 @@ class UpNextDetector(object):
     def log(cls, msg, level=utils.LOGDEBUG):
         utils.log(msg, name=cls.__name__, level=level)
 
-    def _evaluate_similarity(self, image_hash, filtered_hash):
+    def _evaluate_similarity(self, image, filtered_image, hash_size):
         is_match = False
         possible_match = False
 
         stats = {
             # Similarity to representative end credits hash
-            'credits': 0,
+            'credits': constants.UNDEFINED,
+            # Similarity between detected credits hashes
+            'detected': constants.UNDEFINED,
             # Similarity to previous frame hash
-            'previous': 0,
+            'previous': constants.UNDEFINED,
             # Similarity to hash from other episodes
-            'episodes': 0
+            'episodes': constants.UNDEFINED
         }
 
-        # Calculate similarity between current hash and representative hash
-        stats['credits'] = max(self._hash_similarity(
-            self.hashes.data.get(self.hash_index['credits_small']),
-            image_hash,
-            filtered_hash
-        ), self._hash_similarity(
-            self.hashes.data.get(self.hash_index['credits_large']),
-            image_hash,
-            filtered_hash
-        ))
+        has_credits, expanded_image = image_utils.process(
+            image,
+            queue=[
+                [image_utils.has_credits, filtered_image]
+            ],
+            # save_file='3_expanded'
+        )
+
+        image_hash = self._create_hash(image, hash_size)
+        filtered_hash = self._create_hash(filtered_image, hash_size)
+        expanded_hash = None
+
+        if has_credits:
+            expanded_hash = self._create_hash(expanded_image, hash_size)
+
+            # Calculate similarity between current hash and representative hash
+            stats['credits'] = max(self._hash_similarity(
+                self.hashes.data.get(self.hash_index['credits_small']),
+                image_hash,
+                filtered_hash
+            ), self._hash_similarity(
+                self.hashes.data.get(self.hash_index['credits_large']),
+                image_hash,
+                filtered_hash
+            ))
+
+            # Estimate of detection relevance
+            stats['detected'] = stats['credits'] * self._hash_similarity(
+                expanded_hash, image_hash, filtered_hash
+            ) / self._hash_similarity(
+                filtered_hash, image_hash, expanded_hash
+            )
+
         # Match if current hash matches representative hash or if current hash
         # is blank
         is_match = (
-            stats['credits'] >= SETTINGS.detect_level - 5
-            or not any(image_hash)
+            not any(image_hash)
+            or stats['credits'] >= SETTINGS.detect_level
         )
         # Unless debugging, return if match found, otherwise continue checking
         if is_match and not SETTINGS.detector_debug:
             self._hash_match_hit()
-            return stats
+            return stats, (image_hash, filtered_hash, expanded_hash)
 
         # Calculate similarity between current hash and previous hash
         stats['previous'] = self._hash_similarity(
@@ -498,15 +515,18 @@ class UpNextDetector(object):
         )
         # Possible match if current hash matches previous hash
         possible_match = stats['previous'] >= SETTINGS.detect_level
-        # Match if hash is also somewhat similar to representative hash
+        # Match if detection estimate indicates result was relevant
         is_match = is_match or (
-            stats['credits'] >= SETTINGS.detect_level - 10
-            and possible_match
+            possible_match and
+            stats['detected'] >= (
+                SETTINGS.detect_level -
+                (0.004 * stats['previous'] * stats['credits'])
+            )
         )
         # Unless debugging, return if match found, otherwise continue checking
         if is_match and not SETTINGS.detector_debug:
             self._hash_match_hit()
-            return stats
+            return stats, (image_hash, filtered_hash, expanded_hash)
 
         old_hashes = self.past_hashes.window(self.hash_index['current'])
         for self.hash_index['episodes'], old_hash in old_hashes.items():
@@ -526,7 +546,7 @@ class UpNextDetector(object):
         elif not possible_match:
             self._hash_match_miss()
 
-        return stats
+        return stats, (image_hash, filtered_hash, expanded_hash)
 
     def _hash_match_hit(self):
         with self._lock:
@@ -570,7 +590,7 @@ class UpNextDetector(object):
         }
 
         # Hash size as (width, height)
-        hash_size = [8 * self._get_video_aspect_ratio(_cache=[None]), 8]
+        hash_size = [8 * self._get_video_resolution()[2], 8]
         # Round down width to multiple of 2
         hash_size[0] = int(hash_size[0] - hash_size[0] % 2)
 
@@ -630,7 +650,7 @@ class UpNextDetector(object):
             loop_start = timeit.default_timer()
 
             with self.player as check_fail:
-                check_fail = self.player.get_speed() != 1
+                check_fail = self.player.get_speed() < 1
             if check_fail:
                 self.log('Stop capture: nothing playing')
                 break
@@ -648,8 +668,7 @@ class UpNextDetector(object):
                 ) or 8
 
                 size = self._get_video_capture_resolution(
-                    max_size=SETTINGS.detector_data_limit,
-                    aspect_ratio=self._get_video_aspect_ratio()
+                    max_size=SETTINGS.detector_data_limit
                 )
 
                 del capturer
@@ -715,7 +734,7 @@ class UpNextDetector(object):
                     self.hashes.episode_number
                 )
                 # Only capture if playing at normal speed
-                check_fail = self.player.get_speed() != 1
+                check_fail = self.player.get_speed() < 1
             if check_fail:
                 self.log('No file is playing')
                 break
@@ -731,13 +750,14 @@ class UpNextDetector(object):
                 self.log('Queue empty - retry')
                 continue
 
-            image_hash, filtered_hash = self._create_hashes(
-                image_data, size, self.hashes.hash_size
-            )
+            image, filtered_image = self._create_images(image_data, size)
 
             # Check if current hash matches with previous hash, typical end
             # credits hash, or other episode hashes
-            stats = self._evaluate_similarity(image_hash, filtered_hash)
+            stats, hashes = self._evaluate_similarity(
+                image, filtered_image, self.hashes.hash_size
+            )
+            image_hash, filtered_hash, expanded_hash = hashes
 
             if SETTINGS.detector_debug:
                 self.log('Match: {0[hits]}/{1}, Miss: {0[misses]}/{2}'.format(
@@ -747,11 +767,13 @@ class UpNextDetector(object):
                 self._print_hashes(
                     [self.hashes.data.get(self.hash_index['credits_small']),
                      filtered_hash,
+                     expanded_hash,
                      self.hashes.data.get(self.hash_index['credits_large'])],
                     size=self.hashes.hash_size,
-                    prefix='{0:.1f}% similar to typical credits'.format(
-                        stats['credits']
-                    )
+                    prefix=(
+                        '{0:.1f}% similar to typical credits, '
+                        '{1:.1f}% similarity in detected credits'
+                    ).format(stats['credits'], stats['detected'])
                 )
 
                 self._print_hashes(
@@ -843,8 +865,7 @@ class UpNextDetector(object):
         self.queue.put_nowait([
             xbmc.RenderCapture(),
             self._get_video_capture_resolution(
-                max_size=SETTINGS.detector_data_limit,
-                aspect_ratio=self._get_video_aspect_ratio()
+                max_size=SETTINGS.detector_data_limit
             )
         ])
         self.workers = [utils.run_threaded(self._queue_push)]
