@@ -46,7 +46,7 @@ def generate_listing(addon_handle, addon_id, items):  # pylint: disable=unused-a
         if not content:
             continue
 
-        url = 'plugin://{0}/{1}'.format(addon_id, item)
+        url = 'plugin://{0}{1}'.format(addon_id, item)
         listitem = xbmcgui.ListItem(
             label=content.get('label', ''), path=url, offscreen=True
         )
@@ -86,7 +86,7 @@ def parse_plugin_url(url):
         return None, None, None
 
     addon_id = parsed_url.netloc
-    addon_path = parsed_url.path
+    addon_path = parsed_url.path.rstrip('/') or '/'
     addon_args = parse_qs(parsed_url.query)
 
     return addon_id, addon_path, addon_args
@@ -98,35 +98,27 @@ def play_media(addon_handle, addon_id, **kwargs):
         return False
 
     current_episode = api.get_from_library(dbid)
-    if not current_episode:
-        xbmcplugin.setResolvedUrl(
-            addon_handle, False, upnext.create_listitem({})
-        )
-        return False
-
     upnext_info = generate_library_plugin_data(
         current_episode=current_episode,
         addon_id=addon_id
-    )
-    if not upnext_info:
-        xbmcplugin.setResolvedUrl(
-            addon_handle, False, upnext.create_listitem({})
-        )
-        return False
+    ) if current_episode else None
+
+    if upnext_info:
+        resolved = True
+        upnext.send_signal(addon_id, upnext_info)
+    else:
+        resolved = False
+        upnext_info = {'current_episode': upnext.create_listitem({})}
 
     xbmcplugin.setResolvedUrl(
-        addon_handle, True, upnext_info['current_episode']
+        addon_handle, resolved, upnext_info['current_episode']
     )
-    upnext.send_signal(addon_id, upnext_info)
-    return True
+    return resolved
 
 
 def run(argv):
     addon_handle = int(argv[1])
     addon_id, addon_path, addon_args = parse_plugin_url(argv[0] + argv[2])
-    if not addon_path:
-        return False
-
     content = PLUGIN_CONTENT.get(addon_path)
     if not content:
         return False

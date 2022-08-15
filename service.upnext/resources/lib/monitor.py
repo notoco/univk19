@@ -54,7 +54,7 @@ class UpNextMonitor(xbmc.Monitor, object):
     def log(cls, msg, level=utils.LOGDEBUG):
         utils.log(msg, name=cls.__name__, level=level)
 
-    def _check_video(self, data=None, encoding=None):
+    def _check_video(self, data=None, encoding=None):  # pylint: disable=too-many-return-statements
         # Only process one start at a time unless plugin data has been received
         if self.state.starting and not data:
             return
@@ -84,6 +84,13 @@ class UpNextMonitor(xbmc.Monitor, object):
             self.log('Skip video check: playing item not fully loaded')
             return
         self.state.starting = 0
+
+        if (playback['file'].startswith((
+                'bluray://', 'dvd://', 'udf://', 'iso9660://', 'cdda://'))
+                or playback['file'].endswith((
+                    '.bdmv', '.iso', '.ifo'))):
+            self.log('Skip video check: Blu-ray/DVD/CD playing')
+            return
 
         if utils.get_property('PseudoTVRunning') == 'True':
             self.log('Skip video check: PsuedoTV detected')
@@ -212,7 +219,10 @@ class UpNextMonitor(xbmc.Monitor, object):
 
     def _event_handler_upnext_trigger(self, **_kwargs):
         # Remove remnants from previous operations
-        self._stop_popuphandler()
+        self._stop_popuphandler(restart=True)
+        # If existing popuphandler is running, allow it to restart
+        if self.popuphandler:
+            return
 
         # Get playback details and use VideoPlayer.Time infolabel over
         # xbmc.Player.getTime() as the infolabel appears to update quicker
@@ -413,14 +423,14 @@ class UpNextMonitor(xbmc.Monitor, object):
                 self.detector = None
                 self.log('Cleanup detector')
 
-    def _stop_popuphandler(self, terminate=False):
+    def _stop_popuphandler(self, restart=False, terminate=False):
         if self._popuphandler:
             self._popuphandler.cancel()
             del self._popuphandler
             self._popuphandler = None
 
         if self.popuphandler:
-            self.popuphandler.stop(terminate=terminate)
+            self.popuphandler.stop(restart=restart, terminate=terminate)
             if terminate:
                 del self.popuphandler
                 self.popuphandler = None

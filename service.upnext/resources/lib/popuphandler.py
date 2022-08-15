@@ -16,6 +16,7 @@ class UpNextPopupHandler(object):
         'state',
         'popup',
         '_running',
+        '_sigcont',
         '_sigstop',
         '_sigterm',
     )
@@ -27,6 +28,7 @@ class UpNextPopupHandler(object):
         self.state = state
         self.popup = None
         self._running = utils.create_event()
+        self._sigcont = utils.create_event()
         self._sigstop = utils.create_event()
         self._sigterm = utils.create_event()
 
@@ -69,7 +71,7 @@ class UpNextPopupHandler(object):
         return self._popup_state(abort=False, show_upnext=show_upnext)
 
     def _popup_state(self, old_state=None, **kwargs):
-        default_state = old_state if old_state else {
+        old_state = old_state or {
             'auto_play': SETTINGS.auto_play,
             'cancel': False,
             'abort': False,
@@ -82,46 +84,54 @@ class UpNextPopupHandler(object):
         }
 
         for kwarg, value in kwargs.items():
-            if kwarg in default_state:
-                default_state[kwarg] = value
+            if kwarg in old_state:
+                old_state[kwarg] = value
 
         if not self._has_popup():
-            default_state['abort'] = True
-            return default_state
+            old_state['abort'] = True
+
+        if old_state['abort']:
+            return old_state
 
         with self.popup as check_fail:
             remaining = kwargs.get('remaining')
             if remaining is not None:
                 self.popup.update_progress(remaining)
 
-            current_state = {
-                'auto_play': (
-                    SETTINGS.auto_play
-                    and default_state['show_upnext']
-                    and not self.popup.is_cancel()
-                    and not self.popup.is_playnow()
-                ),
-                'cancel': self.popup.is_cancel(),
-                'abort': default_state['abort'],
-                'play_now': self.popup.is_playnow(),
-                'play_on_cue': (
-                    SETTINGS.auto_play
-                    and default_state['show_upnext']
-                    and not self.popup.is_cancel()
-                    and not self.popup.is_playnow()
-                    and self.state.popup_cue
-                ),
-                'show_upnext': default_state['show_upnext'],
-                'shuffle_on': self.popup.is_shuffle_on(),
-                'shuffle_start': (
-                    not self.state.shuffle_on
-                    and self.popup.is_shuffle_on()
-                ),
-                'stop': self.popup.is_stop()
-            }
+            cancel = self.popup.is_cancel()
+            play_now = self.popup.is_playnow()
+            shuffle_on = self.popup.is_shuffle_on()
+            stop = self.popup.is_stop()
+
             check_fail = False
         if check_fail:
-            return default_state
+            return old_state
+
+        current_state = {
+            'auto_play': (
+                SETTINGS.auto_play
+                and old_state['show_upnext']
+                and not cancel
+                and not play_now
+            ),
+            'cancel': cancel,
+            'abort': old_state['abort'],
+            'play_now': play_now,
+            'play_on_cue': (
+                SETTINGS.auto_play
+                and old_state['show_upnext']
+                and not cancel
+                and not play_now
+                and self.state.popup_cue
+            ),
+            'show_upnext': old_state['show_upnext'],
+            'shuffle_on': shuffle_on,
+            'shuffle_start': (
+                not self.state.shuffle_on
+                and shuffle_on
+            ),
+            'stop': stop
+        }
         return current_state
 
     def _has_popup(self):
@@ -129,7 +139,7 @@ class UpNextPopupHandler(object):
 
     def _play_next_video(self, next_item, source, popup_state):
         # Primary method is to play next playlist item
-        if source[-len('playlist'):] == 'playlist' or self.state.queued:
+        if source.endswith('playlist') or self.state.queued:
             # Can't just seek to end of file as this triggers inconsistent Kodi
             # behaviour:
             # - Will sometimes continue playing past the end of the file
@@ -149,7 +159,7 @@ class UpNextPopupHandler(object):
                 )
 
         # Fallback plugin playback method, used if plugin provides play_info
-        elif source[:len('plugin')] == 'plugin':
+        elif source.startswith('plugin'):
             api.play_plugin_item(
                 self.state.data,
                 self.state.encoding,
@@ -188,7 +198,7 @@ class UpNextPopupHandler(object):
             return has_next_item, play_next, keep_playing, restart
 
         # Add next file to playlist if existing playlist is not being used
-        if SETTINGS.enable_queue and source[-len('playlist'):] != 'playlist':
+        if SETTINGS.enable_queue and not source.endswith('playlist'):
             self.state.queued = api.queue_next_item(self.state.data, next_item)
 
         # Create Kodi dialog to show UpNext or Still Watching? popup
@@ -197,11 +207,6 @@ class UpNextPopupHandler(object):
         popup_state = self._update_popup(popup_state)
         # Close dialog once we are done with it
         self._remove_popup()
-
-        # Update played in a row count if auto_play otherwise reset
-        self.state.played_in_a_row = (
-            self.state.played_in_a_row + 1 if popup_state['auto_play'] else 1
-        )
 
         # Update shuffle state
         self.state.shuffle_on = popup_state['shuffle_on']
@@ -218,9 +223,11 @@ class UpNextPopupHandler(object):
         # Watching? popup was shown (to prevent unwanted playback that can
         # occur if fast forwarding through popup or if race condition occurs
         # between player starting and popup terminating)
-        keep_playing = popup_state['show_upnext'] and not popup_state['stop']
+        keep_playing = not popup_state['stop'] and (
+            popup_state['show_upnext'] or self._sigcont.is_set()
+        )
         has_next_item = False
-        restart = False
+        restart = self._sigcont.is_set()
 
         # Popup closed prematurely
         if popup_state['abort']:
@@ -241,6 +248,9 @@ class UpNextPopupHandler(object):
             play_next = True
             keep_playing = True
             has_next_item = True
+            # Update played in a row count if auto_play otherwise reset
+            self.state.played_in_a_row = (1 if popup_state['play_now']
+                                          else self.state.played_in_a_row + 1)
 
         return has_next_item, play_next, keep_playing, restart
 
@@ -328,37 +338,44 @@ class UpNextPopupHandler(object):
             self.state.playing_next = play_next
             self.state.keep_playing = keep_playing
 
-            # Dequeue and stop playback if not playing next file
-            if not play_next and self.state.queued:
-                self.state.queued = api.dequeue_next_item()
+            # Stop playback and dequeue if not playing next file
             if not keep_playing:
                 self.log('Stopping playback', utils.LOGINFO)
                 self.player.stop()
+            if not play_next and self.state.queued:
+                self.state.queued = api.dequeue_next_item()
 
-            # Run again if shuffle started to get new random episode
+            # Run again if shuffle started to get new random episode, or
+            # restart triggered
             if not restart:
                 break
+            if self._sigcont.is_set():
+                self._sigstop.clear()
+                self._sigcont.clear()
 
         # Reset signals
         self.log('Stopped')
+        self._sigcont.clear()
         self._sigstop.clear()
         self._sigterm.clear()
         self._running.clear()
 
         return has_next_item
 
-    def stop(self, terminate=False):
+    def stop(self, restart=False, terminate=False):
         # Set terminate or stop signals if popuphandler is running
         if self._running.is_set():
             if terminate:
                 self._sigterm.set()
             else:
                 self._sigstop.set()
+                if restart:
+                    self._sigcont.set()
 
         # Wait until execution has finished to ensure references/resources can
         # be safely released. Can't use self._running.wait(5) as popuphandler
         # does not run in a separate thread even if stop() can.
-        timeout = 1
+        timeout = 5
         wait_time = 0.1
         while self._running.is_set() and not utils.wait(wait_time):
             timeout -= wait_time
@@ -368,6 +385,7 @@ class UpNextPopupHandler(object):
             if self._has_popup():
                 self.log('Popup taking too long to close', utils.LOGWARNING)
             else:
+                self._sigcont.clear()
                 self._sigstop.clear()
                 self._sigterm.clear()
                 self._running.clear()

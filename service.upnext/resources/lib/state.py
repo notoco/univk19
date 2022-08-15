@@ -119,7 +119,7 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
 
         # Next item from non-plugin playlist
         elif playlist_position and not self.shuffle_on:
-            next_item = api.get_next_in_playlist(
+            next_item = api.get_from_playlist(
                 playlist_position,
                 SETTINGS.unwatched_only
             )
@@ -244,15 +244,15 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
             source = constants.PLUGIN_TYPES[plugin_type]
 
         elif playlist_position:
-            current_item = api.get_now_playing()
+            current_item = api.get_from_playlist(playlist_position - 1)
             source = 'playlist'
 
             if current_item:
                 if not current_item.get('showtitle'):
-                    current_item['showtitle'] = '_playlist'
-                if current_item.get('season') == constants.UNDEFINED:
+                    current_item['showtitle'] = constants.MIXED_PLAYLIST
+                if not current_item['season']:
                     current_item['season'] = 0
-                if current_item.get('episode') == constants.UNDEFINED:
+                if not current_item['episode']:
                     current_item['episode'] = playlist_position
 
         elif media_type == 'episode':

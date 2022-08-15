@@ -19,34 +19,68 @@ import statichelper
 class Profiler(object):
     """Class used to profile a block of code"""
 
-    __slots__ = ('_profiler', )
+    __slots__ = ('__weakref__', '_enabled', '_profiler', '_reuse', 'name', )
 
-    from cProfile import Profile
-    from pstats import Stats
+    from cProfile import Profile as _Profile
+    from pstats import Stats as _Stats
     try:
-        from StringIO import StringIO
+        from StringIO import StringIO as _StringIO
     except ImportError:
-        from io import StringIO
-    from functools import wraps
+        from io import StringIO as _StringIO
+    from functools import wraps as _wraps
+    from weakref import proxy as _proxy, ref as _ref
 
-    def __init__(self):
-        self._create_profiler()
+    _instances = set()
 
-    @classmethod
-    def profile(cls, func):
+    def __new__(cls, *args, **kwargs):
+        self = super(Profiler, cls).__new__(cls)
+        cls.__init__(self, *args, **kwargs)
+        cls._instances.add(self)
+        return cls._proxy(self)
+
+    def __init__(self, enabled=True, lazy=False, name=__name__, reuse=False):
+        self._enabled = enabled
+        self._profiler = None
+        self._reuse = reuse
+        self.name = name
+
+        if enabled and not lazy:
+            self._create_profiler()
+
+    def __del__(self):
+        self.__class__._instances.discard(self)  # pylint: disable=protected-access
+
+    def __enter__(self):
+        if not self._enabled:
+            return
+
+        if not self._profiler:
+            self._create_profiler()
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        if not self._enabled:
+            return
+
+        log('Profiling stats: {0}'.format(self.get_stats(reuse=self._reuse)),
+            name=self.name, level=LOGDEBUG)
+        if not self._reuse:
+            self.__del__()
+
+    def __call__(self, func=None, name=__name__, reuse=False):
         """Decorator used to profile function calls"""
 
-        @cls.wraps(func)
+        if not func:
+            self._reuse = reuse
+            self.name = name
+            return self
+
+        @self.__class__._wraps(func)  # pylint: disable=protected-access
         def wrapper(*args, **kwargs):
             """Wrapper to:
                1) create a new Profiler instance;
                2) run the function being profiled;
                3) print out profiler result to the log; and
                4) return result of function call"""
-
-            profiler = cls()
-            result = func(*args, **kwargs)
-            stats = profiler.get_stats()
 
             name = getattr(func, '__qualname__', None)
             if name:
@@ -71,28 +105,41 @@ class Profiler(object):
             else:
                 name = func.__name__
 
-            log(stats, name=name, level=LOGDEBUG)
+            self.name = name
+            with self:
+                result = func(*args, **kwargs)
 
             return result
 
+        if not self._enabled:
+            self.__del__()
+            return func
         return wrapper
 
     def _create_profiler(self):
-        self._profiler = self.Profile()
+        self._profiler = self._Profile()
         self._profiler.enable()
 
     def disable(self):
-        self._profiler.disable()
+        if self._profiler:
+            self._profiler.disable()
 
-    def enable(self):
-        self._profiler.enable()
+    def enable(self, flush=False):
+        self._enabled = True
+        if flush or not self._profiler:
+            self._create_profiler()
+        else:
+            self._profiler.enable()
 
     def get_stats(self, flush=True, reuse=False):
+        if not (self._enabled and self._profiler):
+            return None
+
         self.disable()
 
-        output_stream = self.StringIO()
+        output_stream = self._StringIO()
         try:
-            self.Stats(
+            self._Stats(
                 self._profiler,
                 stream=output_stream
             ).strip_dirs().sort_stats('cumulative').print_stats(20)
@@ -102,15 +149,9 @@ class Profiler(object):
         output = output_stream.getvalue()
         output_stream.close()
 
-        if not reuse:
-            # If profiler is not being reused then do nothing
-            pass
-        elif flush:
-            # If stats are flushed then create a new profiler
-            self._create_profiler()
-        else:
-            # If stats are accumulating then re-enable existing profiler
-            self.enable()
+        if reuse:
+            # If stats are accumulating then enable existing/new profiler
+            self.enable(flush)
 
         return output
 
@@ -125,6 +166,18 @@ def wait(timeout=None):
 
 def abort_requested():
     return xbmc.Monitor().abortRequested()
+
+
+def jsonrpc(**kwargs):
+    """Perform JSONRPC calls"""
+
+    response = not kwargs.pop('no_response', False)
+    if response and 'id' not in kwargs:
+        kwargs.update(id=0)
+    if 'jsonrpc' not in kwargs:
+        kwargs.update(jsonrpc='2.0')
+    result = xbmc.executeJSONRPC(json.dumps(kwargs))
+    return json.loads(result) if response else result
 
 
 def get_addon(addon_id=None, retry_attempts=3):
@@ -153,7 +206,10 @@ def get_addon(addon_id=None, retry_attempts=3):
 
 
 ADDON = get_addon(constants.ADDON_ID)
-_KODI_VERSION = float(xbmc.getInfoLabel('System.BuildVersion').split()[0])
+_KODI_MAJOR_VERSION = jsonrpc(
+    method='Application.GetProperties',
+    params={'properties': ['version']}
+).get('result').get('version').get('major')
 
 
 def get_addon_info(key):
@@ -177,7 +233,7 @@ def get_addon_path():
 def supports_python_api(version):
     """Return True if Kodi supports target Python API version"""
 
-    return _KODI_VERSION >= version
+    return _KODI_MAJOR_VERSION >= version
 
 
 def get_property(key, window_id=constants.WINDOW_HOME):
@@ -253,7 +309,7 @@ def get_setting_int(key, default=None, echo=True):
     return value
 
 
-def get_int(obj, key=None, default=-1, strict=False):
+def get_int(obj, key=None, default=constants.UNDEFINED, strict=False):
     """Returns an object or value for the given key in object, as an integer.
        Returns default value if key or object is not available.
        Returns value if value cannot be converted to integer."""
@@ -394,18 +450,6 @@ def log(msg, name=__name__, level=LOGINFO):
     msg = '[{0}] {1} -> {2}'.format(get_addon_id(), name, msg)
     # Convert back for older Kodi versions
     xbmc.log(statichelper.from_unicode(msg), level=level)
-
-
-def jsonrpc(**kwargs):
-    """Perform JSONRPC calls"""
-
-    response = not kwargs.pop('no_response', False)
-    if response and 'id' not in kwargs:
-        kwargs.update(id=0)
-    if 'jsonrpc' not in kwargs:
-        kwargs.update(jsonrpc='2.0')
-    result = xbmc.executeJSONRPC(json.dumps(kwargs))
-    return json.loads(result) if response else result
 
 
 def get_global_setting(setting):

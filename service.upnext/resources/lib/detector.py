@@ -62,7 +62,7 @@ class UpNextHashStore(object):
             return False
 
         # Playlist with no episode details
-        if for_saving and self.seasonid[:len('_playlist')] == '_playlist':
+        if for_saving and self.seasonid.startswith(constants.MIXED_PLAYLIST):
             return False
 
         # No new episode details, assume current hashes are still valid
@@ -207,7 +207,8 @@ class UpNextDetector(object):
 
         self.match_counts = {
             'hits': 0,
-            'misses': 0
+            'misses': 0,
+            'detected': False
         }
         self._lock = utils.create_lock()
         self._init_hashes()
@@ -345,7 +346,7 @@ class UpNextDetector(object):
                 [image_utils.import_data, image_size],
                 [image_utils.auto_level, 5, 95, (0.33, None)],
             ],
-            # save_file='1_image'
+            save_file='1_image'
         )
 
         filtered_image = image_utils.process(
@@ -363,7 +364,7 @@ class UpNextDetector(object):
                  'GaussianBlur,5', 'TRIM', None, 'multiply'],
                 [image_utils.threshold],
             ],
-            # save_file='2_filter'
+            save_file='2_filter'
         )
 
         return image, filtered_image
@@ -469,7 +470,7 @@ class UpNextDetector(object):
             queue=[
                 [image_utils.has_credits, filtered_image]
             ],
-            # save_file='3_expanded'
+            save_file='3_expanded'
         )
 
         image_hash = self._create_hash(image, hash_size)
@@ -486,6 +487,10 @@ class UpNextDetector(object):
                 filtered_hash
             ), self._hash_similarity(
                 self.hashes.data.get(self.hash_index['credits_large']),
+                image_hash,
+                filtered_hash
+            ), self._hash_similarity(
+                self.hashes.data.get(self.hash_index['credits_full']),
                 image_hash,
                 filtered_hash
             ))
@@ -583,6 +588,7 @@ class UpNextDetector(object):
             # Representative end credits hashes
             'credits_small': (0, 0, constants.UNDEFINED),
             'credits_large': (0, 1, constants.UNDEFINED),
+            'credits_full': (0, 2, constants.UNDEFINED),
             # Other episodes hash
             'episodes': None,
             # Detected end credits timestamp from end of file
@@ -610,6 +616,9 @@ class UpNextDetector(object):
                 self.hash_index['credits_large']: self._generate_initial_hash(
                     *hash_size,
                     pad_height=(hash_size[1] // 8)
+                ),
+                self.hash_index['credits_full']: self._generate_initial_hash(
+                    *hash_size
                 ),
             },
         )
@@ -711,6 +720,7 @@ class UpNextDetector(object):
 
         self.queue.task_done()
 
+    @utils.Profiler(enabled=SETTINGS.detector_debug, lazy=True)
     def _worker(self):
         """Detection loop captures Kodi render buffer every 1s to create an
            image hash. Hash is compared to the previous hash to determine
@@ -721,9 +731,6 @@ class UpNextDetector(object):
 
            A consecutive number of matching frames must be detected to confirm
            that end credits are playing."""
-
-        if SETTINGS.detector_debug:
-            profiler = utils.Profiler()
 
         while not (self._sigterm.is_set() or self._sigstop.is_set()):
             with self.player as check_fail:
@@ -765,10 +772,11 @@ class UpNextDetector(object):
                 ))
 
                 self._print_hashes(
-                    [self.hashes.data.get(self.hash_index['credits_small']),
-                     filtered_hash,
+                    [filtered_hash,
                      expanded_hash,
-                     self.hashes.data.get(self.hash_index['credits_large'])],
+                     self.hashes.data.get(self.hash_index['credits_small']),
+                     self.hashes.data.get(self.hash_index['credits_large']),
+                     self.hashes.data.get(self.hash_index['credits_full'])],
                     size=self.hashes.hash_size,
                     prefix=(
                         '{0:.1f}% similar to typical credits, '
@@ -786,8 +794,6 @@ class UpNextDetector(object):
                         '{1:.1f}% similar to other episodes'
                     ).format(stats['previous'], stats['episodes'])
                 )
-
-                self.log(profiler.get_stats(reuse=True))
 
             # Store current hash for comparison with next video frame
             self.hashes.data[self.hash_index['current']] = image_hash
