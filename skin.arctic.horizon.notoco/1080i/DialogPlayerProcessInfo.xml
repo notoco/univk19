@@ -18,7 +18,7 @@
                     <param name="label" value="[COLOR panel_fg_100]$LOCALIZE[460]:[/COLOR] $INFO[Player.Process(audiochannels),,$COMMA ]$INFO[Player.Process(audiodecoder)]$INFO[Player.Process(audiobitspersample),$COMMA , bits]$INFO[Player.Process(audiosamplerate),$COMMA , Hz]   [COLOR panel_fg_100]język:[/COLOR] $INFO[VideoPlayer.AudioLanguage]" />
                 </include>
                 <include content="Object_ShadowSpot_Label">
-                    <param name="label" value="$INFO[System.CpuUsage,[COLOR panel_fg_100]CPU: [/COLOR] ,       ]$INFO[System.Memory(used.percent),[COLOR panel_fg_100]RAM:[/COLOR] ,       ]$INFO[System.CPUTemperature,[COLOR panel_fg_100]Temp:[/COLOR] ,]" />
+                    <param name="label" value="$INFO[System.CpuUsage,[COLOR panel_fg_100]CPU: [/COLOR] ,       ]$INFO[System.Memory(used.percent),[COLOR panel_fg_100]RAM:[/COLOR] ,       ]$INFO[System.CPUTemperature,[COLOR panel_fg_100]Temp CPU:[/COLOR] ,       ]$INFO[System.GPUTemperature,[COLOR panel_fg_100]Temp GPU:[/COLOR] ,]" />
                 </include>
                 <control type="progress">
                     <top>5</top>

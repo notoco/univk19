@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <settings>
       <category label="Hyperion">
-		<setting id="state" type="bool" default="true" label="Stan"/>
+		<setting id="state" type="bool" default="true" label="State" visible="false"/>
+		<setting id="bright" type="number" default="50" label="Bright" visible="false"/>
+<!--		<setting id="startup_notif" type="bool" default="true" label="Startup Notification"/> -->
     </category>
 </settings>
