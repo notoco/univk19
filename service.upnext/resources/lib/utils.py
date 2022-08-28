@@ -28,6 +28,7 @@ class Profiler(object):
     except ImportError:
         from io import StringIO as _StringIO
     from functools import wraps as _wraps
+    _wraps = staticmethod(_wraps)
     from weakref import proxy as _proxy, ref as _ref
 
     _instances = set()
@@ -280,7 +281,7 @@ def get_setting_bool(key, default=None, echo=True):
     # On Krypton or older, or when not a boolean
     except (AttributeError, TypeError):
         value = get_setting(key, echo=False)
-        value = constants.BOOL_STRING_VALUES.get(value.lower(), default)
+        value = constants.VALUE_FROM_STR.get(value.lower(), default)
     # Occurs when the addon is disabled
     except RuntimeError:
         value = default
