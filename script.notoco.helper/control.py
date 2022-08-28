@@ -39,7 +39,7 @@ def ambilight_bright_down():
         send_notification("Ambilight", "Jasność: "+str(bright))
 
 def cpu():
-    send_notification("", "[B]CPU:[/B] $INFO[System.CPUUsage]  [B]Temperatura:[/B] $INFO[System.CPUTemperature]/$INFO[System.GPUTemperature]  [B]RAM:[/B] $INFO[System.memory(used.percent)] [B]Up:[/B] $INFO[System.Uptime]")
+    send_notification("", "[B]CPU:[/B] $INFO[System.CPUUsage]  [B]Temperatura:[/B] $INFO[System.CPUTemperature]   [B]RAM:[/B] $INFO[System.memory(used.percent)] [B]Up:[/B] $INFO[System.Uptime]")
 
 def send_notification(komponent, message):
     xbmcgui.Dialog().notification(komponent, message, icon=icon)
