@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-    <defaultcontrol always="true">20</defaultcontrol>
+    <defaultcontrol always="true">3012</defaultcontrol>
     <onload>Dialog.Close(fullscreeninfo,true)</onload>
     <onload>Dialog.Close(videoosd,true)</onload>
     <include>Animation_FadeIn</include>
@@ -35,8 +35,6 @@
                     <param name="visible" value="true" />
                     <param name="onup" value="" />
                     <param name="ondown" value="" />
-                    <onclick>SetFocus(3013)</onclick>
-                    <onclick>Action(Select)</onclick>
                 </include>
             </control>
         </control>
