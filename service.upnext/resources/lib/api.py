@@ -486,7 +486,7 @@ def get_now_playing(properties=None, retry=3):
         result = utils.jsonrpc(
             method='Player.GetItem',
             params={
-                'playerid': get_playerid(),
+                'playerid': get_playerid(retry=retry),
                 'properties': (
                     EPISODE_PROPERTIES if properties is None else properties
                 ),
