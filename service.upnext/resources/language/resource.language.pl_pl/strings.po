@@ -425,7 +425,7 @@ msgstr "Wymuś wyskakujący okienko podpowiedzi"
 
 msgctxt "#30821"
 msgid "Force use plugin data and playback method"
-msgstr Wymuś używanie danych wtyczki i metody odtwarzania"
+msgstr "Wymuś używanie danych wtyczki i metody odtwarzania"
 
 msgctxt "#30823"
 msgid "Additional developer settings"
