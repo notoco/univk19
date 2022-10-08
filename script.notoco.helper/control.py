@@ -12,12 +12,12 @@ icon = addon.getAddonInfo('icon')
 
 def ambilight_turn_off():
     data = {"command":"componentstate", "componentstate":{"component": "LEDDEVICE", "state": False }, "tan":1}
-    response = requests.post('http://localhost:8090/json-rpc', headers=headers, json=data)
+    response = requests.post('http://127.0.0.1:8090/json-rpc', headers=headers, json=data)
     addon.setSetting('state', 'false')
 
 def ambilight_turn_on():
     data = {"command":"componentstate", "componentstate":{"component": "LEDDEVICE", "state": True }, "tan":1}
-    response = requests.post('http://localhost:8090/json-rpc', headers=headers, json=data)
+    response = requests.post('http://127.0.0.1:8090/json-rpc', headers=headers, json=data)
     addon.setSetting('state', 'true')
 
 def ambilight_bright_up():
@@ -25,7 +25,7 @@ def ambilight_bright_up():
     if bright < 100:
         bright = bright+10
         data = {"command":"adjustment", "adjustment":{"brightness": bright }, "tan":1}
-        response = requests.post('http://localhost:8090/json-rpc', headers=headers, json=data)
+        response = requests.post('http://127.0.0.1:8090/json-rpc', headers=headers, json=data)
         addon.setSetting('bright', str(bright))
         send_notification("Ambilight", "Jasność: "+str(bright))
 
@@ -34,7 +34,7 @@ def ambilight_bright_down():
     if bright > 10:
         bright = bright-10
         data = {"command":"adjustment", "adjustment":{"brightness": bright }, "tan":1}
-        response = requests.post('http://localhost:8090/json-rpc', headers=headers, json=data)
+        response = requests.post('http://127.0.0.1:8090/json-rpc', headers=headers, json=data)
         addon.setSetting('bright', str(bright))
         send_notification("Ambilight", "Jasność: "+str(bright))
 
