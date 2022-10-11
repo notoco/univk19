@@ -79,7 +79,7 @@
 </extension>
 </addon>
 
-<addon id="skin.arctic.horizon.notoco" name="Arctic Horizon Notoco" provider-name="jurialmunkey+notoco" version="2022.08.29.0">
+<addon id="skin.arctic.horizon.notoco" name="Arctic Horizon Notoco" provider-name="jurialmunkey+notoco" version="2022.10.11.0">
     <requires>
         <import addon="xbmc.gui" version="5.15.0" />
         <import addon="script.skinshortcuts" version="0.4.0" />
@@ -363,7 +363,7 @@ Hyperion.NG(2.0.0-alpha.11) is an modern opensource AmbiLight implementation.
     </extension>
 </addon>
 
-<addon id="service.upnext" name="UpNext" version="2022.09.20.0" provider-name="im85288">
+<addon id="service.upnext" name="UpNext" version="2022.10.11.0" provider-name="im85288">
     <requires>
         <import addon="xbmc.python" version="3.0.0" optional="true"/>
         <import addon="script.module.pil" version="1.1.7"/>
