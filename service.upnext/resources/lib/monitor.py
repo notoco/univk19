@@ -71,6 +71,7 @@ class UpNextMonitor(xbmc.Monitor, object):
             wait_count -= 1
 
         # Get video details, exit if no video playing
+        api.cache_invalidate()
         playback = self._get_playback_details(use_infolabel=True)
         if not playback:
             self.log('Skip video check: nothing playing', utils.LOGWARNING)
@@ -145,6 +146,10 @@ class UpNextMonitor(xbmc.Monitor, object):
         # Only process this event if it is the last in the queue
         if self._queue_length != 1:
             return
+
+        # Update stored video resolution if detector is running
+        if self.detector:
+            self.detector.get_video_resolution(_cache=[None])
 
         # Restart tracking if previously enabled
         self._start_tracking()
