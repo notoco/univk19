@@ -70,12 +70,45 @@ class UpNextPopup(xbmcgui.WindowXMLDialog, object):
         else:
             self.update_progress_control()
 
-    def set_info(self):
-        if self.item.get('rating') is None:
-            rating = ''
-        else:
-            rating = str(round(float(self.item.get('rating')), 1))
+    def onAction(self, action):  # pylint: disable=invalid-name
+        if action == xbmcgui.ACTION_STOP:
+            self.set_cancel(True)
+            self.set_stop(True)
+            self.close()
+        elif action == xbmcgui.ACTION_NAV_BACK:
+            self.set_cancel(True)
+            self.close()
 
+    def onClick(self, controlId):  # pylint: disable=invalid-name
+        # Play now - Watch now / Still Watching
+        if controlId == constants.PLAY_CONTROL_ID:
+            self.set_playnow(True)
+            self.close()
+        # Cancel - Close / Stop
+        elif controlId == constants.CLOSE_CONTROL_ID:
+            self.set_cancel(True)
+            if self.stop_enable:
+                self.set_stop(True)
+            self.close()
+        # Shuffle play
+        elif controlId == constants.SHUFFLE_CONTROL_ID:
+            if self.is_shuffle_on():
+                self.set_shuffle(False)
+            else:
+                self.set_shuffle(True)
+                self.set_cancel(True)
+                self.close()
+
+    def setProperty(self, key, value):  # pylint: disable=invalid-name
+        # setProperty accepts bytes/str/unicode in Kodi18+ but truncates bytes
+        # when a null byte (\x00) is encountered in Kodi19+
+        key = statichelper.from_unicode(key)
+        if isinstance(value, (bool, int, float)):
+            value = str(value)
+        value = statichelper.from_unicode(value)
+        return super(UpNextPopup, self).setProperty(key, value)
+
+    def set_info(self):
         self.setProperty(
             'stop_close_label',
             utils.localize(
@@ -83,8 +116,8 @@ class UpNextPopup(xbmcgui.WindowXMLDialog, object):
                 else constants.CLOSE_STRING_ID
             )
         )
-        self.setProperty('shuffle_enable', str(self.shuffle_on is not None))
-        self.setProperty('shuffle_on', str(self.shuffle_on))
+        self.setProperty('shuffle_enable', (self.shuffle_on is not None))
+        self.setProperty('shuffle_on', bool(self.shuffle_on))
         self.setProperty('popup_position', self.popup_position)
         self.setProperty('accent_colour', self.accent_colour)
 
@@ -112,9 +145,9 @@ class UpNextPopup(xbmcgui.WindowXMLDialog, object):
             )
             self.setProperty('tvshowtitle', self.item.get('showtitle', ''))
             self.setProperty('title', self.item.get('title', ''))
-            season = str(self.item.get('season', ''))
+            season = self.item.get('season', '')
             self.setProperty('season', season)
-            episode = str(self.item.get('episode', ''))
+            episode = self.item.get('episode', '')
             self.setProperty('episode', episode)
             self.setProperty(
                 'seasonepisode',
@@ -128,11 +161,15 @@ class UpNextPopup(xbmcgui.WindowXMLDialog, object):
             self.setProperty('premiered', firstaired_string)
             self.setProperty(
                 'year',
-                str(firstaired.year) if firstaired else firstaired_string
+                firstaired.year if firstaired else firstaired_string
             )
-            self.setProperty('rating', rating)
-            self.setProperty('playcount', str(self.item.get('playcount', 0)))
-            self.setProperty('runtime', str(self.item.get('runtime', '')))
+            rating = self.item.get('rating')
+            self.setProperty(
+                'rating',
+                '' if rating is None else round(float(rating), 1)
+            )
+            self.setProperty('playcount', self.item.get('playcount', 0))
+            self.setProperty('runtime', self.item.get('runtime', ''))
 
     def set_item(self, item):
         self.item = item
@@ -142,16 +179,13 @@ class UpNextPopup(xbmcgui.WindowXMLDialog, object):
         runtime = utils.get_int(self.item, 'runtime', 0)
         if runtime:
             runtime = datetime.timedelta(seconds=runtime)
-            endtime = datetime.datetime.now() + runtime
-            endtime = statichelper.from_unicode(utils.localize_time(endtime))
+            endtime = utils.localize_time(datetime.datetime.now() + runtime)
             self.setProperty('endtime', endtime)
 
         # Remaining time countdown for current episode
         remaining_str = '{0:02.0f}'.format(remaining)
         self.log(remaining_str)
-        self.setProperty(
-            'remaining', statichelper.from_unicode(remaining_str)
-        )
+        self.setProperty('remaining', remaining_str)
 
         if not self.progress_control:
             return
@@ -189,36 +223,7 @@ class UpNextPopup(xbmcgui.WindowXMLDialog, object):
 
     def set_shuffle(self, shuffle_state):
         self.shuffle_on = shuffle_state
-        self.setProperty('shuffle_on', str(shuffle_state))
+        self.setProperty('shuffle_on', shuffle_state)
 
     def is_shuffle_on(self):
         return self.shuffle_on
-
-    def onClick(self, controlId):  # pylint: disable=invalid-name
-        # Play now - Watch now / Still Watching
-        if controlId == constants.PLAY_CONTROL_ID:
-            self.set_playnow(True)
-            self.close()
-        # Cancel - Close / Stop
-        elif controlId == constants.CLOSE_CONTROL_ID:
-            self.set_cancel(True)
-            if self.stop_enable:
-                self.set_stop(True)
-            self.close()
-        # Shuffle play
-        elif controlId == constants.SHUFFLE_CONTROL_ID:
-            if self.is_shuffle_on():
-                self.set_shuffle(False)
-            else:
-                self.set_shuffle(True)
-                self.set_cancel(True)
-                self.close()
-
-    def onAction(self, action):  # pylint: disable=invalid-name
-        if action == xbmcgui.ACTION_STOP:
-            self.set_cancel(True)
-            self.set_stop(True)
-            self.close()
-        elif action == xbmcgui.ACTION_NAV_BACK:
-            self.set_cancel(True)
-            self.close()

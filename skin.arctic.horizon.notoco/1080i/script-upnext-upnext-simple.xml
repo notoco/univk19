@@ -17,9 +17,6 @@
             <include content="View_Pad">
                 <param name="top" value="view_pad" />
             </include>
-        <control type="button" id="3013">
-            <include>Defs_Hidden_Button</include>
-        </control>
         <control type="progress" id="3014">
             <top>-70</top>
                 <width>100%</width>
@@ -58,6 +55,9 @@
                     <param name="ondown" value="" />
                 </include>
             </control>
+        </control>
+        <control type="button" id="3013">
+            <include>Defs_Hidden_Button</include>
         </control>
     </controls>
 </window>
