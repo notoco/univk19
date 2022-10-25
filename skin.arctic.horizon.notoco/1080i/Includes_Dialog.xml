@@ -137,41 +137,34 @@
 
     <include name="Dialog_Busy">
         <definition>
-        <control type="image">
-            <include content="Defs_Pad"><param name="pad" value="-24" /></include>
-            <bordertexture border="32">common/shadow-dialog-24.png</bordertexture>
-            <bordersize>24</bordersize>
-            <texture border="16" colordiffuse="main_bg_30">common/dialog.png</texture>
-        </control>
             <control type="group">
                 <top>50%</top>
                 <left>50%</left>
                 <right>view_pad</right>
                 <height>view_header</height>
-                <!-- <control type="image" description="Back">
+                <control type="image" description="Back">
                     <left>-40</left>
                     <top>-40</top>
                     <centertop>50%</centertop>
                     <width>80</width>
                     <height>80</height>
                     <aspectratio align="center" aligny="center">keep</aspectratio>
-                    <texture>dialog/loading-back-busy.png</texture>
-                    <colordiffuse>main_fg_70</colordiffuse>
-                </control> -->
+                    <texture>dialog/loading-back.png</texture>
+                </control>
                 <control type="group">
-                    <description>Busy animation</description>
-                    <left>-60</left>
-                    <top>-60</top>
                     <centertop>50%</centertop>
-                    <width>120</width>
-                    <height>120</height>
+                    <description>Busy animation</description>
+                    <left>-40</left>
+                    <top>-40</top>
+                    <width>80</width>
+                    <height>80</height>
                     <animation effect="rotate" condition="true" start="360" end="0" loop="true" time="1000" center="auto">Conditional</animation>
                     <control type="image">
                         <texture colordiffuse="#000000">dialog/loading-spinner.png</texture>
                         <aspectratio>keep</aspectratio>
                     </control>
                     <control type="image">
-                        <texture colordiffuse="#000000">dialog/loading-spinner.png</texture>
+                        <texture colordiffuse="#BFBFBF">dialog/loading-spinner.png</texture>
                         <aspectratio>keep</aspectratio>
                         <animation effect="fade" condition="true" start="75" end="0" pulse="true" time="1000">Conditional</animation>
                     </control>

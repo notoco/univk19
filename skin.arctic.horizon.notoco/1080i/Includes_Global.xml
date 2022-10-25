@@ -11,7 +11,7 @@
             <include>Animation_FadeIn</include>
             <include condition="!Window.IsVisible(DialogButtonMenu.xml)">Animation_FadeOut</include>
             <include>Dimensions_Fullscreen</include>
-            <texture border="2">common/dim-overlay.png</texture>
+            <!--<texture border="2">common/dim-overlay.png</texture>-->
         </control>
     </include>
 
