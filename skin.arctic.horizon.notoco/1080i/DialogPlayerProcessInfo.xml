@@ -6,7 +6,7 @@
 
         <include content="Object_ShadowSpot_Group">
             <param name="width" value="1920" />
-            <param name="height" value="230" />
+            <param name="height" value="290" />
             <include content="Object_ShadowSpot_Grouplist">
                 <include content="Object_ShadowSpot_Label">
                     <param name="label" value="$INFO[Player.Process(videodecoder),[COLOR panel_fg_100]$LOCALIZE[31279]:[/COLOR] ]$VAR[Label_VideoHWDecoder, (,)]    $INFO[Player.Process(pixformat),[COLOR panel_fg_100]$LOCALIZE[31280]:[/COLOR] ]" />
@@ -33,6 +33,16 @@
                     <height>10</height>
                     <left>0</left>
                     <info>Player.CacheLevel</info>
+                </control>
+                <include content="Object_ShadowSpot_Label">
+                    <param name="label" value="[COLOR Selected]% pliku:[/COLOR] $INFO[Player.ProgressCache]%" />
+                </include>
+                <control type="progress">
+                    <top>5</top>
+                    <width>1860</width>
+                    <height>10</height>
+                    <left>0</left>
+                    <info>Player.ProgressCache</info>
                 </control>
             </include>
         </include>
