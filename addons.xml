@@ -63,20 +63,30 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.favourites" version="0.0.5" name="Video Favourites" provider-name="primaeval">
-<requires>
-  <import addon="xbmc.python" version="3.0.0"/>
-  <import addon="script.module.xbmcswift2" version="2.4.0"/>
-  <import addon="script.module.requests" version="2.9.1" />
-</requires>
-<extension point="xbmc.python.pluginsource" library="main.py">
-  <provides>video</provides>
-</extension>
-<extension point="xbmc.addon.metadata">
-  <summary lang="en">Video Favourites</summary>
-  <description lang="en"></description>
-  <disclaimer lang="en"></disclaimer>
-</extension>
+<addon id="plugin.video.favourites" version="0.0.8" name="Video Favourites" provider-name="primaeval">
+    <requires>
+        <import addon="xbmc.python" version="3.0.0"/>
+        <import addon="script.module.xbmcswift2" version="2.4.0"/>
+        <import addon="script.module.requests" version="2.9.1"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="main.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">Video Favourites</summary>
+        <description lang="en"/>
+        <disclaimer lang="en"/>
+    </extension>
+    <extension point="kodi.context.item">
+        <menu id="kodi.core.main">
+
+            <item library="add_item_context.py">
+                <label>Add to video favorites</label>
+                <visible>true</visible>
+            </item>
+
+        </menu>
+    </extension>
 </addon>
 
 <addon id="skin.arctic.horizon.notoco" name="Arctic Horizon Notoco" provider-name="jurialmunkey+notoco" version="2022.11.16.0">
@@ -426,7 +436,7 @@ Hyperion.NG(2.0.0-alpha.11) is an modern opensource AmbiLight implementation.
     </extension>
 </addon>
 
-<addon id="service.upnext" name="UpNext" version="2022.10.12.0" provider-name="im85288">
+<addon id="service.upnext" name="UpNext" version="2022.10.21.0" provider-name="im85288">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
     <import addon="script.module.pil" version="1.1.7"/>
