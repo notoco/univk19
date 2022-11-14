@@ -107,9 +107,9 @@ def create_listitem(episode):
     )
 
     resume = episode.get('resume', {})
-    listitem.setProperty('resumetime', str(resume.get('position')))
-    listitem.setProperty('totaltime', str(resume.get('total')))
-
+    #listitem.setProperty('resumetime', str(resume.get('position')))
+    #listitem.setProperty('totaltime', str(resume.get('total')))
+    InfoTagVideo.setResumePoint(str(resume.get('position')), str(resume.get('total')))
     listitem.setProperty(
         'tvshowid', str(episode.get('tvshowid', constants.UNDEFINED))
     )
