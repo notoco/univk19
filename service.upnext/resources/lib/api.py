@@ -5,6 +5,7 @@
 
 from __future__ import absolute_import, division, unicode_literals
 import os.path
+from operator import itemgetter
 import xbmc
 import constants
 import utils
@@ -71,6 +72,46 @@ TVSHOW_PROPERTIES = [
     # 'imdbnumber',  # Not used
 ]
 
+MOVIE_PROPERTIES = [
+    'title',
+    'genre',
+    'year',
+    'rating',
+    # 'director',  # Not used
+    # 'trailer',  # Not used
+    'tagline',
+    'plot',
+    'plotoutline',
+    # 'originaltitle',  # Not used
+    'lastplayed',
+    'playcount',
+    # 'writer',  # Not used
+    'studio',
+    'mpaa',
+    # 'cast',  # Not used, slow
+    # 'country',  # Not used
+    # 'imdbnumber',  # Not used
+    'runtime',
+    'set',
+    # 'showlink',  # Not used, slow
+    # 'streamdetails',  # Not used, slow
+    'top250',
+    # 'votes',  # Not used
+    'fanart',
+    'thumbnail',
+    'file',
+    # 'sorttitle',  # Not used
+    'resume',
+    'setid',
+    'dateadded',
+    # 'tag',  # Not used, slow
+    'art',
+    # 'userrating',  # Not used
+    # 'ratings',  # Not used, slow
+    'premiered',
+    # 'uniqueid',  # Not used, slow
+]
+
 PLAYER_PLAYLIST = {
     'video': xbmc.PLAYLIST_VIDEO,  # 1
     'audio': xbmc.PLAYLIST_MUSIC   # 0
@@ -85,6 +126,11 @@ _QUERY_LIMIT_ONE = {
     'end': 1
 }
 
+_FILTER_SEARCH_TVSHOW = {
+    'field': 'title',
+    'operator': 'is',
+    'value': constants.VALUE_TO_STR[constants.UNDEFINED]
+}
 _FILTER_NOT_FILE = {
     'field': 'filename',
     'operator': 'isnot',
@@ -102,17 +148,11 @@ _FILTER_NOT_FILEPATH = {
     ]
 }
 
-_FILTER_SEARCH_TVSHOW = {
-    'field': 'title',
-    'operator': 'is',
-    'value': constants.VALUE_TO_STR[constants.UNDEFINED]
-}
 _FILTER_INPROGRESS = {
     'field': 'inprogress',
     'operator': 'true',
     'value': ''
 }
-
 _FILTER_WATCHED = {
     'field': 'playcount',
     'operator': 'greaterthan',
@@ -122,6 +162,12 @@ _FILTER_UNWATCHED = {
     'field': 'playcount',
     'operator': 'lessthan',
     'value': '1'
+}
+_FILTER_INPROGRESS_OR_WATCHED = {
+    'or': [
+        _FILTER_INPROGRESS,
+        _FILTER_WATCHED
+    ]
 }
 
 _FILTER_REGULAR_SEASON = {
@@ -160,12 +206,7 @@ _FILTER_SEARCH_EPISODE = {
 _FILTER_CURRENT_EPISODE = {
     'and': [
         _FILTER_REGULAR_SEASON,
-        {
-            'or': [
-                _FILTER_INPROGRESS,
-                _FILTER_WATCHED
-            ]
-        }
+        _FILTER_INPROGRESS_OR_WATCHED
     ]
 }
 _FILTER_UPNEXT_EPISODE = {
@@ -187,13 +228,41 @@ _FILTER_UNWATCHED_UPNEXT_EPISODE_SEASON = {
     ]
 }
 
-_SORT_LASTPLAYED = {
-    'method': 'lastplayed',
-    'order': 'descending'
+_FILTER_IN_SET = {
+    'field': 'set',
+    'operator': 'isnot',
+    'value': ''
+}
+_FILTER_SEARCH_SET = {
+    'field': 'set',
+    'operator': 'is',
+    'value': constants.VALUE_TO_STR[constants.UNDEFINED]
+}
+_FILTER_NEXT_MOVIE = {
+    'field': 'year',
+    'operator': 'greaterthan',
+    'value': constants.VALUE_TO_STR[constants.UNDEFINED]
+}
+_FILTER_UNWATCHED_UPNEXT_MOVIE = {
+    'and': [
+        _FILTER_IN_SET,
+        _FILTER_SEARCH_SET,
+        _FILTER_UNWATCHED,
+        _FILTER_NEXT_MOVIE
+    ]
+}
+
+_SORT_YEAR = {
+    'method': 'year',
+    'order': 'ascending'
 }
 _SORT_EPISODE = {
     'method': 'episode',
     'order': 'ascending'
+}
+_SORT_LASTPLAYED = {
+    'method': 'lastplayed',
+    'order': 'descending'
 }
 _SORT_RANDOM = {
     'method': 'random'
@@ -807,3 +876,59 @@ def get_upnext_from_library(limit=25):
         upnext_episodes += upnext_episode
 
     return upnext_episodes
+
+
+def get_upnext_movies_from_library(limit=25):
+    """Function to get in-progress and next movie details from Kodi library"""
+
+    _QUERY_LIMITS['end'] = limit
+    inprogress = utils.jsonrpc(
+        method='VideoLibrary.GetMovies',
+        params={
+            'properties': MOVIE_PROPERTIES,
+            'sort': _SORT_LASTPLAYED,
+            'limits': _QUERY_LIMITS,
+            'filter': _FILTER_INPROGRESS
+        }
+    )
+    inprogress = inprogress.get('result', {}).get('movies', [])
+
+    watched = utils.jsonrpc(
+        method='VideoLibrary.GetMovies',
+        params={
+            'properties': MOVIE_PROPERTIES,
+            'sort': _SORT_LASTPLAYED,
+            'limits': _QUERY_LIMITS,
+            'filter': _FILTER_WATCHED
+        }
+    )
+    watched = watched.get('result', {}).get('movies', [])
+
+    inprogress_or_watched = inprogress + watched
+    inprogress_or_watched.sort(key=itemgetter('lastplayed'), reverse=True)
+
+    upnext_movies = []
+    for movie in inprogress_or_watched:
+        if movie['resume']['position']:
+            upnext_movie = [movie]
+        else:
+            _FILTER_SEARCH_SET['value'] = movie['set']
+            _FILTER_NEXT_MOVIE['value'] = str(movie['year'])
+
+            upnext_movie = utils.jsonrpc(
+                method='VideoLibrary.GetMovies',
+                params={
+                    'properties': MOVIE_PROPERTIES,
+                    'sort': _SORT_YEAR,
+                    'limits': _QUERY_LIMIT_ONE,
+                    'filter': _FILTER_UNWATCHED_UPNEXT_MOVIE
+                }
+            )
+            upnext_movie = upnext_movie.get('result', {}).get('movies', [])
+
+        if not upnext_movie:
+            continue
+
+        upnext_movies += upnext_movie
+
+    return upnext_movies

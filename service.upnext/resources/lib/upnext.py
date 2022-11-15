@@ -54,14 +54,149 @@ def _copy_episode_details(upnext_data):
     return upnext_data
 
 
-def create_listitem(episode):
+# pylint: disable=no-member
+if utils.supports_python_api(20):
+    def _set_info(infolabel):
+        info_tag = _set_info.info_tag
+        if not info_tag or not infolabel:
+            return None
+
+        name = infolabel[0].lower()
+        value = infolabel[1]
+        setter = _set_info.mapping.get(name)
+        if callable(setter):
+            setter(info_tag, value)
+            return (name, value)
+        return None
+
+    _InfoTagVideo = xbmc.InfoTagVideo
+    _set_info.mapping = {
+        'sortepisode': _InfoTagVideo.setSortEpisode,
+        'dbid': _InfoTagVideo.setDbId,
+        'year': _InfoTagVideo.setYear,
+        'episode': _InfoTagVideo.setEpisode,
+        'season': _InfoTagVideo.setSeason,
+        'sortseason': _InfoTagVideo.setSortSeason,
+        'episodeguide': _InfoTagVideo.setEpisodeGuide,
+        'top250': _InfoTagVideo.setTop250,
+        'setid': _InfoTagVideo.setSetId,
+        'tracknumber': _InfoTagVideo.setTrackNumber,
+        'rating': _InfoTagVideo.setRating,
+        # 'rating': _InfoTagVideo.setRatings,
+        'userrating': _InfoTagVideo.setUserRating,
+        'playcount': _InfoTagVideo.setPlaycount,
+        'mpaa': _InfoTagVideo.setMpaa,
+        'plot': _InfoTagVideo.setPlot,
+        'plotoutline': _InfoTagVideo.setPlotOutline,
+        'title': _InfoTagVideo.setTitle,
+        'originaltitle': _InfoTagVideo.setOriginalTitle,
+        'sorttitle': _InfoTagVideo.setSortTitle,
+        'tagline': _InfoTagVideo.setTagLine,
+        'tvshowtitle': _InfoTagVideo.setTvShowTitle,
+        'status': _InfoTagVideo.setTvShowStatus,
+        'genre': _InfoTagVideo.setGenres,
+        'country': _InfoTagVideo.setCountries,
+        'director': _InfoTagVideo.setDirectors,
+        'studio': _InfoTagVideo.setStudios,
+        'writer': _InfoTagVideo.setWriters,
+        'duration': _InfoTagVideo.setDuration,
+        'premiered': _InfoTagVideo.setPremiered,
+        'set': _InfoTagVideo.setSet,
+        'setoverview': _InfoTagVideo.setSetOverview,
+        'tag': _InfoTagVideo.setTags,
+        'code': _InfoTagVideo.setProductionCode,
+        'aired': _InfoTagVideo.setFirstAired,
+        'lastplayed': _InfoTagVideo.setLastPlayed,
+        'album': _InfoTagVideo.setAlbum,
+        'votes': _InfoTagVideo.setVotes,
+        'trailer': _InfoTagVideo.setTrailer,
+        'path': _InfoTagVideo.setPath,
+        # 'path': _InfoTagVideo.setFilenameAndPath,
+        'imdbnumber': _InfoTagVideo.setIMDBNumber,
+        'dateadded': _InfoTagVideo.setDateAdded,
+        'mediatype': _InfoTagVideo.setMediaType,
+        'showlink': _InfoTagVideo.setShowLinks,
+        'artist': _InfoTagVideo.setArtists,
+        'cast': _InfoTagVideo.setCast,
+        'castandrole': _InfoTagVideo.setCast,
+    }
+
+
+def _create_listitem(item, kwargs=None, infolabels=None, properties=None):
+    """Create a xbmcgui.ListItem from provided item details"""
+
+    title = item.get('title', '')
+    file_path = item.get('file', '')
+    resume = item.get('resume', {})
+    art = item.get('art', {})
+
+    default_kwargs = {
+        'label': title,
+        'path': file_path
+    }
+    if utils.supports_python_api(18):
+        default_kwargs['offscreen'] = True
+    if kwargs:
+        default_kwargs.update(kwargs)
+
+    default_infolabels = {
+        'path': file_path,
+        'title': title,
+        'plot': item.get('plot', ''),
+        'rating': float(item.get('rating', 0.0)),
+        'premiered': item.get('premiered', ''),
+        'year': item.get('year', ''),
+        'mpaa': item.get('mpaa', ''),
+        'dateadded': item.get('dateadded', ''),
+        'lastplayed': item.get('lastplayed', ''),
+        'playcount': item.get('playcount', 0),
+    }
+    if infolabels:
+        default_infolabels.update(infolabels)
+
+    default_properties = {
+        'isPlayable': 'true'
+    }
+    if not utils.supports_python_api(20):
+        default_properties.update({
+            'resumetime': str(resume.get('position')),
+            'totaltime': str(resume.get('total')),
+        })
+    if properties:
+        default_properties.update(properties)
+
+    listitem = xbmcgui.ListItem(**default_kwargs)
+    if utils.supports_python_api(20):
+        info_tag = listitem.getVideoInfoTag()
+        _set_info.info_tag = info_tag
+        info_tag.setResumePoint(
+            time=resume.get('position'), totalTime=resume.get('total')
+        )
+        infolabels = dict(map(_set_info, default_infolabels.items()))
+    else:
+        listitem.setInfo(type='Video', infoLabels=default_infolabels)
+
+    if utils.supports_python_api(18):
+        listitem.setProperties(default_properties)
+        listitem.setIsFolder(False)
+    else:
+        for key, val in default_properties.items():
+            listitem.setProperty(key, val)
+    listitem.setArt(art)
+    listitem.setPath(file_path)
+
+    return listitem
+
+
+def create_episode_listitem(item):
     """Create a xbmcgui.ListItem from provided episode details"""
 
-    show_title = episode.get('showtitle', '')
-    episode_title = episode.get('title', '')
-    file_path = episode.get('file', '')
-    season = episode.get('season', '')
-    episode_number = episode.get('episode', '')
+    show_title = item.get('showtitle', '')
+    episode_title = item.get('title', '')
+    season = item.get('season', '')
+    episode_number = item.get('episode', '')
+    first_aired = item.get('firstaired', '')
+
     season_episode = (
         '{0}x{1}'.format(season, episode_number) if season and episode_number
         else episode_number
@@ -79,48 +214,36 @@ def create_listitem(episode):
             for token in SETTINGS.plugin_secondary_label
             if token
         ),
-        'path': file_path
     }
-    if utils.supports_python_api(18):
-        kwargs['offscreen'] = True
 
-    listitem = xbmcgui.ListItem(**kwargs)
-    listitem.setInfo(
-        type='Video',
-        infoLabels={
-            'dbid': episode.get('episodeid', constants.UNDEFINED),
-            'path': file_path,
-            'title': episode_title,
-            'plot': episode.get('plot', ''),
-            'tvshowtitle': show_title,
-            'season': season or constants.UNDEFINED,
-            'episode': episode_number or constants.UNDEFINED,
-            'rating': str(float(episode.get('rating', 0.0))),
-            'aired': episode.get('firstaired', ''),
-            'premiered': episode.get('firstaired', ''),
-            'year': utils.get_year(episode.get('firstaired', '')),
-            'dateadded': episode.get('dateadded', ''),
-            'lastplayed': episode.get('lastplayed', ''),
-            'playcount': episode.get('playcount', 0),
-            'mediatype': 'episode'
-        }
-    )
+    infolabels = {
+        'dbid': item.get('episodeid', constants.UNDEFINED),
+        'tvshowtitle': show_title,
+        'season': season or constants.UNDEFINED,
+        'episode': episode_number or constants.UNDEFINED,
+        'aired': first_aired,
+        'premiered': first_aired,
+        'year': utils.get_year(first_aired),
+        'mediatype': 'episode'
+    }
 
-    resume = episode.get('resume', {})
-    listitem.setProperty('resumetime', str(resume.get('position')))
-    listitem.setProperty('totaltime', str(resume.get('total')))
+    properties = {
+        'tvshowid': str(item.get('tvshowid', constants.UNDEFINED))
+    }
 
-    listitem.setProperty(
-        'tvshowid', str(episode.get('tvshowid', constants.UNDEFINED))
-    )
+    listitem = _create_listitem(item, kwargs, infolabels, properties)
+    return listitem
 
-    listitem.setArt(episode.get('art', {}))
 
-    listitem.setProperty('isPlayable', 'true')
-    listitem.setPath(file_path)
-    if utils.supports_python_api(18):
-        listitem.setIsFolder(False)
+def create_movie_listitem(item):
+    """Create a xbmcgui.ListItem from provided movie details"""
 
+    infolabels = {
+        'dbid': item.get('movieid', constants.UNDEFINED),
+        'mediatype': 'movie'
+    }
+
+    listitem = _create_listitem(item, None, infolabels)
     return listitem
 
 
