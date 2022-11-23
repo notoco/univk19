@@ -87,6 +87,8 @@ def add_favourite(favourites_file, name, url, thumbnail, fanart, playable):
         data = '<favourites>\n</favourites>'
     if playable == "True":
         filetype = "file"
+    elif url.find("action=play")!=-1:
+        filetype = "file"
     else:
         filetype = "folder"
     fav = '    <favourite name="%s" filetype="%s" thumb="%s" fanart="%s">%s</favourite>\n</favourites>' % (
