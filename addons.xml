@@ -63,7 +63,7 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.favourites" version="0.0.8" name="Video Favourites" provider-name="primaeval">
+<addon id="plugin.video.favourites" version="0.1.0" name="Video Favourites" provider-name="primaeval">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.xbmcswift2" version="2.4.0"/>
