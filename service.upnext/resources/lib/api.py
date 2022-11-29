@@ -5,13 +5,12 @@
 
 from __future__ import absolute_import, division, unicode_literals
 import os.path
-from operator import itemgetter
 import xbmc
 import constants
 import utils
 
 
-EPISODE_PROPERTIES = [
+EPISODE_PROPERTIES = {
     'title',
     'playcount',
     'season',
@@ -35,7 +34,7 @@ EPISODE_PROPERTIES = [
     # 'cast',  # Not used, slow
     'dateadded',
     'lastplayed',
-]
+}
 EPISODE_ART_SUBSTITUTES = {
     'poster': ('season.poster', 'tvshow.poster'),
     'fanart': ('season.fanart', 'tvshow.fanart'),
@@ -45,7 +44,7 @@ EPISODE_ART_SUBSTITUTES = {
     'clearlogo': ('season.clearlogo', 'tvshow.clearlogo'),
 }
 
-TVSHOW_PROPERTIES = [
+TVSHOW_PROPERTIES = {
     'title',
     'studio',
     'year',
@@ -70,9 +69,9 @@ TVSHOW_PROPERTIES = [
     'dateadded',
     'watchedepisodes',
     # 'imdbnumber',  # Not used
-]
+}
 
-MOVIE_PROPERTIES = [
+MOVIE_PROPERTIES = {
     'title',
     'genre',
     'year',
@@ -98,7 +97,7 @@ MOVIE_PROPERTIES = [
     'top250',
     # 'votes',  # Not used
     'fanart',
-    'thumbnail',
+    # 'thumbnail',  # Not used
     'file',
     # 'sorttitle',  # Not used
     'resume',
@@ -110,11 +109,38 @@ MOVIE_PROPERTIES = [
     # 'ratings',  # Not used, slow
     'premiered',
     # 'uniqueid',  # Not used, slow
-]
+}
+MOVIE_ART_REPLACEMENTS = {
+    'thumb': ('poster', ),
+}
 
 PLAYER_PLAYLIST = {
     'video': xbmc.PLAYLIST_VIDEO,  # 1
     'audio': xbmc.PLAYLIST_MUSIC   # 0
+}
+
+JSON_DETAILS_MAP = {
+    'episode': {
+        'get_method': 'VideoLibrary.GetEpisodeDetails',
+        'set_method': 'VideoLibrary.SetEpisodeDetails',
+        'db_id': 'episodeid',
+        'properties': EPISODE_PROPERTIES,
+        'result': 'episodedetails'
+    },
+    'movie': {
+        'get_method': 'VideoLibrary.GetMovieDetails',
+        'set_method': 'VideoLibrary.SetMovieDetails',
+        'db_id': 'movieid',
+        'properties': MOVIE_PROPERTIES,
+        'result': 'moviedetails'
+    },
+    'tvshow': {
+        'get_method': 'VideoLibrary.GetTVShowDetails',
+        'set_method': 'VideoLibrary.SetTVShowDetails',
+        'db_id': 'tvshowid',
+        'properties': TVSHOW_PROPERTIES,
+        'result': 'tvshowdetails'
+    },
 }
 
 _QUERY_LIMITS = {
@@ -228,11 +254,6 @@ _FILTER_UNWATCHED_UPNEXT_EPISODE_SEASON = {
     ]
 }
 
-_FILTER_IN_SET = {
-    'field': 'set',
-    'operator': 'isnot',
-    'value': ''
-}
 _FILTER_SEARCH_SET = {
     'field': 'set',
     'operator': 'is',
@@ -240,15 +261,19 @@ _FILTER_SEARCH_SET = {
 }
 _FILTER_NEXT_MOVIE = {
     'field': 'year',
-    'operator': 'greaterthan',
+    'operator': 'after',
     'value': constants.VALUE_TO_STR[constants.UNDEFINED]
+}
+_FILTER_UPNEXT_MOVIE = {
+    'and': [
+        _FILTER_SEARCH_SET,
+        _FILTER_NEXT_MOVIE
+    ]
 }
 _FILTER_UNWATCHED_UPNEXT_MOVIE = {
     'and': [
-        _FILTER_IN_SET,
-        _FILTER_SEARCH_SET,
         _FILTER_UNWATCHED,
-        _FILTER_NEXT_MOVIE
+        _FILTER_UPNEXT_MOVIE
     ]
 }
 
@@ -285,33 +310,45 @@ def log(msg, level=utils.LOGDEBUG):
     utils.log(msg, name=__name__, level=level)
 
 
-def play_kodi_item(episode, resume=False):
+def get_item_id(item):
+    """Helper function to construct item dict with library dbid reference for
+    use with params arguments of JSONRPC requests"""
+
+    if not item:
+        return {}
+
+    db_id = item['db_id']
+    media_type = item['media_type']
+
+    db_type = JSON_DETAILS_MAP.get(media_type)
+    if not db_type or not db_id:
+        return {}
+
+    return {
+        db_type['db_id']: item['db_id']
+    }
+
+
+def play_kodi_item(item, resume=False):
     """Function to directly play a file from the Kodi library"""
 
-    log('Playing from library: {0}'.format(episode))
+    log('Playing from library: {0}'.format(item))
+
+    item = get_item_id(item)
     utils.jsonrpc(
         method='Player.Open',
-        params={'item': {'episodeid': utils.get_int(episode, 'episodeid')}},
+        params={'item': item},
         options={'resume': resume},
         no_response=True
     )
 
 
-def queue_next_item(data=None, episode=None):
-    """Function to add next episode to the UpNext queue"""
+def queue_next_item(data=None, item=None):
+    """Function to add next video to the UpNext queue"""
 
-    next_item = {}
-    play_url = data.get('play_url') if data else None
-    episodeid = (
-        utils.get_int(episode, 'episodeid') if episode
-        else constants.UNDEFINED
-    )
-
-    if play_url:
-        next_item.update(file=play_url)
-
-    elif episode and episodeid != constants.UNDEFINED:
-        next_item.update(episodeid=episodeid)
+    next_item = {
+        'file': data['play_url']
+    } if data and 'play_url' in data else get_item_id(item)
 
     if next_item:
         log('Adding to queue: {0}'.format(next_item))
@@ -357,7 +394,7 @@ def play_playlist_item(position=0, resume=False):
 
     if position == 'next':
         position = get_playlist_position()
-    log('Playing from playlist position: {0}'.format(position))
+    log('Playing from playlist position: {0}'.format(position + 1))
 
     # JSON Player.Open can be too slow but is needed if resuming is enabled
     # Unfortunately resuming from a playlist item does not seem to work...
@@ -396,7 +433,7 @@ def get_playlist_position():
     return None
 
 
-def get_from_playlist(position, unwatched_only=False):
+def get_from_playlist(position, properties, unwatched_only=False):
     """Function to get details of item in playlist"""
 
     result = utils.jsonrpc(
@@ -408,7 +445,7 @@ def get_from_playlist(position, unwatched_only=False):
                 'start': position,
                 'end': -1 if unwatched_only else position + 1
             },
-            'properties': EPISODE_PROPERTIES
+            'properties': properties
         }
     )
     items = result.get('result', {}).get('items')
@@ -437,9 +474,9 @@ def get_from_playlist(position, unwatched_only=False):
     # Try and populate required details if missing
     if not item.get('title'):
         item['title'] = item.get('label', '')
-    item['episodeid'] = utils.get_int(
-        item, 'episodeid',
-        utils.get_int(item, 'id')
+    item['episodeid'] = (
+        utils.get_int(item, 'episodeid', None)
+        or utils.get_int(item, 'id')
     )
     item['tvshowid'] = utils.get_int(item, 'tvshowid')
     # If missing season/episode, change to empty string to avoid episode
@@ -568,7 +605,7 @@ def get_player_speed():
     return result
 
 
-def get_now_playing(properties=None, retry=3):
+def get_now_playing(properties, retry=3):
     """Function to get detail of currently playing item"""
 
     # Retry in case of delay in getting response.
@@ -578,9 +615,7 @@ def get_now_playing(properties=None, retry=3):
             method='Player.GetItem',
             params={
                 'playerid': get_playerid(retry=retry),
-                'properties': (
-                    EPISODE_PROPERTIES if properties is None else properties
-                ),
+                'properties': properties,
             }
         )
         result = result.get('result', {}).get('item')
@@ -599,19 +634,32 @@ def get_now_playing(properties=None, retry=3):
     return result
 
 
-def get_next_from_library(episode=constants.UNDEFINED,
-                          tvshowid=None,
-                          unwatched_only=False,
-                          next_season=True,
-                          random=False):
+def get_next_from_library(item, **kwargs):
+    """Function to get details of next episode in tvshow, or next movie in
+    movieset, from Kodi library"""
+
+    if item['media_type'] == 'episode':
+        return get_next_episode_from_library(episode=item['details'], **kwargs)
+
+    if item['media_type'] == 'movie':
+        if 'next_season' in kwargs:
+            del kwargs['next_season']
+        return get_next_movie_from_library(movie=item['details'], **kwargs)
+
+    log('No next video found, unsupported media type', utils.LOGWARNING)
+    return None
+
+
+def get_next_episode_from_library(episode=constants.UNDEFINED,
+                                  next_season=True,
+                                  unwatched_only=False,
+                                  random=False):
     """Function to get show and next episode details from Kodi library"""
 
     if not episode or episode == constants.UNDEFINED:
         log('No next episode found, current episode not in library',
             utils.LOGWARNING)
-        episode = None
-        new_season = False
-        return episode, new_season
+        return episode
 
     (path, filename) = os.path.split(episode['file'])
     _FILTER_NOT_FILE['value'] = filename
@@ -629,7 +677,10 @@ def get_next_from_library(episode=constants.UNDEFINED,
         # Exclude watched episodes
         filters.append(_FILTER_UNWATCHED)
 
-    if not random:
+    if random:
+        sort = _SORT_RANDOM
+    else:
+        sort = _SORT_EPISODE
         current_season = str(episode['season'])
         _FILTER_THIS_SEASON['value'] = current_season
         _FILTER_NEXT_SEASON['value'] = current_season
@@ -642,18 +693,12 @@ def get_next_from_library(episode=constants.UNDEFINED,
 
     filters = {'and': filters}
 
-    if not tvshowid:
-        tvshowid = episode.get('tvshowid', constants.UNDEFINED)
-
     result = utils.jsonrpc(
         method='VideoLibrary.GetEpisodes',
         params={
-            'tvshowid': tvshowid,
+            'tvshowid': episode.get('tvshowid', constants.UNDEFINED),
             'properties': EPISODE_PROPERTIES,
-            'sort': (
-                _SORT_RANDOM if random
-                else _SORT_EPISODE
-            ),
+            'sort': sort,
             'limits': _QUERY_LIMIT_ONE,
             'filter': filters
         }
@@ -662,51 +707,101 @@ def get_next_from_library(episode=constants.UNDEFINED,
 
     if not result:
         log('No next episode found in library')
-        episode = None
-        new_season = False
-        return episode, new_season
+        return None
 
-    log('Next episode from library: {0}'.format(result[0]))
-    new_season = not random and episode['season'] != result[0]['season']
-    episode.update(result[0])
-    return episode, new_season
+    # Update current episode details dict, containing tvshow details, with next
+    # episode details. Surprisingly difficult to retain backwards compatibility
+    # episode = episode | result[0]       # Python > v3.9
+    # episode = {**episode, **result[0]}  # Python > v3.5
+    episode = dict(episode, **result[0])  # Python > v2.7
+    log('Next episode from library: {0}'.format(episode))
+    return episode
 
 
-def get_from_library(episodeid, tvshowid=None):
-    """Function to get show and episode details from Kodi library"""
+def get_next_movie_from_library(movie=constants.UNDEFINED,
+                                unwatched_only=False,
+                                random=False):
+    """Function to get details of next movie in set from Kodi library"""
+
+    if not movie or movie == constants.UNDEFINED:
+        log('No next movie found, current movie not in library',
+            utils.LOGWARNING)
+        return None
+
+    if not utils.get_int(movie, 'setid') > 0:
+        log('No next movie found, invalid movie setid', utils.LOGWARNING)
+        return None
+
+    (path, filename) = os.path.split(movie['file'])
+    _FILTER_NOT_FILE['value'] = filename
+    _FILTER_NOT_PATH['value'] = path
+    filters = [_FILTER_NOT_FILEPATH]
+
+    _FILTER_SEARCH_SET['value'] = movie['set']
+    filters.append(_FILTER_SEARCH_SET)
+
+    if unwatched_only:
+        filters.append(_FILTER_UNWATCHED)
+
+    if random:
+        sort = _SORT_RANDOM
+    else:
+        sort = _SORT_YEAR
+        _FILTER_NEXT_MOVIE['value'] = str(movie['year'])
+        filters.append(_FILTER_NEXT_MOVIE)
+
+    filters = {'and': filters}
 
     result = utils.jsonrpc(
-        method='VideoLibrary.GetEpisodeDetails',
+        method='VideoLibrary.GetMovies',
         params={
-            'episodeid': episodeid,
-            'properties': EPISODE_PROPERTIES
+            'properties': MOVIE_PROPERTIES,
+            'sort': sort,
+            'limits': _QUERY_LIMIT_ONE,
+            'filter': filters
         }
     )
-    result = result.get('result', {}).get('episodedetails')
+    result = result.get('result', {}).get('movies', [])
 
     if not result:
-        log('Episode info not found in library', utils.LOGWARNING)
+        log('No next movie found in library')
         return None
-    episode = result
 
-    if not tvshowid:
-        tvshowid = episode.get('tvshowid', constants.UNDEFINED)
+    movie = result[0]
+    log('Next movie from library: {0}'.format(movie))
+    return movie
 
-    result = utils.jsonrpc(
-        method='VideoLibrary.GetTVShowDetails',
-        params={
-            'tvshowid': tvshowid,
-            'properties': TVSHOW_PROPERTIES
-        }
-    )
-    result = result.get('result', {}).get('tvshowdetails')
+
+def get_from_library(media_type=None, db_id=constants.UNDEFINED, item=None):
+    """Function to get video and collection details from Kodi library"""
+
+    if item:
+        media_type = item['media_type']
+        db_id = item['db_id']
+
+    if not media_type or db_id == constants.UNDEFINED:
+        log('Video info not found in library, invalid dbid', utils.LOGWARNING)
+        return None
+
+    result, _ = get_details_from_library(media_type=media_type, db_id=db_id)
 
     if not result:
-        log('Show info not found in library', utils.LOGWARNING)
+        log('Video info not found in library', utils.LOGWARNING)
         return None
-    result.update(episode)
 
-    log('Episode from library: {0}'.format(result))
+    if media_type == 'episode':
+        tvshow_details, _ = get_details_from_library(
+            media_type='tvshow',
+            db_id=result.get('tvshowid', constants.UNDEFINED)
+        )
+
+        if not tvshow_details:
+            log('Show info not found in library', utils.LOGWARNING)
+            return None
+        tvshow_details.update(result)
+        result = tvshow_details
+
+    log('Info from library: {0}'.format(result))
     return result
 
 
@@ -728,7 +823,9 @@ def get_tvshowid(title):
         log('tvshowid not found in library', utils.LOGWARNING)
         return constants.UNDEFINED
 
-    return utils.get_int(result[0], 'tvshowid')
+    tvshowid = utils.get_int(result[0], 'tvshowid')
+    log('Fetched show "{0}" tvshowid: {1}'.format(title, tvshowid))
+    return tvshowid
 
 
 def get_episodeid(tvshowid, season, episode):
@@ -753,21 +850,49 @@ def get_episodeid(tvshowid, season, episode):
         log('episodeid not found in library', utils.LOGWARNING)
         return constants.UNDEFINED
 
-    return utils.get_int(result[0], 'episodeid')
+    episodeid = utils.get_int(result[0], 'episodeid')
+    log('Fetched show {0} s{1}e{2} episodeid: {3}'.format(
+        tvshowid, season, episode, episodeid
+    ))
+    return episodeid
 
 
-def handle_just_watched(episodeid, playcount,
-                        reset_playcount=False, reset_resume=True):
-    """Function to update playcount and resume point of just watched video"""
+def get_details_from_library(media_type=None,
+                             db_id=constants.UNDEFINED,
+                             item=None,
+                             properties=None):
+    """Function to retrieve video info details from Kodi library"""
+
+    if item:
+        media_type = item['media_type']
+        db_id = item['db_id']
+
+    if not media_type or db_id == constants.UNDEFINED:
+        return None, None
+
+    detail_type = JSON_DETAILS_MAP.get(media_type)
+    if not detail_type:
+        return None, None
 
     result = utils.jsonrpc(
-        method='VideoLibrary.GetEpisodeDetails',
+        method=detail_type['get_method'],
         params={
-            'episodeid': episodeid,
-            'properties': ['playcount', 'resume'],
+            detail_type['db_id']: db_id,
+            'properties': (
+                properties if properties else detail_type['properties']
+            ),
         }
     )
-    result = result.get('result', {}).get('episodedetails')
+    result = result.get('result', {}).get(detail_type['result'])
+    return result, detail_type
+
+
+def handle_just_watched(item, reset_playcount=False, reset_resume=True):
+    """Function to update playcount and resume point of just watched video"""
+
+    result, detail_type = get_details_from_library(
+        item=item, properties=['playcount', 'resume']
+    )
 
     if result:
         actual_playcount = utils.get_int(result, 'playcount', 0)
@@ -790,15 +915,15 @@ def handle_just_watched(episodeid, playcount,
 
     # Only update library if playcount or resume point needs to change
     if params:
-        params['episodeid'] = episodeid
+        params[detail_type['db_id']] = item['db_id']
         utils.jsonrpc(
-            method='VideoLibrary.SetEpisodeDetails',
+            method=detail_type['set_method'],
             params=params,
             no_response=True
         )
 
-    log('Library update: id - {0}{1}{2}{3}'.format(
-        episodeid,
+    log('Library update: {0}{1}{2}{3}'.format(
+        '{0}_id - {1}'.format(item['media_type'], item['db_id']),
         ', playcount - {0} to {1}'.format(actual_playcount, playcount)
         if 'playcount' in params else '',
         ', resume - {0} to 0'.format(actual_resume)
@@ -807,7 +932,7 @@ def handle_just_watched(episodeid, playcount,
     ), utils.LOGDEBUG)
 
 
-def get_upnext_from_library(limit=25):
+def get_upnext_episodes_from_library(limit=25):
     """Function to get in-progress and next episode details from Kodi library"""
 
     _QUERY_LIMITS['end'] = limit
@@ -861,6 +986,9 @@ def get_upnext_from_library(limit=25):
         if not upnext_episode:
             continue
 
+        # Restore current episode lastplayed for sorting of next-up episode
+        upnext_episode[0]['lastplayed'] = current_episode[0]['lastplayed']
+
         art = upnext_episode[0].get('art')
         if art:
             art_types = frozenset(art.keys())
@@ -904,14 +1032,15 @@ def get_upnext_movies_from_library(limit=25):
     )
     watched = watched.get('result', {}).get('movies', [])
 
-    inprogress_or_watched = inprogress + watched
-    inprogress_or_watched.sort(key=itemgetter('lastplayed'), reverse=True)
+    inprogress_or_watched = utils.merge_and_sort(
+        inprogress, watched, key='lastplayed', reverse=True
+    )
 
     upnext_movies = []
     for movie in inprogress_or_watched:
         if movie['resume']['position']:
             upnext_movie = [movie]
-        else:
+        elif movie['setid'] and movie['setid'] != constants.UNDEFINED:
             _FILTER_SEARCH_SET['value'] = movie['set']
             _FILTER_NEXT_MOVIE['value'] = str(movie['year'])
 
@@ -925,9 +1054,24 @@ def get_upnext_movies_from_library(limit=25):
                 }
             )
             upnext_movie = upnext_movie.get('result', {}).get('movies', [])
+        else:
+            continue
 
         if not upnext_movie:
             continue
+
+        # Restore current movie lastplayed for sorting of next-up movie
+        upnext_movie[0]['lastplayed'] = movie['lastplayed']
+
+        art = upnext_movie[0].get('art')
+        if art:
+            art_types = frozenset(art.keys())
+            for art_type, art_replacements in MOVIE_ART_REPLACEMENTS.items():
+                for art_replacement in art_replacements:
+                    if art_replacement in art_types:
+                        art[art_type] = art[art_replacement]
+                        break
+            upnext_movie[0]['art'] = art
 
         upnext_movies += upnext_movie
 

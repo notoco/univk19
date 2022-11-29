@@ -5,7 +5,9 @@
 from __future__ import absolute_import, division, unicode_literals
 import base64
 import binascii
+from itertools import chain
 import json
+from operator import itemgetter
 import sys
 import threading
 import dateutil.parser
@@ -178,7 +180,7 @@ def jsonrpc(**kwargs):
         kwargs.update(id=0)
     if 'jsonrpc' not in kwargs:
         kwargs.update(jsonrpc='2.0')
-    result = xbmc.executeJSONRPC(json.dumps(kwargs))
+    result = xbmc.executeJSONRPC(json.dumps(kwargs, default=tuple))
     return json.loads(result) if response else result
 
 
@@ -578,3 +580,45 @@ def calc_wait_time(end_time=None, start_time=0, rate=None):
         return None
 
     return max(0, (end_time - start_time) // rate)
+
+
+def create_item_details(item, source,
+                        media_type=None, playlist_position=None):
+    """Create item_details dict used by state, api and plugin modules"""
+
+    if not item or not source:
+        return None
+
+    is_episode = (media_type == 'episode') or ('tvshowid' in item)
+
+    item_details = {
+        'details': item,
+        'source': source,
+        'media_type': 'episode' if is_episode else media_type,
+        'db_id': (
+            get_int(item, 'episodeid' if is_episode else 'movieid', None)
+            or get_int(item, 'id')
+        ),
+        'group_id': get_int(item, 'tvshowid' if is_episode else 'setid'),
+        'group_name': (
+            constants.MIXED_PLAYLIST if playlist_position
+            else '-'.join((
+                item.get('showtitle', constants.UNTITLED_SHOW),
+                str(get_int(item, 'season', 0))
+            )) if is_episode
+            else item.get('set')
+        ),
+        'group_idx': (
+            get_int(item, 'episode') if is_episode else playlist_position
+        ),
+    }
+    return item_details
+
+
+def merge_and_sort(*iterables, **kwargs):
+    key = kwargs.get('key')
+    key = itemgetter(key) if key else None
+
+    merged = chain.from_iterable(iterables)
+    merged = sorted(merged, key=key, reverse=kwargs.get('reverse', True))
+    return merged
