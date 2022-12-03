@@ -7,6 +7,7 @@ import xbmcgui
 import xbmcplugin
 import api
 import constants
+from settings import SETTINGS
 import upnext
 import utils
 
@@ -22,7 +23,12 @@ def generate_library_plugin_data(current_item, addon_id, state=None):
         next_item = state.get_next()
     else:
         next_item = utils.create_item_details(
-            api.get_next_from_library(current_item), 'library', media_type
+            api.get_next_from_library(
+                item=current_item,
+                next_season=SETTINGS.next_season,
+                unwatched_only=SETTINGS.unwatched_only
+            ),
+            source='library', media_type=media_type
         )
 
     if not next_item['details'] or next_item['source'] != 'library':
@@ -59,8 +65,12 @@ def generate_listing(addon_handle, addon_id, items):  # pylint: disable=unused-a
 
 
 def generate_next_episodes_list(addon_handle, addon_id, **kwargs):  # pylint: disable=unused-argument
+    episodes = api.get_upnext_episodes_from_library(
+        next_season=SETTINGS.next_season,
+        unwatched_only=SETTINGS.unwatched_only
+    )
+
     listing = []
-    episodes = api.get_upnext_episodes_from_library()
     for episode in episodes:
         url = episode['file']
         listitem = upnext.create_episode_listitem(episode)
@@ -70,8 +80,12 @@ def generate_next_episodes_list(addon_handle, addon_id, **kwargs):  # pylint: di
 
 
 def generate_next_movies_list(addon_handle, addon_id, **kwargs):  # pylint: disable=unused-argument
+    movies = api.get_upnext_movies_from_library(
+        movie_sets=SETTINGS.enable_movieset,
+        unwatched_only=SETTINGS.unwatched_only
+    )
+
     listing = []
-    movies = api.get_upnext_movies_from_library()
     for movie in movies:
         url = movie['file']
         listitem = upnext.create_movie_listitem(movie)
@@ -81,16 +95,21 @@ def generate_next_movies_list(addon_handle, addon_id, **kwargs):  # pylint: disa
 
 
 def generate_next_media_list(addon_handle, addon_id, **kwargs):  # pylint: disable=unused-argument
-    listing = []
+    episodes = api.get_upnext_episodes_from_library(
+        next_season=SETTINGS.next_season,
+        unwatched_only=SETTINGS.unwatched_only
+    )
+    movies = api.get_upnext_movies_from_library(
+        movie_sets=SETTINGS.enable_movieset,
+        unwatched_only=SETTINGS.unwatched_only
+    )
 
-    episodes = api.get_upnext_episodes_from_library()
-    movies = api.get_upnext_movies_from_library()
-
-    media = utils.merge_and_sort(
+    videos = utils.merge_and_sort(
         episodes, movies, key='lastplayed', reverse=True
     )
 
-    for video in media:
+    listing = []
+    for video in videos:
         url = video['file']
         listitem = upnext.create_listitem(video)
         listing += ((url, listitem, False),)

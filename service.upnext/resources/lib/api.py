@@ -189,17 +189,23 @@ _FILTER_UNWATCHED = {
     'operator': 'lessthan',
     'value': '1'
 }
-_FILTER_INPROGRESS_OR_WATCHED = {
-    'or': [
-        _FILTER_INPROGRESS,
-        _FILTER_WATCHED
-    ]
-}
 
 _FILTER_REGULAR_SEASON = {
     'field': 'season',
     'operator': 'greaterthan',
     'value': '0'
+}
+_FILTER_REGULAR_SEASON_INPROGRESS = {
+    'and': [
+        _FILTER_REGULAR_SEASON,
+        _FILTER_INPROGRESS
+    ]
+}
+_FILTER_REGULAR_SEASON_WATCHED = {
+    'and': [
+        _FILTER_REGULAR_SEASON,
+        _FILTER_WATCHED
+    ]
 }
 _FILTER_THIS_SEASON = {
     'field': 'season',
@@ -229,12 +235,6 @@ _FILTER_SEARCH_EPISODE = {
         _FILTER_THIS_EPISODE
     ]
 }
-_FILTER_CURRENT_EPISODE = {
-    'and': [
-        _FILTER_REGULAR_SEASON,
-        _FILTER_INPROGRESS_OR_WATCHED
-    ]
-}
 _FILTER_UPNEXT_EPISODE = {
     'and': [
         _FILTER_THIS_SEASON,
@@ -245,12 +245,6 @@ _FILTER_UPNEXT_EPISODE_SEASON = {
     'or': [
         _FILTER_UPNEXT_EPISODE,
         _FILTER_NEXT_SEASON
-    ]
-}
-_FILTER_UNWATCHED_UPNEXT_EPISODE_SEASON = {
-    'and': [
-        _FILTER_UNWATCHED,
-        _FILTER_UPNEXT_EPISODE_SEASON
     ]
 }
 
@@ -932,64 +926,85 @@ def handle_just_watched(item, reset_playcount=False, reset_resume=True):
     ), utils.LOGDEBUG)
 
 
-def get_upnext_episodes_from_library(limit=25):
+def get_upnext_episodes_from_library(limit=25,  # pylint: disable=too-many-locals
+                                     next_season=True,
+                                     unwatched_only=False):
     """Function to get in-progress and next episode details from Kodi library"""
 
     _QUERY_LIMITS['end'] = limit
     inprogress = utils.jsonrpc(
-        method='VideoLibrary.GetTVShows',
+        method='VideoLibrary.GetEpisodes',
         params={
-            'properties': [],
+            'properties': EPISODE_PROPERTIES,
             'sort': _SORT_LASTPLAYED,
             'limits': _QUERY_LIMITS,
-            'filter': _FILTER_INPROGRESS
+            'filter': _FILTER_REGULAR_SEASON_INPROGRESS
         }
     )
-    inprogress = inprogress.get('result', {}).get('tvshows', [])
+    inprogress = inprogress.get('result', {}).get('episodes', [])
 
-    upnext_episodes = []
-    for tvshow in inprogress:
-        current_episode = utils.jsonrpc(
-            method='VideoLibrary.GetEpisodes',
-            params={
-                'tvshowid': tvshow['tvshowid'],
-                'properties': EPISODE_PROPERTIES,
-                'sort': _SORT_LASTPLAYED,
-                'limits': _QUERY_LIMIT_ONE,
-                'filter': _FILTER_CURRENT_EPISODE
-            }
-        )
-        current_episode = current_episode.get('result', {}).get('episodes')
+    watched = utils.jsonrpc(
+        method='VideoLibrary.GetEpisodes',
+        params={
+            'properties': EPISODE_PROPERTIES,
+            'sort': _SORT_LASTPLAYED,
+            'limits': _QUERY_LIMITS,
+            'filter': _FILTER_REGULAR_SEASON_WATCHED
+        }
+    )
+    watched = watched.get('result', {}).get('episodes', [])
 
-        if not current_episode:
+    episodes = utils.merge_and_sort(
+        inprogress, watched, key='lastplayed', reverse=True
+    )
+
+    # Next episode in current season or first episode in next season
+    filters = [
+        _FILTER_UPNEXT_EPISODE_SEASON if next_season
+        else _FILTER_UPNEXT_EPISODE
+    ]
+
+    if unwatched_only:
+        # Exclude watched episodes
+        filters.append(_FILTER_UNWATCHED)
+        filters = {'and': filters}
+    else:
+        filters = filters[0]
+
+    upnext_episodes = {}
+    for episode in episodes:
+        tvshowid = episode['tvshowid']
+        if tvshowid in upnext_episodes:
             continue
-        if current_episode[0]['resume']['position']:
-            upnext_episode = current_episode
+
+        if episode['resume']['position']:
+            upnext_episode = episode
         else:
-            current_season = str(current_episode[0]['season'])
+            current_season = str(episode['season'])
             _FILTER_THIS_SEASON['value'] = current_season
             _FILTER_NEXT_SEASON['value'] = current_season
-            _FILTER_NEXT_EPISODE['value'] = str(current_episode[0]['episode'])
+            _FILTER_NEXT_EPISODE['value'] = str(episode['episode'])
 
             upnext_episode = utils.jsonrpc(
                 method='VideoLibrary.GetEpisodes',
                 params={
-                    'tvshowid': tvshow['tvshowid'],
+                    'tvshowid': tvshowid,
                     'properties': EPISODE_PROPERTIES,
                     'sort': _SORT_EPISODE,
                     'limits': _QUERY_LIMIT_ONE,
-                    'filter': _FILTER_UNWATCHED_UPNEXT_EPISODE_SEASON
+                    'filter': filters
                 }
             )
             upnext_episode = upnext_episode.get('result', {}).get('episodes')
 
-        if not upnext_episode:
-            continue
+            if not upnext_episode:
+                continue
+            upnext_episode = upnext_episode[0]
 
         # Restore current episode lastplayed for sorting of next-up episode
-        upnext_episode[0]['lastplayed'] = current_episode[0]['lastplayed']
+        upnext_episode['lastplayed'] = episode['lastplayed']
 
-        art = upnext_episode[0].get('art')
+        art = upnext_episode.get('art')
         if art:
             art_types = frozenset(art.keys())
             for art_type, art_substitutes in EPISODE_ART_SUBSTITUTES.items():
@@ -999,14 +1014,16 @@ def get_upnext_episodes_from_library(limit=25):
                     if art_substitute in art_types:
                         art[art_type] = art[art_substitute]
                         break
-            upnext_episode[0]['art'] = art
+            upnext_episode['art'] = art
 
-        upnext_episodes += upnext_episode
+        upnext_episodes[tvshowid] = upnext_episode
 
-    return upnext_episodes
+    return upnext_episodes.values()
 
 
-def get_upnext_movies_from_library(limit=25):
+def get_upnext_movies_from_library(limit=25,
+                                   movie_sets=True,
+                                   unwatched_only=False):
     """Function to get in-progress and next movie details from Kodi library"""
 
     _QUERY_LIMITS['end'] = limit
@@ -1021,26 +1038,35 @@ def get_upnext_movies_from_library(limit=25):
     )
     inprogress = inprogress.get('result', {}).get('movies', [])
 
-    watched = utils.jsonrpc(
-        method='VideoLibrary.GetMovies',
-        params={
-            'properties': MOVIE_PROPERTIES,
-            'sort': _SORT_LASTPLAYED,
-            'limits': _QUERY_LIMITS,
-            'filter': _FILTER_WATCHED
-        }
-    )
-    watched = watched.get('result', {}).get('movies', [])
+    if movie_sets:
+        watched = utils.jsonrpc(
+            method='VideoLibrary.GetMovies',
+            params={
+                'properties': MOVIE_PROPERTIES,
+                'sort': _SORT_LASTPLAYED,
+                'limits': _QUERY_LIMITS,
+                'filter': _FILTER_WATCHED
+            }
+        )
+        watched = watched.get('result', {}).get('movies', [])
 
-    inprogress_or_watched = utils.merge_and_sort(
-        inprogress, watched, key='lastplayed', reverse=True
+        movies = utils.merge_and_sort(
+            inprogress, watched, key='lastplayed', reverse=True
+        )
+    else:
+        movies = inprogress
+
+    filters = (
+        _FILTER_UNWATCHED_UPNEXT_MOVIE if unwatched_only
+        else _FILTER_UPNEXT_MOVIE
     )
 
     upnext_movies = []
-    for movie in inprogress_or_watched:
+    for movie in movies:
         if movie['resume']['position']:
-            upnext_movie = [movie]
-        elif movie['setid'] and movie['setid'] != constants.UNDEFINED:
+            upnext_movie = movie
+        elif (movie_sets
+              and movie['setid'] and movie['setid'] != constants.UNDEFINED):
             _FILTER_SEARCH_SET['value'] = movie['set']
             _FILTER_NEXT_MOVIE['value'] = str(movie['year'])
 
@@ -1050,20 +1076,21 @@ def get_upnext_movies_from_library(limit=25):
                     'properties': MOVIE_PROPERTIES,
                     'sort': _SORT_YEAR,
                     'limits': _QUERY_LIMIT_ONE,
-                    'filter': _FILTER_UNWATCHED_UPNEXT_MOVIE
+                    'filter': filters
                 }
             )
-            upnext_movie = upnext_movie.get('result', {}).get('movies', [])
+            upnext_movie = upnext_movie.get('result', {}).get('movies')
+
+            if not upnext_movie:
+                continue
+            upnext_movie = upnext_movie[0]
         else:
             continue
 
-        if not upnext_movie:
-            continue
-
         # Restore current movie lastplayed for sorting of next-up movie
-        upnext_movie[0]['lastplayed'] = movie['lastplayed']
+        upnext_movie['lastplayed'] = movie['lastplayed']
 
-        art = upnext_movie[0].get('art')
+        art = upnext_movie.get('art')
         if art:
             art_types = frozenset(art.keys())
             for art_type, art_replacements in MOVIE_ART_REPLACEMENTS.items():
@@ -1071,8 +1098,8 @@ def get_upnext_movies_from_library(limit=25):
                     if art_replacement in art_types:
                         art[art_type] = art[art_replacement]
                         break
-            upnext_movie[0]['art'] = art
+            upnext_movie['art'] = art
 
-        upnext_movies += upnext_movie
+        upnext_movies.append(upnext_movie)
 
     return upnext_movies
