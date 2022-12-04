@@ -340,9 +340,10 @@ def play_kodi_item(item, resume=False):
 def queue_next_item(data=None, item=None):
     """Function to add next video to the UpNext queue"""
 
-    next_item = {
-        'file': data['play_url']
-    } if data and 'play_url' in data else get_item_id(item)
+    next_item = (
+        {'file': data['play_url']} if data and 'play_url' in data
+        else get_item_id(item)
+    )
 
     if next_item:
         log('Adding to queue: {0}'.format(next_item))
@@ -383,52 +384,62 @@ def dequeue_next_item():
     return False
 
 
-def play_playlist_item(position=0, resume=False):
-    """Function to play episode in playlist"""
+def play_playlist_item(position, resume=False):
+    """Function to play item in playlist from a specified position, where the
+       first item in the playlist is position 1"""
 
     if position == 'next':
-        position = get_playlist_position()
-    log('Playing from playlist position: {0}'.format(position + 1))
+        position, _ = get_playlist_position(offset=1)
+    if not position:
+        log('Unable to play from playlist position: {0}'.format(position),
+            utils.LOGWARNING)
+        return
+    log('Playing from playlist position: {0}'.format(position))
 
     # JSON Player.Open can be too slow but is needed if resuming is enabled
     # Unfortunately resuming from a playlist item does not seem to work...
     utils.jsonrpc(
         method='Player.Open',
         params={
-            'item': {'playlistid': get_playlistid(), 'position': position}
+            'item': {
+                'playlistid': get_playlistid(),
+                # Convert one indexed position to zero indexed position
+                'position': position - 1
+            }
         },
         options={'resume': resume},
         no_response=True
     )
 
 
-def get_playlist_position():
-    """Function to get current playlist playback position, where the first item
-       in the playlist is position 1"""
+def get_playlist_position(offset=0):
+    """Function to get current playlist position and number of remaining
+       playlist items, where the first item in the playlist is position 1"""
 
     # Use actual playlistid rather than xbmc.PLAYLIST_VIDEO as Kodi sometimes
     # plays video content in a music playlist
     playlistid = get_playlistid()
     if playlistid is None:
-        return None
+        return None, None
 
     playlist = xbmc.PlayList(playlistid)
     playlist_size = playlist.size()
     # Use 1 based index value for playlist position
-    position = playlist.getposition() + 1
+    position = playlist.getposition() + 1 + offset
 
     # A playlist with only one element has no next item
     # PlayList().getposition() starts counting from zero
-    if playlist_size > 1 and position < playlist_size:
+    if playlist_size > 1 and position <= playlist_size:
         log('playlistid: {0}, position - {1}/{2}'.format(
             playlistid, position, playlist_size
         ))
-        return position
-    return None
+        return position, (playlist_size - position)
+    return None, None
 
 
 def get_from_playlist(position, properties, unwatched_only=False):
-    """Function to get details of item in playlist"""
+    """Function to get details of item in playlist, where the first item in the
+       playlist is position 1"""
 
     result = utils.jsonrpc(
         method='Playlist.GetItems',
@@ -436,8 +447,8 @@ def get_from_playlist(position, properties, unwatched_only=False):
             'playlistid': get_playlistid(),
             # limits are zero indexed, position is one indexed
             'limits': {
-                'start': position,
-                'end': -1 if unwatched_only else position + 1
+                'start': position - 1,
+                'end': -1 if unwatched_only else position
             },
             'properties': properties
         }
@@ -722,7 +733,7 @@ def get_next_movie_from_library(movie=constants.UNDEFINED,
             utils.LOGWARNING)
         return None
 
-    if not utils.get_int(movie, 'setid') > 0:
+    if utils.get_int(movie, 'setid') <= 0:
         log('No next movie found, invalid movie setid', utils.LOGWARNING)
         return None
 
@@ -889,8 +900,9 @@ def handle_just_watched(item, reset_playcount=False, reset_resume=True):
     )
 
     if result:
-        actual_playcount = utils.get_int(result, 'playcount', 0)
-        actual_resume = utils.get_int(result.get('resume'), 'position', 0)
+        initial_playcount = utils.get_int(item.get('details'), 'playcount', 0)
+        current_playcount = utils.get_int(result, 'playcount', 0)
+        current_resume = utils.get_int(result.get('resume'), 'position', 0)
     else:
         return
 
@@ -898,13 +910,13 @@ def handle_just_watched(item, reset_playcount=False, reset_resume=True):
 
     # If Kodi has not updated playcount then UpNext will
     if reset_playcount:
-        playcount = -1
-    if reset_playcount or actual_playcount == playcount:
-        playcount += 1
-        params['playcount'] = playcount
+        params['playcount'] = 0
+    elif current_playcount == initial_playcount:
+        current_playcount += 1
+        params['playcount'] = current_playcount
 
     # If resume point has been saved then reset it
-    if actual_resume and reset_resume:
+    if current_resume and reset_resume:
         params['resume'] = {'position': 0}
 
     # Only update library if playcount or resume point needs to change
@@ -918,9 +930,9 @@ def handle_just_watched(item, reset_playcount=False, reset_resume=True):
 
     log('Library update: {0}{1}{2}{3}'.format(
         '{0}_id - {1}'.format(item['media_type'], item['db_id']),
-        ', playcount - {0} to {1}'.format(actual_playcount, playcount)
+        ', playcount - {0} to {1}'.format(initial_playcount, current_playcount)
         if 'playcount' in params else '',
-        ', resume - {0} to 0'.format(actual_resume)
+        ', resume - {0} to 0'.format(current_resume)
         if 'resume' in params else '',
         '' if params else ', no change'
     ), utils.LOGDEBUG)
@@ -971,10 +983,11 @@ def get_upnext_episodes_from_library(limit=25,  # pylint: disable=too-many-local
     else:
         filters = filters[0]
 
-    upnext_episodes = {}
+    upnext_episodes = []
+    tvshows = set()
     for episode in episodes:
         tvshowid = episode['tvshowid']
-        if tvshowid in upnext_episodes:
+        if tvshowid in tvshows:
             continue
 
         if episode['resume']['position']:
@@ -998,6 +1011,7 @@ def get_upnext_episodes_from_library(limit=25,  # pylint: disable=too-many-local
             upnext_episode = upnext_episode.get('result', {}).get('episodes')
 
             if not upnext_episode:
+                tvshows.add(tvshowid)
                 continue
             upnext_episode = upnext_episode[0]
 
@@ -1016,9 +1030,10 @@ def get_upnext_episodes_from_library(limit=25,  # pylint: disable=too-many-local
                         break
             upnext_episode['art'] = art
 
-        upnext_episodes[tvshowid] = upnext_episode
+        upnext_episodes.append(upnext_episode)
+        tvshows.add(tvshowid)
 
-    return upnext_episodes.values()
+    return upnext_episodes
 
 
 def get_upnext_movies_from_library(limit=25,

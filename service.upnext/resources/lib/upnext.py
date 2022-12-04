@@ -3,6 +3,7 @@
 """Implements helper functions for video plugins to interact with UpNext"""
 
 from __future__ import absolute_import, division, unicode_literals
+from collections import deque
 import xbmc
 import xbmcgui
 from settings import SETTINGS
@@ -173,7 +174,8 @@ def _create_video_listitem(video,
         info_tag.setResumePoint(
             time=resume.get('position'), totalTime=resume.get('total')
         )
-        infolabels = dict(map(_set_info, default_infolabels.items()))
+        # Consume iterator
+        deque(map(_set_info, default_infolabels.items(), maxlen=0))
     else:
         listitem.setInfo(type='Video', infoLabels=default_infolabels)
 
@@ -301,7 +303,10 @@ def send_signal(sender, upnext_info):
             else val.getTVShowTitle()
         ) or constants.UNDEFINED
         # Fallback for available date information
-        firstaired = val.getFirstAired() or val.getPremiered() or val.getYear()
+        firstaired = (
+            val.getFirstAiredAsW3C() if utils.supports_python_api(20)
+            else val.getFirstAired()
+        ) or val.getPremiered() or val.getYear()
         # Runtime used to evaluate endtime in UpNext popup, if available
         runtime = val.getDuration() if utils.supports_python_api(18) else 0
         # Prefer outline over full plot for UpNext popup

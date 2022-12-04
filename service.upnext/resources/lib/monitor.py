@@ -102,13 +102,13 @@ class UpNextMonitor(xbmc.Monitor, object):
             return
 
         # Exit if UpNext playlist handling has not been enabled
-        playlist_position = api.get_playlist_position()
-        if playlist_position and not SETTINGS.enable_playlist:
+        playlist_position, playlist_remaining = api.get_playlist_position()
+        if playlist_remaining and not SETTINGS.enable_playlist:
             self.log('Skip video check: playlist handling not enabled')
             return
 
         # Exit if UpNext movie set handling has not been enabled
-        if (not playlist_position
+        if (not playlist_remaining
                 and not SETTINGS.enable_movieset
                 and playback['media_type'] == 'movie'):
             self.log('Skip video check: movie set handling not enabled')
@@ -118,12 +118,14 @@ class UpNextMonitor(xbmc.Monitor, object):
         # Note this may cause played in a row count to reset incorrectly if
         # playlist of mixed non-plugin and plugin content is used
         self.state.set_plugin_data(data, encoding)
-        plugin_type = self.state.get_plugin_type(playlist_position)
+        plugin_type = self.state.get_plugin_type(playlist_remaining)
 
         # Start tracking if UpNext can handle the currently playing video
         # Process now playing video to get episode details and save playcount
         now_playing_item = self.state.process_now_playing(
-            playlist_position, plugin_type, playback['media_type']
+            playlist_position if playlist_remaining else None,
+            plugin_type,
+            playback['media_type']
         )
         if now_playing_item:
             self.state.set_tracking(playback['file'])
@@ -157,6 +159,8 @@ class UpNextMonitor(xbmc.Monitor, object):
         # Update stored video resolution if detector is running
         if self.detector:
             self.detector.get_video_resolution(_cache=[None])
+            if not self.detector.is_alive():
+                self.detector.start()
 
         # Restart tracking if previously enabled
         self._start_tracking()
@@ -178,16 +182,6 @@ class UpNextMonitor(xbmc.Monitor, object):
         # Otherwise just ensure details of current/next item to play are reset
         else:
             self.state.reset_item()
-
-        # Update playcount and reset resume point of previous file
-        if self.state.playing_next and SETTINGS.mark_watched:
-            api.handle_just_watched(
-                item=self.state.current_item,
-                reset_playcount=(
-                    SETTINGS.mark_watched == constants.SETTING_OFF
-                ),
-                reset_resume=True
-            )
         self.state.playing_next = False
 
         # Check whether UpNext can start tracking
@@ -344,6 +338,16 @@ class UpNextMonitor(xbmc.Monitor, object):
         )
         # Stop popuphandler and release resources
         self._stop_popuphandler(terminate=True)
+
+        # Update playcount and reset resume point of previous file
+        if not playback_cancelled and SETTINGS.mark_watched:
+            api.handle_just_watched(
+                item=self.state.current_item,
+                reset_playcount=(
+                    SETTINGS.mark_watched == constants.SETTING_OFF
+                ),
+                reset_resume=True
+            )
 
         if not self.detector:
             self._stop_detector()
