@@ -435,7 +435,7 @@ Hyperion.NG(2.0.0-alpha.11) is an modern opensource AmbiLight implementation.
     </extension>
 </addon>
 
-<addon id="service.upnext" name="UpNext" version="2022.12.03.0" provider-name="im85288">
+<addon id="service.upnext" name="UpNext" version="2022.12.04.0" provider-name="im85288">
     <requires>
         <import addon="xbmc.python" version="3.0.0" optional="true"/>
         <import addon="script.module.pil" version="1.1.7"/>
@@ -483,10 +483,19 @@ Många befintliga tillägg integreras redan med den här utanför lådan-tjänst
         <platform>all</platform>
         <license>GPL-2.0-only</license>
         <news>
+### v2.0.6+dev.0 (2022-12-04)
+- Lots of bug fixes
+  - Fix marking as watched at end of playback
+  - Fix showing watched episode without next episode in widgets
+  - Fix testing popup display from addon settings
+  - Fix testing service operation
+  - Fix various issues with incorrect playlist position
+  - Fix various issues with pausing/restarting popup and detector
+  - Fix deprecated getFirstAired
 ### v2.0.5+dev.0 (2022-12-03)
-- Improve speed of widget sources
-- Fix demo mode to use existing addon settings
-- Widget sources now use existing addon settings for enabling/disabling
+  - Improve speed of widget sources
+  - Fix demo mode to use existing addon settings
+  - Widget sources now use existing addon settings for enabling/disabling
   - unwatched items
   - next episodes from next season
   - next movie from movie set
