@@ -15,43 +15,46 @@ def log(msg, level=utils.LOGWARNING):
     utils.log(msg, name=__name__, level=level)
 
 
-def _copy_episode_details(upnext_data):
-    # If next episode information is not provided, fake it
-    if not upnext_data.get('next_episode'):
-        episode = upnext_data['current_episode']
-        episode['episodeid'] = constants.UNDEFINED
-        episode['art'] = {}
-        # Next provided episode may not be the next consecutive episode so we
-        # can't assume that the episode can simply be incremented, instead set
-        # title to indicate the next episode in the UpNext popup
-        # episode['episode'] = utils.get_int(episode, 'episode') + 1
-        episode['title'] = utils.localize(constants.NEXT_STRING_ID)
+def _copy_video_details(upnext_data):
+    # If current/next episode information is not provided, copy it
+    dummy_info = None
+    dummy_key = None
+    if not upnext_data.get('next_video'):
+        dummy_info = upnext_data['current_video'].copy()
+        dummy_key = 'next_video'
+    elif not upnext_data.get('current_video'):
+        dummy_info = upnext_data['next_video'].copy()
+        dummy_key = 'current_video'
+
+    if not dummy_key:
+        return upnext_data
+
+    if dummy_key == 'next_video':
+        # Next provided video may not be the next consecutive video so we set
+        # the title to indicate the next video in the UpNext popup
+        dummy_info['title'] = utils.localize(constants.NEXT_STRING_ID)
+    else:
+        dummy_info['title'] = ''
+
+    dummy_info['art'] = {}
+    dummy_info['plot'] = ''
+    dummy_info['playcount'] = 0
+    dummy_info['rating'] = 0
+    dummy_info['firstaired'] = ''
+    dummy_info['runtime'] = 0
+
+    if 'tvshowid' in dummy_info:
+        dummy_info['episodeid'] = constants.UNDEFINED
         # Change season and episode info to empty string to avoid episode
         # formatting issues ("S-1E-1") in UpNext popup
-        episode['season'] = ''
-        episode['episode'] = ''
-        episode['plot'] = ''
-        episode['playcount'] = 0
-        episode['rating'] = 0
-        episode['firstaired'] = ''
-        episode['runtime'] = 0
-        upnext_data['next_episode'] = episode
+        dummy_info['season'] = ''
+        dummy_info['episode'] = ''
+    elif 'setid' in dummy_info:
+        dummy_info['movieid'] = constants.UNDEFINED
+    else:
+        dummy_info['id'] = constants.UNDEFINED
 
-    # If current episode information is not provided, fake it
-    elif not upnext_data.get('current_episode'):
-        episode = upnext_data['next_episode']
-        episode['episodeid'] = constants.UNDEFINED
-        episode['art'] = {}
-        episode['title'] = ''
-        episode['season'] = ''
-        episode['episode'] = ''
-        episode['plot'] = ''
-        episode['playcount'] = 0
-        episode['rating'] = 0
-        episode['firstaired'] = ''
-        episode['runtime'] = 0
-        upnext_data['current_episode'] = episode
-
+    upnext_data[dummy_key] = dummy_info
     return upnext_data
 
 
@@ -270,7 +273,12 @@ def send_signal(sender, upnext_info):
     """Helper function for video plugins to send data to UpNext"""
 
     # Exit if not enough information provided by video plugin
-    required_episode_info = ['current_episode', 'next_episode']
+    required_episode_info = {
+        'current_episode': 'current_video',
+        'next_episode': 'next_video',
+        'current_video': 'current_video',
+        'next_video': 'next_video'
+    }
     required_plugin_info = ['play_url', 'play_info']
     if not (any(info in upnext_info for info in required_episode_info)
             and any(info in upnext_info for info in required_plugin_info)):
@@ -280,59 +288,82 @@ def send_signal(sender, upnext_info):
     # Extract ListItem or InfoTagVideo details for use by UpNext
     upnext_data = {}
     for key, val in upnext_info.items():
-        thumb = ''
-        fanart = ''
-        tvshowid = str(constants.UNDEFINED)
-
         if key in required_plugin_info:
             upnext_data[key] = val
             continue
 
+        key = required_episode_info.get(key)
+        if not key:
+            continue
+
+        thumb = ''
+        fanart = ''
+        tvshow_id = constants.UNDEFINED
+        set_id = constants.UNDEFINED
+        set_name = ''
+
         if isinstance(val, xbmcgui.ListItem):
             thumb = val.getArt('thumb')
             fanart = val.getArt('fanart')
-            tvshowid = val.getProperty('tvshowid')
+            tvshow_id = (
+                val.getProperty('tvshowid')
+                or val.getProperty('TvShowDBID')
+                or tvshow_id
+            )
+            set_id = val.getProperty('setid') or set_id
+            set_name = val.getProperty('set')
             val = val.getVideoInfoTag()
 
         if not isinstance(val, xbmc.InfoTagVideo):
             continue
 
-        # Use show title as substitute for missing ListItem tvshowid
-        tvshowid = (
-            tvshowid if tvshowid != str(constants.UNDEFINED)
-            else val.getTVShowTitle()
-        ) or constants.UNDEFINED
-        # Fallback for available date information
-        firstaired = (
-            val.getFirstAiredAsW3C() if utils.supports_python_api(20)
-            else val.getFirstAired()
-        ) or val.getPremiered() or val.getYear()
-        # Runtime used to evaluate endtime in UpNext popup, if available
-        runtime = val.getDuration() if utils.supports_python_api(18) else 0
-        # Prefer outline over full plot for UpNext popup
-        plot = val.getPlotOutline() or val.getPlot()
-        # Prefer user rating over scraped rating
-        rating = val.getUserRating() or val.getRating()
+        media_type = val.getMediaType()
 
-        upnext_data[key] = {
-            'episodeid': val.getDbId(),
-            'tvshowid': tvshowid,
+        # Fallback for available date information
+        first_aired = (
+            val.getFirstAiredAsW3C() or val.getPremieredAsW3C()
+        ) if utils.supports_python_api(20) else (
+            val.getFirstAired() or val.getPremiered()
+        ) or val.getYear()
+
+        video_info = {
             'title': val.getTitle(),
             'art': {
                 'thumb': thumb,
                 'tvshow.fanart': fanart,
             },
-            'season': val.getSeason(),
-            'episode': val.getEpisode(),
-            'showtitle': val.getTVShowTitle(),
-            'plot': plot,
+            # Prefer outline over full plot for UpNext popup
+            'plot': val.getPlotOutline() or val.getPlot(),
             'playcount': val.getPlayCount(),
-            'rating': rating,
-            'firstaired': firstaired,
-            'runtime': runtime
+            # Prefer user rating over scraped rating
+            'rating': val.getUserRating() or val.getRating(),
+            'firstaired': first_aired,
+            # Runtime used to evaluate endtime in UpNext popup, if available
+            'runtime': utils.supports_python_api(18) and val.getDuration() or 0
         }
 
-    upnext_data = _copy_episode_details(upnext_data)
+        if media_type == 'episode':
+            video_info.update({
+                'episodeid': val.getDbId(),
+                'tvshowid': tvshow_id,
+                'season': val.getSeason(),
+                'episode': val.getEpisode(),
+                'showtitle': val.getTVShowTitle(),
+            })
+        elif media_type == 'movie':
+            video_info.update({
+                'movieid': val.getDbId(),
+                'setid': set_id,
+                'set': set_name,
+            })
+        else:
+            video_info.update({
+                'id': val.getDbId(),
+            })
+
+        upnext_data[key] = video_info
+
+    upnext_data = _copy_video_details(upnext_data)
 
     utils.event(
         sender=sender,
