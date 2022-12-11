@@ -35,7 +35,7 @@ EPISODE_PROPERTIES = {
     'dateadded',
     'lastplayed',
 }
-EPISODE_ART_SUBSTITUTES = {
+EPISODE_ART_MAP = {
     'poster': ('season.poster', 'tvshow.poster'),
     'fanart': ('season.fanart', 'tvshow.fanart'),
     'landscape': ('season.landscape', 'tvshow.landscape'),
@@ -110,7 +110,7 @@ MOVIE_PROPERTIES = {
     'premiered',
     # 'uniqueid',  # Not used, slow
 }
-MOVIE_ART_REPLACEMENTS = {
+MOVIE_ART_MAP = {
     'thumb': ('poster', ),
 }
 
@@ -193,7 +193,7 @@ _FILTER_UNWATCHED = {
 _FILTER_REGULAR_SEASON = {
     'field': 'season',
     'operator': 'greaterthan',
-    'value': '0'
+    'value': str(constants.SPECIALS)
 }
 _FILTER_REGULAR_SEASON_INPROGRESS = {
     'and': [
@@ -212,11 +212,6 @@ _FILTER_THIS_SEASON = {
     'operator': 'is',
     'value': constants.UNDEFINED_STR
 }
-_FILTER_NEXT_SEASON = {
-    'field': 'season',
-    'operator': 'greaterthan',
-    'value': constants.UNDEFINED_STR
-}
 
 _FILTER_THIS_EPISODE = {
     'field': 'episode',
@@ -227,6 +222,17 @@ _FILTER_NEXT_EPISODE = {
     'field': 'episode',
     'operator': 'greaterthan',
     'value': constants.UNDEFINED_STR
+}
+_FILTER_NEXT_AIRED = {
+    'field': 'airdate',
+    'operator': 'after',
+    'value': constants.UNDEFINED_STR
+}
+_FILTER_UNWATCHED_NEXT_AIRED = {
+    'and': [
+        _FILTER_UNWATCHED,
+        _FILTER_NEXT_AIRED
+    ]
 }
 
 _FILTER_SEARCH_EPISODE = {
@@ -241,10 +247,11 @@ _FILTER_UPNEXT_EPISODE = {
         _FILTER_NEXT_EPISODE
     ]
 }
-_FILTER_UPNEXT_EPISODE_SEASON = {
-    'or': [
-        _FILTER_UPNEXT_EPISODE,
-        _FILTER_NEXT_SEASON
+_FILTER_UNWATCHED_UPNEXT_EPISODE = {
+    'and': [
+        _FILTER_UNWATCHED,
+        _FILTER_THIS_SEASON,
+        _FILTER_NEXT_EPISODE
     ]
 }
 
@@ -283,6 +290,10 @@ _SORT_LASTPLAYED = {
     'method': 'lastplayed',
     'order': 'descending'
 }
+_SORT_DATE = {
+    'method': 'date',
+    'order': 'ascending'
+}
 _SORT_RANDOM = {
     'method': 'random'
 }
@@ -302,6 +313,21 @@ def log(msg, level=utils.LOGDEBUG):
     """Log wrapper"""
 
     utils.log(msg, name=__name__, level=level)
+
+
+def art_fallbacks(art, art_map, replace=False):
+    if not art or not art_map:
+        return {}
+
+    art_types = frozenset(art.keys())
+    for art_type, art_substitutes in art_map.items():
+        if not replace and art_type in art_types:
+            continue
+        for art_substitute in art_substitutes:
+            if art_substitute in art_types:
+                art[art_type] = art[art_substitute]
+                break
+    return art
 
 
 def get_item_id(item):
@@ -684,17 +710,15 @@ def get_next_episode_from_library(episode=constants.UNDEFINED,
 
     if random:
         sort = _SORT_RANDOM
+    elif next_season:
+        sort = _SORT_DATE
+        _FILTER_NEXT_AIRED['value'] = episode['firstaired']
+        filters.append(_FILTER_NEXT_AIRED)
     else:
         sort = _SORT_EPISODE
-        current_season = str(episode['season'])
-        _FILTER_THIS_SEASON['value'] = current_season
-        _FILTER_NEXT_SEASON['value'] = current_season
+        _FILTER_THIS_SEASON['value'] = str(episode['season'])
         _FILTER_NEXT_EPISODE['value'] = str(episode['episode'])
-        # Next episode in current season or first episode in next season
-        filters.append(
-            _FILTER_UPNEXT_EPISODE_SEASON if next_season
-            else _FILTER_UPNEXT_EPISODE
-        )
+        filters.append(_FILTER_UPNEXT_EPISODE)
 
     filters = {'and': filters}
 
@@ -944,13 +968,35 @@ def get_upnext_episodes_from_library(limit=25,  # pylint: disable=too-many-local
     """Function to get in-progress and next episode details from Kodi library"""
 
     _QUERY_LIMITS['end'] = limit
+
+    if next_season:
+        filters = [
+            _FILTER_INPROGRESS,
+            _FILTER_WATCHED,
+            (
+                _FILTER_UNWATCHED_NEXT_AIRED if unwatched_only
+                else _FILTER_NEXT_AIRED
+            )
+        ]
+        sort = _SORT_DATE
+    else:
+        filters = [
+            _FILTER_REGULAR_SEASON_INPROGRESS,
+            _FILTER_REGULAR_SEASON_WATCHED,
+            (
+                _FILTER_UNWATCHED_UPNEXT_EPISODE if unwatched_only
+                else _FILTER_UPNEXT_EPISODE
+            )
+        ]
+        sort = _SORT_EPISODE
+
     inprogress = utils.jsonrpc(
         method='VideoLibrary.GetEpisodes',
         params={
             'properties': EPISODE_PROPERTIES,
             'sort': _SORT_LASTPLAYED,
             'limits': _QUERY_LIMITS,
-            'filter': _FILTER_REGULAR_SEASON_INPROGRESS
+            'filter': filters[0]
         }
     )
     inprogress = inprogress.get('result', {}).get('episodes', [])
@@ -961,7 +1007,7 @@ def get_upnext_episodes_from_library(limit=25,  # pylint: disable=too-many-local
             'properties': EPISODE_PROPERTIES,
             'sort': _SORT_LASTPLAYED,
             'limits': _QUERY_LIMITS,
-            'filter': _FILTER_REGULAR_SEASON_WATCHED
+            'filter': filters[1]
         }
     )
     watched = watched.get('result', {}).get('episodes', [])
@@ -969,19 +1015,6 @@ def get_upnext_episodes_from_library(limit=25,  # pylint: disable=too-many-local
     episodes = utils.merge_and_sort(
         inprogress, watched, key='lastplayed', reverse=True
     )
-
-    # Next episode in current season or first episode in next season
-    filters = [
-        _FILTER_UPNEXT_EPISODE_SEASON if next_season
-        else _FILTER_UPNEXT_EPISODE
-    ]
-
-    if unwatched_only:
-        # Exclude watched episodes
-        filters.append(_FILTER_UNWATCHED)
-        filters = {'and': filters}
-    else:
-        filters = filters[0]
 
     upnext_episodes = []
     tvshows = set()
@@ -993,19 +1026,18 @@ def get_upnext_episodes_from_library(limit=25,  # pylint: disable=too-many-local
         if episode['resume']['position']:
             upnext_episode = episode
         else:
-            current_season = str(episode['season'])
-            _FILTER_THIS_SEASON['value'] = current_season
-            _FILTER_NEXT_SEASON['value'] = current_season
+            _FILTER_THIS_SEASON['value'] = str(episode['season'])
             _FILTER_NEXT_EPISODE['value'] = str(episode['episode'])
+            _FILTER_NEXT_AIRED['value'] = episode['firstaired']
 
             upnext_episode = utils.jsonrpc(
                 method='VideoLibrary.GetEpisodes',
                 params={
                     'tvshowid': tvshowid,
                     'properties': EPISODE_PROPERTIES,
-                    'sort': _SORT_EPISODE,
+                    'sort': sort,
                     'limits': _QUERY_LIMIT_ONE,
-                    'filter': filters
+                    'filter': filters[2]
                 }
             )
             upnext_episode = upnext_episode.get('result', {}).get('episodes')
@@ -1018,17 +1050,9 @@ def get_upnext_episodes_from_library(limit=25,  # pylint: disable=too-many-local
         # Restore current episode lastplayed for sorting of next-up episode
         upnext_episode['lastplayed'] = episode['lastplayed']
 
-        art = upnext_episode.get('art')
-        if art:
-            art_types = frozenset(art.keys())
-            for art_type, art_substitutes in EPISODE_ART_SUBSTITUTES.items():
-                if art_type in art_types:
-                    continue
-                for art_substitute in art_substitutes:
-                    if art_substitute in art_types:
-                        art[art_type] = art[art_substitute]
-                        break
-            upnext_episode['art'] = art
+        upnext_episode['art'] = art_fallbacks(
+            upnext_episode.get('art'), EPISODE_ART_MAP
+        )
 
         upnext_episodes.append(upnext_episode)
         tvshows.add(tvshowid)
@@ -1105,15 +1129,9 @@ def get_upnext_movies_from_library(limit=25,
         # Restore current movie lastplayed for sorting of next-up movie
         upnext_movie['lastplayed'] = movie['lastplayed']
 
-        art = upnext_movie.get('art')
-        if art:
-            art_types = frozenset(art.keys())
-            for art_type, art_replacements in MOVIE_ART_REPLACEMENTS.items():
-                for art_replacement in art_replacements:
-                    if art_replacement in art_types:
-                        art[art_type] = art[art_replacement]
-                        break
-            upnext_movie['art'] = art
+        upnext_movie['art'] = art_fallbacks(
+            upnext_movie.get('art'), MOVIE_ART_MAP, replace=True
+        )
 
         upnext_movies.append(upnext_movie)
 
