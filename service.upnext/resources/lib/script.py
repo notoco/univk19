@@ -3,7 +3,6 @@
 """This is the actual UpNext script"""
 
 from __future__ import absolute_import, division, unicode_literals
-from random import choice as randchoice
 import xbmcaddon
 from settings import SETTINGS
 import dummydata
@@ -15,11 +14,8 @@ import utils
 
 
 def test_popup(popup_type, simple_style=False):
-    media_type = randchoice(('movies', 'episodes'))
-    selection = randchoice((0, 2))
-
-    test_video = dummydata.LIBRARY[media_type][selection]
-    test_next_video = dummydata.LIBRARY[media_type][selection + 1]
+    test_episode = dummydata.LIBRARY['episodes'][0]
+    test_next_episode = dummydata.LIBRARY['episodes'][1]
 
     # Create test state object
     test_state = state.UpNextState()
@@ -27,7 +23,7 @@ def test_popup(popup_type, simple_style=False):
     test_state.starting = 0
     # Use test episode to simulate next playing episode used for popup display
     test_state.next_item = utils.create_item_details(
-        item=test_next_video, source='playlist',
+        item=test_next_episode, source='playlist',
     )
 
     # Choose popup style
@@ -45,12 +41,12 @@ def test_popup(popup_type, simple_style=False):
         'playing': {'value': True, 'force': True},
         # 'paused': {'value': False, 'force': False},
         # Simulate dummy file name
-        'playing_file': {'value': test_video['file'], 'force': True},
+        'playing_file': {'value': test_episode['file'], 'force': True},
         'speed': {'value': 1, 'force': True},
         # Simulate playtime of endtime minus 10s
-        'time': {'value': test_video['runtime'] - 10, 'force': True},
+        'time': {'value': test_episode['runtime'] - 10, 'force': True},
         # Simulate endtime based on dummy episode
-        'total_time': {'value': test_video['runtime'], 'force': True},
+        'total_time': {'value': test_episode['runtime'], 'force': True},
         # 'next_file': {'value': None, 'force': False},
         # Simulate episode media type is being played based on dummy episode
         'media_type': {'value': 'episode', 'force': True},
@@ -59,10 +55,10 @@ def test_popup(popup_type, simple_style=False):
     })
     # Simulate player state could also be done using the following
     test_player.player_state.set('playing', True, force=True)
-    test_player.player_state.set('playing_file', test_video['file'], force=True)
+    test_player.player_state.set('playing_file', test_episode['file'], force=True)
     test_player.player_state.set('speed', 1, force=True)
-    test_player.player_state.set('time', (test_video['runtime'] - 10), force=True)
-    test_player.player_state.set('total_time', test_video['runtime'], force=True)
+    test_player.player_state.set('time', (test_episode['runtime'] - 10), force=True)
+    test_player.player_state.set('total_time', test_episode['runtime'], force=True)
     test_player.player_state.set('media_type', 'episode', force=True)
     test_player.player_state.set('stop', force=True)
 

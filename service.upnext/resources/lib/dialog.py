@@ -4,7 +4,6 @@
 from __future__ import absolute_import, division, unicode_literals
 import datetime
 import xbmcgui
-import api
 import constants
 import statichelper
 import utils
@@ -63,7 +62,7 @@ class UpNextPopup(xbmcgui.WindowXMLDialog, object):
     def onInit(self):  # pylint: disable=invalid-name
         try:
             self.progress_control = self.getControl(
-                constants.PROGRESS_CTRL_ID
+                constants.PROGRESS_CONTROL_ID
             )
         # Occurs when skin does not include progress control
         except RuntimeError:
@@ -82,17 +81,17 @@ class UpNextPopup(xbmcgui.WindowXMLDialog, object):
 
     def onClick(self, controlId):  # pylint: disable=invalid-name
         # Play now - Watch now / Still Watching
-        if controlId == constants.PLAY_CTRL_ID:
+        if controlId == constants.PLAY_CONTROL_ID:
             self.set_playnow(True)
             self.close()
         # Cancel - Close / Stop
-        elif controlId == constants.CLOSE_CTRL_ID:
+        elif controlId == constants.CLOSE_CONTROL_ID:
             self.set_cancel(True)
             if self.stop_enable:
                 self.set_stop(True)
             self.close()
         # Shuffle play
-        elif controlId == constants.SHUFFLE_CTRL_ID:
+        elif controlId == constants.SHUFFLE_CONTROL_ID:
             if self.is_shuffle_on():
                 self.set_shuffle(False)
             else:
@@ -113,8 +112,8 @@ class UpNextPopup(xbmcgui.WindowXMLDialog, object):
         self.setProperty(
             'stop_close_label',
             utils.localize(
-                constants.STOP_STR_ID if self.stop_enable
-                else constants.CLOSE_STR_ID
+                constants.STOP_STRING_ID if self.stop_enable
+                else constants.CLOSE_STRING_ID
             )
         )
         self.setProperty('shuffle_enable', (self.shuffle_on is not None))
@@ -122,57 +121,41 @@ class UpNextPopup(xbmcgui.WindowXMLDialog, object):
         self.setProperty('popup_position', self.popup_position)
         self.setProperty('accent_colour', self.accent_colour)
 
-        if not self.item or 'details' not in self.item:
-            self.item = None
-            return
-
-        details = self.item['details']
-        media_type = self.item.get('media_type')
-
-        if details:
+        if self.item is not None:
             show_spoilers = utils.get_global_setting(
                 'videolibrary.showunwatchedplots'
             ) if utils.supports_python_api(18) else constants.DEFAULT_SPOILERS
 
-            if media_type == 'episode':
-                if constants.UNWATCHED_EPISODE_THUMB in show_spoilers:
-                    art = api.art_fallbacks(
-                        details.get('art'), api.EPISODE_ART_MAP
-                    )
-                else:
-                    art = constants.NO_SPOILER_ART
-            elif media_type == 'movie':
-                art = api.art_fallbacks(
-                    details.get('art'), api.MOVIE_ART_MAP, replace=True
-                )
-            else:
-                art = details.get('art')
-
-            self.setProperty('fanart', art.get('fanart', ''))
-            self.setProperty('landscape', art.get('landscape', ''))
-            self.setProperty('clearart', art.get('clearart', ''))
-            self.setProperty('clearlogo', art.get('clearlogo', ''))
-            self.setProperty('poster', art.get('poster', ''))
+            art = (
+                self.item.get('art')
+                if constants.UNWATCHED_EPISODE_THUMB in show_spoilers
+                else constants.NO_SPOILER_ART
+            )
+            self.setProperty('fanart', art.get('tvshow.fanart', ''))
+            self.setProperty('landscape', art.get('tvshow.landscape', ''))
+            self.setProperty('clearart', art.get('tvshow.clearart', ''))
+            self.setProperty('clearlogo', art.get('tvshow.clearlogo', ''))
+            self.setProperty('poster', art.get('tvshow.poster', ''))
             self.setProperty('thumb', art.get('thumb', ''))
 
             self.setProperty(
                 'plot',
-                details.get('plot', '')
+                self.item.get('plot', '')
                 if constants.UNWATCHED_EPISODE_PLOT in show_spoilers else ''
             )
-            self.setProperty('tvshowtitle', details.get('showtitle', ''))
-            self.setProperty('title', details.get('title', ''))
-            season = details.get('season')
-            self.setProperty('season', '' if season is None else season)
-            episode = details.get('episode', '')
+            self.setProperty('tvshowtitle', self.item.get('showtitle', ''))
+            self.setProperty('title', self.item.get('title', ''))
+            season = self.item.get('season', '')
+            self.setProperty('season', season)
+            episode = self.item.get('episode', '')
             self.setProperty('episode', episode)
             self.setProperty(
                 'seasonepisode',
-                episode if season is None or episode == ''
-                else constants.SEASON_EPISODE.format(season, episode)
+                '{0}x{1}'.format(season, episode) if season and episode
+                else episode
             )
             firstaired, firstaired_string = utils.localize_date(
-                str(details.get('firstaired', ''))
+                self.item.get('firstaired', '')
             )
             self.setProperty('firstaired', firstaired_string)
             self.setProperty('premiered', firstaired_string)
@@ -180,14 +163,13 @@ class UpNextPopup(xbmcgui.WindowXMLDialog, object):
                 'year',
                 firstaired.year if firstaired else firstaired_string
             )
-            rating = details.get('rating')
+            rating = self.item.get('rating')
             self.setProperty(
                 'rating',
                 '' if rating is None else round(float(rating), 1)
             )
-            self.setProperty('playcount', details.get('playcount', 0))
-            self.setProperty('runtime', details.get('runtime', ''))
-        self.item = details
+            self.setProperty('playcount', self.item.get('playcount', 0))
+            self.setProperty('runtime', self.item.get('runtime', ''))
 
     def set_item(self, item):
         self.item = item

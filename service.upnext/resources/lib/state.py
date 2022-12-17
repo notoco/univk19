@@ -127,15 +127,12 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
                 random=self.shuffle_on
             )
             source = 'library'
-
             # Show Still Watching? popup if next episode is from next season or
             # next item is a movie
             if media_type == 'movie' or (
-                    not self.shuffle_on and next_video and len({
-                        constants.SPECIALS,
-                        next_video['season'],
-                        self.current_item['details']['season']
-                    }) == 3
+                    not self.shuffle_on and next_video and
+                    next_video['season']
+                    != self.current_item['details']['season']
             ):
                 self.played_in_a_row = SETTINGS.played_limit
 
@@ -172,8 +169,8 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
             # Force popup time to specified play time
             popup_time = detected_time
 
-            # Enable cue point unless forced off in sim mode
-            self.popup_cue = SETTINGS.sim_cue != constants.SETTING_OFF
+            # Enable cue point unless forced off in demo mode
+            self.popup_cue = SETTINGS.demo_cue != constants.SETTING_OFF
 
         self.popup_time = popup_time
         self._set_detect_time()
@@ -198,8 +195,8 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
 
             # Ensure popup time is not too close to end of playback
             if 0 < popup_time <= total_time - constants.POPUP_MIN_DURATION:
-                # Enable cue point unless forced off in sim mode
-                self.popup_cue = SETTINGS.sim_cue != constants.SETTING_OFF
+                # Enable cue point unless forced off in demo mode
+                self.popup_cue = SETTINGS.demo_cue != constants.SETTING_OFF
             # Otherwise ignore popup time from plugin data
             else:
                 popup_time = 0
@@ -219,8 +216,8 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
             else:
                 popup_time = total_time - constants.POPUP_MIN_DURATION
 
-            # Disable cue point unless forced on in sim mode
-            self.popup_cue = SETTINGS.sim_cue == constants.SETTING_ON
+            # Disable cue point unless forced on in demo mode
+            self.popup_cue = SETTINGS.demo_cue == constants.SETTING_ON
 
         self.popup_time = popup_time
         self.total_time = total_time
@@ -355,12 +352,5 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
     def set_plugin_data(self, data, encoding='base64'):
         if data:
             self.log('Plugin data: {0}'.format(data))
-
-            # Map to new data structure
-            if 'current_episode' in data:
-                data['current_video'] = data.pop('current_episode')
-            if 'next_episode' in data:
-                data['next_video'] = data.pop('next_episode')
-
         self.data = data
         self.encoding = encoding
