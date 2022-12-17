@@ -8,6 +8,8 @@ import binascii
 from itertools import chain
 import json
 from operator import itemgetter
+from re import compile as re_compile
+from string import punctuation
 import sys
 import threading
 import dateutil.parser
@@ -268,60 +270,6 @@ def clear_property(key, window_id=constants.WINDOW_HOME):
     return xbmcgui.Window(window_id).clearProperty(key)
 
 
-def get_setting(key, default='', echo=True):
-    """Get an addon setting as string"""
-
-    value = default
-    try:
-        value = ADDON.getSetting(key)
-        value = statichelper.to_unicode(value)
-    # Occurs when the addon is disabled
-    except RuntimeError:
-        value = default
-
-    if echo:
-        log(msg='{0}: {1}'.format(key, value), name='Settings', level=LOGDEBUG)
-    return value
-
-
-def get_setting_bool(key, default=None, echo=True):
-    """Get an addon setting as boolean"""
-
-    value = default
-    try:
-        value = bool(ADDON.getSettingBool(key))
-    # On Krypton or older, or when not a boolean
-    except (AttributeError, TypeError):
-        value = get_setting(key, echo=False)
-        value = constants.VALUE_FROM_STR.get(value.lower(), default)
-    # Occurs when the addon is disabled
-    except RuntimeError:
-        value = default
-
-    if echo:
-        log(msg='{0}: {1}'.format(key, value), name='Settings', level=LOGDEBUG)
-    return value
-
-
-def get_setting_int(key, default=None, echo=True):
-    """Get an addon setting as integer"""
-
-    value = default
-    try:
-        value = ADDON.getSettingInt(key)
-    # On Krypton or older, or when not an integer
-    except (AttributeError, TypeError):
-        value = get_setting(key, echo=False)
-        value = get_int(value, default=default, strict=True)
-    # Occurs when the addon is disabled
-    except RuntimeError:
-        value = default
-
-    if echo:
-        log(msg='{0}: {1}'.format(key, value), name='Settings', level=LOGDEBUG)
-    return value
-
-
 def get_int(obj, key=None, default=constants.UNDEFINED, strict=False):
     """Returns an object or value for the given key in object, as an integer.
        Returns default value if key or object is not available.
@@ -412,9 +360,9 @@ def event(message, data=None, sender=None, encoding='base64'):
 
     encoded_data = encode_data(data, encoding=encoding)
     if not encoded_data:
-        return
+        return None
 
-    jsonrpc(
+    return jsonrpc(
         method='JSONRPC.NotifyAll',
         params={
             'sender': '{0}.SIGNAL'.format(sender),
@@ -444,7 +392,7 @@ LOGERROR = xbmc.LOGERROR        # |  4  |  3
 LOGFATAL = xbmc.LOGFATAL        # |  6  |  4
 LOGNONE = xbmc.LOGNONE          # |  7  |  5
 
-LOG_ENABLE_SETTING = get_setting_int('logLevel', echo=False)
+LOG_ENABLE_SETTING = constants.LOG_ENABLE_DEBUG
 DEBUG_LOG_ENABLE = get_global_setting('debug.showloginfo')
 MIN_LOG_LEVEL = LOGINFO if supports_python_api(19) else LOGINFO + 1
 
@@ -634,10 +582,42 @@ def create_item_details(item, source=None,
     return item_details
 
 
-def merge_and_sort(*iterables, **kwargs):
-    key = kwargs.get('key')
-    key = itemgetter(key) if key else None
+def merge_iterable(*iterables, **kwargs):
+    sort = kwargs.get('sort')
 
     merged = chain.from_iterable(iterables)
-    merged = sorted(merged, key=key, reverse=kwargs.get('reverse', True))
+    if sort:
+        reverse = kwargs.get('reverse', True)
+        key = None if isinstance(sort, bool) else itemgetter(sort)
+        limit = kwargs.get('limit')
+
+        if key and limit is not None:
+            merged = (item for item in merged if key(item) >= limit)
+
+        merged = sorted(merged, key=key, reverse=reverse)
     return merged
+
+
+def strip_punctuation(value, table=dict.fromkeys(map(ord, punctuation))):  # pylint: disable=dangerous-default-value
+    length = len(value)
+    if length < 3 or (length == 3 and value.upper() != value):
+        return ''
+    return value.lower().translate(table)
+
+
+def tokenise(value,
+             split=re_compile(r'[_\.,]* |[\|/\\]').split,
+             strip=strip_punctuation,
+             remove=frozenset({
+                 '', 'about', 'after', 'from', 'have', 'hers', 'into', 'only',
+                 'over', 'than', 'that', 'their', 'there', 'them', 'then',
+                 'they', 'this', 'what', 'when', 'where', 'will', 'with',
+                 'your', 'duringcreditsstinger', 'aftercreditsstinger',
+                 'collection'
+             })):
+    tokens = split(value) if split else value
+    if strip:
+        tokens = set(map(strip, tokens))
+    if remove:
+        tokens = tokens - remove
+    return tokens

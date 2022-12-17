@@ -32,7 +32,7 @@ def _copy_video_details(upnext_data):
     if dummy_key == 'next_video':
         # Next provided video may not be the next consecutive video so we set
         # the title to indicate the next video in the UpNext popup
-        dummy_info['title'] = utils.localize(constants.NEXT_STRING_ID)
+        dummy_info['title'] = utils.localize(constants.NEXT_STR_ID)
     else:
         dummy_info['title'] = ''
 
@@ -60,69 +60,104 @@ def _copy_video_details(upnext_data):
 
 # pylint: disable=no-member
 if utils.supports_python_api(20):
+    def _wrap(value):
+        if isinstance(value, (list, tuple)):
+            return value
+        return (value, )
+
+    def _convert_cast(cast_list):
+        cast_role_list = []
+        for order, person in enumerate(cast_list):
+            if isinstance(person, xbmc.Actor):
+                return cast_list
+            if isinstance(person, tuple):
+                name = person[0]
+                role = person[1]
+            elif isinstance(person, dict):
+                name = person.get('name', '')
+                role = person.get('role', '')
+                order = person.get('order', order)
+            else:
+                name = person
+                role = ''
+            cast_role_list.append(
+                xbmc.Actor(name=name, role=role, order=order)
+            )
+        return cast_role_list
+
     def _set_info(infolabel):
         info_tag = _set_info.info_tag
         if not info_tag or not infolabel:
-            return None
+            return
 
         name = infolabel[0].lower()
         value = infolabel[1]
-        setter = _set_info.mapping.get(name)
-        if callable(setter):
-            setter(info_tag, value)
-            return (name, value)
-        return None
+        mapping = _set_info.mapping.get(name)
+
+        if not mapping:
+            return
+
+        setter, pre_process, force = mapping
+        # Some exceptions get logged even if caught. Force pre_process to avoid
+        # log spam
+        try:
+            setter(info_tag, pre_process(value) if force else value)
+        except TypeError as error:
+            if force:
+                log(error)
+            else:
+                setter(info_tag, pre_process(value))
 
     _InfoTagVideo = xbmc.InfoTagVideo
     _set_info.mapping = {
-        'sortepisode': _InfoTagVideo.setSortEpisode,
-        'dbid': _InfoTagVideo.setDbId,
-        'year': _InfoTagVideo.setYear,
-        'episode': _InfoTagVideo.setEpisode,
-        'season': _InfoTagVideo.setSeason,
-        'sortseason': _InfoTagVideo.setSortSeason,
-        'episodeguide': _InfoTagVideo.setEpisodeGuide,
-        'top250': _InfoTagVideo.setTop250,
-        'setid': _InfoTagVideo.setSetId,
-        'tracknumber': _InfoTagVideo.setTrackNumber,
-        'rating': _InfoTagVideo.setRating,
-        # 'rating': _InfoTagVideo.setRatings,
-        'userrating': _InfoTagVideo.setUserRating,
-        'playcount': _InfoTagVideo.setPlaycount,
-        'mpaa': _InfoTagVideo.setMpaa,
-        'plot': _InfoTagVideo.setPlot,
-        'plotoutline': _InfoTagVideo.setPlotOutline,
-        'title': _InfoTagVideo.setTitle,
-        'originaltitle': _InfoTagVideo.setOriginalTitle,
-        'sorttitle': _InfoTagVideo.setSortTitle,
-        'tagline': _InfoTagVideo.setTagLine,
-        'tvshowtitle': _InfoTagVideo.setTvShowTitle,
-        'status': _InfoTagVideo.setTvShowStatus,
-        'genre': _InfoTagVideo.setGenres,
-        'country': _InfoTagVideo.setCountries,
-        'director': _InfoTagVideo.setDirectors,
-        'studio': _InfoTagVideo.setStudios,
-        'writer': _InfoTagVideo.setWriters,
-        'duration': _InfoTagVideo.setDuration,
-        'premiered': _InfoTagVideo.setPremiered,
-        'set': _InfoTagVideo.setSet,
-        'setoverview': _InfoTagVideo.setSetOverview,
-        'tag': _InfoTagVideo.setTags,
-        'code': _InfoTagVideo.setProductionCode,
-        'aired': _InfoTagVideo.setFirstAired,
-        'lastplayed': _InfoTagVideo.setLastPlayed,
-        'album': _InfoTagVideo.setAlbum,
-        'votes': _InfoTagVideo.setVotes,
-        'trailer': _InfoTagVideo.setTrailer,
-        'path': _InfoTagVideo.setPath,
-        # 'path': _InfoTagVideo.setFilenameAndPath,
-        'imdbnumber': _InfoTagVideo.setIMDBNumber,
-        'dateadded': _InfoTagVideo.setDateAdded,
-        'mediatype': _InfoTagVideo.setMediaType,
-        'showlink': _InfoTagVideo.setShowLinks,
-        'artist': _InfoTagVideo.setArtists,
-        'cast': _InfoTagVideo.setCast,
-        'castandrole': _InfoTagVideo.setCast,
+        'sortepisode': (_InfoTagVideo.setSortEpisode, int, False),
+        'dbid': (_InfoTagVideo.setDbId, int, False),
+        'year': (_InfoTagVideo.setYear, int, False),
+        'episode': (_InfoTagVideo.setEpisode, int, False),
+        'season': (_InfoTagVideo.setSeason, int, False),
+        'sortseason': (_InfoTagVideo.setSortSeason, int, False),
+        'episodeguide': (_InfoTagVideo.setEpisodeGuide, str, False),
+        'top250': (_InfoTagVideo.setTop250, int, False),
+        'setid': (_InfoTagVideo.setSetId, int, False),
+        'tracknumber': (_InfoTagVideo.setTrackNumber, int, False),
+        'rating': (_InfoTagVideo.setRating, float, False),
+        # 'rating': (_InfoTagVideo.setRatings, int, False),
+        'userrating': (_InfoTagVideo.setUserRating, int, False),
+        'playcount': (_InfoTagVideo.setPlaycount, int, False),
+        'mpaa': (_InfoTagVideo.setMpaa, str, False),
+        'plot': (_InfoTagVideo.setPlot, str, False),
+        'plotoutline': (_InfoTagVideo.setPlotOutline, str, False),
+        'title': (_InfoTagVideo.setTitle, str, False),
+        'originaltitle': (_InfoTagVideo.setOriginalTitle, str, False),
+        'sorttitle': (_InfoTagVideo.setSortTitle, str, False),
+        'tagline': (_InfoTagVideo.setTagLine, str, False),
+        'tvshowtitle': (_InfoTagVideo.setTvShowTitle, str, False),
+        'status': (_InfoTagVideo.setTvShowStatus, str, False),
+        'genre': (_InfoTagVideo.setGenres, _wrap, True),
+        'country': (_InfoTagVideo.setCountries, _wrap, True),
+        'director': (_InfoTagVideo.setDirectors, _wrap, True),
+        'studio': (_InfoTagVideo.setStudios, _wrap, True),
+        'writer': (_InfoTagVideo.setWriters, _wrap, True),
+        'duration': (_InfoTagVideo.setDuration, int, False),
+        'premiered': (_InfoTagVideo.setPremiered, str, False),
+        'set': (_InfoTagVideo.setSet, str, False),
+        'setoverview': (_InfoTagVideo.setSetOverview, str, False),
+        'tag': (_InfoTagVideo.setTags, _wrap, True),
+        'code': (_InfoTagVideo.setProductionCode, str, False),
+        'aired': (_InfoTagVideo.setFirstAired, str, False),
+        'lastplayed': (_InfoTagVideo.setLastPlayed, str, False),
+        'album': (_InfoTagVideo.setAlbum, str, False),
+        'votes': (_InfoTagVideo.setVotes, int, False),
+        'trailer': (_InfoTagVideo.setTrailer, str, False),
+        'path': (_InfoTagVideo.setPath, str, False),
+        # 'path': (_InfoTagVideo.setFilenameAndPath, str, False),
+        'imdbnumber': (_InfoTagVideo.setIMDBNumber, str, False),
+        'dateadded': (_InfoTagVideo.setDateAdded, str, False),
+        'mediatype': (_InfoTagVideo.setMediaType, str, False),
+        'showlink': (_InfoTagVideo.setShowLinks, _wrap, True),
+        'artist': (_InfoTagVideo.setArtists, _wrap, True),
+        'cast': (_InfoTagVideo.setCast, _convert_cast, True),
+        'castandrole': (_InfoTagVideo.setCast, _convert_cast, True),
     }
 
 
@@ -130,47 +165,43 @@ def _create_video_listitem(video,
                            kwargs=None, infolabels=None, properties=None):
     """Create a xbmcgui.ListItem from provided video details"""
 
-    title = video.get('title', '')
-    file_path = video.get('file', '')
-    resume = video.get('resume', {})
-    art = video.get('art', {})
-
-    default_kwargs = {
-        'label': title,
-        'path': file_path
-    }
-    if utils.supports_python_api(18):
-        default_kwargs['offscreen'] = True
-    if kwargs:
-        default_kwargs.update(kwargs)
-
-    default_infolabels = {
-        'path': file_path,
-        'title': title,
+    _infolabels = {
+        'path': video.get('file', ''),
+        'title': video.get('title', ''),
         'plot': video.get('plot', ''),
         'rating': float(video.get('rating', 0.0)),
         'premiered': video.get('premiered', ''),
-        'year': video.get('year', ''),
+        'year': video.get('year', 0),
         'mpaa': video.get('mpaa', ''),
         'dateadded': video.get('dateadded', ''),
         'lastplayed': video.get('lastplayed', ''),
         'playcount': video.get('playcount', 0),
     }
     if infolabels:
-        default_infolabels.update(infolabels)
+        _infolabels.update(infolabels)
 
-    default_properties = {
+    resume = video.get('resume', {})
+    _properties = {
         'isPlayable': 'true'
     }
     if not utils.supports_python_api(20):
-        default_properties.update({
+        _properties.update({
             'resumetime': str(resume.get('position')),
             'totaltime': str(resume.get('total')),
         })
     if properties:
-        default_properties.update(properties)
+        _properties.update(properties)
 
-    listitem = xbmcgui.ListItem(**default_kwargs)
+    _kwargs = {
+        'label': _infolabels.get('title'),
+        'path': _infolabels.get('path'),
+    }
+    if utils.supports_python_api(18):
+        _kwargs['offscreen'] = True
+    if kwargs:
+        _kwargs.update(kwargs)
+
+    listitem = xbmcgui.ListItem(**_kwargs)
     if utils.supports_python_api(20):
         info_tag = listitem.getVideoInfoTag()
         _set_info.info_tag = info_tag
@@ -178,23 +209,23 @@ def _create_video_listitem(video,
             time=resume.get('position'), totalTime=resume.get('total')
         )
         # Consume iterator
-        deque(map(_set_info, default_infolabels.items(), maxlen=0))
+        deque(map(_set_info, _infolabels.items()), maxlen=0)
     else:
-        listitem.setInfo(type='Video', infoLabels=default_infolabels)
+        listitem.setInfo(type='Video', infoLabels=_infolabels)
 
     if utils.supports_python_api(18):
-        listitem.setProperties(default_properties)
-        listitem.setIsFolder(False)
+        listitem.setProperties(_properties)
+        listitem.setIsFolder(_properties.get('isFolder', False))
     else:
-        for key, val in default_properties.items():
+        for key, val in _properties.items():
             listitem.setProperty(key, val)
-    listitem.setArt(art)
-    listitem.setPath(file_path)
+
+    listitem.setArt(video.get('art', {}))
 
     return listitem
 
 
-def create_episode_listitem(episode):
+def create_episode_listitem(episode, infolabels=None, properties=None):
     """Create a xbmcgui.ListItem from provided episode details"""
 
     show_title = episode.get('showtitle', '')
@@ -209,7 +240,7 @@ def create_episode_listitem(episode):
     )
     label_tokens = (None, show_title, season_episode, episode_title)
 
-    kwargs = {
+    _kwargs = {
         'label': ' - '.join(
             label_tokens[token]
             for token in SETTINGS.plugin_main_label
@@ -222,7 +253,7 @@ def create_episode_listitem(episode):
         ),
     }
 
-    infolabels = {
+    _infolabels = {
         'dbid': episode.get('episodeid', constants.UNDEFINED),
         'tvshowtitle': show_title,
         'season': constants.UNDEFINED if season is None else season,
@@ -232,28 +263,52 @@ def create_episode_listitem(episode):
         'year': utils.get_year(first_aired),
         'mediatype': 'episode'
     }
+    if infolabels:
+        _infolabels.update(infolabels)
 
-    properties = {
+    # Pass as property - there is no method to set/get tvshowid from a ListItem
+    # or InfoTagVideo
+    _properties = {
         'tvshowid': str(episode.get('tvshowid', constants.UNDEFINED))
     }
+    if properties:
+        _properties.update(properties)
 
-    listitem = _create_video_listitem(episode, kwargs, infolabels, properties)
+    listitem = _create_video_listitem(
+        episode, _kwargs, _infolabels, _properties
+    )
     return listitem
 
 
-def create_movie_listitem(movie):
+def create_movie_listitem(movie, infolabels=None, properties=None):
     """Create a xbmcgui.ListItem from provided movie details"""
 
-    infolabels = {
+    set_id = movie.get('setid', constants.UNDEFINED)
+    set_name = movie.get('set', '')
+
+    _infolabels = {
         'dbid': movie.get('movieid', constants.UNDEFINED),
+        'setid': set_id,
+        'set': set_name,
         'mediatype': 'movie'
     }
+    if infolabels:
+        _infolabels.update(infolabels)
 
-    listitem = _create_video_listitem(movie, None, infolabels)
+    # Pass as property - there is no method to get setid/set from a ListItem
+    # or InfoTagVideo even though there are new methods to set these info tags
+    _properties = {
+        'setid': str(set_id),
+        'set': set_name
+    }
+    if properties:
+        _properties.update(properties)
+
+    listitem = _create_video_listitem(movie, None, _infolabels, _properties)
     return listitem
 
 
-def create_listitem(item):
+def create_listitem(item, infolabels=None, properties=None):
     """Create a xbmcgui.ListItem from provided item_details dict"""
 
     media_type = item.get('media_type')
@@ -261,10 +316,10 @@ def create_listitem(item):
         item = item['details']
 
     if media_type == 'episode' or 'tvshowid' in item:
-        return create_episode_listitem(item)
+        return create_episode_listitem(item, infolabels, properties)
 
     if media_type == 'movie' or 'setid' in item:
-        return create_movie_listitem(item)
+        return create_movie_listitem(item, infolabels, properties)
 
     return None
 
@@ -283,7 +338,7 @@ def send_signal(sender, upnext_info):
     if not (any(info in upnext_info for info in required_episode_info)
             and any(info in upnext_info for info in required_plugin_info)):
         log('Invalid UpNext info - {0}'.format(upnext_info), utils.LOGWARNING)
-        return
+        return None
 
     # Extract ListItem or InfoTagVideo details for use by UpNext
     upnext_data = {}
@@ -310,7 +365,7 @@ def send_signal(sender, upnext_info):
                 or val.getProperty('TvShowDBID')
                 or tvshow_id
             )
-            set_id = val.getProperty('setid') or set_id
+            set_id = int(val.getProperty('setid') or set_id)
             set_name = val.getProperty('set')
             val = val.getVideoInfoTag()
 
@@ -328,10 +383,6 @@ def send_signal(sender, upnext_info):
 
         video_info = {
             'title': val.getTitle(),
-            'art': {
-                'thumb': thumb,
-                'tvshow.fanart': fanart,
-            },
             # Prefer outline over full plot for UpNext popup
             'plot': val.getPlotOutline() or val.getPlot(),
             'playcount': val.getPlayCount(),
@@ -349,12 +400,20 @@ def send_signal(sender, upnext_info):
                 'season': val.getSeason(),
                 'episode': val.getEpisode(),
                 'showtitle': val.getTVShowTitle(),
+                'art': {
+                    'thumb': thumb,
+                    'tvshow.fanart': fanart,
+                },
             })
         elif media_type == 'movie':
             video_info.update({
                 'movieid': val.getDbId(),
                 'setid': set_id,
                 'set': set_name,
+                'art': {
+                    'thumb': thumb,
+                    'fanart': fanart,
+                },
             })
         else:
             video_info.update({
@@ -365,7 +424,7 @@ def send_signal(sender, upnext_info):
 
     upnext_data = _copy_video_details(upnext_data)
 
-    utils.event(
+    return utils.event(
         sender=sender,
         message='upnext_data',
         data=upnext_data,
