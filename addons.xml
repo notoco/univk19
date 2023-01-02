@@ -435,11 +435,12 @@ Hyperion.NG(2.0.0-alpha.11) is an modern opensource AmbiLight implementation.
     </extension>
 </addon>
 
-<addon id="service.upnext" name="UpNext" version="2022.12.05.0" provider-name="im85288">
+<addon id="service.upnext" name="UpNext" version="2.0.14+dev.0" provider-name="im85288">
     <requires>
         <import addon="xbmc.python" version="3.0.0" optional="true"/>
         <import addon="script.module.pil" version="1.1.7"/>
         <import addon="script.module.dateutil" version="2.8.1"/>
+        <import addon="plugin.video.themoviedb.helper" version="5.0.33" optional="true"/>
     </requires>
     <!-- This is needed to get an addon icon -->
     <extension point="xbmc.python.script" library="resources/lib/script_entry.py">
@@ -482,48 +483,6 @@ Många befintliga tillägg integreras redan med den här utanför lådan-tjänst
             Muchos complementos existentes ya se integran con este servicio listo para usar.</description>
         <platform>all</platform>
         <license>GPL-2.0-only</license>
-        <news>
-### v2.0.6+dev.0 (2022-12-04)
-- Lots of bug fixes
-  - Fix marking as watched at end of playback
-  - Fix showing watched episode without next episode in widgets
-  - Fix testing popup display from addon settings
-  - Fix testing service operation
-  - Fix various issues with incorrect playlist position
-  - Fix various issues with pausing/restarting popup and detector
-  - Fix deprecated getFirstAired
-
-### v2.0.5+dev.0 (2022-12-03)
-- Improve speed of widget sources
-- Fix demo mode to use existing addon settings
-- Widget sources now use existing addon settings for enabling/disabling
-  - unwatched items
-  - next episodes from next season
-  - next movie from movie set
-
-### v2.0.4+dev.0 (2022-11-28)
-- Add support for movie sets
-- Add UpNext combined episode + movie widget source
-
-### v2.0.3+dev.0 (2022-11-18)
-- Add UpNext movie widget source
-- Updates for Kodi v20
-
-### v2.0.2b+dev.0 (2022-11-14)
-- Add tests for non-ASCII titles and filenames
-- Fix potential unicode string errors
-- Re-organise UpNextPopup class
-- Add settings to customise plugin listing labels
-
-### v2.0.1+dev.0 (2022-10-12)
-- Fix release workflow and makefile
-- Improve speed and reliability of detector
-- Fix tvshow artwork of episodes in plugin listing
-- Add PL translation (@notoco)
-
-### v2.0.0+dev.0 (2022-09-01)
-- Initial release
-        </news>
         <assets>
             <icon>resources/media/icon.png</icon>
             <fanart>resources/media/fanart.jpg</fanart>
