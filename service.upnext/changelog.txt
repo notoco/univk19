@@ -1,9 +1,40 @@
 ## Releases
+### v2.0.14+dev.0 (2022-12-29)
+- Fix bug with plugin play_info integration
+- Update settings and help text
+- New setting for number of items to show in widgets
+- Add new combined movie and tvshow widgets:
+  - More like this...
+    - shows movies and tvshows similar to randomly selected watched video
+  - Watched media recommendations
+    - displays recently watched movies and tvshows
+    - opens list of similar movies and tvshows when a watched video is selected
+- Re-organise widgets by media type (movies / tvshows / combined)
+- Minor misc bug fixes and tidy ups
+
+### v2.0.13+dev.0 (2022-12-25)
+- Added experimental support for TMDBHelper players
+- Fix for Kodi Nexus API parameter name changes
+- Speed up similar video widgets
+- Fix for movie widgets not showing all movies without movie set details
+- Workarounds for Jellyfin video database issues
+
+### v2.0.12+dev.0 (2022-12-18)
+- Added additional tvshow widgets:
+  - More like this...
+    - shows tvshows similar to randomly selected watched tvshow
+  - Watched TVShow recommendations
+    - displays recently watched tvshows
+    - opens list of similar tvshows when a watched tvshow is selected
+- Added year to movie and tvshow labels
+- Added option to display firstaired date to episode labels
+- Fix for incorrectly setting missing resume info
+
 ### v2.0.11+dev.0 (2022-12-16)
 - Added additional movie widgets:
   - More like this...
     - shows movies similar to randomly selected watched movie
-  - Watched movie recommendations
+  - Watched Movie recommendations
     - displays recently watched movies
     - opens list of similar movies when a watched movie is selected
 - Added localisation support for widgets/plugin listings

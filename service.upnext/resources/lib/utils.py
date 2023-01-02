@@ -3,19 +3,27 @@
 """Implements helper functions used elsewhere in the addon"""
 
 from __future__ import absolute_import, division, unicode_literals
+
 import base64
 import binascii
-from itertools import chain
 import json
-from operator import itemgetter
 import sys
 import threading
-import dateutil.parser
+from itertools import chain
+from operator import itemgetter
+from re import (
+    compile as re_compile,
+    split as re_split,
+)
+from string import punctuation
+
+from dateutil.parser import parse as dateutil_parse
+
+import constants
+import statichelper
 import xbmc
 import xbmcaddon
 import xbmcgui
-import constants
-import statichelper
 
 
 class Profiler(object):
@@ -31,18 +39,35 @@ class Profiler(object):
         from io import StringIO as _StringIO
     from functools import wraps as _wraps
     _wraps = staticmethod(_wraps)
-    from weakref import proxy as _proxy
-    _proxy = staticmethod(_proxy)
+    from weakref import ref as _ref
+
+    class Proxy(_ref):
+        def __call__(self, *args, **kwargs):
+            return super(Profiler.Proxy, self).__call__().__call__(
+                *args, **kwargs
+            )
+
+        def __enter__(self, *args, **kwargs):
+            return super(Profiler.Proxy, self).__call__().__enter__(
+                *args, **kwargs
+            )
+
+        def __exit__(self, *args, **kwargs):
+            return super(Profiler.Proxy, self).__call__().__exit__(
+                *args, **kwargs
+            )
 
     _instances = set()
 
     def __new__(cls, *args, **kwargs):
         self = super(Profiler, cls).__new__(cls)
-        self.__init__(*args, **kwargs)
         cls._instances.add(self)
-        return self if self._profiler else cls._proxy(self)  # pylint: disable=protected-access
+        if not kwargs.get('enabled') or kwargs.get('lazy'):
+            self.__init__(*args, **kwargs)
+            return cls.Proxy(self)
+        return self
 
-    def __init__(self, enabled=True, lazy=False, name=__name__, reuse=False):
+    def __init__(self, enabled=True, lazy=True, name=__name__, reuse=False):
         self._enabled = enabled
         self._profiler = None
         self._reuse = reuse
@@ -268,60 +293,6 @@ def clear_property(key, window_id=constants.WINDOW_HOME):
     return xbmcgui.Window(window_id).clearProperty(key)
 
 
-def get_setting(key, default='', echo=True):
-    """Get an addon setting as string"""
-
-    value = default
-    try:
-        value = ADDON.getSetting(key)
-        value = statichelper.to_unicode(value)
-    # Occurs when the addon is disabled
-    except RuntimeError:
-        value = default
-
-    if echo:
-        log(msg='{0}: {1}'.format(key, value), name='Settings', level=LOGDEBUG)
-    return value
-
-
-def get_setting_bool(key, default=None, echo=True):
-    """Get an addon setting as boolean"""
-
-    value = default
-    try:
-        value = bool(ADDON.getSettingBool(key))
-    # On Krypton or older, or when not a boolean
-    except (AttributeError, TypeError):
-        value = get_setting(key, echo=False)
-        value = constants.VALUE_FROM_STR.get(value.lower(), default)
-    # Occurs when the addon is disabled
-    except RuntimeError:
-        value = default
-
-    if echo:
-        log(msg='{0}: {1}'.format(key, value), name='Settings', level=LOGDEBUG)
-    return value
-
-
-def get_setting_int(key, default=None, echo=True):
-    """Get an addon setting as integer"""
-
-    value = default
-    try:
-        value = ADDON.getSettingInt(key)
-    # On Krypton or older, or when not an integer
-    except (AttributeError, TypeError):
-        value = get_setting(key, echo=False)
-        value = get_int(value, default=default, strict=True)
-    # Occurs when the addon is disabled
-    except RuntimeError:
-        value = default
-
-    if echo:
-        log(msg='{0}: {1}'.format(key, value), name='Settings', level=LOGDEBUG)
-    return value
-
-
 def get_int(obj, key=None, default=constants.UNDEFINED, strict=False):
     """Returns an object or value for the given key in object, as an integer.
        Returns default value if key or object is not available.
@@ -412,9 +383,9 @@ def event(message, data=None, sender=None, encoding='base64'):
 
     encoded_data = encode_data(data, encoding=encoding)
     if not encoded_data:
-        return
+        return None
 
-    jsonrpc(
+    return jsonrpc(
         method='JSONRPC.NotifyAll',
         params={
             'sender': '{0}.SIGNAL'.format(sender),
@@ -444,7 +415,7 @@ LOGERROR = xbmc.LOGERROR        # |  4  |  3
 LOGFATAL = xbmc.LOGFATAL        # |  6  |  4
 LOGNONE = xbmc.LOGNONE          # |  7  |  5
 
-LOG_ENABLE_SETTING = get_setting_int('logLevel', echo=False)
+LOG_ENABLE_SETTING = constants.LOG_ENABLE_DEBUG
 DEBUG_LOG_ENABLE = get_global_setting('debug.showloginfo')
 MIN_LOG_LEVEL = LOGINFO if supports_python_api(19) else LOGINFO + 1
 
@@ -489,10 +460,21 @@ def get_year(date_string):
     parse"""
 
     try:
-        date_object = dateutil.parser.parse(date_string)
+        date_object = dateutil_parse(date_string)
         return date_object.year
     except ValueError:
         return date_string
+
+
+def iso_datetime(date_string, separator=str(' ')):
+    """Parse arbitrary date string and output in YYYY-MM-DD hh:mm:ss format"""
+
+    try:
+        date_object = dateutil_parse(date_string).replace(microsecond=0)
+    except ValueError:
+        return date_string
+
+    return date_object.isoformat(separator)
 
 
 def localize_date(date_string):
@@ -501,7 +483,7 @@ def localize_date(date_string):
     date_format = xbmc.getRegion('dateshort')
 
     try:
-        date_object = dateutil.parser.parse(date_string)
+        date_object = dateutil_parse(date_string)
     except ValueError:
         return None, date_string
 
@@ -634,10 +616,74 @@ def create_item_details(item, source=None,
     return item_details
 
 
-def merge_and_sort(*iterables, **kwargs):
-    key = kwargs.get('key')
-    key = itemgetter(key) if key else None
+def merge_iterable(*iterables, **kwargs):
+    sort = kwargs.get('sort')
 
     merged = chain.from_iterable(iterables)
-    merged = sorted(merged, key=key, reverse=kwargs.get('reverse', True))
+    if sort:
+        reverse = kwargs.get('reverse', True)
+        key = None if isinstance(sort, bool) else itemgetter(sort)
+        threshold = kwargs.get('threshold')
+
+        if key and threshold is not None:
+            merged = (item for item in merged if key(item) > threshold)
+
+        merged = sorted(merged, key=key, reverse=reverse)
     return merged
+
+
+def strip_punctuation(value,  # pylint: disable=dangerous-default-value, too-many-arguments
+                      table=dict.fromkeys(map(ord, punctuation)),
+                      _frozenset=frozenset,
+                      _len=len,
+                      _punctuation=set(punctuation)):
+
+    length = _len(value)
+    if length < 3:
+        return ''
+    upper = value.upper()
+    if length == 3 and value != upper:
+        return ''
+    if _punctuation & _frozenset(upper):
+        return upper.translate(table)
+    return upper
+
+
+def tokenise(values,  # pylint: disable=too-many-arguments
+             split=True,
+             strip=strip_punctuation,
+             remove=frozenset({
+                 '', 'ABOUT', 'AFTER', 'FROM', 'HAVE', 'HERS', 'INTO', 'ONLY',
+                 'OVER', 'THAN', 'THAT', 'THEIR', 'THERE', 'THEM', 'THEN',
+                 'THEY', 'THIS', 'WHAT', 'WHEN', 'WHERE', 'WILL', 'WITH',
+                 'YOUR', 'DURINGCREDITSSTINGER', 'AFTERCREDITSSTINGER',
+                 'COLLECTION'
+             }),
+             _frozenset=frozenset,
+             _map=map,
+             _split=re_compile(r'[_\.,]* |[\|/\\]').split):
+
+    tokens = _frozenset()
+    for value in values:
+        if not value:
+            continue
+        if split is True:
+            tokens = tokens | _frozenset(_split(value))
+        elif split:
+            tokens = tokens | _frozenset(re_split(split, value))
+        else:
+            tokens = tokens | _frozenset(value)
+    if strip:
+        tokens = _frozenset(_map(strip, tokens))
+    if remove:
+        tokens = tokens - remove
+    return tokens
+
+
+if supports_python_api(19):
+    from collections import deque
+
+    def modify_iterable(function, sequence):
+        deque(map(function, sequence), maxlen=0)
+else:
+    modify_iterable = map  # pylint: disable=invalid-name

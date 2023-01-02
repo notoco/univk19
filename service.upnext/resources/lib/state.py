@@ -2,10 +2,12 @@
 # GNU General Public License v2.0 (see COPYING or https://www.gnu.org/licenses/gpl-2.0.txt)
 
 from __future__ import absolute_import, division, unicode_literals
-from settings import SETTINGS
+
 import api
 import constants
+import upnext
 import utils
+from settings import SETTINGS
 
 
 class UpNextState(object):  # pylint: disable=too-many-public-methods
@@ -127,12 +129,15 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
                 random=self.shuffle_on
             )
             source = 'library'
+
             # Show Still Watching? popup if next episode is from next season or
             # next item is a movie
             if media_type == 'movie' or (
-                    not self.shuffle_on and next_video and
-                    next_video['season']
-                    != self.current_item['details']['season']
+                    not self.shuffle_on and next_video and len({
+                        constants.SPECIALS,
+                        next_video['season'],
+                        self.current_item['details']['season']
+                    }) == 3
             ):
                 self.played_in_a_row = SETTINGS.played_limit
 
@@ -169,8 +174,8 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
             # Force popup time to specified play time
             popup_time = detected_time
 
-            # Enable cue point unless forced off in demo mode
-            self.popup_cue = SETTINGS.demo_cue != constants.SETTING_OFF
+            # Enable cue point unless forced off in sim mode
+            self.popup_cue = SETTINGS.sim_cue != constants.SETTING_OFF
 
         self.popup_time = popup_time
         self._set_detect_time()
@@ -195,8 +200,8 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
 
             # Ensure popup time is not too close to end of playback
             if 0 < popup_time <= total_time - constants.POPUP_MIN_DURATION:
-                # Enable cue point unless forced off in demo mode
-                self.popup_cue = SETTINGS.demo_cue != constants.SETTING_OFF
+                # Enable cue point unless forced off in sim mode
+                self.popup_cue = SETTINGS.sim_cue != constants.SETTING_OFF
             # Otherwise ignore popup time from plugin data
             else:
                 popup_time = 0
@@ -216,8 +221,8 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
             else:
                 popup_time = total_time - constants.POPUP_MIN_DURATION
 
-            # Disable cue point unless forced on in demo mode
-            self.popup_cue = SETTINGS.demo_cue == constants.SETTING_ON
+            # Disable cue point unless forced on in sim mode
+            self.popup_cue = SETTINGS.sim_cue == constants.SETTING_ON
 
         self.popup_time = popup_time
         self.total_time = total_time
@@ -296,7 +301,7 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
         current_video = api.get_now_playing(
             properties=(
                 api.MOVIE_PROPERTIES if media_type == 'movie' else
-                api.EPISODE_PROPERTIES
+                api.EPISODE_PROPERTIES | {'mediapath'}
             ),
             retry=SETTINGS.api_retry_attempts
         )
@@ -309,10 +314,27 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
                 else None
             )
 
+        title = current_video.get('showtitle')
+        season = utils.get_int(current_video, 'season')
+        episode = utils.get_int(current_video, 'episode')
+        mediapath = current_video.get('mediapath', '')
+        if (mediapath.startswith('plugin://')
+                and SETTINGS.enable_tmdbhelper_fallback
+                and title and constants.UNDEFINED not in (season, episode)):
+            upnext.send_signal(
+                sender='UpNext.TMDBHelper',
+                upnext_info={
+                    'current_video': current_video,
+                    'play_url': None,
+                    'mediapath': mediapath,
+                }
+            )
+            return None
+
         # Get current tvshowid or search in library if detail missing
         tvshowid = current_video.get('tvshowid', constants.UNDEFINED)
         if tvshowid == constants.UNDEFINED:
-            tvshowid = api.get_tvshowid(current_video.get('showtitle'))
+            tvshowid = api.get_tvshowid(title)
 
         # Now playing show not found in library
         if tvshowid == constants.UNDEFINED:
@@ -325,11 +347,7 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
             or utils.get_int(current_video, 'id')
         )
         if episodeid == constants.UNDEFINED:
-            episodeid = api.get_episodeid(
-                tvshowid,
-                current_video.get('season'),
-                current_video.get('episode')
-            )
+            episodeid = api.get_episodeid(tvshowid, season, episode)
         # Now playing episode not found in library
         if episodeid == constants.UNDEFINED:
             return None
@@ -352,5 +370,12 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
     def set_plugin_data(self, data, encoding='base64'):
         if data:
             self.log('Plugin data: {0}'.format(data))
+
+            # Map to new data structure
+            if 'current_episode' in data:
+                data['current_video'] = data.pop('current_episode')
+            if 'next_episode' in data:
+                data['next_video'] = data.pop('next_episode')
+
         self.data = data
         self.encoding = encoding

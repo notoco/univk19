@@ -2,14 +2,17 @@
 # GNU General Public License v2.0 (see COPYING or https://www.gnu.org/licenses/gpl-2.0.txt)
 
 from __future__ import absolute_import, division, unicode_literals
+
 import json
 import timeit
-import xbmc
-from settings import SETTINGS
+
 import constants
 import file_utils
 import image_utils
 import utils
+import xbmc
+from settings import SETTINGS
+
 try:
     import queue
 except ImportError:
@@ -69,7 +72,7 @@ class UpNextHashStore(object):
             return False
 
         # Playlist with no episode details
-        if for_saving and self.group_name.startswith(constants.MIXED_PLAYLIST):
+        if for_saving and self.group_name == constants.MIXED_PLAYLIST:
             return False
 
         # No new episode details, assume current hashes are still valid
@@ -375,7 +378,7 @@ class UpNextDetector(object):
 
         # Check whether each pixel is equal
         bits_eq = sum(map(cls._eq_biased, baseline_hash, compare_hash))
-        bits_xor = map(cls._xor, baseline_hash, compare_hash)
+        bits_xor = tuple(map(cls._xor, baseline_hash, compare_hash))
         bits_xor_baseline = sum(map(cls._and, bits_xor, baseline_hash))
         bits_xor_compare = sum(map(cls._and, bits_xor, compare_hash))
 

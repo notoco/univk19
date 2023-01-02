@@ -3,9 +3,9 @@
 """Implements image manipulation and filtering helper functions"""
 
 from __future__ import absolute_import, division, unicode_literals
+
 from PIL import Image, ImageChops, ImageDraw, ImageFilter
 from settings import SETTINGS
-
 
 _PRECOMPUTED = {
     '_STACK': [],
@@ -155,13 +155,13 @@ def _histogram_rank(input_data, percentile, skip_levels=0):
     target = int((total - sum(histogram[:skip_levels])) * percentile)
     total = 0
 
-    for val, num in enumerate(histogram[skip_levels:]):
+    for val, num in enumerate(histogram[skip_levels:], start=skip_levels):
         if not num:
             continue
 
         total += num
         if total > target:
-            target = val + skip_levels
+            target = val
             break
     else:
         target = 255
@@ -707,7 +707,7 @@ def process(data, queue, save_file=None, debug=SETTINGS.detector_debug_save,
         data = data.copy()
     debug = debug and save_file
 
-    for step, args in enumerate(queue):
+    for step, args in _enumerate(queue):
         method = _pop(args, 0)
 
         args_enum = _enumerate(args)

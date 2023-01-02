@@ -4,13 +4,14 @@
    playlist"""
 
 from __future__ import absolute_import, division, unicode_literals
+
 import os.path
-import xbmc
+
 import constants
 import utils
+import xbmc
 
-
-EPISODE_PROPERTIES = {
+EPISODE_PROPERTIES = frozenset({
     'title',
     'playcount',
     'season',
@@ -34,8 +35,8 @@ EPISODE_PROPERTIES = {
     # 'cast',  # Not used, slow
     'dateadded',
     'lastplayed',
-}
-EPISODE_ART_SUBSTITUTES = {
+})
+EPISODE_ART_MAP = {
     'poster': ('season.poster', 'tvshow.poster'),
     'fanart': ('season.fanart', 'tvshow.fanart'),
     'landscape': ('season.landscape', 'tvshow.landscape'),
@@ -44,7 +45,7 @@ EPISODE_ART_SUBSTITUTES = {
     'clearlogo': ('season.clearlogo', 'tvshow.clearlogo'),
 }
 
-TVSHOW_PROPERTIES = {
+TVSHOW_PROPERTIES = frozenset({
     'title',
     'studio',
     'year',
@@ -54,6 +55,7 @@ TVSHOW_PROPERTIES = {
     # 'ratings',  # Not used, slow
     # 'userrating',  # Not used
     # 'votes',  # Not used
+    'file',
     'genre',
     'episode',
     'season',
@@ -69,9 +71,9 @@ TVSHOW_PROPERTIES = {
     'dateadded',
     'watchedepisodes',
     # 'imdbnumber',  # Not used
-}
+})
 
-MOVIE_PROPERTIES = {
+MOVIE_PROPERTIES = frozenset({
     'title',
     'genre',
     'year',
@@ -92,6 +94,7 @@ MOVIE_PROPERTIES = {
     # 'imdbnumber',  # Not used
     'runtime',
     'set',
+    'setid',
     # 'showlink',  # Not used, slow
     # 'streamdetails',  # Not used, slow
     'top250',
@@ -101,7 +104,6 @@ MOVIE_PROPERTIES = {
     'file',
     # 'sorttitle',  # Not used
     'resume',
-    'setid',
     'dateadded',
     # 'tag',  # Not used, slow
     'art',
@@ -109,9 +111,26 @@ MOVIE_PROPERTIES = {
     # 'ratings',  # Not used, slow
     'premiered',
     # 'uniqueid',  # Not used, slow
-}
-MOVIE_ART_REPLACEMENTS = {
+})
+COMMON_ART_MAP = {
     'thumb': ('poster', ),
+    'icon': ('poster', ),
+}
+
+RECOMMENDATION_PROPERTIES = {
+    'movies': frozenset({
+        'title',
+        'genre',
+        'plot',
+        'set',
+        'tag'
+    }),
+    'tvshows': frozenset({
+        'title',
+        'genre',
+        'plot',
+        'tag'
+    })
 }
 
 PLAYER_PLAYLIST = {
@@ -119,7 +138,7 @@ PLAYER_PLAYLIST = {
     'audio': xbmc.PLAYLIST_MUSIC   # 0
 }
 
-JSON_DETAILS_MAP = {
+JSON_MAP = {
     'episode': {
         'get_method': 'VideoLibrary.GetEpisodeDetails',
         'set_method': 'VideoLibrary.SetEpisodeDetails',
@@ -141,152 +160,200 @@ JSON_DETAILS_MAP = {
         'properties': TVSHOW_PROPERTIES,
         'result': 'tvshowdetails'
     },
+    'episodes': {
+        'get_method': 'VideoLibrary.GetEpisodes',
+        'properties': EPISODE_PROPERTIES,
+        'result': 'episodes'
+    },
+    'movies': {
+        'get_method': 'VideoLibrary.GetMovies',
+        'properties': MOVIE_PROPERTIES,
+        'result': 'movies'
+    },
+    'tvshows': {
+        'get_method': 'VideoLibrary.GetTVShows',
+        'properties': TVSHOW_PROPERTIES,
+        'result': 'tvshows'
+    },
 }
 
-_QUERY_LIMITS = {
+QUERY_LIMITS = {
     'start': 0,
     'end': constants.UNDEFINED
 }
-_QUERY_LIMIT_ONE = {
-    'start': 0,
-    'end': 1
-}
 
-_FILTER_SEARCH_TVSHOW = {
+FILTER_SEARCH_TVSHOW = {
     'field': 'title',
     'operator': 'is',
     'value': constants.UNDEFINED_STR
 }
-_FILTER_NOT_FILE = {
+FILTER_NOT_TITLE = {
+    'field': 'title',
+    'operator': 'isnot',
+    'value': constants.UNDEFINED_STR
+}
+FILTER_NOT_FILE = {
     'field': 'filename',
-    'operator': 'isnot',
+    'operator': 'doesnotcontain',
     'value': constants.UNDEFINED_STR
 }
-_FILTER_NOT_PATH = {
+FILTER_NOT_PATH = {
     'field': 'path',
-    'operator': 'isnot',
+    'operator': 'doesnotcontain',
     'value': constants.UNDEFINED_STR
 }
-_FILTER_NOT_FILEPATH = {
+FILTER_NOT_FILEPATH = {
     'or': [
-        _FILTER_NOT_FILE,
-        _FILTER_NOT_PATH
+        FILTER_NOT_FILE,
+        FILTER_NOT_PATH
     ]
 }
 
-_FILTER_INPROGRESS = {
+FILTER_INPROGRESS = {
     'field': 'inprogress',
     'operator': 'true',
     'value': ''
 }
-_FILTER_WATCHED = {
+FILTER_WATCHED = {
     'field': 'playcount',
     'operator': 'greaterthan',
     'value': '0'
 }
-_FILTER_UNWATCHED = {
+FILTER_UNWATCHED = {
     'field': 'playcount',
     'operator': 'lessthan',
     'value': '1'
 }
 
-_FILTER_REGULAR_SEASON = {
+FILTER_REGULAR_SEASON = {
     'field': 'season',
     'operator': 'greaterthan',
-    'value': '0'
+    'value': str(constants.SPECIALS)
 }
-_FILTER_REGULAR_SEASON_INPROGRESS = {
+FILTER_REGULAR_SEASON_INPROGRESS = {
     'and': [
-        _FILTER_REGULAR_SEASON,
-        _FILTER_INPROGRESS
+        FILTER_REGULAR_SEASON,
+        FILTER_INPROGRESS
     ]
 }
-_FILTER_REGULAR_SEASON_WATCHED = {
+FILTER_REGULAR_SEASON_WATCHED = {
     'and': [
-        _FILTER_REGULAR_SEASON,
-        _FILTER_WATCHED
+        FILTER_REGULAR_SEASON,
+        FILTER_WATCHED
     ]
 }
-_FILTER_THIS_SEASON = {
+FILTER_THIS_SEASON = {
     'field': 'season',
     'operator': 'is',
     'value': constants.UNDEFINED_STR
 }
-_FILTER_NEXT_SEASON = {
-    'field': 'season',
-    'operator': 'greaterthan',
-    'value': constants.UNDEFINED_STR
-}
 
-_FILTER_THIS_EPISODE = {
+FILTER_THIS_EPISODE = {
     'field': 'episode',
     'operator': 'is',
     'value': constants.UNDEFINED_STR
 }
-_FILTER_NEXT_EPISODE = {
+FILTER_NEXT_EPISODE = {
     'field': 'episode',
     'operator': 'greaterthan',
     'value': constants.UNDEFINED_STR
 }
-
-_FILTER_SEARCH_EPISODE = {
-    'and': [
-        _FILTER_THIS_SEASON,
-        _FILTER_THIS_EPISODE
-    ]
+FILTER_NEXT_AIRED = {
+    'field': 'airdate',
+    'operator': 'after',
+    'value': constants.UNDEFINED_STR
 }
-_FILTER_UPNEXT_EPISODE = {
+FILTER_UNWATCHED_NEXT_AIRED = {
     'and': [
-        _FILTER_THIS_SEASON,
-        _FILTER_NEXT_EPISODE
-    ]
-}
-_FILTER_UPNEXT_EPISODE_SEASON = {
-    'or': [
-        _FILTER_UPNEXT_EPISODE,
-        _FILTER_NEXT_SEASON
+        FILTER_UNWATCHED,
+        FILTER_NEXT_AIRED
     ]
 }
 
-_FILTER_SEARCH_SET = {
+FILTER_SEARCH_EPISODE = {
+    'and': [
+        FILTER_THIS_SEASON,
+        FILTER_THIS_EPISODE
+    ]
+}
+FILTER_UPNEXT_EPISODE = {
+    'and': [
+        FILTER_THIS_SEASON,
+        FILTER_NEXT_EPISODE
+    ]
+}
+FILTER_UNWATCHED_UPNEXT_EPISODE = {
+    'and': [
+        FILTER_UNWATCHED,
+        FILTER_THIS_SEASON,
+        FILTER_NEXT_EPISODE
+    ]
+}
+
+FILTER_SEARCH_SET = {
     'field': 'set',
     'operator': 'is',
     'value': constants.UNDEFINED_STR
 }
-_FILTER_NEXT_MOVIE = {
+FILTER_NEXT_MOVIE = {
     'field': 'year',
     'operator': 'after',
     'value': constants.UNDEFINED_STR
 }
-_FILTER_UPNEXT_MOVIE = {
+FILTER_UPNEXT_MOVIE = {
     'and': [
-        _FILTER_SEARCH_SET,
-        _FILTER_NEXT_MOVIE
+        FILTER_SEARCH_SET,
+        FILTER_NEXT_MOVIE
     ]
 }
-_FILTER_UNWATCHED_UPNEXT_MOVIE = {
+FILTER_UNWATCHED_UPNEXT_MOVIE = {
     'and': [
-        _FILTER_UNWATCHED,
-        _FILTER_UPNEXT_MOVIE
+        FILTER_UNWATCHED,
+        FILTER_SEARCH_SET,
+        FILTER_NEXT_MOVIE
     ]
 }
 
-_SORT_YEAR = {
+FILTER_SIMILAR = {
+    'or': []
+}
+FILTER_SIMILAR_NOT_SAME = {
+    'and': [
+        FILTER_NOT_TITLE,
+        FILTER_SIMILAR
+    ]
+}
+FILTER_UNWATCHED_SIMILAR_NOT_SAME = {
+    'and': [
+        FILTER_UNWATCHED,
+        FILTER_NOT_TITLE,
+        FILTER_SIMILAR
+    ]
+}
+
+SORT_YEAR = {
     'method': 'year',
     'order': 'ascending'
 }
-_SORT_EPISODE = {
+SORT_EPISODE = {
     'method': 'episode',
     'order': 'ascending'
 }
-_SORT_LASTPLAYED = {
+SORT_LASTPLAYED = {
     'method': 'lastplayed',
     'order': 'descending'
 }
-_SORT_RANDOM = {
+SORT_DATE = {
+    'method': 'date',
+    'order': 'ascending'
+}
+SORT_RANDOM = {
     'method': 'random'
 }
-
+SORT_RATING = {
+    'method': 'rating',
+    'order': 'descending'
+}
 
 _CACHE = {
     'playerid': None,
@@ -304,6 +371,26 @@ def log(msg, level=utils.LOGDEBUG):
     utils.log(msg, name=__name__, level=level)
 
 
+def art_fallbacks(item=None, art=None, art_map=COMMON_ART_MAP, replace=True):  # pylint: disable=dangerous-default-value
+    if item:
+        art = item.get('art')
+    if not art:
+        return {}
+
+    art_types = frozenset(art.keys())
+    for art_type, art_substitutes in art_map.items():
+        if not replace and art_type in art_types:
+            continue
+        for art_substitute in art_substitutes:
+            if art_substitute in art_types:
+                art[art_type] = art[art_substitute]
+                break
+
+    if item:
+        item['art'] = art
+    return art
+
+
 def get_item_id(item):
     """Helper function to construct item dict with library dbid reference for
     use with params arguments of JSONRPC requests"""
@@ -314,7 +401,7 @@ def get_item_id(item):
     db_id = item['db_id']
     media_type = item['media_type']
 
-    db_type = JSON_DETAILS_MAP.get(media_type)
+    db_type = JSON_MAP.get(media_type)
     if not db_type or not db_id:
         return {}
 
@@ -341,8 +428,9 @@ def queue_next_item(data=None, item=None):
     """Function to add next video to the UpNext queue"""
 
     next_item = (
-        {'file': data['play_url']} if data and 'play_url' in data
-        else get_item_id(item)
+        get_item_id(item) if not data
+        else {'file': data['play_url']} if 'play_url' in data
+        else None
     )
 
     if next_item:
@@ -455,19 +543,19 @@ def get_from_playlist(position, properties, unwatched_only=False):
     )
     items = result.get('result', {}).get('items')
 
+    if not items:
+        item = None
     # Get first unwatched item in the list of playlist entries
-    if unwatched_only and items:
-        position_offset, item = next(
-            (
-                (idx, item) for idx, item in enumerate(items)
-                if utils.get_int(item, 'playcount') < 1
-            ),
-            (0, None)
-        )
-        position += position_offset
+    elif unwatched_only:
+        for position_offset, item in enumerate(items):
+            if utils.get_int(item, 'playcount') < 1:
+                position += position_offset
+                break
+        else:
+            item = None
     # Or just get the first item in the list of playlist entries
     else:
-        item = items[0] if items else None
+        item = items[0]
 
     # Don't check if item is an episode, just use it if it is there
     if not item:  # item.get('type') != 'episode':
@@ -552,17 +640,11 @@ def get_playerid(retry=3):
         _CACHE['playerid'] = None
         return None
 
-    result = [
-        player for player in result
-        if player.get('type', 'video') in PLAYER_PLAYLIST
-    ]
-
-    playerid = (
-        utils.get_int(result[0], 'playerid') if result
-        else constants.UNDEFINED
-    )
-
-    if playerid == constants.UNDEFINED:
+    for player in result:
+        if player.get('type', 'video') in PLAYER_PLAYLIST:
+            playerid = utils.get_int(player, 'playerid')
+            break
+    else:
         log('No active player', utils.LOGWARNING)
         _CACHE['playerid'] = None
         return None
@@ -667,48 +749,42 @@ def get_next_episode_from_library(episode=constants.UNDEFINED,
         return episode
 
     (path, filename) = os.path.split(episode['file'])
-    _FILTER_NOT_FILE['value'] = filename
-    _FILTER_NOT_PATH['value'] = path
+    FILTER_NOT_FILE['value'] = filename
+    FILTER_NOT_PATH['value'] = path
     filters = [
         # Check that both next filename and path are different to current
         # to deal with different file naming schemes e.g.
         # Season 1/Episode 1.mkv
         # Season 1/Episode 1/video.mkv
         # Season 1/Episode 1-2-3.mkv
-        _FILTER_NOT_FILEPATH
+        FILTER_NOT_FILEPATH
     ]
 
     if unwatched_only:
         # Exclude watched episodes
-        filters.append(_FILTER_UNWATCHED)
+        filters.append(FILTER_UNWATCHED)
 
     if random:
-        sort = _SORT_RANDOM
+        sort = SORT_RANDOM
+    elif next_season:
+        sort = SORT_DATE
+        FILTER_NEXT_AIRED['value'] = utils.iso_datetime(episode['firstaired'])
+        filters.append(FILTER_NEXT_AIRED)
     else:
-        sort = _SORT_EPISODE
-        current_season = str(episode['season'])
-        _FILTER_THIS_SEASON['value'] = current_season
-        _FILTER_NEXT_SEASON['value'] = current_season
-        _FILTER_NEXT_EPISODE['value'] = str(episode['episode'])
-        # Next episode in current season or first episode in next season
-        filters.append(
-            _FILTER_UPNEXT_EPISODE_SEASON if next_season
-            else _FILTER_UPNEXT_EPISODE
-        )
+        sort = SORT_EPISODE
+        FILTER_THIS_SEASON['value'] = str(episode['season'])
+        FILTER_NEXT_EPISODE['value'] = str(episode['episode'])
+        filters.append(FILTER_UPNEXT_EPISODE)
 
     filters = {'and': filters}
 
-    result = utils.jsonrpc(
-        method='VideoLibrary.GetEpisodes',
-        params={
-            'tvshowid': episode.get('tvshowid', constants.UNDEFINED),
-            'properties': EPISODE_PROPERTIES,
-            'sort': sort,
-            'limits': _QUERY_LIMIT_ONE,
-            'filter': filters
-        }
+    result = get_videos_from_library(
+        media_type='episodes',
+        limit=1,
+        sort=sort,
+        filters=filters,
+        params={'tvshowid': episode.get('tvshowid', constants.UNDEFINED)}
     )
-    result = result.get('result', {}).get('episodes')
 
     if not result:
         log('No next episode found in library')
@@ -716,9 +792,9 @@ def get_next_episode_from_library(episode=constants.UNDEFINED,
 
     # Update current episode details dict, containing tvshow details, with next
     # episode details. Surprisingly difficult to retain backwards compatibility
-    # episode = episode | result[0]       # Python > v3.9
-    # episode = {**episode, **result[0]}  # Python > v3.5
-    episode = dict(episode, **result[0])  # Python > v2.7
+    # episode = episode | result       # Python > v3.9
+    # episode = {**episode, **result}  # Python > v3.5
+    episode = dict(episode, **result)  # Python > v2.7
     log('Next episode from library: {0}'.format(episode))
     return episode
 
@@ -738,41 +814,36 @@ def get_next_movie_from_library(movie=constants.UNDEFINED,
         return None
 
     (path, filename) = os.path.split(movie['file'])
-    _FILTER_NOT_FILE['value'] = filename
-    _FILTER_NOT_PATH['value'] = path
-    filters = [_FILTER_NOT_FILEPATH]
+    FILTER_NOT_FILE['value'] = filename
+    FILTER_NOT_PATH['value'] = path
+    filters = [FILTER_NOT_FILEPATH]
 
-    _FILTER_SEARCH_SET['value'] = movie['set']
-    filters.append(_FILTER_SEARCH_SET)
+    FILTER_SEARCH_SET['value'] = movie['set']
+    filters.append(FILTER_SEARCH_SET)
 
     if unwatched_only:
-        filters.append(_FILTER_UNWATCHED)
+        filters.append(FILTER_UNWATCHED)
 
     if random:
-        sort = _SORT_RANDOM
+        sort = SORT_RANDOM
     else:
-        sort = _SORT_YEAR
-        _FILTER_NEXT_MOVIE['value'] = str(movie['year'])
-        filters.append(_FILTER_NEXT_MOVIE)
+        sort = SORT_YEAR
+        FILTER_NEXT_MOVIE['value'] = str(movie['year'])
+        filters.append(FILTER_NEXT_MOVIE)
 
     filters = {'and': filters}
 
-    result = utils.jsonrpc(
-        method='VideoLibrary.GetMovies',
-        params={
-            'properties': MOVIE_PROPERTIES,
-            'sort': sort,
-            'limits': _QUERY_LIMIT_ONE,
-            'filter': filters
-        }
+    movie = get_videos_from_library(
+        media_type='movies',
+        limit=1,
+        sort=sort,
+        filters=filters
     )
-    result = result.get('result', {}).get('movies', [])
 
-    if not result:
+    if not movie:
         log('No next movie found in library')
         return None
 
-    movie = result[0]
     log('Next movie from library: {0}'.format(movie))
     return movie
 
@@ -813,22 +884,19 @@ def get_from_library(media_type=None, db_id=constants.UNDEFINED, item=None):
 def get_tvshowid(title):
     """Function to search Kodi library for tshowid by title"""
 
-    _FILTER_SEARCH_TVSHOW['value'] = title
-    result = utils.jsonrpc(
-        method='VideoLibrary.GetTVShows',
-        params={
-            'properties': [],
-            'limits': _QUERY_LIMIT_ONE,
-            'filter': _FILTER_SEARCH_TVSHOW
-        }
+    FILTER_SEARCH_TVSHOW['value'] = title
+    tvshow = get_videos_from_library(
+        media_type='tvshows',
+        limit=1,
+        properties=[],
+        filters=FILTER_SEARCH_TVSHOW
     )
-    result = result.get('result', {}).get('tvshows')
 
-    if not result:
+    if not tvshow:
         log('tvshowid not found in library', utils.LOGWARNING)
         return constants.UNDEFINED
 
-    tvshowid = utils.get_int(result[0], 'tvshowid')
+    tvshowid = utils.get_int(tvshow, 'tvshowid')
     log('Fetched show "{0}" tvshowid: {1}'.format(title, tvshowid))
     return tvshowid
 
@@ -837,25 +905,22 @@ def get_episodeid(tvshowid, season, episode):
     """Function to search Kodi library for episodeid by tvshowid, season, and
        episode"""
 
-    _FILTER_THIS_SEASON['value'] = str(season)
-    _FILTER_THIS_EPISODE['value'] = str(episode)
+    FILTER_THIS_SEASON['value'] = str(season)
+    FILTER_THIS_EPISODE['value'] = str(episode)
 
-    result = utils.jsonrpc(
-        method='VideoLibrary.GetEpisodes',
-        params={
-            'tvshowid': tvshowid,
-            'properties': [],
-            'limits': _QUERY_LIMIT_ONE,
-            'filter': _FILTER_SEARCH_EPISODE
-        }
+    result = get_videos_from_library(
+        media_type='episodes',
+        limit=1,
+        properties=[],
+        filters=FILTER_SEARCH_EPISODE,
+        params={'tvshowid': tvshowid}
     )
-    result = result.get('result', {}).get('episodes')
 
     if not result:
         log('episodeid not found in library', utils.LOGWARNING)
         return constants.UNDEFINED
 
-    episodeid = utils.get_int(result[0], 'episodeid')
+    episodeid = utils.get_int(result, 'episodeid')
     log('Fetched show {0} s{1}e{2} episodeid: {3}'.format(
         tvshowid, season, episode, episodeid
     ))
@@ -875,19 +940,25 @@ def get_details_from_library(media_type=None,
     if not media_type or db_id == constants.UNDEFINED:
         return None, None
 
-    detail_type = JSON_DETAILS_MAP.get(media_type)
+    detail_type = JSON_MAP.get(media_type)
+    if 'db_id' not in detail_type:
+        detail_type = JSON_MAP.get(media_type[:-1])
     if not detail_type:
         return None, None
+
+    if properties is None:
+        properties = detail_type['properties']
+    elif isinstance(properties, (set, frozenset)):
+        properties = detail_type['properties'] | properties
 
     result = utils.jsonrpc(
         method=detail_type['get_method'],
         params={
             detail_type['db_id']: db_id,
-            'properties': (
-                properties if properties else detail_type['properties']
-            ),
+            'properties': properties,
         }
     )
+
     result = result.get('result', {}).get(detail_type['result'])
     return result, detail_type
 
@@ -943,45 +1014,40 @@ def get_upnext_episodes_from_library(limit=25,  # pylint: disable=too-many-local
                                      unwatched_only=False):
     """Function to get in-progress and next episode details from Kodi library"""
 
-    _QUERY_LIMITS['end'] = limit
-    inprogress = utils.jsonrpc(
-        method='VideoLibrary.GetEpisodes',
-        params={
-            'properties': EPISODE_PROPERTIES,
-            'sort': _SORT_LASTPLAYED,
-            'limits': _QUERY_LIMITS,
-            'filter': _FILTER_REGULAR_SEASON_INPROGRESS
-        }
-    )
-    inprogress = inprogress.get('result', {}).get('episodes', [])
-
-    watched = utils.jsonrpc(
-        method='VideoLibrary.GetEpisodes',
-        params={
-            'properties': EPISODE_PROPERTIES,
-            'sort': _SORT_LASTPLAYED,
-            'limits': _QUERY_LIMITS,
-            'filter': _FILTER_REGULAR_SEASON_WATCHED
-        }
-    )
-    watched = watched.get('result', {}).get('episodes', [])
-
-    episodes = utils.merge_and_sort(
-        inprogress, watched, key='lastplayed', reverse=True
-    )
-
-    # Next episode in current season or first episode in next season
-    filters = [
-        _FILTER_UPNEXT_EPISODE_SEASON if next_season
-        else _FILTER_UPNEXT_EPISODE
-    ]
-
-    if unwatched_only:
-        # Exclude watched episodes
-        filters.append(_FILTER_UNWATCHED)
-        filters = {'and': filters}
+    if next_season:
+        filters = [
+            FILTER_INPROGRESS,
+            FILTER_WATCHED,
+            (FILTER_UNWATCHED_NEXT_AIRED if unwatched_only
+             else FILTER_NEXT_AIRED)
+        ]
+        sort = SORT_DATE
     else:
-        filters = filters[0]
+        filters = [
+            FILTER_REGULAR_SEASON_INPROGRESS,
+            FILTER_REGULAR_SEASON_WATCHED,
+            (FILTER_UNWATCHED_UPNEXT_EPISODE if unwatched_only
+             else FILTER_UPNEXT_EPISODE)
+        ]
+        sort = SORT_EPISODE
+
+    inprogress = get_videos_from_library(
+        media_type='episodes',
+        limit=limit,
+        sort=SORT_LASTPLAYED,
+        filters=filters[0]
+    )
+
+    watched = get_videos_from_library(
+        media_type='episodes',
+        limit=limit,
+        sort=SORT_LASTPLAYED,
+        filters=filters[1]
+    )
+
+    episodes = utils.merge_iterable(
+        inprogress, watched, sort='lastplayed', reverse=True
+    )
 
     upnext_episodes = []
     tvshows = set()
@@ -993,42 +1059,28 @@ def get_upnext_episodes_from_library(limit=25,  # pylint: disable=too-many-local
         if episode['resume']['position']:
             upnext_episode = episode
         else:
-            current_season = str(episode['season'])
-            _FILTER_THIS_SEASON['value'] = current_season
-            _FILTER_NEXT_SEASON['value'] = current_season
-            _FILTER_NEXT_EPISODE['value'] = str(episode['episode'])
-
-            upnext_episode = utils.jsonrpc(
-                method='VideoLibrary.GetEpisodes',
-                params={
-                    'tvshowid': tvshowid,
-                    'properties': EPISODE_PROPERTIES,
-                    'sort': _SORT_EPISODE,
-                    'limits': _QUERY_LIMIT_ONE,
-                    'filter': filters
-                }
+            FILTER_THIS_SEASON['value'] = str(episode['season'])
+            FILTER_NEXT_EPISODE['value'] = str(episode['episode'])
+            FILTER_NEXT_AIRED['value'] = utils.iso_datetime(
+                episode['firstaired']
             )
-            upnext_episode = upnext_episode.get('result', {}).get('episodes')
+
+            upnext_episode = get_videos_from_library(
+                media_type='episodes',
+                limit=1,
+                sort=sort,
+                filters=filters[2],
+                params={'tvshowid': tvshowid}
+            )
 
             if not upnext_episode:
                 tvshows.add(tvshowid)
                 continue
-            upnext_episode = upnext_episode[0]
 
         # Restore current episode lastplayed for sorting of next-up episode
         upnext_episode['lastplayed'] = episode['lastplayed']
 
-        art = upnext_episode.get('art')
-        if art:
-            art_types = frozenset(art.keys())
-            for art_type, art_substitutes in EPISODE_ART_SUBSTITUTES.items():
-                if art_type in art_types:
-                    continue
-                for art_substitute in art_substitutes:
-                    if art_substitute in art_types:
-                        art[art_type] = art[art_substitute]
-                        break
-            upnext_episode['art'] = art
+        art_fallbacks(upnext_episode, art_map=EPISODE_ART_MAP, replace=False)
 
         upnext_episodes.append(upnext_episode)
         tvshows.add(tvshowid)
@@ -1041,80 +1093,277 @@ def get_upnext_movies_from_library(limit=25,
                                    unwatched_only=False):
     """Function to get in-progress and next movie details from Kodi library"""
 
-    _QUERY_LIMITS['end'] = limit
-    inprogress = utils.jsonrpc(
-        method='VideoLibrary.GetMovies',
-        params={
-            'properties': MOVIE_PROPERTIES,
-            'sort': _SORT_LASTPLAYED,
-            'limits': _QUERY_LIMITS,
-            'filter': _FILTER_INPROGRESS
-        }
+    inprogress = get_videos_from_library(
+        media_type='movies',
+        limit=limit,
+        sort=SORT_LASTPLAYED,
+        filters=FILTER_INPROGRESS
     )
-    inprogress = inprogress.get('result', {}).get('movies', [])
 
     if movie_sets:
-        watched = utils.jsonrpc(
-            method='VideoLibrary.GetMovies',
-            params={
-                'properties': MOVIE_PROPERTIES,
-                'sort': _SORT_LASTPLAYED,
-                'limits': _QUERY_LIMITS,
-                'filter': _FILTER_WATCHED
-            }
+        watched = get_videos_from_library(
+            media_type='movies',
+            limit=limit,
+            sort=SORT_LASTPLAYED,
+            filters=FILTER_WATCHED
         )
-        watched = watched.get('result', {}).get('movies', [])
 
-        movies = utils.merge_and_sort(
-            inprogress, watched, key='lastplayed', reverse=True
+        movies = utils.merge_iterable(
+            inprogress, watched, sort='lastplayed', reverse=True
         )
     else:
         movies = inprogress
 
     filters = (
-        _FILTER_UNWATCHED_UPNEXT_MOVIE if unwatched_only
-        else _FILTER_UPNEXT_MOVIE
+        FILTER_UNWATCHED_UPNEXT_MOVIE if unwatched_only
+        else FILTER_UPNEXT_MOVIE
     )
 
     upnext_movies = []
+    sets = set()
     for movie in movies:
+        setid = movie['setid'] or constants.UNDEFINED
+        if setid != constants.UNDEFINED and setid in sets:
+            continue
+
         if movie['resume']['position']:
             upnext_movie = movie
-        elif (movie_sets
-              and movie['setid'] and movie['setid'] != constants.UNDEFINED):
-            _FILTER_SEARCH_SET['value'] = movie['set']
-            _FILTER_NEXT_MOVIE['value'] = str(movie['year'])
+        elif movie_sets and setid != constants.UNDEFINED:
+            FILTER_SEARCH_SET['value'] = movie['set']
+            FILTER_NEXT_MOVIE['value'] = str(movie['year'])
 
-            upnext_movie = utils.jsonrpc(
-                method='VideoLibrary.GetMovies',
-                params={
-                    'properties': MOVIE_PROPERTIES,
-                    'sort': _SORT_YEAR,
-                    'limits': _QUERY_LIMIT_ONE,
-                    'filter': filters
-                }
+            upnext_movie = get_videos_from_library(
+                media_type='movies',
+                limit=1,
+                sort=SORT_YEAR,
+                filters=filters
             )
-            upnext_movie = upnext_movie.get('result', {}).get('movies')
 
             if not upnext_movie:
+                sets.add(setid)
                 continue
-            upnext_movie = upnext_movie[0]
         else:
             continue
 
         # Restore current movie lastplayed for sorting of next-up movie
         upnext_movie['lastplayed'] = movie['lastplayed']
 
-        art = upnext_movie.get('art')
-        if art:
-            art_types = frozenset(art.keys())
-            for art_type, art_replacements in MOVIE_ART_REPLACEMENTS.items():
-                for art_replacement in art_replacements:
-                    if art_replacement in art_types:
-                        art[art_type] = art[art_replacement]
-                        break
-            upnext_movie['art'] = art
+        art_fallbacks(upnext_movie)
 
         upnext_movies.append(upnext_movie)
+        sets.add(setid)
 
     return upnext_movies
+
+
+def get_videos_from_library(media_type,  # pylint: disable=too-many-arguments
+                            limit=25,
+                            sort=None,
+                            properties=None,
+                            filters=None,
+                            params=None,
+                            process_art=False):
+    """Function to get videos from Kodi library"""
+
+    detail_type = JSON_MAP.get(media_type)
+    if not detail_type:
+        return None
+
+    _params = {}
+
+    if properties is None:
+        properties = detail_type['properties']
+    elif isinstance(properties, (set, frozenset)):
+        properties = detail_type['properties'] | properties
+    _params['properties'] = properties
+
+    if filters is not None:
+        _params['filter'] = filters
+
+    if isinstance(limit, dict):
+        _params['limits'] = limit
+    elif limit is not None:
+        QUERY_LIMITS['end'] = limit
+        _params['limits'] = QUERY_LIMITS
+
+    if sort is not None:
+        _params['sort'] = sort
+
+    if params is not None:
+        _params.update(params)
+
+    videos = utils.jsonrpc(
+        method=detail_type['get_method'],
+        params=_params
+    )
+    videos = videos.get('result', {}).get(detail_type['result'], [])
+
+    if process_art:
+        utils.modify_iterable(art_fallbacks, videos)
+
+    if videos and limit == 1:
+        return videos[0]
+    return videos
+
+
+class InfoTagComparator(object):  # pylint: disable=too-few-public-methods
+    __slots__ = (
+        'fuzz',
+        'genre',
+        'set_name',
+        'tag',
+        'limit',
+        'threshold',
+    )
+
+    def __init__(self, infotags, threshold=0, limit=25,  # pylint: disable=too-many-arguments
+                 _frozenset=frozenset,
+                 _get=dict.get,
+                 _tokenise=utils.tokenise):
+
+        self.fuzz = _tokenise([
+            _get(infotags, 'plot'), _get(infotags, 'title')
+        ])
+        self.genre = _frozenset(_get(infotags, 'genre', []))
+        self.set_name = _tokenise([_get(infotags, 'set')])
+        self.tag = _tokenise([_get(infotags, 'tag')], split=False)
+        self.threshold = threshold
+        self.limit = limit
+
+    def compare(self, infotags,  # pylint: disable=too-many-arguments
+                _bit_length=int.bit_length,
+                _frozenset=frozenset,
+                _get=dict.get,
+                _len=len,
+                _tokenise=utils.tokenise):
+
+        if self.limit <= 0:
+            return None
+
+        fuzz_stored = self.fuzz
+        genre_stored = self.genre
+        set_name_stored = self.set_name
+        tag_stored = self.tag
+        threshold = self.threshold
+
+        similarity = 0
+
+        if fuzz_stored:
+            fuzz = _tokenise([_get(infotags, 'plot'), _get(infotags, 'title')])
+            if fuzz:
+                similarity += (
+                    _len(fuzz & fuzz_stored) ** 2
+                )
+
+        if genre_stored:
+            genre = _frozenset(_get(infotags, 'genre', []))
+            if genre:
+                similarity += 2 * (
+                    _bit_length(_len(genre & genre_stored))
+                    - _len(genre ^ genre_stored)
+                )
+
+        if set_name_stored:
+            set_name = _tokenise([_get(infotags, 'set')])
+            if set_name:
+                similarity += 1000 * (
+                    _len(set_name & set_name_stored) * 2
+                    - _len(set_name - set_name_stored)
+                )
+
+        if tag_stored:
+            tag = _tokenise([_get(infotags, 'tag')], split=False)
+            if tag:
+                similarity += 2 * (
+                    _bit_length(_len(tag & tag_stored))
+                )
+
+        infotags['__similarity__'] = similarity
+
+        if similarity > threshold:
+            self.limit -= 1
+            return similarity
+        return threshold
+
+
+def get_similar_from_library(media_type,  # pylint: disable=too-many-arguments, too-many-locals, too-many-branches
+                             limit=25,
+                             original=None,
+                             db_id=constants.UNDEFINED,
+                             unwatched_only=False,
+                             sort=True,
+                             threshold=0):
+    """Function to search by db_id for similar videos from Kodi library"""
+
+    if original:
+        pass
+    elif db_id == constants.UNDEFINED or db_id is None:
+        original = get_videos_from_library(
+            media_type=media_type,
+            limit=1,
+            sort=SORT_RANDOM,
+            properties=RECOMMENDATION_PROPERTIES[media_type],
+            filters=FILTER_WATCHED
+        )
+    else:
+        original, _ = get_details_from_library(
+            media_type=media_type,
+            db_id=int(db_id),
+            properties=RECOMMENDATION_PROPERTIES[media_type]
+        )
+
+    if not original:
+        return None, []
+
+    infotags = InfoTagComparator(original, threshold=threshold, limit=limit)
+    if not (infotags.genre or infotags.set_name):
+        return original, []
+
+    FILTER_NOT_TITLE['value'] = original['title']
+    FILTER_SIMILAR['or'] = [{
+        'field': 'genre',
+        'operator': 'is',
+        'value': genre
+    } for genre in infotags.genre]
+    if infotags.set_name and media_type == 'movies':
+        FILTER_SEARCH_SET['value'] = original['set']
+        FILTER_SIMILAR['or'].append(FILTER_SEARCH_SET)
+
+    selected = []
+    chunk_size = limit * 10
+    chunk_limit = {
+        'start': 0,
+        'end': chunk_size
+    }
+    while True:
+        similar = get_videos_from_library(
+            media_type=media_type,
+            limit=chunk_limit,
+            sort=SORT_RATING,
+            properties=RECOMMENDATION_PROPERTIES[media_type],
+            filters=(FILTER_UNWATCHED_SIMILAR_NOT_SAME if unwatched_only
+                     else FILTER_SIMILAR_NOT_SAME)
+        )
+
+        idx = 0
+        for idx, video in enumerate(similar):
+            similarity = infotags.compare(video)
+            if similarity is None:
+                break
+            if similarity:
+                art_fallbacks(video)
+        else:
+            selected.extend(similar)
+            if idx != chunk_size - 1:
+                break
+            chunk_limit['start'] += chunk_size
+            chunk_limit['end'] += chunk_size
+            continue
+        selected.extend(similar[:idx])
+        break
+
+    if sort:
+        return original, utils.merge_iterable(
+            selected, sort='__similarity__', threshold=threshold, reverse=True
+        )[:limit]
+    return original, selected
