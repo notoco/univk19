@@ -11,11 +11,6 @@ import sys
 import threading
 from itertools import chain
 from operator import itemgetter
-from re import (
-    compile as re_compile,
-    split as re_split,
-)
-from string import punctuation
 
 from dateutil.parser import parse as dateutil_parse
 
@@ -197,16 +192,22 @@ def abort_requested():
     return xbmc.Monitor().abortRequested()
 
 
-def jsonrpc(**kwargs):
+def jsonrpc(batch=None, **kwargs):
     """Perform JSONRPC calls"""
 
-    response = not kwargs.pop('no_response', False)
-    if response and 'id' not in kwargs:
-        kwargs.update(id=0)
-    if 'jsonrpc' not in kwargs:
-        kwargs.update(jsonrpc='2.0')
-    result = xbmc.executeJSONRPC(json.dumps(kwargs, default=tuple))
-    return json.loads(result) if response else result
+    if not batch and not kwargs:
+        return None
+
+    do_response = False
+    for request_id, kwargs in enumerate(batch or (kwargs, )):
+        do_response = (not kwargs.pop('no_response', False)) or do_response
+        if do_response and 'id' not in kwargs:
+            kwargs['id'] = request_id
+        kwargs['jsonrpc'] = '2.0'
+
+    request = json.dumps(batch or kwargs, default=tuple)
+    response = xbmc.executeJSONRPC(request)
+    return json.loads(response) if do_response else None
 
 
 def get_addon(addon_id=None, retry_attempts=3):
@@ -621,63 +622,15 @@ def merge_iterable(*iterables, **kwargs):
 
     merged = chain.from_iterable(iterables)
     if sort:
-        reverse = kwargs.get('reverse', True)
+        descending = kwargs.get('ascending', True)
         key = None if isinstance(sort, bool) else itemgetter(sort)
         threshold = kwargs.get('threshold')
 
         if key and threshold is not None:
-            merged = (item for item in merged if key(item) >= threshold)
+            merged = (item for item in merged if key(item) > threshold)
 
-        merged = sorted(merged, key=key, reverse=reverse)
+        merged = sorted(merged, key=key, reverse=descending)
     return merged
-
-
-def strip_punctuation(value,  # pylint: disable=dangerous-default-value, too-many-arguments
-                      table=dict.fromkeys(map(ord, punctuation)),
-                      _frozenset=frozenset,
-                      _len=len,
-                      _punctuation=set(punctuation)):
-
-    length = _len(value)
-    if length < 3:
-        return ''
-    upper = value.upper()
-    if length == 3 and value != upper:
-        return ''
-    if _punctuation & _frozenset(upper):
-        return upper.translate(table)
-    return upper
-
-
-def tokenise(values,  # pylint: disable=too-many-arguments
-             split=True,
-             strip=strip_punctuation,
-             remove=frozenset({
-                 '', 'ABOUT', 'AFTER', 'FROM', 'HAVE', 'HERS', 'INTO', 'ONLY',
-                 'OVER', 'THAN', 'THAT', 'THEIR', 'THERE', 'THEM', 'THEN',
-                 'THEY', 'THIS', 'WHAT', 'WHEN', 'WHERE', 'WILL', 'WITH',
-                 'YOUR', 'DURINGCREDITSSTINGER', 'AFTERCREDITSSTINGER',
-                 'COLLECTION'
-             }),
-             _frozenset=frozenset,
-             _map=map,
-             _split=re_compile(r'[_\.,]* |[\|/\\]').split):
-
-    tokens = _frozenset()
-    for value in values:
-        if not value:
-            continue
-        if split is True:
-            tokens = tokens | _frozenset(_split(value))
-        elif split:
-            tokens = tokens | _frozenset(re_split(split, value))
-        else:
-            tokens = tokens | _frozenset(value)
-    if strip:
-        tokens = _frozenset(_map(strip, tokens))
-    if remove:
-        tokens = tokens - remove
-    return tokens
 
 
 if supports_python_api(19):
