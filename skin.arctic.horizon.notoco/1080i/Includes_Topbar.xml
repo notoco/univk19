@@ -30,7 +30,7 @@
                         <label>[CAPITALIZE]$PARAM[label][/CAPITALIZE]</label>
                     </control>
                     <control type="label" id="$PARAM[id]">
-                        <visible>Control.IsVisible(5252) + !Container.Content(tvshows)</visible>
+                        <visible>Control.IsVisible(5252) + !Container.Content(tvshows) + !String.IsEmpty(ListItem.Year)</visible>
                         <aligny>center</aligny>
                         <font>font_topbar</font>
                         <textcolor>$PARAM[fgcolor]_100</textcolor>
