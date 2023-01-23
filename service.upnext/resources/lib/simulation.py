@@ -53,12 +53,14 @@ def handle_sim_mode(player, state, now_playing_item):
     else:
         return _EVENT_TRIGGERED['general']
 
-    with player as check_fail:
+    with utils.ContextManager(handler=player) as check_fail:
+        if check_fail is AttributeError:
+            raise check_fail
         log('Seeking to end')
         player.seekTime(seek_time)
 
-        # Seek workaround required for AML HW decoder on certain problematic
-        # H.265 encodes to avoid buffer desync and playback hangs
+        # Seek workaround required for AML HW decoder on certain videos
+        # to avoid buffer desync and playback hangs
         utils.wait(3)
         if player.getTime() <= seek_time:
             log('Seek workaround')

@@ -6,6 +6,7 @@ from __future__ import absolute_import, division, unicode_literals
 import datetime
 
 import api
+import constants
 import statichelper
 import utils
 import xbmc
@@ -79,7 +80,7 @@ class UpNextPlayer(xbmc.Player, object):
         self.player_state.time = 0
         self.player_state.total_time = 0
         self.player_state.next_file = None
-        self.player_state.media_type = None
+        self.player_state.type = constants.UNKNOWN
         self.player_state.playnext = None
         self.player_state.stop = None
 
@@ -124,16 +125,16 @@ class UpNextPlayer(xbmc.Player, object):
 
     def get_media_type(self):
         # Use current stored value if playing forced
-        if self.player_state.forced('media_type'):
-            actual = self.player_state.media_type
+        if self.player_state.forced('type'):
+            actual = self.player_state.type
         # Use inbuilt method to store actual value if playing not forced
         else:
             actual = self.getVideoInfoTag().getMediaType()
-            actual = actual if actual else 'unknowntype'
-        actual = statichelper.to_unicode(actual)
-        self.player_state.media_type = actual
+            actual = actual if actual else constants.UNKNOWN
+        actual = statichelper.from_bytes(actual)
+        self.player_state.type = actual
         # Return actual value or forced value if forced
-        return self.player_state.media_type
+        return self.player_state.type
 
     def getPlayingFile(self):  # pylint: disable=invalid-name
         # Use current stored value if playing forced
@@ -142,7 +143,7 @@ class UpNextPlayer(xbmc.Player, object):
         # Use inbuilt method to store actual value if playing not forced
         else:
             actual = getattr(xbmc.Player, 'getPlayingFile')(self)
-        actual = statichelper.to_unicode(actual)
+        actual = statichelper.from_bytes(actual)
         self.player_state.playing_file = actual
         # Return actual value or forced value if forced
         return self.player_state.playing_file

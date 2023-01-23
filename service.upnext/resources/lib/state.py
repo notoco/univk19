@@ -96,7 +96,7 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
 
         next_video = None
         source = None
-        media_type = self.current_item['media_type']
+        media_type = self.current_item['type']
         next_position, _ = api.get_playlist_position(offset=1)
         plugin_type = self.get_plugin_type(next_position)
 
@@ -232,7 +232,8 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
             self.popup_time, self.total_time, self.popup_cue
         ), utils.LOGINFO)
 
-    def process_now_playing(self, playlist_position, plugin_type, media_type):
+    def process_now_playing(self, playlist_position, plugin_type, play_info):
+        media_type = play_info.get('type')
         if plugin_type:
             new_video = self._get_plugin_now_playing(media_type)
             source = constants.PLUGIN_TYPES[plugin_type]
@@ -248,7 +249,7 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
             source = 'playlist'
 
         elif media_type in ('episode', 'movie'):
-            new_video = self._get_library_now_playing(media_type)
+            new_video = self._get_library_now_playing(play_info)
             source = 'library'
 
         else:
@@ -296,8 +297,9 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
 
         return current_video
 
-    @staticmethod
-    def _get_library_now_playing(media_type):
+    @classmethod
+    def _get_library_now_playing(cls, play_info):  # pylint: disable=too-many-branches, too-many-return-statements
+        media_type = play_info.get('type')
         current_video = api.get_now_playing(
             properties=(
                 api.MOVIE_PROPERTIES if media_type == 'movie' else
@@ -314,31 +316,40 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
                 else None
             )
 
+        # Previously resolved listitems may lose infotags that are set when the
+        # listitem is resolved. Fallback to Player notification data.
+        for info, value in play_info.get('item').items():
+            current_value = current_video.get(info, '')
+            if current_value in (constants.UNDEFINED, constants.UNKNOWN, ''):
+                current_video[info] = value
+
+        tvshowid = current_video.get('tvshowid', constants.UNDEFINED)
         title = current_video.get('showtitle')
         season = utils.get_int(current_video, 'season')
         episode = utils.get_int(current_video, 'episode')
+
+        if not title or constants.UNDEFINED in (season, episode):
+            return None
+
+        filepath = current_video.get('file', '')
         mediapath = current_video.get('mediapath', '')
-        if (mediapath.startswith('plugin://')
-                and SETTINGS.enable_tmdbhelper_fallback
-                and title and constants.UNDEFINED not in (season, episode)):
-            upnext.send_signal(
-                sender='UpNext.TMDBHelper',
-                upnext_info={
-                    'current_video': current_video,
-                    'play_url': None,
-                    'mediapath': mediapath,
-                }
-            )
-            return None
+        for plugin_url in (filepath, mediapath):
+            if plugin_url.startswith('plugin://'):
+                break
+        else:
+            plugin_url = None
 
-        # Get current tvshowid or search in library if detail missing
-        tvshowid = current_video.get('tvshowid', constants.UNDEFINED)
-        if tvshowid == constants.UNDEFINED:
+        if tvshowid == constants.UNDEFINED or plugin_url:
+            # Video plugins can provide a plugin specific tvshowid. Search Kodi
+            # library for tvshow title instead.
             tvshowid = api.get_tvshowid(title)
-
-        # Now playing show not found in library
+        # Now playing show not found in Kodi library
         if tvshowid == constants.UNDEFINED:
-            return None
+            return cls._get_tmdb_now_playing(
+                current_video, title, season, episode, plugin_url
+            ) if SETTINGS.enable_tmdbhelper_fallback else None
+        # Use found tvshowid for library integrated plugins e.g. Emby,
+        # Jellyfin, Plex, etc.
         current_video['tvshowid'] = tvshowid
 
         # Get current episode id or search in library if detail missing
@@ -355,10 +366,62 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
 
         return current_video
 
+    @staticmethod
+    def _get_tmdb_now_playing(current_video, title, season, episode, url):
+        from tmdb_helper import Player, TMDB
+
+        addon_id, _, addon_args = utils.parse_url(url)
+        if addon_id == constants.ADDON_ID and 'player' in addon_args:
+            addon_id = addon_args['player']
+
+        # TMDBHelper not importable, use plugin url instead
+        if not TMDB.is_initialised():
+            upnext.send_signal(sender='UpNext.TMDBHelper',
+                               upnext_info={'current_video': current_video,
+                                            'play_url': None,
+                                            'player': addon_id,})
+            return
+
+        tmdb_id, current_video = TMDB().get_details(title, season, episode)
+        if not tmdb_id or not current_video:
+            return
+
+        player = Player(query=title, season=season, episode=episode,  # pylint: disable=unexpected-keyword-arg
+                        tbdb_id=tmdb_id, tmdb_type='tv',
+                        player=addon_id, mode='play')
+
+        if SETTINGS.queue_from_tmdb:
+            player.queue()
+            utils.event('OnAVStart', internal=True)
+        else:
+            episodes = player.get_next_episodes()
+            if not episodes or len(episodes) < 2:
+                return
+
+            upnext.send_signal(sender='UpNext.TMDBHelper',
+                               upnext_info={
+                                   'current_video': dict(
+                                       current_video['infolabels'],
+                                       tmdb_id=tmdb_id,
+                                       art=current_video['art'],
+                                       showtitle=title,
+                                   ),
+                                   'next_video': dict(
+                                       episodes[1].infolabels,
+                                       tmdb_id=tmdb_id,
+                                       art=episodes[1].art,
+                                       showtitle=title,
+                                   ),
+                                   'play_url': None,
+                                   'player': addon_id,
+                               })
+
     def get_plugin_type(self, playlist_next=None):
         if self.data:
             plugin_type = constants.PLUGIN_DATA_ERROR
-            if playlist_next:
+            if self.data.get('play_direct'):
+                plugin_type += constants.PLUGIN_DIRECT
+            elif playlist_next:
                 plugin_type += constants.PLUGIN_PLAYLIST
             if self.data.get('play_url'):
                 plugin_type += constants.PLUGIN_PLAY_URL
@@ -367,15 +430,20 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
             return plugin_type
         return None
 
-    def set_plugin_data(self, data, encoding='base64'):
-        if data:
-            self.log('Plugin data: {0}'.format(data))
+    def set_plugin_data(self, plugin_data):
+        if not plugin_data:
+            self.data = None
+            self.encoding = None
+            return
 
-            # Map to new data structure
-            if 'current_episode' in data:
-                data['current_video'] = data.pop('current_episode')
-            if 'next_episode' in data:
-                data['next_video'] = data.pop('next_episode')
+        data, encoding = plugin_data
+        self.log('Plugin data: {0}'.format(data))
+
+        # Map to new data structure
+        if 'current_episode' in data:
+            data['current_video'] = data.pop('current_episode')
+        if 'next_episode' in data:
+            data['next_video'] = data.pop('next_episode')
 
         self.data = data
-        self.encoding = encoding
+        self.encoding = encoding or 'base64'

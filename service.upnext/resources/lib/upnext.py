@@ -4,19 +4,11 @@
 
 from __future__ import absolute_import, division, unicode_literals
 
-from posixpath import split as posix_split
-
 import constants
 import utils
 import xbmc
 import xbmcgui
 from settings import SETTINGS
-
-try:
-    from urllib.parse import parse_qs, urlencode, urlparse
-except ImportError:
-    from urlparse import parse_qs, urlparse
-    from urllib import urlencode  # pylint: disable=ungrouped-imports
 
 
 def log(msg, level=utils.LOGWARNING):
@@ -386,7 +378,7 @@ def create_tvshow_listitem(tvshow,
 def create_listitem(item, kwargs=None, infolabels=None, properties=None):
     """Create a xbmcgui.ListItem from provided item_details dict"""
 
-    media_type = item.get('media_type')
+    media_type = item.get('type')
     if 'details' in item:
         item = item['details']
 
@@ -400,46 +392,6 @@ def create_listitem(item, kwargs=None, infolabels=None, properties=None):
         return create_movie_listitem(item, kwargs, infolabels, properties)
 
     return None
-
-
-def generate_tmdbhelper_play_url(upnext_data, mediapath=''):
-    current_video = upnext_data.get('current_video')
-    title = current_video.get('showtitle', '')
-    season = utils.get_int(current_video, 'season')
-    episode = utils.get_int(current_video, 'episode') + 1
-    addon_id, _, _ = parse_url(mediapath)
-
-    query = urlencode({
-        'info': 'play',
-        'play_using': addon_id,
-        'tmdb_type': 'tv',
-        'query': title,
-        'season': season,
-        'episode': episode
-    })
-    play_url = (
-        'plugin://plugin.video.themoviedb.helper/?'
-        + query
-    )
-
-    return play_url
-
-
-def parse_url(url, scheme='plugin'):
-    if not url:
-        return None, None, None
-
-    parsed_url = urlparse(url)
-    if scheme and scheme != parsed_url.scheme:
-        return None, None, None
-
-    addon_id = parsed_url.netloc
-    addon_path = posix_split(parsed_url.path.rstrip('/') or '/')
-    while addon_path[0] != '/':
-        addon_path = posix_split(addon_path[0]) + addon_path[1:]
-    addon_args = parse_qs(parsed_url.query, keep_blank_values=True)
-
-    return addon_id, addon_path, addon_args
 
 
 def send_signal(sender, upnext_info):
@@ -493,13 +445,6 @@ def send_signal(sender, upnext_info):
 
         media_type = val.getMediaType()
 
-        # Fallback for available date information
-        first_aired = (
-            val.getFirstAiredAsW3C() or val.getPremieredAsW3C()
-        ) if utils.supports_python_api(20) else (
-            val.getFirstAired() or val.getPremiered()
-        ) or str(val.getYear())
-
         video_info = {
             'title': val.getTitle(),
             # Prefer outline over full plot for UpNext popup
@@ -507,7 +452,12 @@ def send_signal(sender, upnext_info):
             'playcount': val.getPlayCount(),
             # Prefer user rating over scraped rating
             'rating': val.getUserRating() or val.getRating(),
-            'firstaired': first_aired,
+            # Fallback for available date information
+            'firstaired': (
+                val.getFirstAiredAsW3C() or val.getPremieredAsW3C()
+            ) if utils.supports_python_api(20) else (
+                val.getFirstAired() or val.getPremiered()
+            ) or str(val.getYear()),
             # Runtime used to evaluate endtime in UpNext popup, if available
             'runtime': utils.supports_python_api(18) and val.getDuration() or 0
         }
@@ -541,15 +491,16 @@ def send_signal(sender, upnext_info):
 
         upnext_data[key] = video_info
 
-    upnext_data = _copy_video_details(upnext_data)
-    if 'mediapath' in upnext_info:
-        upnext_data['play_url'] = generate_tmdbhelper_play_url(
-            upnext_data, upnext_info['mediapath']
-        )
+    if 'player' in upnext_info:
+        from tmdb_helper import generate_tmdbhelper_play_url
 
-    return utils.event(
-        sender=sender,
-        message='upnext_data',
-        data=upnext_data,
-        encoding='base64'
-    )
+        upnext_data['play_url'] = generate_tmdbhelper_play_url(
+            upnext_data, upnext_info['player']
+        )
+        upnext_data['play_direct'] = True
+    upnext_data = _copy_video_details(upnext_data)
+
+    return utils.event(sender=sender,
+                       message='upnext_data',
+                       data=upnext_data,
+                       encoding='base64')

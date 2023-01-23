@@ -91,13 +91,9 @@ class UpNextPopupHandler(object):
             if kwarg in old_state:
                 old_state[kwarg] = value
 
-        if not self._has_popup():
-            old_state['abort'] = True
-
-        if old_state['abort']:
-            return old_state
-
-        with self.popup as check_fail:
+        with utils.ContextManager(self, 'popup') as check_fail:
+            if check_fail is AttributeError:
+                raise check_fail
             remaining = kwargs.get('remaining')
             if remaining is not None:
                 self.popup.update_progress(remaining)
@@ -108,7 +104,8 @@ class UpNextPopupHandler(object):
             stop = self.popup.is_stop()
 
             check_fail = False
-        if check_fail:
+        if check_fail or old_state['abort']:
+            old_state['abort'] = True
             return old_state
 
         current_state = {
@@ -138,9 +135,6 @@ class UpNextPopupHandler(object):
         }
         return current_state
 
-    def _has_popup(self):
-        return getattr(self, 'popup', False)
-
     def _play_next_video(self, next_item, popup_state):
         forced = self.player.player_state.forced('playing')
         source = next_item['source']
@@ -163,7 +157,7 @@ class UpNextPopupHandler(object):
                     resume=SETTINGS.enable_resume
                 )
 
-        # Fallback plugin playback method, used if plugin provides play_info
+        # Fallback plugin playback method, or if plugin provides play_info
         elif source.startswith('plugin'):
             api.play_plugin_item(
                 self.state.data,
@@ -181,15 +175,13 @@ class UpNextPopupHandler(object):
         ))
 
     def _remove_popup(self):
-        if not self._has_popup():
-            return
-
-        with self.popup:
+        with utils.ContextManager(self, 'popup') as check_fail:
+            if check_fail is AttributeError:
+                raise check_fail
             self.popup.close()
             utils.clear_property('service.upnext.dialog')
-
-        del self.popup
-        self.popup = None
+            del self.popup
+            self.popup = None
 
     def _run(self, item=None):
         next_item = item if item else self.state.get_next()
@@ -203,7 +195,7 @@ class UpNextPopupHandler(object):
 
         # Add next file to playlist if existing playlist is not being used
         if (SETTINGS.enable_queue
-                and not next_item['source'].endswith('playlist')):
+                and not next_item['source'].endswith(('playlist', 'direct'))):
             self.state.queued = api.queue_next_item(self.state.data, next_item)
 
         # Create Kodi dialog to show UpNext or Still Watching? popup
@@ -217,11 +209,9 @@ class UpNextPopupHandler(object):
         self.state.shuffle_on = popup_state['shuffle_on']
 
         # Signal to Trakt that current item has been watched
-        utils.event(
-            message='NEXTUPWATCHEDSIGNAL',
-            data=api.get_item_id(self.state.current_item),
-            encoding='base64'
-        )
+        utils.event(message='NEXTUPWATCHEDSIGNAL',
+                    data=api.get_item_id(self.state.current_item),
+                    encoding='base64')
 
         play_next = False
         # Stop playing if Stop button was clicked on popup, or if Still
@@ -261,17 +251,19 @@ class UpNextPopupHandler(object):
         return next_item, play_next, keep_playing, restart
 
     def _show_popup(self):
-        if not self._has_popup():
-            return False
-
-        with self.popup:
+        with utils.ContextManager(self, 'popup') as check_fail:
+            if check_fail is AttributeError:
+                raise check_fail
             self.popup.show()
             utils.set_property('service.upnext.dialog', 'true')
             return True
+        return False
 
     def _update_popup(self, popup_state):
         # Get video details, exit if no video playing or no popup available
-        with self.player as check_fail:
+        with utils.ContextManager(self, 'player') as check_fail:
+            if check_fail is AttributeError:
+                raise check_fail
             total_time = self.player.getTotalTime()
             play_time = self.player.getTime()
             speed = self.player.get_speed()
@@ -315,7 +307,9 @@ class UpNextPopupHandler(object):
                     or popup_state['play_now']):
                 break
 
-            with self.player as check_fail:
+            with utils.ContextManager(self, 'player') as check_fail:
+                if check_fail is AttributeError:
+                    raise check_fail
                 play_time = self.player.getTime()
                 speed = self.player.get_speed()
                 check_fail = False
@@ -336,20 +330,22 @@ class UpNextPopupHandler(object):
         self._running.set()
 
         next_item = None
+        player = self.player
+        state = self.state
         while True:
             # Show popup and get new playback state
             next_item, play_next, keep_playing, restart = self._run(next_item)
 
             # Update playback state
-            self.state.playing_next = play_next
-            self.state.keep_playing = keep_playing
+            state.playing_next = play_next
+            state.keep_playing = keep_playing
 
             # Stop playback and dequeue if not playing next file
             if not keep_playing:
                 self.log('Stopping playback', utils.LOGINFO)
-                self.player.stop()
-            if not play_next and self.state.queued:
-                self.state.queued = api.dequeue_next_item()
+                player.stop()
+            if not play_next and state.queued:
+                state.queued = api.dequeue_next_item()
 
             # Run again if shuffle started to get new random episode, or
             # restart triggered
@@ -388,7 +384,7 @@ class UpNextPopupHandler(object):
             if timeout <= 0:
                 break
         if self._running.is_set():
-            if self._has_popup():
+            if getattr(self, 'popup', False):
                 self.log('Popup taking too long to close', utils.LOGWARNING)
             else:
                 self._sigcont.clear()

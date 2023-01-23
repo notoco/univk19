@@ -41,6 +41,7 @@ class UpNextSettings(object):
         'enable_tmdbhelper_fallback',
         'enable_queue',
         'enable_resume',
+        'exact_tmdb_match',
         'mark_watched',
         'next_season',
         'played_limit',
@@ -49,6 +50,7 @@ class UpNextSettings(object):
         'popup_accent_colour',
         'popup_durations',
         'popup_position',
+        'queue_from_tmdb',
         'show_stop_button',
         'sim_cue',
         'sim_mode',
@@ -139,7 +141,7 @@ class UpNextSettings(object):
         value = default
         try:
             value = self._get_string(self._store, key)
-            value = statichelper.to_unicode(value)
+            value = statichelper.from_bytes(value)
         # Occurs when the addon is disabled
         except RuntimeError:
             value = default
@@ -214,6 +216,10 @@ class UpNextSettings(object):
         self.enable_playlist = self.get_bool('enablePlaylist')
         self.enable_movieset = self.get_bool('enableMovieset')
         self.enable_tmdbhelper_fallback = self.get_bool('enableTMDBHelper')
+        self.exact_tmdb_match = (self.enable_tmdbhelper_fallback
+                                 and self.get_bool('exactTMDBMatch'))
+        self.queue_from_tmdb = (self.enable_tmdbhelper_fallback
+                                and self.get_bool('queueFromTMDB'))
 
         self.auto_play_delay = self.get_int('autoPlayCountdown')
         self.popup_durations = {
@@ -258,9 +264,8 @@ class UpNextSettings(object):
         self.sim_plugin = self.sim_mode and self.get_bool('simPlugin')
 
         self.detector_debug = self.get_bool('detectorDebug')
-        self.detector_debug_save = (
-            self.detector_save_path and self.get_bool('detectorDebugSave')
-        )
+        self.detector_debug_save = (self.detector_save_path
+                                    and self.get_bool('detectorDebugSave'))
         self.start_trigger = self.get_bool('startTrigger')
 
         self._store = None

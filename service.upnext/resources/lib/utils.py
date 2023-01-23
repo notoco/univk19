@@ -7,10 +7,15 @@ from __future__ import absolute_import, division, unicode_literals
 import base64
 import binascii
 import json
-import sys
 import threading
 from itertools import chain
 from operator import itemgetter
+from posixpath import split as posix_split
+
+try:
+    from urllib.parse import parse_qsl, urlparse
+except ImportError:
+    from urlparse import parse_qsl, urlparse
 
 from dateutil.parser import parse as dateutil_parse
 
@@ -19,6 +24,24 @@ import statichelper
 import xbmc
 import xbmcaddon
 import xbmcgui
+
+
+class ContextManager(object):
+    """Wrapper class used to retrieve a context manager, that may have been
+       deleted, for use in a with statement."""
+
+    def __new__(cls, *args, **kwargs):
+        if 'handler' in kwargs:  # pylint: disable=consider-using-get
+            handler = kwargs['handler']
+        else:
+            handler = getattr(args[0], args[1], None)
+        return handler or super(ContextManager, cls).__new__(cls)
+
+    def __enter__(self):
+        return AttributeError
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        return True
 
 
 class Profiler(object):
@@ -237,10 +260,9 @@ def get_addon(addon_id=None, retry_attempts=3):
 
 
 ADDON = get_addon(constants.ADDON_ID)
-_KODI_MAJOR_VERSION = jsonrpc(
-    method='Application.GetProperties',
-    params={'properties': ['version']}
-).get('result').get('version').get('major')
+_KODI_MAJOR_VERSION = jsonrpc(method='Application.GetProperties',
+                              params={'properties': ['version']})
+_KODI_MAJOR_VERSION = _KODI_MAJOR_VERSION['result']['version']['major']  # pylint: disable=unsubscriptable-object
 
 
 def get_addon_info(key):
@@ -248,7 +270,7 @@ def get_addon_info(key):
 
     key = statichelper.from_unicode(key)
     value = ADDON.getAddonInfo(key)
-    return statichelper.to_unicode(value)
+    return statichelper.from_bytes(value)
 
 
 def get_addon_id():
@@ -274,7 +296,7 @@ def get_property(key, window_id=constants.WINDOW_HOME):
 
     key = statichelper.from_unicode(key)
     value = xbmcgui.Window(window_id).getProperty(key)
-    return statichelper.to_unicode(value)
+    return statichelper.from_bytes(value)
 
 
 def set_property(key, value, window_id=constants.WINDOW_HOME):
@@ -324,13 +346,10 @@ def encode_data(data, encoding='base64'):
 
     try:
         json_data = json.dumps(data).encode()
-        encoded_data = encode_method(json_data)
+        encoded_data = statichelper.from_bytes(encode_method(json_data))
     except (TypeError, ValueError, binascii.Error):
         log('{0} encode error: {1}'.format(encoding, data), level=LOGWARNING)
         return None
-
-    if sys.version_info[0] > 2:
-        encoded_data = encoded_data.decode('ascii')
 
     return encoded_data
 
@@ -368,7 +387,7 @@ def decode_data(encoded_data=None, serialised_json=None, compat_mode=True):
         try:
             # NOTE: With Python 3.5 and older json.loads() does not support
             # bytes or bytearray, so we convert to unicode
-            serialised_json = statichelper.to_unicode(serialised_json)
+            serialised_json = statichelper.from_bytes(serialised_json)
             decoded_data = json.loads(serialised_json)
         except (TypeError, ValueError):
             pass
@@ -376,33 +395,31 @@ def decode_data(encoded_data=None, serialised_json=None, compat_mode=True):
     return decoded_data, encoding
 
 
-def event(message, data=None, sender=None, encoding='base64'):
-    """Send internal notification event"""
+def event(message, data=None, sender=None, encoding='base64', internal=False):
+    """Send notification event"""
 
     data = data or {}
     sender = sender or get_addon_id()
 
-    encoded_data = encode_data(data, encoding=encoding)
-    if not encoded_data:
-        return None
+    # Compatibility with Addon Signals which wraps serialised data in square
+    # brackets to generate an array/list
+    if not internal:
+        encoded_data = encode_data(data, encoding=encoding)
+        if not encoded_data:
+            return None
+        data = [encoded_data]
 
-    return jsonrpc(
-        method='JSONRPC.NotifyAll',
-        params={
-            'sender': '{0}.SIGNAL'.format(sender),
-            'message': message,
-            'data': [encoded_data],
-        }
-    )
+    return jsonrpc(method='JSONRPC.NotifyAll',
+                   params={'sender': '{0}.SIGNAL'.format(sender),
+                           'message': message,
+                           'data': data,})
 
 
 def get_global_setting(setting):
     """Get a Kodi setting"""
 
-    result = jsonrpc(
-        method='Settings.GetSettingValue',
-        params={'setting': setting}
-    )
+    result = jsonrpc(method='Settings.GetSettingValue',
+                     params={'setting': setting})
     return result.get('result', {}).get('value')
 
 
@@ -442,7 +459,7 @@ def log(msg, name=__name__, level=LOGINFO):
         level = MIN_LOG_LEVEL
 
     # Convert to unicode for string formatting with Unicode literal
-    msg = statichelper.to_unicode(msg)
+    msg = statichelper.from_bytes(msg)
     msg = '[{0}] {1} -> {2}'.format(get_addon_id(), name, msg)
     # Convert back for older Kodi versions
     msg = statichelper.from_unicode(msg)
@@ -453,7 +470,7 @@ def localize(string_id):
     """Return the translated string from the .po language files"""
 
     string = ADDON.getLocalizedString(string_id)
-    return statichelper.to_unicode(string)
+    return statichelper.from_bytes(string)
 
 
 def get_year(date_string):
@@ -573,7 +590,7 @@ def create_item_details(item, source=None,
         return {
             'details': {},
             'source': None,
-            'media_type': None,
+            'type': None,
             'db_id': constants.UNDEFINED,
             'group_name': None,
             'group_idx': constants.UNDEFINED,
@@ -606,7 +623,7 @@ def create_item_details(item, source=None,
     item_details = {
         'details': item,
         'source': source,
-        'media_type': 'episode' if is_episode else media_type,
+        'type': 'episode' if is_episode else media_type,
         'db_id': (
             get_int(item, 'episodeid' if is_episode else 'movieid', None)
             or get_int(item, 'id')
@@ -640,3 +657,21 @@ if supports_python_api(19):
         deque(map(function, sequence), maxlen=0)
 else:
     modify_iterable = map  # pylint: disable=invalid-name
+
+
+def parse_url(url, scheme='plugin'):
+    if not url:
+        return None, None, None
+
+    parsed_url = urlparse(url)
+    if scheme and scheme != parsed_url.scheme:
+        return None, None, None
+
+    addon_id = parsed_url.netloc
+    addon_path = posix_split(parsed_url.path.rstrip('/') or '/')
+    while addon_path[0] != '/':
+        addon_path = posix_split(addon_path[0]) + addon_path[1:]
+    # Simplified to only use the last value for each variable in the query
+    addon_args = dict(parse_qsl(parsed_url.query, keep_blank_values=True))
+
+    return addon_id, addon_path, addon_args
