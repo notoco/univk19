@@ -410,13 +410,13 @@
                     <texture>$PARAM[icon]</texture>
                     <colordiffuse>$PARAM[colordiffuse]_70</colordiffuse>
                     <visible>![Container.Scrolling + $EXP[Exp_AlphabetTypes_Only]]</visible>
-                    <animation effect="fade" start="0" end="100" time="200" delay="1200" reversible="true">Visible</animation>
-                    <animation effect="fade" start="100" end="0" time="200" delay="400" reversible="true">Hidden</animation>
+                    <animation effect="fade" start="100" end="0" time="200" delay="1200" reversible="true">Visible</animation>
+                    <animation effect="fade" start="0" end="100" time="200" delay="400" reversible="true">Hidden</animation>
                 </control>
                 <include content="Object_Control" condition="$PARAM[hasspinner]">
                     <param name="control" value="group" />
                     <description>Busy animation</description>
-                    <animation effect="rotate" condition="$PARAM[spinspinner]" start="0" end="360" loop="true" time="1000" center="auto">Conditional</animation>
+                    <animation effect="rotate" condition="$PARAM[spinspinner]" start="360" end="0" loop="true" time="1000" center="auto">Conditional</animation>
                     <control type="image">
                         <texture colordiffuse="$VAR[ColorHighlight]">dialog/loading-spinner.png</texture>
                         <aspectratio>keep</aspectratio>
@@ -424,7 +424,7 @@
                     <control type="image">
                         <texture colordiffuse="$VAR[ColorGradient]">dialog/loading-spinner.png</texture>
                         <aspectratio>keep</aspectratio>
-                        <animation effect="fade" condition="$PARAM[spinspinner]" start="0" end="100" pulse="true" time="1000">Conditional</animation>
+                        <animation effect="fade" condition="$PARAM[spinspinner]" start="100" end="0" pulse="true" time="1000">Conditional</animation>
                     </control>
                 </include>
 
