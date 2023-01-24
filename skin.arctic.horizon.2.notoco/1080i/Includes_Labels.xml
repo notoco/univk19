@@ -407,7 +407,8 @@
         <value condition="$EXP[Exp_InfoDialogs] | [Window.IsVisible(1190) | Window.IsVisible(1191)] | !String.IsEmpty(Window(Home).Property(TMDbHelper.HideView))">$LOCALIZE[19033]</value>
         <value condition="$EXP[Exp_SettingsDialogs] | Window.IsVisible(AddonBrowser.xml) | Window.Isvisible(script-skinshortcuts.xml)">$VAR[Label_Header_Mini]</value>
         <value condition="Control.IsVisible(524) + !Container.Content(tvshows) + !String.IsEmpty(ListItem.Year)">$INFO[ListItem.Title] ($INFO[ListItem.Year])</value>
-        <value condition="Control.IsVisible(524) + Container.Content(tvshows)">$INFO[ListItem.Title]</value>
+        <value condition="Control.IsVisible(580) + !Container.Content(tvshows) + !String.IsEmpty(ListItem.Year)">$INFO[ListItem.Title] ($INFO[ListItem.Year])</value>
+        <value condition="Control.IsVisible(520) + Container.Content(tvshows)">$INFO[ListItem.Title]</value>
         <value condition="Window.IsVisible(weather) + !String.IsEmpty(Weather.Location)">$INFO[Weather.Location]</value>
         <value condition="Window.IsVisible(weather)">$LOCALIZE[8]</value>
         <value condition="Window.IsVisible(filemanager)">$LOCALIZE[7]</value>
