@@ -277,7 +277,7 @@
 
     <include name="Furniture_MidiLabel">
         <control type="label" id="$PARAM[id]">
-            <font>font_midi_black</font>
+            <font>font_huge_black</font><!-- notoco -->
             <textcolor>main_fg_100</textcolor>
             <nested />
         </control>
