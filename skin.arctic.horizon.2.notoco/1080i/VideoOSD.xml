@@ -33,7 +33,7 @@
                     <onleft>6800</onleft>
                     <onright>6500</onright>
                     <ondown condition="$EXP[Exp_OSD_HasPlaylist]">ActivateWindow(1140)</ondown>
-                    <ondown condition="![$EXP[Exp_OSD_HasPlaylist]]">ActivateWindow(videobookmarks)</ondown>
+                    <ondown condition="![$EXP[Exp_OSD_HasPlaylist]]">ActivateWindow(1141)</ondown><!-- notoco -->
 
                     <include content="OSD_Button">
                         <param name="autoclose" value="true" />

@@ -4,7 +4,7 @@
     <variable name="Label_OSD_HintText">
         <value condition="ControlGroup(6000).HasFocus() + !Window.IsVisible(1140) + !VideoPlayer.Content(livetv) + $EXP[Exp_OSD_HasPlaylist]">$LOCALIZE[31296]</value>
         <value condition="ControlGroup(6000).HasFocus() + !Window.IsVisible(1140) + $EXP[Exp_OSD_HasPlaylist]">$LOCALIZE[31295]</value>
-        <value condition="ControlGroup(6000).HasFocus() + !VideoPlayer.Content(livetv)">$LOCALIZE[31294]</value>
+        <!-- notoco -->
         <value condition="ControlGroup(6000).HasFocus()">$LOCALIZE[31348]</value>
         <value condition="ControlGroup(6001).HasFocus()">$LOCALIZE[31293]</value>
     </variable>
