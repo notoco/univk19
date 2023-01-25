@@ -1364,7 +1364,7 @@
     <include name="Object_MenuBar_List">
         <param name="control" default="list" />
         <param name="focus_w" default="360" />
-        <param name="font" default="font_mini_bold" />
+        <param name="font" default="font_midi_bold" /><!-- notoco -->
         <param name="color" default="dialog_fg" />
         <param name="color_nf" default="dialog_fg" />
         <param name="color_bg" default="dialog_bg_100" />
