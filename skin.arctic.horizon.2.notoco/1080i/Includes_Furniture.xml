@@ -154,7 +154,7 @@
         <control type="label">
             <nested />
             <align>$PARAM[align]</align>
-            <font>font_main</font>
+            <font>font_head_bold</font>
             <textcolor>main_fg_100</textcolor>
             <label>$INFO[System.Time]</label>
         </control>
