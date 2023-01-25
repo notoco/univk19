@@ -12,6 +12,7 @@
             <include content="Animation_SlideIn_Dialog">
                 <param name="windowopen_delay">200</param>
             </include>
+<!-- notoco -->
             <height>410</height>
             <width>1080</width>
             <left>grid_x04</left>
@@ -32,7 +33,7 @@
                 <right>grid_x04</right>
                 <itemgap>10</itemgap>
                 <orientation>vertical</orientation>
-
+<!-- notoco -->
                 <control type="label">
                     <height>80</height>
                     <align>right</align>
@@ -61,7 +62,7 @@
                 <right>grid_x04</right>
                 <itemgap>10</itemgap>
                 <orientation>vertical</orientation>
-
+<!-- notoco -->
                 <control type="label">
                     <height>80</height>
                     <align>left</align>

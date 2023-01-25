@@ -1604,7 +1604,7 @@
                                 <label>$VAR[Label_PVRRecordings_Mainlabel]</label>
                                 <textcolor>$PARAM[textcolor]_70</textcolor>
                                 <selectedcolor>$PARAM[textcolor]_70</selectedcolor>
-                                <font>font_head_bold</font>
+                                <font>font_head_bold</font> <!-- notoco -->
                                 <align>left</align>
                                 <visible>![!String.IsEmpty(ListItem.EpisodeName) | !String.IsEmpty(ListItem.Genre) | ListItem.IsFolder | [[Window.IsVisible(MyPVRChannels.xml) | Window.IsVisible(fullscreenvideo)] + !String.ISEmpty(ListItem.Title)]]</visible>
                             </control>
@@ -1616,7 +1616,7 @@
                                 <label>$VAR[Label_PVRRecordings_Mainlabel]</label>
                                 <textcolor>$PARAM[textcolor]_70</textcolor>
                                 <selectedcolor>$PARAM[textcolor]_70</selectedcolor>
-                                <font>font_head_bold</font>
+                                <font>font_head_bold</font> <!-- notoco -->
                                 <align>left</align>
                                 <visible>!String.IsEmpty(ListItem.EpisodeName) | !String.IsEmpty(ListItem.Genre) | ListItem.IsFolder | [[Window.IsVisible(MyPVRChannels.xml) | Window.IsVisible(fullscreenvideo)] + !String.ISEmpty(ListItem.Title)]</visible>
                             </control>

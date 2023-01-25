@@ -15,6 +15,7 @@
     </variable>
 
     <variable name="Label_Setting_MenuStyle">
+        <value condition="Skin.HasSetting(Home.VerticalMenu)">$LOCALIZE[31163]</value>
         <value condition="Skin.HasSetting(Home.IconicMenu)">$LOCALIZE[536]</value>
         <value>$LOCALIZE[31051]</value>
     </variable>
@@ -117,6 +118,11 @@
         <value condition="!String.IsEmpty(ListItem.TvShowTitle) + !String.IsEqual(ListItem.Title,ListItem.TVShowTitle) + !String.IsEqual(ListItem.DBType,tvshow)">$INFO[ListItem.TvShowTitle]</value>
         <value condition="!String.IsEmpty(ListItem.Genre)">$INFO[ListItem.Genre]</value>
         <value condition="!String.IsEmpty(ListItem.Premiered)">$INFO[ListItem.Premiered]</value>
+    </variable>
+
+    <variable name="Label_Setting_HomeMenuDirectionPress">
+        <value condition="Skin.HasSetting(Home.VerticalMenu)">$LOCALIZE[31370]</value>
+        <value>$LOCALIZE[31179]</value>
     </variable>
 
     <variable name="Label_Setting_HomeMenuUp">
@@ -406,9 +412,9 @@
     <variable name="Label_Header_Main">
         <value condition="$EXP[Exp_InfoDialogs] | [Window.IsVisible(1190) | Window.IsVisible(1191)] | !String.IsEmpty(Window(Home).Property(TMDbHelper.HideView))">$LOCALIZE[19033]</value>
         <value condition="$EXP[Exp_SettingsDialogs] | Window.IsVisible(AddonBrowser.xml) | Window.Isvisible(script-skinshortcuts.xml)">$VAR[Label_Header_Mini]</value>
-        <value condition="Control.IsVisible(524) + !Container.Content(tvshows) + !String.IsEmpty(ListItem.Year)">$INFO[ListItem.Title] ($INFO[ListItem.Year])</value>
-        <value condition="Control.IsVisible(580) + !Container.Content(tvshows) + !String.IsEmpty(ListItem.Year)">$INFO[ListItem.Title] ($INFO[ListItem.Year])</value>
-        <value condition="Control.IsVisible(520) + Container.Content(tvshows)">$INFO[ListItem.Title]</value>
+        <value condition="Control.IsVisible(524) + !Container.Content(tvshows) + !String.IsEmpty(ListItem.Year)">$INFO[ListItem.Title] ($INFO[ListItem.Year])</value> <!-- notoco -->
+        <value condition="Control.IsVisible(580) + !Container.Content(tvshows) + !String.IsEmpty(ListItem.Year)">$INFO[ListItem.Title] ($INFO[ListItem.Year])</value> <!-- notoco -->
+        <value condition="Control.IsVisible(520) + Container.Content(tvshows)">$INFO[ListItem.Title]</value> <!-- notoco -->
         <value condition="Window.IsVisible(weather) + !String.IsEmpty(Weather.Location)">$INFO[Weather.Location]</value>
         <value condition="Window.IsVisible(weather)">$LOCALIZE[8]</value>
         <value condition="Window.IsVisible(filemanager)">$LOCALIZE[7]</value>
