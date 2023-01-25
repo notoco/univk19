@@ -181,7 +181,7 @@
         </extension>
     </addon>
 
-<addon id="skin.arctic.horizon.2.notoco" name="Arctic Horizon 2 NOTOCO" provider-name="jurialmunkey - notoco mod" version="2023.01.24.2">
+<addon id="skin.arctic.horizon.2.notoco" name="Arctic Horizon 2 NOTOCO" provider-name="jurialmunkey - notoco mod" version="2023.01.25.0">
     <requires>
         <import addon="xbmc.gui" version="5.15.0" />
         <import addon="script.skinshortcuts" version="0.4.0" />
@@ -271,41 +271,6 @@ provider-name="primaeval">
     <icon>icon.png</icon>
   </assets>
 </extension>
-</addon>
-
-<addon id="plugin.program.shortlist" name="Shortlist" version="0.0.9" provider-name="kcook98765">
-  <requires>
-    <import addon="xbmc.python" version="3.0.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="addon.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en_gb">Shortlist movies to watch</summary>
-    <description lang="en_gb">Provides a way to build shortlists of movies to watch</description>
-    <disclaimer lang="en_gb"></disclaimer>
-    <language></language>
-    <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
-    <news></news>
-    <assets>
-        <icon>resources/icon.png</icon>
-        <fanart></fanart>
-        <screenshot></screenshot>
-    </assets>
-  </extension>
-  <extension point="kodi.context.item">
-      <menu id="kodi.core.main">
-        <item library="capture.py">
-            <label>30012</label>
-            <visible>[!String.IsEmpty(ListItem.DBID) + String.IsEqual(ListItem.DBType,movie)]</visible>
-        </item>
-      </menu>
-    </extension>
 </addon>
 
 <addon id="service.upnext" name="UpNext" version="2023.01.23" provider-name="im85288">
