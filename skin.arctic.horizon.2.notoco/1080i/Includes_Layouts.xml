@@ -719,7 +719,7 @@
                         <include content="Object_Indicator_List">
                             <param name="selected">$PARAM[selected]</param>
                             <centertop>50%</centertop>
-                            <centerright>140</centerright><!-- notoco -->
+                            <centerright>160</centerright><!-- notoco -->
                         </include>
                         <include content="Object_Control">
                             <param name="control">label</param>
