@@ -63,7 +63,7 @@
                 <control type="label">
                     <font>font_tiny</font>
                     <textcolor>main_fg_30</textcolor>
-                    <label>$LOCALIZE[563]</label>
+                    <label>$LOCALIZE[180]</label><!-- notoco -->
                     <align>right</align>
                     <visible>![String.IsEqual(ListItem.DBType,song) | String.IsEqual(ListItem.DBType,album)]</visible>
                 </control>
