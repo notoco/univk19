@@ -412,6 +412,7 @@
     <variable name="Label_Header_Main">
         <value condition="$EXP[Exp_InfoDialogs] | [Window.IsVisible(1190) | Window.IsVisible(1191)] | !String.IsEmpty(Window(Home).Property(TMDbHelper.HideView))">$LOCALIZE[19033]</value>
         <value condition="$EXP[Exp_SettingsDialogs] | Window.IsVisible(AddonBrowser.xml) | Window.Isvisible(script-skinshortcuts.xml)">$VAR[Label_Header_Mini]</value>
+        <value condition="[Control.IsVisible(520) | Control.IsVisible(580) | Control.IsVisible(550)| Control.IsVisible(570) | Control.IsVisible(58)] + !Container.Content(tvshows) + !String.IsEmpty(ListItem.Year) + !String.IsEmpty(ListItem.Duration)">$INFO[ListItem.Title] ($INFO[ListItem.Year]) - $INFO[ListItem.Duration]</value> <!-- notoco -->
         <value condition="[Control.IsVisible(520) | Control.IsVisible(580) | Control.IsVisible(550)| Control.IsVisible(570) | Control.IsVisible(58)] + !Container.Content(tvshows) + !String.IsEmpty(ListItem.Year)">$INFO[ListItem.Title] ($INFO[ListItem.Year])</value> <!-- notoco -->
         <value condition="[Control.IsVisible(520) | Control.IsVisible(580) | Control.IsVisible(550)| Control.IsVisible(570) | Control.IsVisible(58)] + Container.Content(tvshows)">$INFO[ListItem.Title]</value> <!-- notoco -->
         <value condition="Window.IsVisible(weather) + !String.IsEmpty(Weather.Location)">$INFO[Weather.Location]</value>
