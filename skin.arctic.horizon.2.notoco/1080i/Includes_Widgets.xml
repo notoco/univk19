@@ -36,7 +36,7 @@
                     <include content="Object_Label" condition="$PARAM[usewidgetlabel]">
                         <param name="label">[CAPITALIZE]$INFO[Container($PARAM[id]).ListItem.Property(widget)][/CAPITALIZE]</param>
                     </include>
-                    <label>$PARAM[label][COLOR=$VAR[ColorHighlight]]  |  [/COLOR]$INFO[Container($PARAM[id]).ListItem.Label]</label><!-- notoco -->
+                    <label>$PARAM[label][COLOR=$VAR[ColorHighlight]]  |  [/COLOR]$INFO[Container($PARAM[id]).ListItem.Label][COLOR=$VAR[ColorHighlight]]  |  [/COLOR]$INFO[Container($PARAM[id]).ListItem.Year]</label><!-- notoco -->
                     <font>font_main_black</font>
                     <visible>Control.HasFocus($PARAM[id])</visible>
                     <visible>$PARAM[labelvisible]</visible>
