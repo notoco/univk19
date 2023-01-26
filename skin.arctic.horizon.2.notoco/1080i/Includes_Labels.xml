@@ -5,8 +5,7 @@
         <value condition="ControlGroup(6000).HasFocus() + !Window.IsVisible(1140) + !VideoPlayer.Content(livetv) + $EXP[Exp_OSD_HasPlaylist]">$LOCALIZE[31296]</value>
         <value condition="ControlGroup(6000).HasFocus() + !Window.IsVisible(1140) + $EXP[Exp_OSD_HasPlaylist]">$LOCALIZE[31295]</value>
         <!-- notoco -->
-        <value condition="ControlGroup(6000).HasFocus()">$LOCALIZE[31348]</value>
-        <value condition="ControlGroup(6001).HasFocus()">$LOCALIZE[31293]</value>
+        <value condition="ControlGroup(6000).HasFocus() | ControlGroup(6001).HasFocus()">$LOCALIZE[31293]</value>
     </variable>
 
     <variable name="Label_Setting_Expanded">
