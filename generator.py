@@ -139,7 +139,7 @@ class GeneratorZIP:
     </html>
     """
 
-    EXCLUDED = ['index.html', 'gitignore.ps1', 'Gemfile', 'Gemfile.lock', '.gitignore', '.gitlab-ci.yml', 'generator.py', '_config.yml', '.idea', '.git', 'pull.sh', 'pull2.sh', 'push.sh', '.gitmodules', '_config.yml', '/skin.arctic.horizon2.notoco/1080i/script-skinshortcuts-includes.xml', 'skin.arctic.horizon.2-main']
+    EXCLUDED = ['index.html', 'gitignore.ps1', 'Gemfile', 'Gemfile.lock', '.gitignore', '.gitlab-ci.yml', 'generator.py', '_config.yml', '.idea', '.git', 'pull.sh', 'pull2.sh', 'push.sh', '.gitmodules', '_config.yml', '/skin.arctic.horizon2.notoco/1080i/script-skinshortcuts-includes.xml', 'skin.arctic.horizon.2-main', 'service.upnext-master']
 
     def index(self, dir):
         try:

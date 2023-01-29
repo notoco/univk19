@@ -529,7 +529,7 @@
 					<constraints>
 						<minimum>0</minimum>
 						<step>1</step>
-						<maximum>10</maximum>
+						<maximum>60</maximum>
 					</constraints>
 					<control type="slider" format="integer">
 						<popup>false</popup>
