@@ -966,7 +966,6 @@
             <left>grid_x04</left>
             <right>grid_x04</right>
             <align>right</align>
-            <visible>ControlGroup(9000).HasFocus()</visible>
             <animation effect="fade" start="0" end="100" time="300" delay="100">Visible</animation>
             <control type="image">
                 <width>56</width>
