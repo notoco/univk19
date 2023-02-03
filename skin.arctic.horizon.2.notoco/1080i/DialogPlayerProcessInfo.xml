@@ -13,7 +13,7 @@
                 <param name="windowopen_delay">200</param>
             </include>
 <!-- notoco -->
-            <height>410</height>
+            <height>510</height>
             <width>1080</width>
             <left>grid_x04</left>
             <bottom>160</bottom>
@@ -78,11 +78,20 @@
                     <label>[B]$LOCALIZE[460][/B][CR]$INFO[Player.Process(audiochannels),,$COMMA ]$INFO[Player.Process(audiodecoder)]$INFO[Player.Process(audiobitspersample),$COMMA , $LOCALIZE[31263]]$INFO[Player.Process(audiosamplerate),$COMMA , $LOCALIZE[31262]]</label>
                 </control>
                 <control type="label">
-                    <height>80</height>
+                    <height>140</height><!-- notoco -->
                     <align>left</align>
                     <font>font_mini</font>
                     <textcolor>dialog_fg_70</textcolor>
-                    <label>$INFO[System.Memory(used.percent),[B]$LOCALIZE[31256][/B][CR]$LOCALIZE[31257]: ,  ]$INFO[System.CpuUsage,$LOCALIZE[31258]: ,]</label>
+                    <label>$INFO[System.Memory(used.percent),[B]$LOCALIZE[31256][/B][CR]$LOCALIZE[31257]: ,  ][CR]$INFO[System.CpuUsage,$LOCALIZE[31258]: ,][CR]Bufor: $INFO[Player.CacheLevel]%</label><!-- notoco -->
+                </control>
+                <control type="progress">
+                    <height>10</height>
+                    <width>auto</width>
+                    <texturesliderbar/>
+                    <textureslidernib/>
+                    <textureslidernibfocus/>
+                    <info>Player.Progress</info>
+                    <action>seek</action>
                 </control>
             </control>
         </include>

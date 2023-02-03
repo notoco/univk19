@@ -194,7 +194,7 @@
                     <include content="OSD_Button">
                         <param name="autoclose" value="true" />
                         <param name="visible" value="true" />
-                        <param name="icon" value="special://skin/extras/icons/volume.png" />
+                        <param name="icon" value="flags/monochrome/channels/$INFO[VideoPlayer.AudioChannels].png" /><!-- notoco -->
                         <param name="visible" value="true" />
                         <param name="id" value="6600" />
                         <param name="groupid" value="6699" />
