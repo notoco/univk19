@@ -2021,11 +2021,8 @@
                         <texture colordiffuse="$VAR[ColorMainItem]" diffuse="$PARAM[diffuse]">common/white.png</texture>
                         <visible>$EXP[Exp_IsPVRItem]</visible>
                     </include>
-                    <include content="Object_ItemIcon"><!-- moojidge -->
-                        <param name="icon">$VAR[Image_Square]</param>
-                        <param name="icon_keep">$VAR[Image_Square]</param>
-                        <param name="is_keep">String.IsEqual(ListItem.DBType,movie)</param>
-                        <param name="icon_keep_bordersize">0</param>
+                    <include content="Object_ItemIcon">
+                        <param name="icon">$INFO[ListItem.Icon]</param>
                         <param name="diffuse">$PARAM[diffuse]</param>
                     </include>
                     <include content="Object_Indicator" condition="!$PARAM[variation]">
