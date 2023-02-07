@@ -618,5 +618,8 @@
         <value condition="Window.IsVisible(AddonBrowser.xml) + ListItem.Property(addon.isinstalled) + !ListItem.Property(addon.isenabled)">indicator/circle</value>
         <value condition="Window.IsVisible(AddonBrowser.xml) + ListItem.Property(addon.hasupdate)">indicator/circle</value>
         <value condition="Window.IsVisible(AddonBrowser.xml) + ListItem.Property(addon.isinstalled)">indicator/circle</value>
+    <variable name="Image_Square"><!-- moojidge -->
+        <value condition="String.IsEqual(ListItem.DBType,movie)">$VAR[Image_Poster]</value>
+        <value condition="True">$VAR[Image_Landscape]</value>
     </variable>
 </includes>
