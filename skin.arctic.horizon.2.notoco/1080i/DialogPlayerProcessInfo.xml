@@ -90,7 +90,7 @@
                     <texturesliderbar/>
                     <textureslidernib/>
                     <textureslidernibfocus/>
-                    <info>Player.Progress</info>
+                    <info>Player.CacheLevel</info>
                     <action>seek</action>
                 </control>
             </control>
