@@ -36,14 +36,6 @@ EPISODE_PROPERTIES = frozenset({
     'dateadded',
     'lastplayed',
 })
-EPISODE_ART_MAP = {
-    'poster': ('season.poster', 'tvshow.poster'),
-    'fanart': ('season.fanart', 'tvshow.fanart'),
-    'landscape': ('season.landscape', 'tvshow.landscape'),
-    'clearart': ('season.clearart', 'tvshow.clearart'),
-    'banner': ('season.banner', 'tvshow.banner'),
-    'clearlogo': ('season.clearlogo', 'tvshow.clearlogo'),
-}
 
 TVSHOW_PROPERTIES = frozenset({
     'title',
@@ -57,7 +49,7 @@ TVSHOW_PROPERTIES = frozenset({
     # 'votes',  # Not used
     'file',
     'genre',
-    'episode',
+    'episode',  # Remapped to totalepisodes
     'season',
     'runtime',
     'mpaa',
@@ -112,9 +104,18 @@ MOVIE_PROPERTIES = frozenset({
     'premiered',
     # 'uniqueid',  # Not used, slow
 })
+
 COMMON_ART_MAP = {
     'thumb': ('poster', ),
     'icon': ('poster', ),
+}
+EPISODE_ART_MAP = {
+    'poster': ('season.poster', 'tvshow.poster'),
+    'fanart': ('season.fanart', 'tvshow.fanart'),
+    'landscape': ('season.landscape', 'tvshow.landscape'),
+    'clearart': ('season.clearart', 'tvshow.clearart'),
+    'banner': ('season.banner', 'tvshow.banner'),
+    'clearlogo': ('season.clearlogo', 'tvshow.clearlogo'),
 }
 
 RECOMMENDATION_PROPERTIES = {
@@ -140,22 +141,25 @@ JSON_MAP = {
     'episode': {
         'get_method': 'VideoLibrary.GetEpisodeDetails',
         'set_method': 'VideoLibrary.SetEpisodeDetails',
-        'db_id': 'episodeid',
+        'id_name': 'episodeid',
         'properties': EPISODE_PROPERTIES,
         'result': 'episodedetails'
     },
     'movie': {
         'get_method': 'VideoLibrary.GetMovieDetails',
         'set_method': 'VideoLibrary.SetMovieDetails',
-        'db_id': 'movieid',
+        'id_name': 'movieid',
         'properties': MOVIE_PROPERTIES,
         'result': 'moviedetails'
     },
     'tvshow': {
         'get_method': 'VideoLibrary.GetTVShowDetails',
         'set_method': 'VideoLibrary.SetTVShowDetails',
-        'db_id': 'tvshowid',
+        'id_name': 'tvshowid',
         'properties': TVSHOW_PROPERTIES,
+        'mapping': {
+            'episode': 'totalepisodes',
+        },
         'result': 'tvshowdetails'
     },
     'episodes': {
@@ -171,6 +175,9 @@ JSON_MAP = {
     'tvshows': {
         'get_method': 'VideoLibrary.GetTVShows',
         'properties': TVSHOW_PROPERTIES,
+        'mapping': {
+            'episode': 'totalepisodes',
+        },
         'result': 'tvshows'
     },
 }
@@ -385,6 +392,31 @@ def art_fallbacks(item=None, art=None, art_map=COMMON_ART_MAP, replace=True):  #
     return art
 
 
+def map_properties(item, db_type=None, mapping=None):
+    if db_type:
+        mapping = JSON_MAP.get(db_type, {}).get('mapping')
+    if not mapping:
+        return item
+
+    for old, new in mapping.items():
+        if old in item:
+            item[new] = item.pop(old)
+
+    return item
+
+
+def get_json_properties(item, additional=None):
+    db_type = item.get('type')
+    if db_type not in JSON_MAP:
+        return []
+    properties = JSON_MAP[db_type].get('properties')
+    if properties and additional:
+        return properties | additional
+    if additional:
+        return additional
+    return properties or set()
+
+
 def get_item_id(item):
     """Helper function to construct item dict with library dbid reference for
     use with params arguments of JSONRPC requests"""
@@ -392,16 +424,13 @@ def get_item_id(item):
     if not item:
         return {}
 
-    db_id = item['db_id']
-    media_type = item['type']
+    db_id = item['id']
+    db_type = JSON_MAP.get(item['type'])
 
-    db_type = JSON_MAP.get(media_type)
     if not db_type or not db_id:
         return {}
 
-    return {
-        db_type['db_id']: item['db_id']
-    }
+    return {db_type['id_name']: db_id}
 
 
 def play_kodi_item(item, resume=False):
@@ -636,7 +665,7 @@ def get_playlistid():
 
     result = utils.jsonrpc(method='Player.GetProperties',
                            params={'playerid': get_playerid(),
-                                   'properties': ['playlistid'],})
+                                   'properties': ['playlistid']})
     playlistid = utils.get_int(result.get('result', {}), 'playlistid',
                                PLAYER_PLAYLIST['video'])
 
@@ -650,7 +679,7 @@ def get_player_speed():
 
     result = utils.jsonrpc(method='Player.GetProperties',
                            params={'playerid': get_playerid(),
-                                   'properties': ['speed'],})
+                                   'properties': ['speed']})
     result = utils.get_int(result.get('result', {}), 'speed', 1)
 
     return result
@@ -664,7 +693,7 @@ def get_now_playing(properties, retry=3):
     while attempts_left > 0:
         result = utils.jsonrpc(method='Player.GetItem',
                                params={'playerid': get_playerid(retry=retry),
-                                       'properties': properties,})
+                                       'properties': properties})
         result = result.get('result', {}).get('item')
 
         if result:
@@ -744,11 +773,11 @@ def get_next_episode_from_library(episode=constants.UNDEFINED,
 
     filters = {'and': filters}
 
-    result = get_videos_from_library(media_type='episodes',
-                                     limit=1,
-                                     sort=sort,
-                                     filters=filters,
-                                     params={'tvshowid': tvshowid})
+    result, _ = get_videos_from_library(db_type='episodes',
+                                        limit=1,
+                                        sort=sort,
+                                        filters=filters,
+                                        params={'tvshowid': tvshowid})
 
     if not result:
         log('No next episode found in library')
@@ -797,10 +826,10 @@ def get_next_movie_from_library(movie=constants.UNDEFINED,
 
     filters = {'and': filters}
 
-    movie = get_videos_from_library(media_type='movies',
-                                    limit=1,
-                                    sort=sort,
-                                    filters=filters)
+    movie, _ = get_videos_from_library(db_type='movies',
+                                       limit=1,
+                                       sort=sort,
+                                       filters=filters)
 
     if not movie:
         log('No next movie found in library')
@@ -810,53 +839,57 @@ def get_next_movie_from_library(movie=constants.UNDEFINED,
     return movie
 
 
-def get_from_library(media_type=None, db_id=constants.UNDEFINED, item=None):
+def get_from_library(db_type=None, db_id=constants.UNDEFINED, item=None):
     """Function to get video and collection details from Kodi library"""
 
     if item:
-        media_type = item['type']
-        db_id = item['db_id']
+        db_type = item['type']
+        db_id = item['id']
 
-    if not media_type or db_id == constants.UNDEFINED:
+    if not db_type or db_id == constants.UNDEFINED:
         log('Video info not found in library, invalid dbid', utils.LOGWARNING)
         return None
 
-    result, _ = get_details_from_library(media_type=media_type, db_id=db_id)
+    details, _ = get_details_from_library(db_type=db_type, db_id=db_id)
 
-    if not result:
-        log('Video info not found in library', utils.LOGWARNING)
+    if not details:
+        log('Video info for {0} {1} not found in library'.format(
+            db_type, db_id
+        ), utils.LOGWARNING)
         return None
 
-    if media_type == 'episode':
-        db_id = utils.get_int(result, 'tvshowid')
-        tvshow_details, _ = get_details_from_library(media_type='tvshow',
+    if db_type == 'episode':
+        db_id = utils.get_int(details, 'tvshowid')
+        tvshow_details, _ = get_details_from_library(db_type='tvshow',
                                                      db_id=db_id)
 
         if not tvshow_details:
-            log('Show info not found in library', utils.LOGWARNING)
+            log('tvshowid {0} not found in library'.format(db_id),
+                utils.LOGWARNING)
             return None
-        tvshow_details.update(result)
-        result = tvshow_details
+        tvshow_details.update(details)
+        details = tvshow_details
 
-    log('Info from library: {0}'.format(result))
-    return result
+    log('Info from library: {0}'.format(details))
+    return details
 
 
 def get_tvshowid(title):
     """Function to search Kodi library for tshowid by title"""
 
     FILTER_TITLE['value'] = title
-    tvshow = get_videos_from_library(media_type='tvshows',
-                                     limit=1,
-                                     properties=[],
-                                     filters=FILTER_TITLE)
+    tvshow, _ = get_videos_from_library(db_type='tvshows',
+                                        limit=1,
+                                        properties=[],
+                                        filters=FILTER_TITLE)
 
     if not tvshow:
-        log('tvshowid not found in library', utils.LOGWARNING)
+        log('showtitle "{0}" not found in library'.format(title),
+            utils.LOGWARNING)
         return constants.UNDEFINED
 
     tvshowid = utils.get_int(tvshow, 'tvshowid')
-    log('Fetched show "{0}" tvshowid: {1}'.format(title, tvshowid))
+    log('Found tvshowid {0} for showtitle "{1}"'.format(tvshowid, title))
     return tvshowid
 
 
@@ -867,39 +900,41 @@ def get_episodeid(tvshowid, season, episode):
     FILTER_THIS_SEASON['value'] = str(season)
     FILTER_THIS_EPISODE['value'] = str(episode)
 
-    result = get_videos_from_library(media_type='episodes',
-                                     limit=1,
-                                     properties=[],
-                                     filters=FILTER_EPISODE,
-                                     params={'tvshowid': tvshowid})
+    result, _ = get_videos_from_library(db_type='episodes',
+                                        limit=1,
+                                        properties=[],
+                                        filters=FILTER_EPISODE,
+                                        params={'tvshowid': tvshowid})
 
     if not result:
-        log('episodeid not found in library', utils.LOGWARNING)
+        log('episodeid for tvshowid {0} S{1}E{2} not found in library'.format(
+            tvshowid, season, episode
+        ), utils.LOGWARNING)
         return constants.UNDEFINED
 
     episodeid = utils.get_int(result, 'episodeid')
-    log('Fetched show {0} s{1}e{2} episodeid: {3}'.format(
-        tvshowid, season, episode, episodeid
+    log('Found episodeid {0} for tvshowid {1} S{2}E{3}'.format(
+        episodeid, tvshowid, season, episode
     ))
     return episodeid
 
 
-def get_details_from_library(media_type=None,
+def get_details_from_library(db_type=None,
                              db_id=constants.UNDEFINED,
                              item=None,
                              properties=None):
     """Function to retrieve video info details from Kodi library"""
 
     if item:
-        media_type = item['type']
-        db_id = item['db_id']
+        db_type = item['type']
+        db_id = item['id']
 
-    if not media_type or db_id == constants.UNDEFINED:
+    if not db_type or db_id == constants.UNDEFINED:
         return None, None
 
-    detail_type = JSON_MAP.get(media_type)
-    if 'db_id' not in detail_type:
-        detail_type = JSON_MAP.get(media_type[:-1])
+    detail_type = JSON_MAP.get(db_type)
+    if detail_type and 'id_name' not in detail_type:
+        detail_type = JSON_MAP.get(db_type[:-1])
     if not detail_type:
         return None, None
 
@@ -909,19 +944,21 @@ def get_details_from_library(media_type=None,
         properties = detail_type['properties'] | properties
 
     result = utils.jsonrpc(method=detail_type['get_method'],
-                           params={detail_type['db_id']: db_id,
-                                   'properties': properties,})
+                           params={detail_type['id_name']: db_id,
+                                   'properties': properties})
 
-    result = result.get('result', {}).get(detail_type['result'])
+    result = result.get('result', {}).get(detail_type['result'], {})
+    if 'mapping' in detail_type:
+        map_properties(result, mapping=detail_type['mapping'])
     return result, detail_type
 
 
 def handle_just_watched(item, reset_playcount=False, reset_resume=True):
     """Function to update playcount and resume point of just watched video"""
 
-    result = get_details_from_library(item=item,
-                                      properties=['playcount', 'resume'])
-    details, detail_type = result
+    details = get_details_from_library(item=item,
+                                       properties=['playcount', 'resume'])
+    details, detail_type = details
 
     if details:
         initial_playcount = utils.get_int(item.get('details'), 'playcount', 0)
@@ -945,13 +982,13 @@ def handle_just_watched(item, reset_playcount=False, reset_resume=True):
 
     # Only update library if playcount or resume point needs to change
     if params:
-        params[detail_type['db_id']] = item['db_id']
+        params[detail_type['id_name']] = item['id']
         utils.jsonrpc(method=detail_type['set_method'],
                       params=params,
                       no_response=True)
 
     log('Library update: {0}{1}{2}{3}'.format(
-        '{0}_id - {1}'.format(item['type'], item['db_id']),
+        '{0}_id - {1}'.format(item['type'], item['id']),
         ', playcount - {0} to {1}'.format(initial_playcount, current_playcount)
         if 'playcount' in params else '',
         ', resume - {0} to 0'.format(current_resume)
@@ -982,17 +1019,18 @@ def get_upnext_episodes_from_library(limit=25,  # pylint: disable=too-many-local
         ]
         sort = SORT_EPISODE
 
-    inprogress = get_videos_from_library(media_type='episodes',
+    inprogress, _ = get_videos_from_library(db_type='episodes',
+                                            limit=limit,
+                                            sort=SORT_LASTPLAYED,
+                                            filters=filters[0])
+
+    watched, _ = get_videos_from_library(db_type='episodes',
                                          limit=limit,
                                          sort=SORT_LASTPLAYED,
-                                         filters=filters[0])
+                                         filters=filters[1])
 
-    watched = get_videos_from_library(media_type='episodes',
-                                      limit=limit,
-                                      sort=SORT_LASTPLAYED,
-                                      filters=filters[1])
-
-    episodes = utils.merge_iterable(inprogress, watched, sort='lastplayed')
+    episodes = utils.merge_iterable(inprogress, watched,
+                                    sort='lastplayed', unique='episodeid')
 
     upnext_episodes = []
     tvshow_index = set()
@@ -1001,7 +1039,8 @@ def get_upnext_episodes_from_library(limit=25,  # pylint: disable=too-many-local
         if tvshowid in tvshow_index:
             continue
 
-        if episode['resume']['position']:
+        resume = episode['resume']
+        if resume['position'] < 0.9 * resume['total']:
             upnext_episode = episode
         else:
             FILTER_THIS_SEASON['value'] = str(episode['season'])
@@ -1010,12 +1049,12 @@ def get_upnext_episodes_from_library(limit=25,  # pylint: disable=too-many-local
                 episode['firstaired']
             )
 
-            upnext_episode = get_videos_from_library(media_type='episodes',
-                                                     limit=1,
-                                                     sort=sort,
-                                                     filters=filters[2],
-                                                     params={'tvshowid':
-                                                             tvshowid})
+            upnext_episode, _ = get_videos_from_library(db_type='episodes',
+                                                        limit=1,
+                                                        sort=sort,
+                                                        filters=filters[2],
+                                                        params={'tvshowid':
+                                                                tvshowid})
 
             if not upnext_episode:
                 tvshow_index.add(tvshowid)
@@ -1023,10 +1062,12 @@ def get_upnext_episodes_from_library(limit=25,  # pylint: disable=too-many-local
 
         # Restore current episode lastplayed for sorting of next-up episode
         upnext_episode['lastplayed'] = episode['lastplayed']
-
         art_fallbacks(upnext_episode, art_map=EPISODE_ART_MAP, replace=False)
-
-        upnext_episodes.append(upnext_episode)
+        # Combine tvshow details with episode details
+        tvshow_details, _ = get_details_from_library(db_type='tvshow',
+                                                     db_id=tvshowid)
+        tvshow_details.update(upnext_episode)
+        upnext_episodes.append(tvshow_details)
         tvshow_index.add(tvshowid)
 
     return upnext_episodes
@@ -1037,18 +1078,19 @@ def get_upnext_movies_from_library(limit=25,
                                    unwatched_only=False):
     """Function to get in-progress and next movie details from Kodi library"""
 
-    inprogress = get_videos_from_library(media_type='movies',
-                                         limit=limit,
-                                         sort=SORT_LASTPLAYED,
-                                         filters=FILTER_INPROGRESS)
+    inprogress, _ = get_videos_from_library(db_type='movies',
+                                            limit=limit,
+                                            sort=SORT_LASTPLAYED,
+                                            filters=FILTER_INPROGRESS)
 
     if movie_sets:
-        watched = get_videos_from_library(media_type='movies',
-                                          limit=limit,
-                                          sort=SORT_LASTPLAYED,
-                                          filters=FILTER_WATCHED)
+        watched, _ = get_videos_from_library(db_type='movies',
+                                             limit=limit,
+                                             sort=SORT_LASTPLAYED,
+                                             filters=FILTER_WATCHED)
 
-        movies = utils.merge_iterable(inprogress, watched, sort='lastplayed')
+        movies = utils.merge_iterable(inprogress, watched,
+                                      sort='lastplayed', unique='movieid')
     else:
         movies = inprogress
 
@@ -1064,16 +1106,17 @@ def get_upnext_movies_from_library(limit=25,
         if setid != constants.UNDEFINED and setid in set_index:
             continue
 
-        if movie['resume']['position']:
+        resume = movie['resume']
+        if resume['position'] < 0.9 * resume['total']:
             upnext_movie = movie
         elif movie_sets and setid != constants.UNDEFINED:
             FILTER_SET['value'] = movie['set']
             FILTER_NEXT_MOVIE['value'] = str(movie['year'])
 
-            upnext_movie = get_videos_from_library(media_type='movies',
-                                                   limit=1,
-                                                   sort=SORT_YEAR,
-                                                   filters=filters)
+            upnext_movie, _ = get_videos_from_library(db_type='movies',
+                                                      limit=1,
+                                                      sort=SORT_YEAR,
+                                                      filters=filters)
 
             if not upnext_movie:
                 set_index.add(setid)
@@ -1083,16 +1126,14 @@ def get_upnext_movies_from_library(limit=25,
 
         # Restore current movie lastplayed for sorting of next-up movie
         upnext_movie['lastplayed'] = movie['lastplayed']
-
         art_fallbacks(upnext_movie)
-
         upnext_movies.append(upnext_movie)
         set_index.add(setid)
 
     return upnext_movies
 
 
-def get_videos_from_library(media_type,  # pylint: disable=too-many-arguments
+def get_videos_from_library(db_type,  # pylint: disable=too-many-arguments
                             limit=25,
                             sort=None,
                             properties=None,
@@ -1100,7 +1141,7 @@ def get_videos_from_library(media_type,  # pylint: disable=too-many-arguments
                             params=None):
     """Function to get videos from Kodi library"""
 
-    detail_type = JSON_MAP.get(media_type)
+    detail_type = JSON_MAP.get(db_type)
     if not detail_type:
         return None
 
@@ -1132,8 +1173,8 @@ def get_videos_from_library(media_type,  # pylint: disable=too-many-arguments
     videos = videos.get('result', {}).get(detail_type['result'], [])
 
     if videos and limit == 1:
-        return videos[0]
-    return videos
+        return videos[0], detail_type
+    return videos, detail_type
 
 
 class InfoTagComparator(object):
@@ -1332,46 +1373,47 @@ class InfoTagComparator(object):
 
         return processed_tokens - cls.IGNORE_WORDS
 
-def get_similar_from_library(media_type,  # pylint: disable=too-many-arguments, too-many-locals, too-many-statements, too-many-branches
+
+def get_similar_from_library(db_type,  # pylint: disable=too-many-arguments, too-many-locals, too-many-statements, too-many-branches
                              limit=25,
                              original=None,
                              db_id=constants.UNDEFINED,
                              unwatched_only=False,
                              use_cast=False,
                              use_tag=False,
-                             sort=True):
+                             return_all=False):
     """Function to search by db_id for similar videos from Kodi library"""
 
     if use_cast and use_tag:
         properties = (
-            RECOMMENDATION_PROPERTIES[media_type]
+            RECOMMENDATION_PROPERTIES[db_type]
             | RECOMMENDATION_PROPERTIES['cast']
             | RECOMMENDATION_PROPERTIES['tag']
         )
     elif use_cast:
         properties = (
-            RECOMMENDATION_PROPERTIES[media_type]
+            RECOMMENDATION_PROPERTIES[db_type]
             | RECOMMENDATION_PROPERTIES['cast']
         )
     elif use_tag:
         properties = (
-            RECOMMENDATION_PROPERTIES[media_type]
+            RECOMMENDATION_PROPERTIES[db_type]
             | RECOMMENDATION_PROPERTIES['tag']
         )
     else:
-        properties = RECOMMENDATION_PROPERTIES[media_type]
+        properties = RECOMMENDATION_PROPERTIES[db_type]
 
     if original:
         # Use original video passed as argument to function call
         pass
     elif db_id == constants.UNDEFINED or db_id is None:
-        original = get_videos_from_library(media_type=media_type,
-                                           limit=1,
-                                           sort=SORT_RANDOM,
-                                           properties=properties,
-                                           filters=FILTER_WATCHED)
+        original, _ = get_videos_from_library(db_type=db_type,
+                                              limit=1,
+                                              sort=SORT_RANDOM,
+                                              properties=properties,
+                                              filters=FILTER_WATCHED)
     else:
-        original, _ = get_details_from_library(media_type=media_type,
+        original, _ = get_details_from_library(db_type=db_type,
                                                db_id=int(db_id),
                                                properties=properties)
 
@@ -1382,21 +1424,21 @@ def get_similar_from_library(media_type,  # pylint: disable=too-many-arguments, 
     selected = []
     video_index = set()
 
-    id_name = 'movieid' if media_type == 'movies' else 'tvshowid'
+    id_name = 'movieid' if db_type == 'movies' else 'tvshowid'
     if id_name in original:
         video_index.add(original[id_name])
 
-    if infotags.set_name and media_type == 'movies':
+    if infotags.set_name and db_type == 'movies':
         FILTER_SET['value'] = original['set']
-        similar = get_videos_from_library(media_type=media_type,
-                                          limit=None,
-                                          sort=SORT_YEAR,
-                                          filters=FILTER_SET)
+        similar, _ = get_videos_from_library(db_type=db_type,
+                                             limit=None,
+                                             sort=SORT_YEAR,
+                                             filters=FILTER_SET)
         for video in similar:
-            dbid = video[id_name]
-            if dbid in video_index:
+            db_id = video[id_name]
+            if db_id in video_index:
                 continue
-            video_index.add(dbid)
+            video_index.add(db_id)
             art_fallbacks(video)
             video['__similarity__'] = InfoTagComparator.MAX_SIMILARITY
             selected.append(video)
@@ -1411,25 +1453,26 @@ def get_similar_from_library(media_type,  # pylint: disable=too-many-arguments, 
     }
 
     FILTER_GENRE['value'] = infotags.genres
+    unwatched_only = FILTER_UNWATCHED_GENRE if unwatched_only else FILTER_GENRE
     while True:
-        similar = get_videos_from_library(media_type=media_type,
-                                          limit=chunk_limit,
-                                          sort=SORT_RATING,
-                                          properties=properties,
-                                          filters=(FILTER_UNWATCHED_GENRE
-                                                   if unwatched_only
-                                                   else FILTER_GENRE))
+        similar, detail_type = get_videos_from_library(db_type=db_type,
+                                                       limit=chunk_limit,
+                                                       sort=SORT_RATING,
+                                                       properties=properties,
+                                                       filters=unwatched_only)
 
         for video in similar:
-            dbid = video[id_name]
-            if dbid in video_index:
+            db_id = video[id_name]
+            if db_id in video_index:
                 continue
-            video_index.add(dbid)
+            video_index.add(db_id)
             similarity = infotags.compare(video)
             if similarity is None:
                 break
             if similarity:
                 art_fallbacks(video)
+                if 'mapping' in detail_type:
+                    map_properties(video, mapping=detail_type['mapping'])
                 video['__similarity__'] = similarity
                 selected.append(video)
         else:
@@ -1439,8 +1482,7 @@ def get_similar_from_library(media_type,  # pylint: disable=too-many-arguments, 
                 continue
         break
 
-    if sort:
-        return original, utils.merge_iterable(
-            selected, sort='__similarity__'
-        )[:limit]
-    return original, selected
+    if return_all:
+        return original, selected
+    selected = utils.merge_iterable(selected, sort='__similarity__')
+    return original, selected[:limit]

@@ -249,7 +249,7 @@ class Player(object):
     def getPlayingFile(self):
         ''' A stub implementation for the xbmc Player class getPlayingFile() method '''
         if not Player.is_playing:
-            raise Exception
+            raise RuntimeError
         return Player.file
 
     def isPlaying(self):
@@ -270,13 +270,13 @@ class Player(object):
     def getTotalTime(self):
         ''' A stub implementation for the xbmc Player class getTotalTime() method '''
         if not Player.is_playing:
-            raise Exception
+            raise RuntimeError
         return Player.duration
 
     def getTime(self):
         ''' A stub implementation for the xbmc Player class getTime() method '''
         if not Player.is_playing:
-            raise Exception
+            raise RuntimeError
         return Player.time
 
     def getVideoInfoTag(self):
@@ -290,6 +290,9 @@ class PlayList(object):
     def __init__(self, playList):
         ''' A stub constructor for the xbmc PlayList class '''
         self.playlist_type = playList
+
+    def clear(self):
+        _PLAYLIST[self.playlist_type]['playlist'].clear()
 
     def getposition(self):
         ''' A stub implementation for the xbmc PlayList class getposition() method '''
@@ -1093,7 +1096,7 @@ def log(msg, level=LOGDEBUG):
         msg=from_bytes(msg)
     ))
     if level == LOGFATAL:
-        raise Exception(msg)
+        raise Exception(msg)  # pylint: disable=broad-exception-raised
 
 
 def setContent(self, content):  # pylint: disable=unused-argument
