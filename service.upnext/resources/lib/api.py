@@ -143,6 +143,9 @@ JSON_MAP = {
         'set_method': 'VideoLibrary.SetEpisodeDetails',
         'id_name': 'episodeid',
         'properties': EPISODE_PROPERTIES,
+        'mapping': {
+            'type': 'episode',
+        },
         'result': 'episodedetails'
     },
     'movie': {
@@ -150,6 +153,9 @@ JSON_MAP = {
         'set_method': 'VideoLibrary.SetMovieDetails',
         'id_name': 'movieid',
         'properties': MOVIE_PROPERTIES,
+        'mapping': {
+            'type': 'movie',
+        },
         'result': 'moviedetails'
     },
     'tvshow': {
@@ -159,6 +165,7 @@ JSON_MAP = {
         'properties': TVSHOW_PROPERTIES,
         'mapping': {
             'episode': 'totalepisodes',
+            'type': 'tvshow',
         },
         'result': 'tvshowdetails'
     },
@@ -401,6 +408,8 @@ def map_properties(item, db_type=None, mapping=None):
     for old, new in mapping.items():
         if old in item:
             item[new] = item.pop(old)
+        else:
+            item[old] = new
 
     return item
 
@@ -948,7 +957,7 @@ def get_details_from_library(db_type=None,
                                    'properties': properties})
 
     result = result.get('result', {}).get(detail_type['result'], {})
-    if 'mapping' in detail_type:
+    if result and 'mapping' in detail_type:
         map_properties(result, mapping=detail_type['mapping'])
     return result, detail_type
 
@@ -960,25 +969,22 @@ def handle_just_watched(item, reset_playcount=False, reset_resume=True):
                                        properties=['playcount', 'resume'])
     details, detail_type = details
 
-    if details:
-        initial_playcount = utils.get_int(item.get('details'), 'playcount', 0)
-        current_playcount = utils.get_int(details, 'playcount', 0)
-        current_resume = utils.get_int(details.get('resume'), 'position', 0)
-    else:
+    if not details:
         return
 
+    resume = details.get('resume')
+    playcount = utils.get_int(item.get('details'), 'playcount', 0)
     params = {}
 
     # If Kodi has not updated playcount then UpNext will
     if reset_playcount:
         params['playcount'] = 0
-    elif current_playcount == initial_playcount:
-        current_playcount += 1
-        params['playcount'] = current_playcount
+    elif utils.get_int(details, 'playcount', 0) == playcount:
+        params['playcount'] = playcount + 1
 
     # If resume point has been saved then reset it
-    if current_resume and reset_resume:
-        params['resume'] = {'position': 0}
+    if reset_resume and utils.get_int(resume, 'position', 0):
+        params['resume'] = {'position': 0, 'total': resume['total']}
 
     # Only update library if playcount or resume point needs to change
     if params:
@@ -989,9 +995,9 @@ def handle_just_watched(item, reset_playcount=False, reset_resume=True):
 
     log('Library update: {0}{1}{2}{3}'.format(
         '{0}_id - {1}'.format(item['type'], item['id']),
-        ', playcount - {0} to {1}'.format(initial_playcount, current_playcount)
+        ', playcount - {0} to {1}'.format(playcount, params['playcount'])
         if 'playcount' in params else '',
-        ', resume - {0} to 0'.format(current_resume)
+        ', resume - {0} to {1}'.format(resume, params['resume'])
         if 'resume' in params else '',
         '' if params else ', no change'
     ), utils.LOGDEBUG)
@@ -1040,7 +1046,7 @@ def get_upnext_episodes_from_library(limit=25,  # pylint: disable=too-many-local
             continue
 
         resume = episode['resume']
-        if resume['position'] < 0.9 * resume['total']:
+        if 0 < resume['position'] < 0.9 * resume['total']:
             upnext_episode = episode
         else:
             FILTER_THIS_SEASON['value'] = str(episode['season'])
@@ -1107,7 +1113,7 @@ def get_upnext_movies_from_library(limit=25,
             continue
 
         resume = movie['resume']
-        if resume['position'] < 0.9 * resume['total']:
+        if 0 < resume['position'] <= 0.9 * resume['total']:
             upnext_movie = movie
         elif movie_sets and setid != constants.UNDEFINED:
             FILTER_SET['value'] = movie['set']
