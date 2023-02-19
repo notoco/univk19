@@ -888,7 +888,7 @@
                     <top>280</top>
                     <orientation>vertical</orientation>
                     <control type="label">
-                        <font>font_head_bold</font><!-- notoco -->
+                        <font>font_head_bold</font>
                         <textcolor>panel_fg_90</textcolor>
                         <label>$INFO[VideoPlayer.Season,S,]$INFO[VideoPlayer.Episode,E, ]$INFO[VideoPlayer.Title]</label>
                         <shadowcolor>shadow_hard</shadowcolor>
@@ -920,6 +920,9 @@
                     </control>
                     <control type="image"><!-- notoco -->
                         <texture background="true">$INFO[Player.Icon]</texture>
+                        <height>200</height>
+                        <aspectratio scalediffuse="false" align="center" aligny="center">keep</aspectratio>
+                        <fadetime>200</fadetime>
                     </control>
                 </control>
             </control>
