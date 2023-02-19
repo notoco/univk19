@@ -888,7 +888,7 @@
                     <top>280</top>
                     <orientation>vertical</orientation>
                     <control type="label">
-                        <font>font_mini_bold</font>
+                        <font>font_head_bold</font><!-- notoco -->
                         <textcolor>panel_fg_90</textcolor>
                         <label>$INFO[VideoPlayer.Season,S,]$INFO[VideoPlayer.Episode,E, ]$INFO[VideoPlayer.Title]</label>
                         <shadowcolor>shadow_hard</shadowcolor>
@@ -918,14 +918,8 @@
                         <height>25</height>
                         <visible>!String.IsEmpty(VideoPlayer.Plot)</visible>
                     </control>
-                    <control type="label">
-                        <font>font_mini_bold</font>
-                        <textcolor>panel_fg_90</textcolor>
-                        <label>$INFO[VideoPlayer.ChannelName]</label>
-                        <shadowcolor>shadow_hard</shadowcolor>
-                        <height>40</height>
-                        <selectedcolor>panel_fg_90</selectedcolor>
-                        <visible>!String.IsEmpty(VideoPlayer.ChannelName)</visible>
+                    <control type="image"><!-- notoco -->
+                        <texture background="true">$INFO[Player.Icon]</texture>
                     </control>
                 </control>
             </control>
