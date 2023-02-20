@@ -6,8 +6,8 @@
     <include>Animation_FadeIn</include>
     <controls>
         <control type="image">
-            <height>200</height>
-            <texture>common/dim-top-bezier.png</texture>
+            <height>100</height>
+            <texture>common/dim-overlay.png</texture>
         </control>
         <control type="group">
             <include>Dimension_UpNext</include>
@@ -37,7 +37,7 @@
                         <param name="visible" value="true" />
                         <param name="id" value="3012" />
                         <param name="groupid" value="5012" />
-                        <param name="size" value="40" />
+                        <param name="size" value="60" />
 
                     </include>
                     <include content="OSD_Button">
@@ -45,7 +45,7 @@
                         <param name="visible" value="true" />
                         <param name="id" value="4013" />
                         <param name="groupid" value="5013" />
-                        <param name="size" value="40" />
+                        <param name="size" value="60" />
 
                         <onclick>SetFocus(3013)</onclick>
                         <onclick>Action(Select)</onclick>
