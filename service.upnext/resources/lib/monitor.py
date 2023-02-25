@@ -220,7 +220,7 @@ class UpNextMonitor(xbmc.Monitor, object):
             return
 
         # Update idle state for widget refresh
-        self._idle[0] = True
+        self._idle[0] = False
 
         # Delay event handler execution to allow events to queue up
         self.waitForAbort(1)
@@ -231,19 +231,12 @@ class UpNextMonitor(xbmc.Monitor, object):
         # Restart tracking if previously enabled
         self._start_tracking()
 
-        if not self._idle[0]:
-            return
-        now = int(time())
-        if now - self._idle[1] <= SETTINGS.widget_refresh_period - 10:
-            return
-        self.log('Widget reload')
-        self._idle[1] = now
-        utils.set_property(constants.WIDGET_RELOAD_PROPERTY_NAME, str(now))
+        self._widget_reload()
 
 
     def _event_handler_screensaver_on(self, **_kwargs):
         # Update idle state for widget refresh
-        self._idle[0] = False
+        self._idle[0] = True
 
     def _event_handler_upnext_trigger(self, **_kwargs):
         # Remove remnants from previous operations
@@ -254,18 +247,18 @@ class UpNextMonitor(xbmc.Monitor, object):
 
         # Get playback details and use VideoPlayer.Time infolabel over
         # xbmc.Player.getTime() as the infolabel appears to update quicker
-        playback = self._get_playback_details(use_infolabel=True)
+        play_info = self._get_playback_details(use_infolabel=True)
 
         # Exit if not playing, paused, or rewinding
-        if not playback or playback['speed'] < 1:
+        if not play_info or play_info['speed'] < 1:
             self.log('Skip trigger: nothing playing', utils.LOGINFO)
             return
 
         # Determine time until popup is required, scaled to real time
         popup_delay = utils.calc_wait_time(
             end_time=self.state.get_popup_time(),
-            start_time=playback['time'],
-            rate=playback['speed']
+            start_time=play_info['time'],
+            rate=play_info['speed']
         )
 
         # Schedule popuphandler to start when required
@@ -308,7 +301,7 @@ class UpNextMonitor(xbmc.Monitor, object):
         with utils.ContextManager(self, 'player') as check_fail:
             if check_fail is AttributeError:
                 raise check_fail
-            playback = {
+            play_info = {
                 'playerid': (player_details.get('playerid') if player_details
                              else None),
                 'file': self.player.getPlayingFile(),
@@ -324,19 +317,19 @@ class UpNextMonitor(xbmc.Monitor, object):
         if check_fail:
             return None
 
-        return playback
+        return play_info
 
     def _launch_detector(self):
         del self._detector
         self._detector = None
 
-        playback = self._get_playback_details()
-        if not playback:
+        play_info = self._get_playback_details()
+        if not play_info:
             return
 
         # Start detector to detect end credits and trigger popup
         self.log('Detector started at {time}s of {duration}s'.format(
-            **playback), utils.LOGINFO)
+            **play_info), utils.LOGINFO)
         if not self.detector:
             self.detector = detector.UpNextDetector(
                 player=self.player,
@@ -349,8 +342,8 @@ class UpNextMonitor(xbmc.Monitor, object):
         del self._popuphandler
         self._popuphandler = None
 
-        playback = self._get_playback_details()
-        if not playback:
+        play_info = self._get_playback_details()
+        if not play_info:
             return
 
         # Stop second thread and popup from being created after next video
@@ -359,7 +352,7 @@ class UpNextMonitor(xbmc.Monitor, object):
 
         # Start popuphandler to show popup and handle playback of next video
         self.log('Popuphandler started at {time}s of {duration}s'.format(
-            **playback), utils.LOGINFO)
+            **play_info), utils.LOGINFO)
         if not self.popuphandler:
             self.popuphandler = popuphandler.UpNextPopupHandler(
                 player=self.player,
@@ -398,8 +391,8 @@ class UpNextMonitor(xbmc.Monitor, object):
             self.detector.reset()
 
             # Reset popup time, restart tracking, and trigger a new popup
-            self.state.set_popup_time(playback['duration'])
-            self.state.set_tracking(playback['file'])
+            self.state.set_popup_time(play_info['duration'])
+            self.state.set_tracking(play_info['file'])
             utils.event('upnext_trigger', internal=True)
             return
 
@@ -409,6 +402,13 @@ class UpNextMonitor(xbmc.Monitor, object):
         self._stop_detector(terminate=True)
 
     def _start_tracking(self):
+        # Get playback details and use VideoPlayer.Time infolabel over
+        # xbmc.Player.getTime() as the infolabel appears to update quicker
+        play_info = self._get_playback_details(use_infolabel=True)
+
+        # Update idle state for widget refresh
+        self._idle[0] = play_info is not None
+
         # Exit if tracking disabled
         if not self.state.is_tracking():
             return
@@ -417,20 +417,13 @@ class UpNextMonitor(xbmc.Monitor, object):
         self._stop_detector()
         self._stop_popuphandler()
 
-        # Get playback details and use VideoPlayer.Time infolabel over
-        # xbmc.Player.getTime() as the infolabel appears to update quicker
-        playback = self._get_playback_details(use_infolabel=True)
-
-        # Update idle state for widget refresh
-        self._idle[0] = not playback
-
         # Exit if not playing, paused, or rewinding
-        if not playback or playback['speed'] < 1:
+        if not play_info or play_info['speed'] < 1:
             self.log('Skip tracking: nothing playing', utils.LOGINFO)
             return
 
         # Stop tracking if new stream started
-        if self.state.get_tracked_file() != playback['file']:
+        if self.state.get_tracked_file() != play_info['file']:
             self.log('Unknown file playing', utils.LOGWARNING)
             self.state.set_tracking(False)
             return
@@ -438,15 +431,15 @@ class UpNextMonitor(xbmc.Monitor, object):
         # Determine time until popup is required, scaled to real time
         popup_delay = utils.calc_wait_time(
             end_time=self.state.get_popup_time(),
-            start_time=playback['time'],
-            rate=playback['speed']
+            start_time=play_info['time'],
+            rate=play_info['speed']
         )
 
         # Determine time until detector is required, scaled to real time
         detector_delay = utils.calc_wait_time(
             end_time=self.state.get_detect_time(),
-            start_time=playback['time'],
-            rate=playback['speed']
+            start_time=play_info['time'],
+            rate=play_info['speed']
         )
 
         # Schedule detector to start when required
@@ -495,6 +488,21 @@ class UpNextMonitor(xbmc.Monitor, object):
                 self.popuphandler = None
                 self.log('Cleanup popuphandler')
 
+    def _widget_reload(self, init=False):
+        if self._idle[0]:
+            return 0
+        now = int(time())
+        if init:
+            self._idle = [xbmc.getCondVisibility('System.ScreenSaverActive'),
+                          now]
+        delta = now - self._idle[1]
+        if delta <= SETTINGS.widget_refresh_period - 10:
+            return delta
+        self.log('Widget reload')
+        self._idle[1] = now
+        utils.set_property(constants.WIDGET_RELOAD_PROPERTY_NAME, str(now))
+        return 0
+
     def start(self, **kwargs):
         if SETTINGS.disabled:
             return
@@ -516,26 +524,12 @@ class UpNextMonitor(xbmc.Monitor, object):
         self._monitoring = True
 
         # Set initial idle state for widget refresh
-        now = int(time())
-        self._idle = [not xbmc.getCondVisibility('System.ScreenSaverActive'),
-                      now]
-        utils.set_property(constants.WIDGET_RELOAD_PROPERTY_NAME, str(now))
+        delta = self._widget_reload(init=True)
 
         # Wait indefinitely until addon is terminated, but periodically
         # update widgets
-        delta = 0
         while not self.waitForAbort(SETTINGS.widget_refresh_period - delta):
-            if not self._idle[0]:
-                continue
-            now = int(time())
-            delta = now - self._idle[1]
-            if delta <= SETTINGS.widget_refresh_period - 10:
-                continue
-            self.log('Widget reload')
-            self._idle[1] = now
-            utils.set_property(constants.WIDGET_RELOAD_PROPERTY_NAME, str(now))
-            delta = 0
-
+            delta = self._widget_reload()
 
         # Cleanup when abort requested
         self.stop()
@@ -613,6 +607,8 @@ class UpNextMonitor(xbmc.Monitor, object):
         if SETTINGS.disabled and self._started:
             self.log('UpNext disabled', utils.LOGINFO)
             self.stop()
-        elif not SETTINGS.disabled and not self._started:
+        elif self._started:
+            self._widget_reload()
+        else:
             self.log('UpNext enabled', utils.LOGINFO)
             self.start()
