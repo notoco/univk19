@@ -502,7 +502,7 @@
             <midtexture colordiffuse="00ffffff">progress/progress-end.png</midtexture>
             <visible>Player.SeekEnabled + !Pvr.IsPlayingTv + !Player.ChannelPreviewActive</visible>
         </control>
-
+<!-- notoco
         <control type="ranges">
             <width>100%</width>
             <height>12</height>
@@ -516,7 +516,7 @@
             <texturebg colordiffuse="00ffffff">progress/marker-bg.png</texturebg>
             <righttexture colordiffuse="panel_fg_50">progress/marker.png</righttexture>
             <info>Player.Chapters</info>
-        </control>
+        </control> -->
 
         <control type="slider" id="402">
             <visible>Player.HasMedia</visible>
@@ -945,7 +945,7 @@
 
             <!-- Top Left Label -->
             <control type="group">
-                <visible>[VideoPlayer.Content(episodes) + !String.IsEmpty(VideoPlayer.Title)] | [VideoPlayer.Content(movies) + !String.IsEmpty(Player.Chapter) + !String.IsEqual(Player.Chapter,00)] | [VideoPlayer.Content(livetv) + !String.IsEmpty(VideoPlayer.ChannelNumberLabel)] | [VideoPlayer.Content(files) + !String.IsEmpty(VideoPlayer.Studio)]</visible>
+                <visible>[VideoPlayer.Content(episodes) + !String.IsEmpty(VideoPlayer.Title)] | [VideoPlayer.Content(livetv) + !String.IsEmpty(VideoPlayer.ChannelNumberLabel)] | [VideoPlayer.Content(files) + !String.IsEmpty(VideoPlayer.Studio)]</visible> <!-- notoco -->
                 <include content="Object_ShadowSpot">
                     <include>Dimension_HeaderTitleShadow</include>
                 </include>
