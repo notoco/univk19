@@ -295,7 +295,6 @@
             </include>
         </control>
     </include>
-
     <include name="Info_Line">
         <param name="colordiffuse" default="main_fg" />
         <param name="container" default="" />
@@ -370,6 +369,7 @@
                         <param name="textcolor" value="$PARAM[colordiffuse]_90" />
                     </include>
                 </control>
+
                 <control type="grouplist" id="$PARAM[id]">
                     <hitrect x="0" y="0" w="0" h="0" />
                     <orientation>horizontal</orientation>
@@ -691,6 +691,15 @@
                         <param name="visible" value="!String.IsEmpty($PARAM[container]ListItem.PictureResolution) + !String.IsEmpty($PARAM[container]ListItem.Size)" />
                         <param name="textcolor" value="$PARAM[colordiffuse]_90" />
                     </include>
+                </control>
+                <control type="progress"><!-- notoco -->
+                    <height>10</height>
+                    <width>1100</width>
+                    <texturesliderbar/>
+                    <textureslidernib/>
+                    <textureslidernibfocus/>
+                    <info>ListItem.Progress</info>
+                    <left>-55</left>
                 </control>
                 <nested />
             </control>
