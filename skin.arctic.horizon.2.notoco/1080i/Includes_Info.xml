@@ -694,12 +694,14 @@
                 </control>
                 <control type="progress"><!-- notoco -->
                     <height>10</height>
-                    <width>1100</width>
+                    <width>100%</width>
                     <texturesliderbar/>
                     <textureslidernib/>
                     <textureslidernibfocus/>
                     <info>ListItem.Progress</info>
                     <left>-55</left>
+                    <top>5</top>
+                    <visible>!String.IsEmpty(ListItem.ChannelName)</visible>
                 </control>
                 <nested />
             </control>
