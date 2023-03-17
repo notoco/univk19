@@ -883,7 +883,7 @@
                                 <onclick>Skin.ToggleSetting(DebugGrid)</onclick>
                                 <selected>Skin.HasSetting(DebugGrid)</selected>
                             </include>
-                            
+
                             <!-- Thanks -->
                             <include content="Dialog_Settings_Label" description="Thanks">
                                 <param name="id" value="8000" />

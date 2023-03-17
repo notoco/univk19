@@ -295,6 +295,7 @@
             </include>
         </control>
     </include>
+
     <include name="Info_Line">
         <param name="colordiffuse" default="main_fg" />
         <param name="container" default="" />
@@ -369,7 +370,6 @@
                         <param name="textcolor" value="$PARAM[colordiffuse]_90" />
                     </include>
                 </control>
-
                 <control type="grouplist" id="$PARAM[id]">
                     <hitrect x="0" y="0" w="0" h="0" />
                     <orientation>horizontal</orientation>
