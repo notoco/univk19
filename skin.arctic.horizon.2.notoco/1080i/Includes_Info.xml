@@ -694,10 +694,10 @@
                 </control>
                 <control type="progress"><!-- notoco -->
                     <height>10</height>
-                    <width>100%</width>
-                    <texturesliderbar/>
-                    <textureslidernib/>
-                    <textureslidernibfocus/>
+                    <width>auto</width>
+                    <texturesliderbar colordiffuse="00ffffff">progress/slider_bg.png</texturesliderbar>
+                    <textureslidernib />
+                    <textureslidernibfocus colordiffuse="panel_fg_100">progress/slider_nib.png</textureslidernibfocus>
                     <info>ListItem.Progress</info>
                     <left>-55</left>
                     <top>5</top>

@@ -67,6 +67,9 @@
                             <item id="8">
                                 <label>$LOCALIZE[31350]</label>
                             </item>
+                            <item id="9">
+                                <label>Notoco</label>
+                            </item>
                         </content>
                     </control>
 
@@ -880,7 +883,7 @@
                                 <onclick>Skin.ToggleSetting(DebugGrid)</onclick>
                                 <selected>Skin.HasSetting(DebugGrid)</selected>
                             </include>
-
+                            
                             <!-- Thanks -->
                             <include content="Dialog_Settings_Label" description="Thanks">
                                 <param name="id" value="8000" />
@@ -897,6 +900,20 @@
                                 <left>grid_x04</left>
                                 <right>grid_x04</right>
                             </control>
+                            <!-- NOTOCO -->
+                            <include content="Dialog_Settings_Label" description="Notoco">
+                                <param name="id" value="9000" />
+                                <label>Notoco</label>
+                                <visible>Container(3).HasFocus(9)</visible>
+                            </include>
+                            <include content="Dialog_Settings_Button" description="Notoco szerokość">
+                                <param name="id">7191</param>
+                                <param name="control" value="radiobutton" />
+                                <label>Pełna szerokość tytułów</label>
+                                <visible>Container(3).HasFocus(9)</visible>
+                                <onclick>Skin.ToggleSetting(notoco.size)</onclick>
+                                <selected>Skin.HasSetting(notoco.size)</selected>
+                            </include>
                         </control>
                     </include>
 

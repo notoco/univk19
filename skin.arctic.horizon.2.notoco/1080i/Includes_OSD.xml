@@ -872,10 +872,20 @@
                     </control>
                     <control type="progress">
                         <texturebg>pvr/progress-episode-b.png</texturebg>
-                        <lefttexture colordiffuse="panel_fg_30">pvr/progress-episode-l.png</lefttexture>
-                        <midtexture colordiffuse="panel_fg_30">pvr/progress-episode-m.png</midtexture>
-                        <righttexture colordiffuse="panel_fg_30">pvr/progress-episode-r.png</righttexture>
+                        <lefttexture colordiffuse="$VAR[ColorHighlight]">pvr/progress-episode-l.png</lefttexture><!-- notoco -->
+                        <midtexture colordiffuse="$VAR[ColorHighlight]">pvr/progress-episode-m.png</midtexture><!-- notoco -->
+                        <righttexture colordiffuse="$VAR[ColorHighlight]">pvr/progress-episode-r.png</righttexture><!-- notoco -->
                         <info>PVR.EpgEventProgress</info>
+                        <visible>Integer.IsGreater(PVR.EpgEventProgress,1)</visible>
+                    </control>
+                    <control type="progress"><!-- notoco -->
+                        <width>100%</width>
+                        <height>6</height>
+                        <info>PVR.EpgEventProgress</info>
+                        <visible>Pvr.IsPlayingTv</visible>
+                        <texturebg colordiffuse="panel_fg_20" border="2">progress/progress-bg.png</texturebg>
+                        <bottom>10</bottom>
+                        <left>2</left>
                         <visible>Integer.IsGreater(PVR.EpgEventProgress,1)</visible>
                     </control>
                     <include content="Object_SelectBox">
