@@ -16,7 +16,7 @@
     </extension>
 </addon>
 
-<addon id="skin.arctic.horizon.2" name="Arctic Horizon 2" provider-name="jurialmunkey" version="0.8.16">
+<addon id="skin.arctic.horizon.2" name="Arctic Horizon 2" provider-name="jurialmunkey" version="0.8.17">
     <requires>
         <import addon="xbmc.gui" version="5.15.0" />
         <import addon="script.skinshortcuts" version="0.4.0" />
@@ -209,7 +209,7 @@
         </extension>
     </addon>
 
-<addon id="skin.arctic.horizon.2.notoco" name="Arctic Horizon 2 NOTOCO" provider-name="jurialmunkey - notoco mod" version="2023.03.17.0">
+<addon id="skin.arctic.horizon.2.notoco" name="Arctic Horizon 2 NOTOCO" provider-name="jurialmunkey - notoco mod" version="2023.03.21.0">
     <requires>
         <import addon="xbmc.gui" version="5.15.0" />
         <import addon="script.skinshortcuts" version="0.4.0" />
