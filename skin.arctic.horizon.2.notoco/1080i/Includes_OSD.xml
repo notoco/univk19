@@ -390,7 +390,7 @@
             <orientation>vertical</orientation>
             <control type="group">
                 <height>120</height>
-                <width>960</width>
+                <width>auto</width><!--notoco -->
                 <include content="Info_Title_Label">
                     <param name="colordiffuse">panel_fg</param>
                     <param name="label">$VAR[Label_OSD_Title]</param>
@@ -896,6 +896,7 @@
                         <height>40</height>
                         <selectedcolor>panel_fg_90</selectedcolor>
                         <visible>!String.IsEmpty(VideoPlayer.Title)</visible>
+                        <scroll>true</scroll><!-- notoco -->
                     </control>
                     <control type="label">
                         <font>font_mini</font>
