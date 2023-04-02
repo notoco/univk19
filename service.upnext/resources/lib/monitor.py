@@ -184,9 +184,6 @@ class UpNextMonitor(xbmc.Monitor, object):
         # video. Reset state if playback was not requested by UpNext
         if not self.state.playing_next and not self.state.starting:
             self.state.reset()
-        # Otherwise just ensure details of current/next item to play are reset
-        else:
-            self.state.reset_item()
         self.state.playing_next = False
 
         data, _ = utils.decode_data(serialised_json=kwargs.get('data'))
@@ -209,9 +206,6 @@ class UpNextMonitor(xbmc.Monitor, object):
         # Full reset of state if UpNext has not requested the next file to play
         if not self.state.playing_next and not self.state.starting:
             self.state.reset()
-        # Otherwise just ensure details of current/next item to play are reset
-        else:
-            self.state.reset_item()
 
     def _event_handler_screensaver_off(self, **kwargs):
         # Don't handle event if Kodi is shutting down
@@ -232,7 +226,6 @@ class UpNextMonitor(xbmc.Monitor, object):
         self._start_tracking()
 
         self._widget_reload()
-
 
     def _event_handler_screensaver_on(self, **_kwargs):
         # Update idle state for widget refresh
@@ -374,13 +367,14 @@ class UpNextMonitor(xbmc.Monitor, object):
 
         # Update playcount and reset resume point of previous file
         if not playback_cancelled and SETTINGS.mark_watched:
-            api.handle_just_watched(
-                item=self.state.current_item,
-                reset_playcount=(
-                    SETTINGS.mark_watched == constants.SETTING_OFF
-                ),
-                reset_resume=True
-            )
+            utils.run_threaded(target=api.handle_just_watched,
+                               delay=5,
+                               kwargs={
+                                   'item': self.state.current_item.copy(),
+                                   'reset_playcount': (SETTINGS.mark_watched ==
+                                                       constants.SETTING_OFF),
+                                   'reset_resume': True,
+                               })
 
         if not self.detector:
             self._stop_detector()
