@@ -897,6 +897,7 @@
                         <selectedcolor>panel_fg_90</selectedcolor>
                         <visible>!String.IsEmpty(VideoPlayer.Title)</visible>
                         <scroll>true</scroll><!-- notoco -->
+                        
                     </control>
                     <control type="label">
                         <font>font_mini</font>
@@ -909,7 +910,7 @@
                     </control>
                     <control type="textbox">
                         <top>25</top>
-                        <font>font_mini_plot</font>
+                        <font>font_main_plot</font>
                         <height max="230">auto</height>
                         <textcolor>panel_fg_70</textcolor>
                         <label>$INFO[VideoPlayer.Plot]</label>
