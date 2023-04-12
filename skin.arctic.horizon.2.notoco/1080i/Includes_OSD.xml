@@ -896,8 +896,7 @@
                         <height>40</height>
                         <selectedcolor>panel_fg_90</selectedcolor>
                         <visible>!String.IsEmpty(VideoPlayer.Title)</visible>
-                        <scroll>true</scroll><!-- notoco -->
-                        
+                        <scroll>true</scroll><!-- notoco -->        
                     </control>
                     <control type="label">
                         <font>font_mini</font>

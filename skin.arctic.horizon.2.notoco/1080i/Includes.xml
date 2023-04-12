@@ -4,7 +4,6 @@
         <include file="Includes_Constants_Notoco.xml" condition="Skin.HasSetting(notoco.size)" /><!-- notoco -->
     <include file="Includes_Constants_WidePlot.xml" condition="![Skin.String(ForegroundStyle,FlixArt) | Skin.String(ForegroundStyle,KeyArt)] | Skin.String(BackgroundStyle,Fanart)" />
     <include file="Includes_Constants_NarrowPlot.xml" condition="![![Skin.String(ForegroundStyle,FlixArt) | Skin.String(ForegroundStyle,KeyArt)] | Skin.String(BackgroundStyle,Fanart)] + Skin.HasSetting(Background.NarrowPlot)" />
-
     <include file="Includes_Constants.xml" />
     <include file="Includes_Expressions.xml" />
     <include file="Includes_Colors.xml" />
