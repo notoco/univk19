@@ -910,7 +910,7 @@
                     </control>
                     <control type="textbox">
                         <top>25</top>
-                        <font>font_main_plot</font>
+                        <font>font_main_plot</font><!-- notoco -->
                         <height max="230">auto</height>
                         <textcolor>panel_fg_70</textcolor>
                         <label>$INFO[VideoPlayer.Plot]</label>
