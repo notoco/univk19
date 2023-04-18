@@ -133,7 +133,7 @@ class UpNextMonitor(xbmc.Monitor, object):
             play_info
         )
         if now_playing_item and now_playing_item['details']:
-            self.state.set_tracking(play_info['file'])
+            self.state.start_tracking(play_info['file'])
             self.state.reset_queue()
 
             # Store popup time and check if cue point was provided
@@ -162,7 +162,7 @@ class UpNextMonitor(xbmc.Monitor, object):
             return
 
         # Update stored video resolution if detector is running
-        if self.detector:
+        if self.detector and not self.detector.credits_detected():
             self.detector.get_video_resolution(_cache=[None])
             if not self.detector.is_alive():
                 self.detector.start()
@@ -297,23 +297,23 @@ class UpNextMonitor(xbmc.Monitor, object):
             item_details = {}
             player_details = None
 
-        with utils.ContextManager(self, 'player') as check_fail:
-            if check_fail is AttributeError:
-                raise check_fail
+        with utils.ContextManager(self, 'player') as (_player, error):
+            if error is AttributeError:
+                raise error
             play_info = {
                 'playerid': (player_details.get('playerid') if player_details
                              else None),
-                'file': self.player.getPlayingFile(),
+                'file': _player.getPlayingFile(),
                 'item': item_details,
                 'type': (item_details.get('type') if item_details
-                         else self.player.get_media_type()),
+                         else _player.get_media_type()),
                 'speed': (player_details.get('speed') if player_details
-                          else self.player.get_speed()),
-                'time': self.player.getTime(use_infolabel),
-                'duration': self.player.getTotalTime(use_infolabel),
+                          else _player.get_speed()),
+                'time': _player.getTime(use_infolabel),
+                'duration': _player.getTotalTime(use_infolabel),
             }
-            check_fail = False
-        if check_fail:
+            error = False
+        if error:
             return None
 
         # Update idle state for widget refresh
@@ -350,7 +350,7 @@ class UpNextMonitor(xbmc.Monitor, object):
 
         # Stop second thread and popup from being created after next video
         # has been requested but not yet loaded
-        self.state.set_tracking(False)
+        self.state.stop_tracking()
 
         # Start popuphandler to show popup and handle playback of next video
         self.log('Popuphandler started at {time}s of {duration}s'.format(
@@ -395,7 +395,7 @@ class UpNextMonitor(xbmc.Monitor, object):
 
             # Reset popup time, restart tracking, and trigger a new popup
             self.state.set_popup_time(play_info['duration'])
-            self.state.set_tracking(play_info['file'])
+            self.state.start_tracking(play_info['file'])
             utils.event('upnext_trigger', internal=True)
             return
 
@@ -425,7 +425,7 @@ class UpNextMonitor(xbmc.Monitor, object):
         # Stop tracking if new stream started
         if self.state.get_tracked_file() != play_info['file']:
             self.log('Unknown file playing', utils.LOGWARNING)
-            self.state.set_tracking(False)
+            self.state.reset_tracking()
             return
 
         # Determine time until popup is required, scaled to real time

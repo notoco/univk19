@@ -526,7 +526,6 @@ def play_playlist_item(position, resume=False):
     log('Playing from playlist position: {0}'.format(position))
 
     # JSON Player.Open can be too slow but is needed if resuming is enabled
-    # Unfortunately resuming from a playlist item does not seem to work...
     utils.jsonrpc(method='Player.Open',
                   params={'item': {'playlistid': get_playlistid(),
                                    # Convert 1 indexed to 0 indexed position
@@ -546,12 +545,15 @@ def get_playlist_position(offset=0):
         return None, None
 
     playlist = xbmc.PlayList(playlistid)
+    position = playlist.getposition()
+    # PlayList().getposition() starts from zero unless playlist not active
+    if position < 0:
+        return None, None
     playlist_size = playlist.size()
     # Use 1 based index value for playlist position
-    position = playlist.getposition() + 1 + offset
+    position += (offset + 1)
 
     # A playlist with only one element has no next item
-    # PlayList().getposition() starts counting from zero
     if playlist_size > 1 and position <= playlist_size:
         log('playlistid: {0}, position - {1}/{2}'.format(
             playlistid, position, playlist_size
@@ -829,7 +831,8 @@ def get_next_movie_from_library(movie=constants.UNDEFINED,
             utils.LOGWARNING)
         return None
 
-    if utils.get_int(movie, 'setid') <= 0:
+    setid = utils.get_int(movie, 'setid')
+    if not setid or setid == constants.UNDEFINED:
         log('No next movie found, invalid movie setid', utils.LOGWARNING)
         return None
 

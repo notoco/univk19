@@ -91,20 +91,20 @@ class UpNextPopupHandler(object):
             if kwarg in old_state:
                 old_state[kwarg] = value
 
-        with utils.ContextManager(self, 'popup') as check_fail:
-            if check_fail is AttributeError:
-                raise check_fail
+        with utils.ContextManager(self, 'popup') as (popup, error):
+            if error is AttributeError:
+                raise error
             remaining = kwargs.get('remaining')
             if remaining is not None:
-                self.popup.update_progress(remaining)
+                popup.update_progress(remaining)
 
-            cancel = self.popup.is_cancel()
-            play_now = self.popup.is_playnow()
-            shuffle_on = self.popup.is_shuffle_on()
-            stop = self.popup.is_stop()
+            cancel = popup.is_cancel()
+            play_now = popup.is_playnow()
+            shuffle_on = popup.is_shuffle_on()
+            stop = popup.is_stop()
 
-            check_fail = False
-        if check_fail or old_state['abort']:
+            error = False
+        if error or old_state['abort']:
             old_state['abort'] = True
             return old_state
 
@@ -138,6 +138,14 @@ class UpNextPopupHandler(object):
     def _play_next_video(self, next_item, popup_state):
         forced = self.player.player_state.forced('playing')
         source = next_item['source']
+        if SETTINGS.enable_resume:
+            resume = next_item['details'].get('resume')
+            if resume and resume['total'] and resume['position']:
+                resume = 100 * resume['position'] / resume['total']
+            else:
+                resume = False
+        else:
+            resume = False
         # Primary method is to play next playlist item
         if source.endswith('playlist') or self.state.queued:
             # Can't just seek to end of file as this triggers inconsistent Kodi
@@ -152,22 +160,15 @@ class UpNextPopupHandler(object):
             # Can't just wait for next file to play as VideoPlayer closes all
             # video threads when the current file finishes
             if popup_state['play_now'] or popup_state['play_on_cue'] or forced:
-                api.play_playlist_item(
-                    position='next',
-                    resume=SETTINGS.enable_resume
-                )
+                api.play_playlist_item('next', resume)
 
         # Fallback plugin playback method, or if plugin provides play_info
         elif source.startswith('plugin'):
-            api.play_plugin_item(
-                self.state.data,
-                self.state.encoding,
-                SETTINGS.enable_resume
-            )
+            api.play_plugin_item(self.state.data, self.state.encoding, resume)
 
         # Fallback library playback method, not normally used
         else:
-            api.play_kodi_item(next_item, SETTINGS.enable_resume)
+            api.play_kodi_item(next_item, resume)
 
         # Determine playback method. Used for logging purposes
         self.log('Playback requested: {0}, from {1}{2}'.format(
@@ -175,10 +176,10 @@ class UpNextPopupHandler(object):
         ))
 
     def _remove_popup(self):
-        with utils.ContextManager(self, 'popup') as check_fail:
-            if check_fail is AttributeError:
-                raise check_fail
-            self.popup.close()
+        with utils.ContextManager(self, 'popup') as (popup, error):
+            if error is AttributeError:
+                raise error
+            popup.close()
             utils.clear_property('service.upnext.dialog')
             del self.popup
             self.popup = None
@@ -251,24 +252,24 @@ class UpNextPopupHandler(object):
         return next_item, play_next, keep_playing, restart
 
     def _show_popup(self):
-        with utils.ContextManager(self, 'popup') as check_fail:
-            if check_fail is AttributeError:
-                raise check_fail
-            self.popup.show()
+        with utils.ContextManager(self, 'popup') as (popup, error):
+            if error is AttributeError:
+                raise error
+            popup.show()
             utils.set_property('service.upnext.dialog', 'true')
             return True
         return False
 
     def _update_popup(self, popup_state):
         # Get video details, exit if no video playing or no popup available
-        with utils.ContextManager(self, 'player') as check_fail:
-            if check_fail is AttributeError:
-                raise check_fail
-            total_time = self.player.getTotalTime()
-            play_time = self.player.getTime()
-            speed = self.player.get_speed()
-            check_fail = False
-        if check_fail or not self._show_popup():
+        with utils.ContextManager(self, 'player') as (player, error):
+            if error is AttributeError:
+                raise error
+            total_time = player.getTotalTime()
+            play_time = player.getTime()
+            speed = player.get_speed()
+            error = False
+        if error or not self._show_popup():
             return self._popup_state(old_state=popup_state, abort=True)
 
         # If cue point was provided then UpNext will auto play after a fixed
@@ -282,11 +283,13 @@ class UpNextPopupHandler(object):
         # Current file can stop, or next file can start, while update loop is
         # running. Check state and abort popup update if required
         popup_abort = False
+        remaining = 0
+        state = self.state
         while not (popup_abort
-                   or check_fail
+                   or error
                    or popup_state['abort']
-                   or self.state.starting
-                   or self._sigstop.is_set()
+                   or state.starting
+                   or (self._sigstop.is_set() and remaining > 1)
                    or self._sigterm.is_set()):
             # Update popup time remaining
             remaining = total_time - play_time
@@ -307,12 +310,14 @@ class UpNextPopupHandler(object):
                     or popup_state['play_now']):
                 break
 
-            with utils.ContextManager(self, 'player') as check_fail:
-                if check_fail is AttributeError:
-                    raise check_fail
-                play_time = self.player.getTime()
-                speed = self.player.get_speed()
-                check_fail = False
+            with utils.ContextManager(self, 'player') as (player, error):
+                if error is AttributeError:
+                    raise error
+                if state.get_tracked_file() != player.getPlayingFile():
+                    break
+                play_time = player.getTime()
+                speed = player.get_speed()
+                error = False
         else:
             popup_abort = True
 
