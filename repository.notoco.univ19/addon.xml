@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="repository.notoco.univ19" name="Notoco Univ Repo" version="2.2" provider-name="notoco">
+<addon id="repository.notoco.univ19" name="Notoco Univ Repo" version="3.0" provider-name="notoco">
         <extension point="xbmc.addon.repository" name="Notoco Univ Repo">
             <dir minversion="18.9.0">
                 <info>https://github.com/notoco/univk19/raw/master/addons.xml</info>
                 <checksum>https://github.com/notoco/univk19/raw/master/addons.xml.md5</checksum>
                 <datadir zip="true">https://github.com/notoco/univk19/raw/master/zip</datadir>
             </dir>
-            <dir minversion="18.9.0">
-            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/addons.xml</info>
-            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/</datadir>
+        <dir minversion="19.9.1">
+            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/</datadir>
         </dir>
         </extension>
         <extension point="xbmc.addon.metadata">
