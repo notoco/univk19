@@ -71,7 +71,8 @@ def generate_next_movies_list(addon_handle, addon_id, **kwargs):  # pylint: disa
     movies = api.get_upnext_movies_from_library(
         limit=SETTINGS.widget_list_limit,
         movie_sets=SETTINGS.enable_movieset,
-        unwatched_only=SETTINGS.unwatched_only
+        unwatched_only=SETTINGS.unwatched_only,
+        resume_from_end=SETTINGS.resume_from_end
     )
 
     listing = []
@@ -97,7 +98,8 @@ def generate_watched_movies_list(addon_handle, addon_id, **kwargs):  # pylint: d
         )
         listitem = upnext.create_movie_listitem(
             movie,
-            properties={'isPlayable': 'false', 'isFolder': True}
+            properties={'isPlayable': 'false', 'isFolder': True},
+            infolabels={'path': path},
         )
         listing += ((path, listitem, True),)
 
@@ -145,7 +147,8 @@ def generate_next_episodes_list(addon_handle, addon_id, **kwargs):  # pylint: di
     episodes = api.get_upnext_episodes_from_library(
         limit=SETTINGS.widget_list_limit,
         next_season=SETTINGS.next_season,
-        unwatched_only=SETTINGS.unwatched_only
+        unwatched_only=SETTINGS.unwatched_only,
+        resume_from_end=SETTINGS.resume_from_end
     )
 
     listing = []
@@ -171,7 +174,8 @@ def generate_watched_tvshows_list(addon_handle, addon_id, **kwargs):  # pylint: 
         )
         listitem = upnext.create_tvshow_listitem(
             tvshow,
-            properties={'isPlayable': 'false', 'isFolder': True}
+            properties={'isPlayable': 'false', 'isFolder': True},
+            infolabels={'path': path},
         )
         listing += ((path, listitem, True),)
 
@@ -210,7 +214,8 @@ def generate_similar_tvshows_list(addon_handle, addon_id, **kwargs):  # pylint: 
                 'widget': label,        # For AH2 skin integration
                 'similartitle': title,  # SHS compatibility
                 'isFolder': True
-            }
+            },
+            infolabels={'path': path},
         )
         listing += ((path, listitem, True),)
 
@@ -221,12 +226,14 @@ def generate_next_media_list(addon_handle, addon_id, **kwargs):  # pylint: disab
     episodes = api.get_upnext_episodes_from_library(
         limit=SETTINGS.widget_list_limit,
         next_season=SETTINGS.next_season,
-        unwatched_only=SETTINGS.unwatched_only
+        unwatched_only=SETTINGS.unwatched_only,
+        resume_from_end=SETTINGS.resume_from_end
     )
     movies = api.get_upnext_movies_from_library(
         limit=SETTINGS.widget_list_limit,
         movie_sets=SETTINGS.enable_movieset,
-        unwatched_only=SETTINGS.unwatched_only
+        unwatched_only=SETTINGS.unwatched_only,
+        resume_from_end=SETTINGS.resume_from_end
     )
 
     videos = utils.merge_iterable(episodes, movies, sort='lastplayed')
@@ -333,7 +340,8 @@ def generate_similar_media_list(addon_handle, addon_id, **kwargs):  # pylint: di
                 'widget': label,        # For AH2 skin integration
                 'similartitle': title,  # SHS compatibility
                 'isFolder': is_folder
-            }
+            },
+            infolabels={'path': path},
         )
         listing += ((path, listitem, is_folder),)
 

@@ -164,7 +164,7 @@ JSON_MAP = {
         'id_name': 'tvshowid',
         'properties': TVSHOW_PROPERTIES,
         'mapping': {
-            'episode': 'totalepisodes',
+            '__rename__': {'episode': 'totalepisodes'},
             'type': 'tvshow',
         },
         'result': 'tvshowdetails'
@@ -172,18 +172,25 @@ JSON_MAP = {
     'episodes': {
         'get_method': 'VideoLibrary.GetEpisodes',
         'properties': EPISODE_PROPERTIES,
-        'result': 'episodes'
+        'result': 'episodes',
+        'mapping': {
+            'type': 'episode',
+        },
     },
     'movies': {
         'get_method': 'VideoLibrary.GetMovies',
         'properties': MOVIE_PROPERTIES,
-        'result': 'movies'
+        'result': 'movies',
+        'mapping': {
+            'type': 'movie',
+        },
     },
     'tvshows': {
         'get_method': 'VideoLibrary.GetTVShows',
         'properties': TVSHOW_PROPERTIES,
         'mapping': {
-            'episode': 'totalepisodes',
+            '__rename__': {'episode': 'totalepisodes'},
+            'type': 'tvshow',
         },
         'result': 'tvshows'
     },
@@ -421,8 +428,10 @@ def map_properties(item, db_type=None, mapping=None):
         return item
 
     for old, new in mapping.items():
-        if old in item:
-            item[new] = item.pop(old)
+        if old == '__rename__':
+            for original, replacement in new.items():
+                if original in item:
+                    item[replacement] = item.pop(original)
         else:
             item[old] = new
 
@@ -831,9 +840,12 @@ def get_next_movie_from_library(movie=constants.UNDEFINED,
             utils.LOGWARNING)
         return None
 
-    setid = utils.get_int(movie, 'setid')
-    if not setid or setid == constants.UNDEFINED:
-        log('No next movie found, invalid movie setid', utils.LOGWARNING)
+    set_name = movie['set']
+    set_id = utils.get_int(movie, 'setid')
+    if not set_name or not set_id or set_id == constants.UNDEFINED:
+        log('No next movie found, invalid movie set "{0}" ({1})'.format(
+            set_name, set_id
+        ), utils.LOGWARNING)
         return None
 
     (path, filename) = os.path.split(movie['file'])
@@ -841,7 +853,7 @@ def get_next_movie_from_library(movie=constants.UNDEFINED,
     FILTER_NOT_PATH['value'] = path
     filters = [FILTER_NOT_FILEPATH]
 
-    FILTER_SET['value'] = movie['set']
+    FILTER_SET['value'] = set_name
     filters.append(FILTER_SET)
 
     if unwatched_only:
@@ -978,12 +990,12 @@ def get_details_from_library(db_type=None,
                                    'properties': properties})
 
     result = result.get('result', {}).get(detail_type['result'], {})
-    if result and 'mapping' in detail_type:
+    if result and properties:
         map_properties(result, mapping=detail_type['mapping'])
     return result, detail_type
 
 
-def handle_just_watched(item, reset_playcount=False, reset_resume=True):
+def handle_just_watched(item, reset_playcount=False, resume_from_end=0.1):
     """Function to update playcount and resume point of just watched video"""
 
     details = get_details_from_library(item=item,
@@ -1004,8 +1016,9 @@ def handle_just_watched(item, reset_playcount=False, reset_resume=True):
         params['playcount'] = playcount + 1
 
     # If resume point has been saved then reset it
-    if reset_resume and utils.get_int(resume, 'position', 0):
-        params['resume'] = {'position': 0, 'total': resume['total']}
+    total = utils.get_int(resume, 'total', 0)
+    if 0 > utils.get_int(resume, 'position') >= (1 - resume_from_end) * total:
+        params['resume'] = {'position': 0, 'total': total}
 
     # Only update library if playcount or resume point needs to change
     if params:
@@ -1026,7 +1039,8 @@ def handle_just_watched(item, reset_playcount=False, reset_resume=True):
 
 def get_upnext_episodes_from_library(limit=25,  # pylint: disable=too-many-locals
                                      next_season=True,
-                                     unwatched_only=False):
+                                     unwatched_only=False,
+                                     resume_from_end=0.1):
     """Function to get in-progress and next episode details from Kodi library"""
 
     if next_season:
@@ -1067,7 +1081,7 @@ def get_upnext_episodes_from_library(limit=25,  # pylint: disable=too-many-local
             continue
 
         resume = episode['resume']
-        if 0 < resume['position'] < 0.9 * resume['total']:
+        if 0 < resume['position'] < (1 - resume_from_end) * resume['total']:
             upnext_episode = episode
         else:
             FILTER_THIS_SEASON['value'] = str(episode['season'])
@@ -1102,7 +1116,8 @@ def get_upnext_episodes_from_library(limit=25,  # pylint: disable=too-many-local
 
 def get_upnext_movies_from_library(limit=25,
                                    movie_sets=True,
-                                   unwatched_only=False):
+                                   unwatched_only=False,
+                                   resume_from_end=0.1):
     """Function to get in-progress and next movie details from Kodi library"""
 
     inprogress, _ = get_videos_from_library(db_type='movies',
@@ -1129,14 +1144,14 @@ def get_upnext_movies_from_library(limit=25,
     upnext_movies = []
     set_index = set()
     for movie in movies:
-        setid = movie['setid'] or constants.UNDEFINED
-        if setid != constants.UNDEFINED and setid in set_index:
+        set_id = movie['setid'] or constants.UNDEFINED
+        if set_id != constants.UNDEFINED and set_id in set_index:
             continue
 
         resume = movie['resume']
-        if 0 < resume['position'] <= 0.9 * resume['total']:
+        if 0 < resume['position'] < (1 - resume_from_end) * resume['total']:
             upnext_movie = movie
-        elif movie_sets and setid != constants.UNDEFINED:
+        elif movie_sets and movie['set'] and set_id != constants.UNDEFINED:
             FILTER_SET['value'] = movie['set']
             FILTER_NEXT_MOVIE['value'] = str(movie['year'])
 
@@ -1146,7 +1161,7 @@ def get_upnext_movies_from_library(limit=25,
                                                       filters=filters)
 
             if not upnext_movie:
-                set_index.add(setid)
+                set_index.add(set_id)
                 continue
         else:
             continue
@@ -1155,7 +1170,7 @@ def get_upnext_movies_from_library(limit=25,
         upnext_movie['lastplayed'] = movie['lastplayed']
         art_fallbacks(upnext_movie)
         upnext_movies.append(upnext_movie)
-        set_index.add(setid)
+        set_index.add(set_id)
 
     return upnext_movies
 
@@ -1200,7 +1215,10 @@ def get_videos_from_library(db_type,  # pylint: disable=too-many-arguments
     videos = videos.get('result', {}).get(detail_type['result'], [])
 
     if videos and limit == 1:
-        return videos[0], detail_type
+        video = videos[0]
+        if properties:
+            map_properties(video, mapping=detail_type['mapping'])
+        return video, detail_type
     return videos, detail_type
 
 
@@ -1262,12 +1280,13 @@ class InfoTagComparator(object):
     del re_compile
 
     def __init__(self, infotags, limit=constants.UNDEFINED,
+                 cast_limit=constants.CAST_LIMIT,
                  _set=set,
                  _get=dict.get):
 
         self.cast_crew = (
-            _set(cast['name'] for cast in _get(infotags, 'cast', [])
-                 if cast['order'] <= 5)
+            {cast['name'] for cast in _get(infotags, 'cast', [])
+             if cast['order'] <= cast_limit}
             | _set(_get(infotags, 'director', []))
             | _set(_get(infotags, 'writer', []))
         )
@@ -1275,7 +1294,7 @@ class InfoTagComparator(object):
                                    _get(infotags, 'title')])
         self.genres = _set(_get(infotags, 'genre', []))
         self.set_name = self.tokenise([_get(infotags, 'set')])
-        self.tags = self.tokenise([_get(infotags, 'tag')], split=False)
+        self.tags = self.tokenise(_get(infotags, 'tag', []), split=False)
 
         self.count = dict.fromkeys(self.genres, 0)
         self.count['__len__'] = len(self.genres)
@@ -1291,6 +1310,7 @@ class InfoTagComparator(object):
         )
 
     def compare(self, infotags,  # pylint: disable=too-many-arguments, too-many-branches, too-many-locals
+                cast_limit=constants.CAST_LIMIT,
                 _set=set,
                 _get=dict.get,
                 _len=len,
@@ -1316,8 +1336,8 @@ class InfoTagComparator(object):
 
         if cast_crew_stored:
             cast_crew = (
-                _set(cast['name'] for cast in _get(infotags, 'cast', [])
-                     if cast['order'] <= 5)
+                {cast['name'] for cast in _get(infotags, 'cast', [])
+                 if cast['order'] <= cast_limit}
                 | _set(_get(infotags, 'director', []))
                 | _set(_get(infotags, 'writer', []))
             )
@@ -1347,7 +1367,7 @@ class InfoTagComparator(object):
                 threshold -= self.K_SET_NAME / 5
 
         if tags_stored:
-            tags = self.tokenise([_get(infotags, 'tag')], split=False)
+            tags = self.tokenise(_get(infotags, 'tag', []), split=False)
             if tags:
                 similarity += self.K_TAGS * _min(1, (
                     (2 * _len(tags & tags_stored)) ** 2
@@ -1373,26 +1393,23 @@ class InfoTagComparator(object):
 
     @classmethod
     def tokenise(cls, values, split=_token_split,  # pylint: disable=too-many-arguments,
+                 min_length=constants.TOKEN_LENGTH,
                  _empty=frozenset((None, )),
                  _add=set.add,
                  _len=len,
                  _set=set):
 
-        if split:
-            tokens = _set()
-            for value in values:
-                if value:
-                    tokens |= _set(split(value))
-        else:
-            tokens = _set(values) - _empty
+        tokens = {
+            token for value in values if value for token in split(value)
+        } if split else _set(values) - _empty
 
         processed_tokens = _set()
         for token in tokens:
             length = _len(token)
-            if length < 3:
+            if length < min_length:
                 continue
             upper = token.upper()
-            if length == 3 and token != upper:
+            if length == min_length and token != upper:
                 continue
             if cls.PUNCTUATION & _set(upper):
                 upper = upper.translate(cls.PUNCTUATION_TRANSLATION_TABLE)
@@ -1498,8 +1515,7 @@ def get_similar_from_library(db_type,  # pylint: disable=too-many-arguments, too
                 break
             if similarity:
                 art_fallbacks(video)
-                if 'mapping' in detail_type:
-                    map_properties(video, mapping=detail_type['mapping'])
+                map_properties(video, mapping=detail_type['mapping'])
                 video['__similarity__'] = similarity
                 selected.append(video)
         else:

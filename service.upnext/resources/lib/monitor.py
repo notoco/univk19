@@ -147,7 +147,7 @@ class UpNextMonitor(xbmc.Monitor, object):
             )
 
             if not skip_tracking:
-                self._start_tracking()
+                self._start_tracking(play_info)
             return
 
         self.log('Skip video check: UpNext unable to handle playing item')
@@ -161,14 +161,20 @@ class UpNextMonitor(xbmc.Monitor, object):
         if self._queue_length != 1:
             return
 
+        # Get playback details and use VideoPlayer.Time infolabel over
+        # xbmc.Player.getTime() as the infolabel appears to update quicker
+        play_info = self._get_playback_details(use_infolabel=True)
+
         # Update stored video resolution if detector is running
         if self.detector and not self.detector.credits_detected():
             self.detector.get_video_resolution(_cache=[None])
-            if not self.detector.is_alive():
-                self.detector.start()
+            if (play_info and play_info['speed'] == 1
+                    and not self.state.is_tracking()
+                    and not self.detector.is_alive()):
+                utils.run_threaded(self.detector.start)
 
         # Restart tracking if previously enabled
-        self._start_tracking()
+        self._start_tracking(play_info)
 
     def _event_handler_player_start(self, **kwargs):
         # Delay event handler execution to allow events to queue up
@@ -326,7 +332,8 @@ class UpNextMonitor(xbmc.Monitor, object):
         self._detector = None
 
         play_info = self._get_playback_details()
-        if not play_info:
+        # Exit if not playing, paused, or rewinding
+        if not play_info or play_info['speed'] < 1:
             return
 
         # Start detector to detect end credits and trigger popup
@@ -372,14 +379,14 @@ class UpNextMonitor(xbmc.Monitor, object):
         self._stop_popuphandler(terminate=True)
 
         # Update playcount and reset resume point of previous file
-        if not playback_cancelled and SETTINGS.mark_watched:
+        if not playback_cancelled and SETTINGS.mark_watched and self.state:
             utils.run_threaded(target=api.handle_just_watched,
                                delay=5,
                                kwargs={
                                    'item': self.state.current_item.copy(),
                                    'reset_playcount': (SETTINGS.mark_watched ==
                                                        constants.SETTING_OFF),
-                                   'reset_resume': True,
+                                   'resume_from_end': SETTINGS.resume_from_end,
                                })
 
         if not self.detector:
@@ -400,14 +407,14 @@ class UpNextMonitor(xbmc.Monitor, object):
             return
 
         # Store hashes and timestamp for current video
-        self.detector.store_data()
         # Stop detector and release resources
-        self._stop_detector(terminate=True)
+        self._stop_detector(terminate=True, store=True)
 
-    def _start_tracking(self):
+    def _start_tracking(self, play_info=None):
         # Get playback details and use VideoPlayer.Time infolabel over
         # xbmc.Player.getTime() as the infolabel appears to update quicker
-        play_info = self._get_playback_details(use_infolabel=True)
+        if not play_info:
+            play_info = self._get_playback_details(use_infolabel=True)
 
         # Exit if tracking disabled
         if not self.state.is_tracking():
@@ -426,6 +433,7 @@ class UpNextMonitor(xbmc.Monitor, object):
         if self.state.get_tracked_file() != play_info['file']:
             self.log('Unknown file playing', utils.LOGWARNING)
             self.state.reset_tracking()
+            self._stop_detector(terminate=True, store=True)
             return
 
         # Determine time until popup is required, scaled to real time
@@ -458,7 +466,7 @@ class UpNextMonitor(xbmc.Monitor, object):
                 delay=popup_delay
             )
 
-    def _stop_detector(self, terminate=False):
+    def _stop_detector(self, terminate=False, store=False):
         detector_timer = getattr(self, '_detector', None)
         if detector_timer:
             detector_timer.cancel()
@@ -467,6 +475,8 @@ class UpNextMonitor(xbmc.Monitor, object):
 
         detector_instance = getattr(self, 'detector', None)
         if detector_instance:
+            if store:
+                detector_instance.store_data()
             detector_instance.stop(terminate=terminate)
             if terminate:
                 del self.detector
