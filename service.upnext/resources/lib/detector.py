@@ -44,7 +44,7 @@ class UpNextHashStore(object):
         self.hash_size = kwargs.get('hash_size', (8, 8))
         item = kwargs.get('item', {})
         self.group_name = item.get('group_name', '')
-        self.group_idx = item.get('group_idx', constants.UNDEFINED)
+        self.group_idx = item.get('group_idx') or constants.UNDEFINED
         self.data = kwargs.get('data', {})
         self.timestamps = kwargs.get('timestamps', {self.group_idx: None})
 
@@ -126,6 +126,7 @@ class UpNextHashStore(object):
                 utils.get_int(group_idx):
                     hashes['timestamps'][group_idx]
                 for group_idx in hashes['timestamps']
+                if group_idx != 'null'
             }
 
         self.log('Hashes loaded from {0}'.format(target))
@@ -254,14 +255,19 @@ class UpNextDetector(object):
         return 0 if bit1 is None or bit1 == bit2 else 1
 
     @staticmethod
-    def _generate_initial_hash(hash_width, hash_height, pad_height=0):
+    def _generate_initial_hash(hash_width, hash_height, **kwargs):
         blank_token = (0, )
         pixel_token = (1, )
         border_token = (0, )
         ignore_token = (None, )
 
-        pad_width = (3 * hash_width // 16) - (hash_width // 16)
-        pad_width_alt = (2 * hash_width // 16) - (hash_width // 16)
+        pad_height = kwargs.get('pad_height', 0)
+        pad_width = kwargs.get('pad_width', 3)
+        pad_width_alt = kwargs.get('pad_width_alt', pad_width - 1)
+        fuzz_height = kwargs.get('fuzz_height', 1)
+
+        pad_width = (pad_width * hash_width // 16) - (hash_width // 16)
+        pad_width_alt = (pad_width_alt * hash_width // 16) - (hash_width // 16)
 
         return (
             border_token * hash_width * pad_height
@@ -271,7 +277,7 @@ class UpNextDetector(object):
                 + ignore_token * (hash_width - 4 * pad_width - 2)
                 + blank_token * 2 * pad_width
                 + border_token
-            )
+            ) * fuzz_height
             + ((
                 border_token
                 + blank_token * pad_width
@@ -288,14 +294,14 @@ class UpNextDetector(object):
                 + ignore_token * pad_width_alt
                 + blank_token * pad_width_alt
                 + border_token
-            )) * ((hash_height - 2 * pad_height - 2) // 2)
+            )) * ((hash_height - 2 * pad_height - 2 * fuzz_height) // 2)
             + (
                 border_token
                 + blank_token * 2 * pad_width
                 + ignore_token * (hash_width - 4 * pad_width - 2)
                 + blank_token * 2 * pad_width
                 + border_token
-            )
+            ) * fuzz_height
             + border_token * hash_width * pad_height
         )
 
@@ -500,7 +506,7 @@ class UpNextDetector(object):
                 image_hash,
                 filtered_hash
             ), self._hash_similarity(
-                self.hashes.data.get(self.hash_index['credits_full']),
+                self.hashes.data.get(self.hash_index['credits_scroll']),
                 image_hash,
                 filtered_hash
             ))
@@ -598,7 +604,7 @@ class UpNextDetector(object):
             # Representative end credits hashes
             'credits_small': (0, 0, constants.UNDEFINED),
             'credits_large': (0, 1, constants.UNDEFINED),
-            'credits_full': (0, 2, constants.UNDEFINED),
+            'credits_scroll': (0, 2, constants.UNDEFINED),
             # Other episodes hash
             'episodes': None,
             # Detected end credits timestamp from end of file
@@ -614,10 +620,9 @@ class UpNextDetector(object):
         self.hashes = UpNextHashStore(
             hash_size=hash_size,
             item=self.state.current_item,
-            # Representative hash of centred end credits text on a dark
-            # background stored as first hash. Masked significance weights
-            # stored as second hash.
             data={
+                # Representative hash of centred end credits text on a dark
+                # background
                 self.hash_index['credits_small']: self._generate_initial_hash(
                     *hash_size,
                     pad_height=(hash_size[1] // 4)
@@ -626,8 +631,13 @@ class UpNextDetector(object):
                     *hash_size,
                     pad_height=(hash_size[1] // 8)
                 ),
-                self.hash_index['credits_full']: self._generate_initial_hash(
-                    *hash_size
+                # Representative hash of scrolling end credits text on a dark
+                # background
+                self.hash_index['credits_scroll']: self._generate_initial_hash(
+                    *hash_size,
+                    pad_height=0,
+                    pad_width=(hash_size[0] // 4),
+                    fuzz_height=0
                 ),
             },
         )
@@ -800,7 +810,7 @@ class UpNextDetector(object):
                      expanded_hash,
                      self.hashes.data.get(self.hash_index['credits_small']),
                      self.hashes.data.get(self.hash_index['credits_large']),
-                     self.hashes.data.get(self.hash_index['credits_full'])],
+                     self.hashes.data.get(self.hash_index['credits_scroll'])],
                     size=self.hashes.hash_size,
                     prefix=(
                         '{0:.1f}% similar to typical credits, '
