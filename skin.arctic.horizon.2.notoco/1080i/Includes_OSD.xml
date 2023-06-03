@@ -80,7 +80,7 @@
                 <orientation>horizontal</orientation>
                 <itemgap>29</itemgap>
                 <usecontrolcoords>true</usecontrolcoords>
-                <align>center</align>
+                <align>$PARAM[align]</align><!-- notoco -->
                 <!-- Resolution -->
                 <include content="Object_Control">
                     <param name="control">group</param>

@@ -97,10 +97,11 @@
         </include>
         <control type="group">
             <height>40</height>
-            <left>view_pad</left>
+            <left>60</left><!-- notoco -->
             <right>view_pad</right>
             <bottom>view_pad</bottom>
-            <include content="OSD_Codecs">
+            <include content="OSD_Codecs_Mono"><!-- notoco -->
+                <param name="align" value="left" />
                 <centertop>50%</centertop>
             </include>
         </control>
