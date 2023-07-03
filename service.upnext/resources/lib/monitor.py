@@ -407,8 +407,6 @@ class UpNextMonitor(xbmc.Monitor, object):
         self._stop_detector(terminate=True, store=True)
 
     def _start_tracking(self, play_info=None):
-        # Get playback details and use VideoPlayer.Time infolabel over
-        # xbmc.Player.getTime() as the infolabel appears to update quicker
         if not play_info:
             play_info = self._get_playback_details()
 
