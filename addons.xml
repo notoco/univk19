@@ -301,7 +301,7 @@ provider-name="primaeval">
 </extension>
 </addon>
 
-<addon id="service.upnext" name="UpNext" version="2.0.24+dev.0" provider-name="im85288">
+<addon id="service.upnext" name="UpNext" version="2.0.25+dev.0" provider-name="im85288">
     <requires>
         <import addon="xbmc.python" version="2.25.0" optional="true"/>
         <import addon="xbmc.python" version="3.0.0" optional="true"/>
@@ -360,7 +360,7 @@ Många befintliga tillägg integreras redan med den här utanför lådan-tjänst
     </extension>
 </addon>
 
-<addon id="service.upnext" name="UpNext" version="2023.06.20.0" provider-name="im85288">
+<addon id="service.upnext" name="UpNext" version="2023.07.03.0" provider-name="im85288">
     <requires>
         <import addon="xbmc.python" version="3.0.0" optional="true"/>
         <import addon="script.module.pil" version="1.1.7"/>
