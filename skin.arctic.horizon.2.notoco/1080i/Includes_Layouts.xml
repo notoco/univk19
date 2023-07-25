@@ -811,15 +811,14 @@
                 <include>Texture_Highlight</include>
             </include>
             <control type="group">
-                <left>grid_x04</left>
-                <include condition="!$PARAM[selected]" content="Object_IsSelected_Checkmark">
+                <!-- <include condition="!$PARAM[selected]" content="Object_IsSelected_Checkmark">
                     <param name="selected">$PARAM[misc]</param>
                 </include>
                 <include condition="$PARAM[selected]" content="Object_IsSelected_Checkmark_Focus">
                     <param name="selected">$PARAM[misc]</param>
-                </include>
+                </include>-->
                 <control type="group">
-                    <left>64</left>
+                    <left>30</left>
                     <include content="Object_Control" condition="!$PARAM[detailed]">
                         <param name="control">label</param>
                         <include condition="$PARAM[selected]">Color_SelectedText</include>
