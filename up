@@ -1,1 +1,2 @@
+rm ./skin.arctic.horizon.2.notoco/1080i/script-skinshortcuts-includes.xml
 python3 ./generator.py
