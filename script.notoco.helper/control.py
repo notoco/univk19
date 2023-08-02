@@ -11,12 +11,12 @@ state = addon.getSetting('state')
 icon = addon.getAddonInfo('icon')
 
 def ambilight_turn_off():
-    data = {"command":"componentstate", "componentstate":{"component": "LEDDEVICE", "state": False }, "tan":1}
+    data = {"command":"componentstate", "componentstate":{"component": "GRABBER", "state": False }, "tan":1}
     response = requests.post('http://127.0.0.1:8090/json-rpc', headers=headers, json=data)
     addon.setSetting('state', 'false')
 
 def ambilight_turn_on():
-    data = {"command":"componentstate", "componentstate":{"component": "LEDDEVICE", "state": True }, "tan":1}
+    data = {"command":"componentstate", "componentstate":{"component": "GRABBER", "state": True }, "tan":1}
     response = requests.post('http://127.0.0.1:8090/json-rpc', headers=headers, json=data)
     addon.setSetting('state', 'true')
 
