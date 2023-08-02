@@ -62,8 +62,8 @@
     <constant name="settings_slider_text_w">560</constant>
 
     <!-- General Dialogs -->
-    <constant name="dialog_button_w">320</constant>
-    <constant name="dialog_buttongroup_w">400</constant>
+    <constant name="dialog_button_w">220</constant>
+    <constant name="dialog_buttongroup_w">300</constant>
     <constant name="dialog_tall_h">880</constant>
     <constant name="dialog_tall_centertop">600</constant>
     <constant name="-dialog_buttongroup_w">-400</constant>
