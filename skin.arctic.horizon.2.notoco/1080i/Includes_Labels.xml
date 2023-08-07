@@ -215,7 +215,7 @@
     </variable>
 
     <variable name="Label_PVRRecordings_Sublabel_Channels">
-        <value condition="Window.IsVisible(fullscreenvideo)">$INFO[ListItem.ChannelNumberLabel,  |  CH ,]$INFO[ListItem.StartTime,  |  ,]$INFO[ListItem.EndTime, - ,]</value>
+        <value condition="Window.IsVisible(fullscreenvideo)">$INFO[ListItem.StartTime,  |  ,]$INFO[ListItem.EndTime, - ,]</value>
     </variable>
 
     <variable name="Label_NowPlayingTitle">
