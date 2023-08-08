@@ -431,5 +431,13 @@
         </include>
     </include>
 
+    <include name="Defs_CustomOverlay_Label">
+        <width>780</width>
+        <height>21</height>
+        <textcolor>FF00FFFF</textcolor>
+        <font>font_debug</font>
+        <shadowcolor>ff000000</shadowcolor>
+        <align>left</align>
+    </include>
 
 </includes>
