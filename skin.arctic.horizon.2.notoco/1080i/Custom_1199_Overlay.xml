@@ -959,7 +959,7 @@
                 <top>15</top>
                 <width>780</width>
                 <height>42</height>
-                <textcolor>FFff00FF</textcolor>
+                <textcolor>FF00FF00</textcolor>
                 <font>font_debug</font>
                 <shadowcolor>ff000000</shadowcolor>
                 <align>right</align>
@@ -973,6 +973,7 @@
                 <height>110</height>
                 <textcolor>FF00FFFF</textcolor>
                 <font>font_debug</font>
+                <scroll>true</scroll>
                 <shadowcolor>ff000000</shadowcolor>
                 <align>right</align>
                 <label>$INFO[ListItem.FolderPath]</label>
@@ -991,7 +992,7 @@
                     <font>font_debug</font>
                     <shadowcolor>ff000000</shadowcolor>
                     <align>left</align>
-                    <label>[COLOR=FFFF00FF]Icon  [/COLOR]$INFO[ListItem.Icon][CR][COLOR=FFFF00FF]ActualIcon  [/COLOR]$INFO[ListItem.ActualIcon][CR][COLOR=FFFF00FF]thumb  [/COLOR]$INFO[ListItem.Art(thumb)][CR][COLOR=FFFF00FF]poster  [/COLOR]$INFO[ListItem.Art(poster)][CR][COLOR=FFFF00FF]fanart [/COLOR]$INFO[ListItem.Art(fanart)][CR][COLOR=FFFF00FF]tvshow.poster   [/COLOR]$INFO[ListItem.Art(tvshow.poster)][CR][COLOR=FFFF00FF]tvshow.fanart  [/COLOR]$INFO[ListItem.Art(tvshow.fanart)]</label>
+                    <label>[COLOR=FF00FF00]Icon  [/COLOR]$INFO[ListItem.Icon][CR][COLOR=FF00FF00]ActualIcon  [/COLOR]$INFO[ListItem.ActualIcon][CR][COLOR=FF00FF00]thumb  [/COLOR]$INFO[ListItem.Art(thumb)][CR][COLOR=FF00FF00]poster  [/COLOR]$INFO[ListItem.Art(poster)][CR][COLOR=FF00FF00]fanart [/COLOR]$INFO[ListItem.Art(fanart)][CR][COLOR=FF00FF00]tvshow.poster   [/COLOR]$INFO[ListItem.Art(tvshow.poster)][CR][COLOR=FF00FF00]tvshow.fanart  [/COLOR]$INFO[ListItem.Art(tvshow.fanart)]</label>
                 </control>
             </control>
 
@@ -1026,24 +1027,26 @@
                 <aligny>top</aligny>
 
                 <label>[COLOR=FF00FF00]$INFO[System.CurrentControlID,ID  ]$INFO[Window(Home).Property(CG_50100_CurrentWidget),  CW  ][/COLOR]
-                    $INFO[Container.Content(),[COLOR=FFFF00FF]CONTENT  [/COLOR],]$INFO[ListItem.DBType,[COLOR=FFFF00FF]  DBTYPE  [/COLOR],]$INFO[ListItem.Property(dbtype),[COLOR=FFFF00FF]  PROP_DBTYPE  [/COLOR],]$INFO[Container.SortMethod,[COLOR=FFFF00FF]  SORT  [/COLOR],]
-                    $INFO[ListItem.Property(Container.Info),[COLOR=FFFF00FF]  C.INFO  [/COLOR],]$INFO[ListItem.Property(Container.Type),[COLOR=FFFF00FF]  C.TYPE  [/COLOR],]$INFO[ListItem.Property(Item.Info),[COLOR=FFFF00FF]  I.INFO  [/COLOR],]$INFO[ListItem.Property(Item.Type),[COLOR=FFFF00FF]  I.TYPE  [/COLOR],]
-                    $INFO[Window(Home).Property(TMDbHelper.ListItem.Oscar_Wins),[COLOR=FFFF00FF]  OSCARS_W  [/COLOR],]$INFO[Window(Home).Property(TMDbHelper.ListItem.Oscar_Nominations),[COLOR=FFFF00FF]  OSCARS_N  [/COLOR],]$INFO[Window(Home).Property(TMDbHelper.ListItem.Award_Wins),[COLOR=FFFF00FF]  AWARDS_W  [/COLOR],]$INFO[Window(Home).Property(TMDbHelper.ListItem.Award_Nominations),[COLOR=FFFF00FF]  AWARDS_N  [/COLOR],]$INFO[ListItem.Rating,[COLOR=FFFF00FF]  RATING  [/COLOR],]$INFO[ListItem.UserRating,[COLOR=FFFF00FF]  USER RATING  [/COLOR],]$INFO[ListItem.Top250,[COLOR=FFFF00FF]  TOP250-DB  [/COLOR],]$INFO[Window(Home).Property(TMDbHelper.ListItem.Top250),[COLOR=FFFF00FF]  TOP250-SM  [/COLOR],]
-                     $INFO[ListItem.Duration,[COLOR=FFFF00FF]  DURATION  [/COLOR],]$INFO[ListItem.Property(air_time),[COLOR=FFFF00FF]  AIRTIME  [/COLOR],]$INFO[ListItem.Property(air_date),[COLOR=FFFF00FF]  AIRDATE  [/COLOR],]
-                     $INFO[Window(Home).Property(TMDBHelper.ListItem.Studio.1.TMDB_ID),[COLOR=FFFF00FF]  INFO  [/COLOR],]
-                     $INFO[Window(Home).Property(TMDbHelper.ListItem.Trailer),[COLOR=FFFF00FF]  SM.TRAILER  [/COLOR],]
-                    $INFO[Window(Home).Property(TMDbHelper.IsUpdating),[COLOR=FFFF00FF]  SM.ISUPDATING  [/COLOR],]
-                    $INFO[ListItem.VideoCodec,[COLOR=FFFF00FF]CODEC  [/COLOR],]$INFO[ListItem.VideoAspect,[COLOR=FFFF00FF]  ASPECT  [/COLOR],]$INFO[ListItem.VideoResolution,[COLOR=FFFF00FF]  RES  [/COLOR],]$INFO[ListItem.AudioCodec,[COLOR=FFFF00FF]  CODEC  [/COLOR],]$INFO[ListItem.AudioChannels,[COLOR=FFFF00FF]  CHANNELS  [/COLOR],]
-                    $INFO[ListItem.Property(NumItems.TMDB.Cast),[COLOR=FFFF00FF]CASTIN  [/COLOR],]$INFO[ListItem.Property(NumItems.TMDB.Crew),[COLOR=FFFF00FF]  CREWIN  [/COLOR],]$INFO[ListItem.Property(NumItems.TMDB.Total),[COLOR=FFFF00FF]  TOTAL  [/COLOR],]
-                    $INFO[ListItem.Label,[COLOR=FFFF00FF]  LABEL  [/COLOR],]
-                    $INFO[ListItem.Label2,[COLOR=FFFF00FF]  LABEL2  [/COLOR],]   
-                    $INFO[ListItem.TITLE,[COLOR=FFFF00FF]  TITLE  [/COLOR],]
-                    $INFO[Skin.String(Testing),[COLOR=FFFF00FF]  SS-TEST  [/COLOR],]
-                    $INFO[ListItem.DBID,[COLOR=FFFF00FF]DBID  [/COLOR],]$INFO[ListItem.IMDBNumber,[COLOR=FFFF00FF]  IMDBNUMBER  [/COLOR],]$INFO[ListItem.Property(tmdb_id),[COLOR=FFFF00FF]  TMDB  [/COLOR],]$INFO[ListItem.Property(tvshow.tmdb_id),[COLOR=FFFF00FF]  TMDB TV  [/COLOR],]$INFO[ListItem.Property(tvdb_id),[COLOR=FFFF00FF]  TVDB  [/COLOR],]$INFO[ListItem.Property(tvshow.tvdb_id),[COLOR=FFFF00FF]  TVDB TV  [/COLOR],]$INFO[ListItem.Property(imdb_id),[COLOR=FFFF00FF]  IMDB  [/COLOR],]$INFO[ListItem.Property(tvshow.imdb_id),[COLOR=FFFF00FF]  IMDB TV  [/COLOR],]
-                    $INFO[Container.NumItems,[COLOR=FFFF00FF]NUM ITEMS:  [/COLOR],]$INFO[Container.Property(NumItems.DBID),  [COLOR=FFFF00FF]KODI:  [/COLOR],]$INFO[Container.Property(NumItems.TMDB),[COLOR=FFFF00FF]  TMDB:  [/COLOR],]
-                    $INFO[ListItem.Season,[COLOR=FFFF00FF]SEASON  [/COLOR],]$INFO[ListItem.Episode,[COLOR=FFFF00FF]  EPISODE  [/COLOR],]
-                    $INFO[ListItem.Property(UnWatchedEpisodes),[COLOR=FFFF00FF]U  [/COLOR],]$INFO[ListItem.Property(WatchedEpisodes),  [COLOR=FFFF00FF]W  [/COLOR],]$INFO[ListItem.PlayCount,  [COLOR=FFFF00FF]P  [/COLOR],]$INFO[ListItem.LastPlayed,   [COLOR=FFFF00FF]LP  [/COLOR],]$INFO[ListItem.Overlay,  [COLOR=FFFF00FF]O  [/COLOR],]$INFO[ListItem.AddonName,[COLOR=FFFF00FF]ADDON  [/COLOR],]
-                    $INFO[Container.PluginName,[COLOR=FFFF00FF]PLUGIN  [/COLOR],]$INFO[Container.PluginCategory,  [COLOR=FFFF00FF]NAME  [/COLOR],]
+                    $INFO[Container.Content(),[COLOR=FF00FF00]CONTENT  [/COLOR],]$INFO[ListItem.DBType,[COLOR=FF00FF00]  DBTYPE  [/COLOR],]$INFO[ListItem.Property(dbtype),[COLOR=FF00FF00]  PROP_DBTYPE  [/COLOR],]$INFO[Container.SortMethod,[COLOR=FF00FF00]  SORT  [/COLOR],]
+                    $INFO[ListItem.Property(Container.Info),[COLOR=FF00FF00]  C.INFO  [/COLOR],]$INFO[ListItem.Property(Container.Type),[COLOR=FF00FF00]  C.TYPE  [/COLOR],]$INFO[ListItem.Property(Item.Info),[COLOR=FF00FF00]  I.INFO  [/COLOR],]$INFO[ListItem.Property(Item.Type),[COLOR=FF00FF00]  I.TYPE  [/COLOR],]
+                    $INFO[Window(Home).Property(TMDbHelper.ListItem.Oscar_Wins),[COLOR=FF00FF00]  OSCARS_W  [/COLOR],]$INFO[Window(Home).Property(TMDbHelper.ListItem.Oscar_Nominations),[COLOR=FF00FF00]  OSCARS_N  [/COLOR],]$INFO[Window(Home).Property(TMDbHelper.ListItem.Award_Wins),[COLOR=FF00FF00]  AWARDS_W  [/COLOR],]$INFO[Window(Home).Property(TMDbHelper.ListItem.Award_Nominations),[COLOR=FF00FF00]  AWARDS_N  [/COLOR],]$INFO[ListItem.Rating,[COLOR=FF00FF00]  RATING  [/COLOR],]$INFO[ListItem.UserRating,[COLOR=FF00FF00]  USER RATING  [/COLOR],]$INFO[ListItem.Top250,[COLOR=FF00FF00]  TOP250-DB  [/COLOR],]$INFO[Window(Home).Property(TMDbHelper.ListItem.Top250),[COLOR=FF00FF00]  TOP250-SM  [/COLOR],]
+                     $INFO[ListItem.Duration,[COLOR=FF00FF00]  DURATION  [/COLOR],]$INFO[ListItem.Property(air_time),[COLOR=FF00FF00]  AIRTIME  [/COLOR],]$INFO[ListItem.Property(air_date),[COLOR=FF00FF00]  AIRDATE  [/COLOR],]
+                     $INFO[Window(Home).Property(TMDBHelper.ListItem.Studio.1.TMDB_ID),[COLOR=FF00FF00]  INFO  [/COLOR],]
+                     $INFO[Window(Home).Property(TMDbHelper.ListItem.Trailer),[COLOR=FF00FF00]  SM.TRAILER  [/COLOR],]
+                    $INFO[Window(Home).Property(TMDbHelper.IsUpdating),[COLOR=FF00FF00]  SM.ISUPDATING  [/COLOR],]
+                    $INFO[ListItem.VideoCodec,[COLOR=FF00FF00]CODEC  [/COLOR],]$INFO[ListItem.VideoAspect,[COLOR=FF00FF00]  ASPECT  [/COLOR],]$INFO[ListItem.VideoResolution,[COLOR=FF00FF00]  RES  [/COLOR],]$INFO[ListItem.AudioCodec,[COLOR=FF00FF00]  CODEC  [/COLOR],]$INFO[ListItem.AudioChannels,[COLOR=FF00FF00]  CHANNELS  [/COLOR],]
+                    $INFO[ListItem.Property(NumItems.TMDB.Cast),[COLOR=FF00FF00]CASTIN  [/COLOR],]$INFO[ListItem.Property(NumItems.TMDB.Crew),[COLOR=FF00FF00]  CREWIN  [/COLOR],]$INFO[ListItem.Property(NumItems.TMDB.Total),[COLOR=FF00FF00]  TOTAL  [/COLOR],]
+                    $INFO[ListItem.Label,[COLOR=FF00FF00]  LABEL  [/COLOR],]
+                    $INFO[ListItem.Label2,[COLOR=FF00FF00]  LABEL2  [/COLOR],]   
+                    $INFO[ListItem.Year,[COLOR=FF00FF00]  YEAR  [/COLOR],]   
+                    $INFO[ListItem.premiered,[COLOR=FF00FF00]  Premiered  [/COLOR],]   
+                    $INFO[ListItem.TITLE,[COLOR=FF00FF00]  TITLE  [/COLOR],]
+                    $INFO[Skin.String(Testing),[COLOR=FF00FF00]  SS-TEST  [/COLOR],]
+                    $INFO[ListItem.DBID,[COLOR=FF00FF00]DBID  [/COLOR],]$INFO[ListItem.IMDBNumber,[COLOR=FF00FF00]  IMDBNUMBER  [/COLOR],]$INFO[ListItem.Property(tmdb_id),[COLOR=FF00FF00]  TMDB  [/COLOR],]$INFO[ListItem.Property(tvshow.tmdb_id),[COLOR=FF00FF00]  TMDB TV  [/COLOR],]$INFO[ListItem.Property(tvdb_id),[COLOR=FF00FF00]  TVDB  [/COLOR],]$INFO[ListItem.Property(tvshow.tvdb_id),[COLOR=FF00FF00]  TVDB TV  [/COLOR],]$INFO[ListItem.Property(imdb_id),[COLOR=FF00FF00]  IMDB  [/COLOR],]$INFO[ListItem.Property(tvshow.imdb_id),[COLOR=FF00FF00]  IMDB TV  [/COLOR],]
+                    $INFO[Container.NumItems,[COLOR=FF00FF00]NUM ITEMS:  [/COLOR],]$INFO[Container.Property(NumItems.DBID),  [COLOR=FF00FF00]KODI:  [/COLOR],]$INFO[Container.Property(NumItems.TMDB),[COLOR=FF00FF00]  TMDB:  [/COLOR],]
+                    $INFO[ListItem.Season,[COLOR=FF00FF00]SEASON  [/COLOR],]$INFO[ListItem.Episode,[COLOR=FF00FF00]  EPISODE  [/COLOR],]
+                    $INFO[ListItem.Property(UnWatchedEpisodes),[COLOR=FF00FF00]U  [/COLOR],]$INFO[ListItem.Property(WatchedEpisodes),  [COLOR=FF00FF00]W  [/COLOR],]$INFO[ListItem.PlayCount,  [COLOR=FF00FF00]P  [/COLOR],]$INFO[ListItem.LastPlayed,   [COLOR=FF00FF00]LP  [/COLOR],]$INFO[ListItem.Overlay,  [COLOR=FF00FF00]O  [/COLOR],]$INFO[ListItem.AddonName,[COLOR=FF00FF00]ADDON  [/COLOR],]
+                    $INFO[Container.PluginName,[COLOR=FF00FF00]PLUGIN  [/COLOR],]$INFO[Container.PluginCategory,  [COLOR=FF00FF00]NAME  [/COLOR],]
                 </label>
 
             </control>
