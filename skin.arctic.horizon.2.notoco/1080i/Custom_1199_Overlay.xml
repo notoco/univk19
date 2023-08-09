@@ -367,13 +367,7 @@
         <control type="group">
             <visible>Skin.HasSetting(DebugInfo)</visible>
             <!-- Window/Dialog debug -->
-            <control type="grouplist">
-                <posx>15</posx>
-                <posy>15</posy>
-                <width>780</width>
-                <height>450</height>
-                <itemgap>12</itemgap>
-           <control type="grouplist">
+<control type="grouplist">
                 <align>top</align>
                 <orientation>vertical</orientation>
                 <include content="Overlay_InfoLabel">
@@ -393,20 +387,7 @@
                     <textcolor>yellowgreen</textcolor>
                 </include>
             </control>
-                
             <!-- Control label -->
-            <control type="label">
-                <right>15</right>
-                <top>15</top>
-                <width>780</width>
-                <height>42</height>
-                <textcolor>FF00FF00</textcolor>
-                <font>font_debug</font>
-                <shadowcolor>ff000000</shadowcolor>
-                <align>right</align>
-                <label>$INFO[System.CurrentControl][CR][COLOR=FF00FF00]$INFO[System.CurrentWindow][/COLOR]</label>
-
-            </control>
 
             <control type="label">
                 <right>15</right>
@@ -467,8 +448,7 @@
                 <align>right</align>
                 <aligny>top</aligny>
 
-                <label>[COLOR=FF00FF00]$INFO[System.CurrentControlID,ID  ]$INFO[Window(Home).Property(CG_50100_CurrentWidget),  CW  ][/COLOR]
-                    $INFO[Container.Content(),[COLOR=FF00FF00]CONTENT  [/COLOR],]$INFO[ListItem.DBType,[COLOR=FF00FF00]  DBTYPE  [/COLOR],]$INFO[ListItem.Property(dbtype),[COLOR=FF00FF00]  PROP_DBTYPE  [/COLOR],]$INFO[Container.SortMethod,[COLOR=FF00FF00]  SORT  [/COLOR],]
+                <label>$INFO[ListItem.DBType,[COLOR=FF00FF00]  DBTYPE  [/COLOR],]$INFO[ListItem.Property(dbtype),[COLOR=FF00FF00]  PROP_DBTYPE  [/COLOR],]$INFO[Container.SortMethod,[COLOR=FF00FF00]  SORT  [/COLOR],]
                     $INFO[ListItem.Property(Container.Info),[COLOR=FF00FF00]  C.INFO  [/COLOR],]$INFO[ListItem.Property(Container.Type),[COLOR=FF00FF00]  C.TYPE  [/COLOR],]$INFO[ListItem.Property(Item.Info),[COLOR=FF00FF00]  I.INFO  [/COLOR],]$INFO[ListItem.Property(Item.Type),[COLOR=FF00FF00]  I.TYPE  [/COLOR],]
                     $INFO[Window(Home).Property(TMDbHelper.ListItem.Oscar_Wins),[COLOR=FF00FF00]  OSCARS_W  [/COLOR],]$INFO[Window(Home).Property(TMDbHelper.ListItem.Oscar_Nominations),[COLOR=FF00FF00]  OSCARS_N  [/COLOR],]$INFO[Window(Home).Property(TMDbHelper.ListItem.Award_Wins),[COLOR=FF00FF00]  AWARDS_W  [/COLOR],]$INFO[Window(Home).Property(TMDbHelper.ListItem.Award_Nominations),[COLOR=FF00FF00]  AWARDS_N  [/COLOR],]$INFO[ListItem.Rating,[COLOR=FF00FF00]  RATING  [/COLOR],]$INFO[ListItem.UserRating,[COLOR=FF00FF00]  USER RATING  [/COLOR],]$INFO[ListItem.Top250,[COLOR=FF00FF00]  TOP250-DB  [/COLOR],]$INFO[Window(Home).Property(TMDbHelper.ListItem.Top250),[COLOR=FF00FF00]  TOP250-SM  [/COLOR],]
                      $INFO[ListItem.Duration,[COLOR=FF00FF00]  DURATION  [/COLOR],]$INFO[ListItem.Property(air_time),[COLOR=FF00FF00]  AIRTIME  [/COLOR],]$INFO[ListItem.Property(air_date),[COLOR=FF00FF00]  AIRDATE  [/COLOR],]
