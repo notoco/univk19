@@ -695,6 +695,7 @@
                     <control type="group">
                         <visible>![String.IsEqual(ListItem.DBType,song) | String.IsEqual(ListItem.DBType,album)]</visible>
                         <include content="Object_Control">
+                            <visible>!Container.Content(files)</visible>
                             <param name="control">label</param>
                             <include condition="$PARAM[selected]">Color_SelectedText</include>
                             <textcolor>main_fg_70</textcolor>
@@ -707,6 +708,7 @@
                         </include>
                         <include content="Object_Control">
                             <param name="control">label</param>
+                            <visible>!Container.Content(files)</visible>
                             <left>grid_x12</left>
                             <right>grid_x14</right>
                             <include condition="$PARAM[selected]">Color_SelectedText</include>
@@ -716,13 +718,38 @@
                             <font>font_main_bold</font>
                             <bottom>3</bottom>
                         </include>
+                        <include content="Object_Control">
+                            <param name="control">label</param>
+                            <visible>Container.Content(files)</visible>
+                            <left>grid_x10</left>
+                            <right>grid_x12</right>
+                            <include condition="$PARAM[selected]">Color_SelectedText</include>
+                            <textcolor>main_fg_70</textcolor>
+                            <selectedcolor>main_fg_70</selectedcolor>
+                            <label>$INFO[ListItem.Label]</label>
+                            <font>font_main_bold</font>
+                            <bottom>3</bottom>
+                        </include>
+                        <include content="Object_Control">
+                            <param name="control">label</param>
+                            <visible>Container.Content(files)</visible>
+                            <left>grid_x10</left>
+                            <right>grid_x12</right>
+                            <include condition="$PARAM[selected]">Color_SelectedText</include>
+                            <textcolor>main_fg_70</textcolor>
+                            <selectedcolor>main_fg_70</selectedcolor>
+                            <label>$INFO[ListItem.Label2]</label>
+                            <font>font_main</font>
+                        </include>
                         <include content="Object_Indicator_List">
                             <param name="selected">$PARAM[selected]</param>
+                            <visible>!Container.Content(files)</visible>
                             <centertop>50%</centertop>
                             <centerright>160</centerright><!-- notoco -->
                         </include>
                         <include content="Object_Control">
                             <param name="control">label</param>
+                            <visible>!Container.Content(files)</visible>
                             <include condition="$PARAM[selected]">Color_SelectedText</include>
                             <textcolor>main_fg_70</textcolor>
                             <selectedcolor>main_fg_70</selectedcolor>
