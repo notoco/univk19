@@ -838,7 +838,7 @@
                 <include>Texture_Highlight</include>
             </include>
             <control type="group">
-                <left>16</left>
+                <left>grid_x04</left>
                 <include condition="!$PARAM[selected]" content="Object_IsSelected_Checkmark">
                     <param name="selected">$PARAM[misc]</param>
                 </include>
@@ -846,7 +846,7 @@
                     <param name="selected">$PARAM[misc]</param>
                 </include>
                 <control type="group">
-                    <left>44</left>
+                    <left>64</left>
                     <include content="Object_Control" condition="!$PARAM[detailed]">
                         <param name="control">label</param>
                         <include condition="$PARAM[selected]">Color_SelectedText</include>
