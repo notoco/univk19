@@ -94,7 +94,7 @@
     </include>
     <include name="Dimension_DialogSelect">
         <centerleft>50%</centerleft>
-        <width>1800</width>
+        <width>1360</width>
         <height>dialog_tall_h</height>
         <centertop>dialog_tall_centertop</centertop>
     </include>
