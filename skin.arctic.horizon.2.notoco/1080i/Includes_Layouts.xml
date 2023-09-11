@@ -854,7 +854,6 @@
                         <textcolor>dialog_fg_70</textcolor>
                         <selectedcolor>dialog_fg_70</selectedcolor>
                         <label>$INFO[ListItem.Label]</label>
-                        <font>font_mini_black</font>
                     </include>
                     <include content="Object_ListItem_Iconic" condition="$PARAM[detailed] + !$PARAM[selected]">
                         <param name="item_h">$PARAM[item_h]</param>
