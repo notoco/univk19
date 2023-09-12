@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
     <controls>
-        <include content="Object_ShadowSpot">
             <include>Dimension_ClockShadow</include>
             <visible>!Window.IsVisible(DialogVolumeBar.xml) | Player.Muted</visible>
             <visible>VideoPlayer.IsFullscreen | Window.IsVisible(MusicVisualisation.xml)</visible>
             <visible>!Window.IsVisible(DialogSeekBar.xml)</visible>
-        </include>
-        <include content="Furniture_Topbar_Group">
+            
             <visible>!Window.IsVisible(DialogVolumeBar.xml) | Player.Muted</visible>
             <include content="Furniture_Gutters">
+                <top>20</top>
+                <height>70</height>
+                <control type="image">
+                    <height>100</height>
+                    <texture>common/dim-overlay.png</texture>
+                </control>
                 <control type="group">
                     <width>60</width>
                     <height>60</height>
-                    <right>0</right>
+                    <right>20</right>
                     <control type="group">
                         <visible>String.StartsWith(Control.GetLabel(400),Default)</visible>
                         <include content="Object_MenuButton">
@@ -22,6 +26,7 @@
                         </include>
                     </control>
                     <control type="group">
+                        <top>20</top>
                         <visible>!String.StartsWith(Control.GetLabel(400),Default)</visible>
                         <include content="Object_MenuButton">
                             <param name="icon" value="special://skin/extras/icons/_none.png" />
@@ -29,29 +34,30 @@
                         <control type="image">
                             <width>40</width>
                             <height>40</height>
-                            <centertop>50%</centertop>
+                            <centertop>70%</centertop>
                             <centerleft>50%</centerleft>
                             <texture diffuse="common/circle.png">$INFO[Control.GetLabel(400)]</texture>
                         </control>
                     </control>
                 </control>
                 <control type="group">
-                    <right>grid_x08</right>
-                    <include content="Furniture_MenuLabel">
-                        <param name="id" value="401" />
+                    <right>100</right>
+                    <control type="label" id="401">
                         <align>right</align>
                         <height>50%</height>
-                        <top>0</top>
-                    </include>
-                    <include content="Furniture_MiniLabel">
-                        <param name="id" value="402" />
+                        <top>10</top>
+                        <font>font_main_black</font>
+                        <textcolor>main_fg_100</textcolor>
+                    </control>
+                    <control type="label" id="402">
                         <align>right</align>
                         <height>50%</height>
-                        <bottom>0</bottom>
-                    </include>
+                        <bottom>-20</bottom>
+                        <font>font_mini</font>
+                        <textcolor>main_fg_100</textcolor>
+                    </control>
                 </control>
             </include>
-        </include>
         <control type="image" id="400">
             <visible>false</visible>
             <height>1</height>
