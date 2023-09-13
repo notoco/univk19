@@ -359,11 +359,8 @@
                     <top>-320</top>
                     <width>360</width>
                     <centerleft>50%</centerleft>
-                    <include content="Dialog_Background_Blur">
-                    <param name="flipy">true</param>
-                    </include>
                     <control type="image">
-                        <texture colordiffuse="dialog_bg_90" border="20">common/dialog.png</texture>
+                        <texture colordiffuse="dialog_bg_100" border="20">common/dialog2.png</texture>
                     </control>
                 </control>
                     <control type="group">

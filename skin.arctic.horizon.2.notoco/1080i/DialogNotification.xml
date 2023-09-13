@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
     <controls>
-            <include>Dimension_ClockShadow</include>
             <visible>!Window.IsVisible(DialogVolumeBar.xml) | Player.Muted</visible>
             <visible>VideoPlayer.IsFullscreen | Window.IsVisible(MusicVisualisation.xml)</visible>
             <visible>!Window.IsVisible(DialogSeekBar.xml)</visible>
@@ -10,11 +9,11 @@
             <include content="Furniture_Gutters">
                 <top>20</top>
                 <height>80</height>
-                <width>80%</width>
+                <width>700</width>
                 <centerleft>50%</centerleft>
                 <control type="image">
                     <height>100</height>
-                    <texture colordiffuse="dialog_bg_90" border="20">common/dialog.png</texture>
+                    <texture colordiffuse="dialog_bg_100" border="20">common/dialog2.png</texture>
                 </control>
                 <control type="group">
                     <width>60</width>
@@ -35,17 +34,20 @@
                 <control type="group">
                     <right>100</right>
                     <control type="label" id="401">
-                        <align>right</align>
+                        <align>left</align>
                         <height>50%</height>
                         <top>10</top>
                         <font>font_main_black</font>
                         <textcolor>main_fg_100</textcolor>
                     </control>
                     <control type="label" id="402">
-                        <align>right</align>
+                        <align>left</align>
                         <height>50%</height>
-                        <bottom>-20</bottom>
+                        <bottom>-10</bottom>
+                        <left>20</left>
                         <font>font_mini</font>
+                        <scroll>true</scroll>
+                        <scrollspeed>50</scrollspeed>
                         <textcolor>main_fg_100</textcolor>
                     </control>
                 </control>
