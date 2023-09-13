@@ -7,7 +7,7 @@
     <controls>
         <control type="image">
             <height>100</height>
-            <texture>common/dim-overlay.png</texture>
+            <texture colordiffuse="dialog_bg_90" border="20">common/dialog.png</texture>
         </control>
         <control type="group">
             <include>Dimension_UpNext</include>

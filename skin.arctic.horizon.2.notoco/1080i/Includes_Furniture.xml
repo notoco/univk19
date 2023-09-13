@@ -342,7 +342,7 @@
         <param name="hasspinner" default="true" />
         <param name="hasprogress" default="false" />
         <param name="backing" default="true" />
-        <param name="colordiffuse" default="dialog_fg" />
+        <param name="colordiffuse" default="dialog_bg" />
         <param name="groupinclude" default="Furniture_Topbar_Group" />
         <param name="haslabel" default="true" />
         <param name="hastime" default="false" />
@@ -352,19 +352,31 @@
             <include content="$PARAM[groupinclude]">
                 <nested />
                 <include content="Furniture_Gutters">
+                    <width>360</width>
+                    <height>40</height>
+                    <centerleft>50%</centerleft>
+                <control type="group">
+                    <top>-320</top>
+                    <width>360</width>
+                    <centerleft>50%</centerleft>
+                    <include content="Dialog_Background_Blur">
+                    <param name="flipy">true</param>
+                    </include>
+                    <control type="image">
+                        <texture colordiffuse="dialog_bg_90" border="20">common/dialog.png</texture>
+                    </control>
+                </control>
                     <control type="group">
+                        <top>-60</top>
                         <width>60</width>
-                        <right>0</right>
-                        <include content="Object_MenuButton" condition="$PARAM[backing]">
-                            <param name="icon" value="special://skin/extras/icons/_none.png" />
-                        </include>
+                        <right>10</right>
                         <include content="Object_BusySpinner">
                             <param name="haslabel" value="false" />
                             <param name="hasspinner" value="$PARAM[hasspinner]" />
                             <param name="hasprogress" value="$PARAM[hasprogress]" />
                             <param name="colordiffuse" value="$PARAM[colordiffuse]" />
                             <param name="texture" value="$PARAM[texture]" />
-                            <param name="size" value="$PARAM[size]" />
+                            <param name="size" value="80" />
                             <param name="progress" value="$PARAM[progress]" />
                             <param name="progress_id" value="$PARAM[progress_id]" />
                             <param name="icon" value="$PARAM[icon]" />
@@ -372,7 +384,8 @@
                         </include>
                     </control>
                     <control type="group">
-                        <right>grid_x08</right>
+                        <right>100</right>
+                        <top>-60</top>
                         <control type="grouplist">
                             <orientation>horizontal</orientation>
                             <align>right</align>
