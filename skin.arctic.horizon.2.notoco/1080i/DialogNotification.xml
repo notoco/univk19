@@ -5,9 +5,9 @@
             <visible>!Window.IsVisible(DialogVolumeBar.xml) | Player.Muted</visible>
             <visible>VideoPlayer.IsFullscreen | Window.IsVisible(MusicVisualisation.xml)</visible>
             <visible>!Window.IsVisible(DialogSeekBar.xml)</visible>
+            
             <visible>!Window.IsVisible(DialogVolumeBar.xml) | Player.Muted</visible>
             <include content="Furniture_Gutters">
-                <include>Animation_FadeIn</include>
                 <top>20</top>
                 <height>80</height>
                 <width>80%</width>
@@ -20,25 +20,15 @@
                     <width>60</width>
                     <height>60</height>
                     <right>20</right>
-                    <top>30</top>
                     <control type="group">
-                        <visible>String.StartsWith(Control.GetLabel(400),Default)</visible>
-                        <include content="Object_MenuButton">
-                            <param name="icon" value="dialog/info.png" />
-                            <param name="bordersize" value="10" />
-                        </include>
-                    </control>
-                    <control type="group">
+                        <top>30</top>
                         <visible>!String.StartsWith(Control.GetLabel(400),Default)</visible>
-                        <include content="Object_MenuButton">
-                            <param name="icon" value="special://skin/extras/icons/_none.png" />
-                        </include>
                         <control type="image">
                             <width>50</width>
                             <height>50</height>
-                            <centertop>50%</centertop>
+                            <centertop>70%</centertop>
                             <centerleft>50%</centerleft>
-                            <texture diffuse="common/circle.png">$INFO[Control.GetLabel(400)]</texture>
+                            <texture>$INFO[Control.GetLabel(400)]</texture>
                         </control>
                     </control>
                 </control>
