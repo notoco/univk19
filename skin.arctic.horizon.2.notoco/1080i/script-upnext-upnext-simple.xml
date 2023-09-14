@@ -5,12 +5,18 @@
     <onload>Dialog.Close(videoosd,true)</onload>
     <include>Animation_FadeIn</include>
     <controls>
+
         <control type="image">
-            <height>100</height>
-            <texture colordiffuse="dialog_bg_90" border="20">common/dialog.png</texture>
+            <height>80</height>                
+            <width>700</width>
+            <centerleft>50%</centerleft>
+            <texture colordiffuse="dialog_bg_100" border="20">common/dialog2.png</texture>
         </control>
         <control type="group">
-            <include>Dimension_UpNext</include>
+                <top>100</top>
+                <height>80</height>
+                <width>700</width>
+                <centerleft>50%</centerleft>
                 <control type="progress" id="3014">
                     <top>-60</top>
                     <left>170</left>

@@ -4,8 +4,8 @@
             <visible>!Window.IsVisible(DialogVolumeBar.xml) | Player.Muted</visible>
             <visible>VideoPlayer.IsFullscreen | Window.IsVisible(MusicVisualisation.xml)</visible>
             <visible>!Window.IsVisible(DialogSeekBar.xml)</visible>
-            
             <visible>!Window.IsVisible(DialogVolumeBar.xml) | Player.Muted</visible>
+            <include>Animation_SlideIn_Dialog</include>
             <include content="Furniture_Gutters">
                 <top>20</top>
                 <height>80</height>
@@ -37,6 +37,7 @@
                         <align>left</align>
                         <height>50%</height>
                         <top>10</top>
+                        <left>20</left>
                         <font>font_main_black</font>
                         <textcolor>main_fg_100</textcolor>
                     </control>

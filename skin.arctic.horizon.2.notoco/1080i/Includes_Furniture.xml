@@ -337,6 +337,7 @@
     </include>
 
     <include name="Furniture_Busy">
+        <include>Animation_SlideIn_Dialog_Conditional</include>
         <param name="mainlabel" default="$LOCALIZE[20186]" />
         <param name="minilabel" default="$LOCALIZE[31023]..." />
         <param name="hasspinner" default="true" />
