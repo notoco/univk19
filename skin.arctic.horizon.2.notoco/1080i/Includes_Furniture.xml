@@ -353,12 +353,12 @@
             <include content="$PARAM[groupinclude]">
                 <nested />
                 <include content="Furniture_Gutters">
-                    <width>360</width>
+                    <width>700</width>
                     <height>40</height>
                     <centerleft>50%</centerleft>
                 <control type="group">
                     <top>-320</top>
-                    <width>360</width>
+                    <width>700</width>
                     <centerleft>50%</centerleft>
                     <control type="image">
                         <texture colordiffuse="dialog_bg_100" border="20">common/dialog2.png</texture>
@@ -386,7 +386,8 @@
                         <top>-60</top>
                         <control type="grouplist">
                             <orientation>horizontal</orientation>
-                            <align>right</align>
+                            <align>left</align>
+                            <left>20</left>
                             <itemgap>10</itemgap>
                             <include content="Furniture_MenuLabel" condition="$PARAM[haslabel]">
                                 <param name="id" value="$PARAM[mainlabel_id]" />
@@ -405,7 +406,8 @@
                         <include content="Furniture_MiniLabel" condition="$PARAM[haslabel]">
                             <param name="id" value="$PARAM[minilabel_id]" />
                             <label>$PARAM[minilabel]</label>
-                            <align>right</align>
+                            <align>left</align>
+                            <left>20</left>
                             <height>50%</height>
                             <bottom>0</bottom>
                         </include>
