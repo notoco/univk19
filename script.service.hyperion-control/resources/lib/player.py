@@ -31,6 +31,7 @@ class Player(xbmc.Player):
         self._play_handler()
 
     def onAVStarted(self) -> None:
+        xbmc.sleep(80)
         """Audio or Video started event."""
         self._play_handler()
 
