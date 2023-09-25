@@ -690,8 +690,8 @@
                 <!-- Detailed Info -->
                 <control type="group">
                     <visible>[String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | [String.IsEqual(ListItem.DBType,episode) + !String.IsEmpty(ListItem.Episode)] | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,set) | String.IsEqual(ListItem.DBType,song) | String.IsEqual(ListItem.DBType,album)]</visible>
-                    <left>grid_x04</left>
-                    <right>grid_x04</right>
+                    <left>grid_x02</left>
+                    <right>grid_x02</right>
                     <control type="group">
                         <visible>![String.IsEqual(ListItem.DBType,song) | String.IsEqual(ListItem.DBType,album)]</visible>
                         <include content="Object_Control">
@@ -709,8 +709,8 @@
                         <include content="Object_Control">
                             <param name="control">label</param>
                             <visible>!Container.Content(files)</visible>
-                            <left>grid_x12</left>
-                            <right>grid_x14</right>
+                            <left>grid_x08</left>
+                            <right>grid_x20</right>
                             <include condition="$PARAM[selected]">Color_SelectedText</include>
                             <textcolor>main_fg_70</textcolor>
                             <selectedcolor>main_fg_70</selectedcolor>
@@ -722,7 +722,7 @@
                             <param name="control">label</param>
                             <visible>Container.Content(files)</visible>
                             <left>grid_x10</left>
-                            <right>grid_x12</right>
+                            <right>grid_x16</right>
                             <include condition="$PARAM[selected]">Color_SelectedText</include>
                             <textcolor>main_fg_70</textcolor>
                             <selectedcolor>main_fg_70</selectedcolor>
@@ -734,7 +734,7 @@
                             <param name="control">label</param>
                             <visible>Container.Content(files)</visible>
                             <left>grid_x10</left>
-                            <right>grid_x12</right>
+                            <right>grid_x16</right>
                             <include condition="$PARAM[selected]">Color_SelectedText</include>
                             <textcolor>main_fg_70</textcolor>
                             <selectedcolor>main_fg_70</selectedcolor>
