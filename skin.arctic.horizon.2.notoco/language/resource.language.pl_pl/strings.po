@@ -129,7 +129,7 @@ msgstr "Podobne"
 #: /1080i/Dialogs.xml
 msgctxt "#31022"
 msgid "items"
-msgstr "obiektów"
+msgstr "pozycji"
 
 #: /1080i/Objects.xml
 msgctxt "#31023"
@@ -569,7 +569,7 @@ msgstr "Otagowany"
 #: /1080i/Info.xml
 msgctxt "#31110"
 msgid "pages"
-msgstr "strony"
+msgstr "stron"
 
 #: /1080i/Views_Row.xml
 msgctxt "#31111"
