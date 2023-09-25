@@ -203,7 +203,6 @@
         <value condition="!String.IsEmpty(ListItem.Director)">$INFO[ListItem.Director]$INFO[ListItem.Year, • ,]</value>
         <value condition="!String.IsEmpty(ListItem.Property(sublabel))">$INFO[ListItem.Property(sublabel)]</value>
         <value condition="!String.IsEmpty(ListItem.DBType)">$INFO[ListItem.DBType,[CAPITALIZE],[/CAPITALIZE]]</value>
-        <value condition="!String.IsEmpty(ListItem.Path)">$INFO[ListItem.Path]</value>
     </variable>
 
     <variable name="Label_PVRRecordings_Sublabel">

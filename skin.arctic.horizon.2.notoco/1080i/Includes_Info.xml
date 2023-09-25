@@ -909,7 +909,7 @@
     </include>
 
     <include name="Info_MiscLine">
-        <param name="directory">color</param>
+        <param name="directory">monochrome</param>
         <param name="align">left</param>
         <param name="tmdbtype">ListItem</param>
         <param name="colordiffuse">main_fg</param>
@@ -1023,7 +1023,7 @@
     </include>
 
     <include name="Info_Ratings">
-        <param name="directory">color</param>
+        <param name="directory">monochrome</param>
         <param name="align">left</param>
         <param name="rottentomatoes">true</param>
         <param name="usermeter">true</param>
@@ -1369,7 +1369,7 @@
     <include name="Info_Codecs">
         <param name="infohide" default="true" />
         <param name="align" default="left" />
-        <param name="directory" default="color" />
+        <param name="directory" default="monochrome" />
         <definition>
             <include content="Object_Control" condition="Skin.HasSetting(Codecs.UseFileNameInfo)">
                 <param name="control">label</param>
