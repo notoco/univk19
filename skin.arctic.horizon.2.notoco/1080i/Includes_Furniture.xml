@@ -323,7 +323,7 @@
     <include name="Furniture_MenuLabel">
         <control type="label" id="$PARAM[id]">
             <nested />
-            <font>font_main_black</font>
+            <font>font_tiny_black</font>
             <textcolor>main_fg_100</textcolor>
         </control>
     </include>
@@ -331,7 +331,7 @@
     <include name="Furniture_MiniLabel">
         <control type="label" id="$PARAM[id]">
             <nested />
-            <font>font_mini</font>
+            <font>font_hint_black</font>
             <textcolor>main_fg_70</textcolor>
         </control>
     </include>

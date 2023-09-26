@@ -127,7 +127,7 @@
             <nested />
         </include>
         <include content="_Info_Title_Label" condition="Skin.HasSetting(UseLightFont) + Skin.HasSetting(Titles.EnableWrapping)">
-            <param name="font">font_info_light</param>
+            <param name="font">font_info_black</param>
             <param name="colordiffuse">$PARAM[colordiffuse]</param>
             <param name="label">$PARAM[label]</param>
             <nested />
@@ -139,7 +139,7 @@
             <nested />
         </include>
         <include content="_Info_Title_Label_NoWrap" condition="Skin.HasSetting(UseLightFont) + !Skin.HasSetting(Titles.EnableWrapping)">
-            <param name="font">font_info_light</param>
+            <param name="font">font_info_black</param>
             <param name="colordiffuse">$PARAM[colordiffuse]</param>
             <param name="label">$PARAM[label]</param>
             <nested />
@@ -1837,7 +1837,7 @@
             <control type="group">
                 <nested />
                 <control type="grouplist">
-                    <top>-20</top>
+                    <top>-60</top>
                     <hitrect x="0" y="0" w="0" h="0" />
                     <orientation>vertical</orientation>
                     <itemgap>0</itemgap>
