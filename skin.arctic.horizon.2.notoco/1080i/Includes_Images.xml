@@ -37,7 +37,7 @@
     </variable>
 
     <variable name="Image_Background_Floor">
-        <value condition="Skin.String(BackgroundStyle,Fanart)">common/dim-gradient.png</value>
+        <value condition="Skin.String(BackgroundStyle,Fanart)">common/dim-all.png</value>
         <value condition="Skin.String(BackgroundStyle,Blur)">background/combined_flixart.png</value>
         <value>background/combined_stretch.png</value>
     </variable>
