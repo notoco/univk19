@@ -86,7 +86,7 @@
             <control type="group">
                 <width>480</width>
                 <control type="image">
-                    <texture background="true">$INFO[ListItem.Icon]</texture>
+                    <texture background="true">$INFO[Listitem.Art(icon)]</texture>
                     <aspectratio align="center">keep</aspectratio>
                     <bordersize>20</bordersize>
                     <left>20</left>
@@ -502,7 +502,7 @@
                 <orientation>vertical</orientation>
                 <control type="label">
                     <height>80</height>
-                    <label>$INFO[ListItem.ChannelName]</label>
+                    <label>1 $INFO[ListItem.ChannelName]</label>
                     <font>font_main_bold</font>
                     <textcolor>main_fg_100</textcolor>
                 </control>

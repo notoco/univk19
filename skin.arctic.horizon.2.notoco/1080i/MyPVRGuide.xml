@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-    <views>10,50,51,52,53</views>
+    <views>52,53,10,50,51</views>
     <defaultcontrol always="true">10</defaultcontrol>
     <menucontrol>9000</menucontrol>
     <include>Action_Blur_Onload</include>

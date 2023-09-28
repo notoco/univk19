@@ -700,7 +700,7 @@
                     <textureslidernibfocus colordiffuse="panel_fg_100">progress/slider_nib.png</textureslidernibfocus>
                     <info>ListItem.Progress</info>
                     <left>-55</left>
-                    <top>5</top>
+                    <top>8</top>
                     <visible>!String.IsEmpty(ListItem.ChannelName)</visible>
                 </control>
                 <nested />

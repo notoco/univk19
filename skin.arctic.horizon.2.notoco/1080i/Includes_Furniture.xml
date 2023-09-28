@@ -392,24 +392,20 @@
                             <include content="Furniture_MenuLabel" condition="$PARAM[haslabel]">
                                 <param name="id" value="$PARAM[mainlabel_id]" />
                                 <label>$PARAM[mainlabel]</label>
+                                <font>font_mini_black</font>
                                 <width max="480">auto</width>
-                                <height>50%</height>
-                                <top>0</top>
-                            </include>
-                            <include content="Furniture_MenuLabel" condition="$PARAM[hastime]">
-                                <label>$INFO[System.Time]</label>
-                                <width>auto</width>
-                                <height>50%</height>
+                                <height>20</height>
                                 <top>0</top>
                             </include>
                         </control>
                         <include content="Furniture_MiniLabel" condition="$PARAM[haslabel]">
                             <param name="id" value="$PARAM[minilabel_id]" />
                             <label>$PARAM[minilabel]</label>
+                            <font>font_tiny_black</font>
                             <align>left</align>
                             <left>20</left>
-                            <height>50%</height>
-                            <bottom>0</bottom>
+                            <top>30</top>
+                            <height>20</height>
                         </include>
                     </control>
                 </include>
