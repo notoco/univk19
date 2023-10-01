@@ -389,7 +389,7 @@
             <bottom>200</bottom>
             <orientation>vertical</orientation>
             <control type="group">
-                <height>120</height>
+                <height>250</height>
                 <width>auto</width><!--notoco -->
                 <include content="Info_Title_Label">
                     <param name="colordiffuse">panel_fg</param>
@@ -397,12 +397,21 @@
                     <visible>String.IsEmpty(Window(Home).Property(TMDBHelper.Player.CropImage))</visible>
                 </include>
                 <control type="image">
-                    <height>120</height>
+                    <height>200</height>
+                    <top>0</top>
                     <aspectratio align="left">keep</aspectratio>
                     <fadetime>600</fadetime>
                     <texture background="true">$INFO[Window(Home).Property(TMDBHelper.Player.CropImage)]</texture>
                     <visible>!String.IsEmpty(Window(Home).Property(TMDBHelper.Player.CropImage))</visible>
                 </control>
+                <control type="label">
+                    <bottom>-200</bottom>
+                    <font>font_main</font>
+                    <label>$VAR[Label_OSD_Title]</label>
+                    <textcolor>main_fg_70</textcolor>
+                    <visible>!String.IsEmpty(Window(Home).Property(TMDBHelper.Player.CropImage))</visible>
+                </control>
+
             </control>
             <control type="group">
                 <height>40</height>
