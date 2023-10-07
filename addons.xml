@@ -1,49 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="script.notoco.helper" name="pomocnik notoco" version="1.5.0" provider-name="notoco">
-    <requires>
-        <import addon="xbmc.python" version="3.0.0"/>
-        <import addon="script.module.requests"/>
-    </requires>
-    <extension point="xbmc.python.script" library="addon.py" />
-    <extension point="xbmc.service" library="autoexec.py" />
-    <extension point="xbmc.addon.metadata">
-        <platform>windows</platform>
-        <summary lang="en">Pomocne skróty</summary>
-        <assets>
-            <icon>icon.png</icon>
-        </assets>
-    </extension>
-</addon>
-
-<addon id="skin.arctic.horizon.2" name="Arctic Horizon 2" provider-name="jurialmunkey" version="0.8.25">
-    <requires>
-        <import addon="xbmc.gui" version="5.15.0" />
-        <import addon="script.skinshortcuts" version="0.4.0" />
-        <import addon="script.skinvariables" version="1.0.0" />
-        <import addon="script.texturemaker" version="0.2.8" />
-        <import addon="plugin.video.themoviedb.helper" version="5.1.11~nexus" />
-        <import addon="resource.images.weathericons.white" version="0.0.1" />
-        <import addon="resource.images.studios.coloured" version="0.0.1" />
-        <import addon="resource.font.robotocjksc" version="0.0.1" />
-    </requires>
-    <extension debugging="false" defaultthemename="Textures.xbt" effectslowdown="1" point="xbmc.gui.skin">
-        <res aspect="16:9" default="true" folder="1080i" height="1080" width="1920" />
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en">Minimal. Classic. Gradients. Widgets.</summary>
-        <description lang="en">Arctic Horizon 2</description>
-        <platform>all</platform>
-        <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
-        <forum />
-        <source />
-        <assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
-        </assets>
-    </extension>
-</addon>
-
 <addon id="script.service.hyperion-control" name="Hyperion Control" version="20.0.1" provider-name="hyperion-project">
   <requires>
 	<import addon="xbmc.addon"  version="20.0.0"/>
@@ -88,231 +44,6 @@
 		<screenshot>resources/screenshot-01.png</screenshot>
 	</assets>
   </extension>
-</addon>
-
-<addon id="plugin.video.favourites" version="0.1.0" name="Video Favourites" provider-name="primaeval">
-    <requires>
-        <import addon="xbmc.python" version="3.0.0"/>
-        <import addon="script.module.xbmcswift2" version="2.4.0"/>
-        <import addon="script.module.requests" version="2.9.1"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource" library="main.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en">Video Favourites</summary>
-        <description lang="en"/>
-        <disclaimer lang="en"/>
-    </extension>
-    <extension point="kodi.context.item">
-        <menu id="kodi.core.main">
-
-            <item library="add_item_context.py">
-                <label>Add to video favorites</label>
-                <visible>true</visible>
-            </item>
-
-        </menu>
-    </extension>
-</addon>
-
-<addon id="skin.arctic.horizon.notoco" name="Arctic Horizon Notoco" provider-name="jurialmunkey+notoco" version="2022.11.16.0">
-    <requires>
-        <import addon="xbmc.gui" version="5.15.0" />
-        <import addon="script.skinshortcuts" version="0.4.0" />
-        <import addon="script.skinvariables" version="0.2.3" />
-        <import addon="script.image.resource.select" version="0.0.5" />
-        <import addon="plugin.video.themoviedb.helper" version="4.2.3" />
-        <import addon="resource.images.studios.white" version="0.0.10" />
-        <import addon="resource.images.studios.coloured" version="0.0.19" />
-        <import addon="resource.images.weathericons.white" version="0.0.1" />
-        <import addon="resource.images.moviegenreicons.transparent" version="0.0.6" />
-        <import addon="resource.images.moviecountryicons.maps" version="0.0.1" />
-        <import addon="resource.images.arctic.waves" version="0.0.1" optional="true" />
-    </requires>
-    <extension debugging="false" defaultthemename="Textures.xbt" effectslowdown="1" point="xbmc.gui.skin">
-        <res aspect="16:9" default="true" folder="1080i" height="1080" width="1920" />
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en">Minimal. Simple.</summary>
-        <summary lang="es">Mínimo. Simple.</summary>
-        <description lang="en">Arctic Horizon is a minimalistic skin with an emphasis on simplicity.</description>
-        <description lang="es">Arctic Horizon es un skin minimalista con énfasis en la simplicidad.</description>
-        <platform>all</platform>
-        <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
-        <forum />
-        <source />
-        <assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
-            <screenshot>resources/screenshot-01.jpg</screenshot>
-            <screenshot>resources/screenshot-02.jpg</screenshot>
-            <screenshot>resources/screenshot-03.jpg</screenshot>
-            <screenshot>resources/screenshot-04.jpg</screenshot>
-            <screenshot>resources/screenshot-05.jpg</screenshot>
-            <screenshot>resources/screenshot-06.jpg</screenshot>
-            <screenshot>resources/screenshot-07.jpg</screenshot>
-        </assets>
-    </extension>
-</addon>
-
-<addon id="plugin.program.simple.favourites"
-       version="0.1.17"
-       name="Simple Favourites"
-       provider-name="primaeval">
-    <requires>
-        <import addon="xbmc.python" version="3.0.0"/>
-        <import addon="script.module.xbmcswift2"/>
-        <import addon="script.module.requests"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource" library="main.py">
-        <provides>executable</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en">Simple Favourites</summary>
-        <description lang="en"/>
-        <disclaimer lang="en">.</disclaimer>
-    </extension>
-    <extension point="kodi.context.item">
-        <menu id="kodi.core.main">
-
-            <item library="add_item_context.py">
-                <label>Add to simple favorites</label>
-                <visible>true</visible>
-            </item>
-
-        </menu>
-    </extension>
-</addon>
-
-<addon id="repository.notoco.univ19" name="Notoco Univ Repo" version="3.1" provider-name="notoco">
-        <extension point="xbmc.addon.repository" name="Notoco Univ Repo">
-            <dir minversion="18.9.0">
-                <info>https://github.com/notoco/univk19/raw/master/addons.xml</info>
-                <checksum>https://github.com/notoco/univk19/raw/master/addons.xml.md5</checksum>
-                <datadir zip="true">https://github.com/notoco/univk19/raw/master/zip</datadir>
-            </dir>
-        <dir>
-            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/addons.xml</info>
-            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/</datadir>
-        </dir>
-		<dir minversion="18.0" maxversion="18.9.0">
-            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/leia/zips/addons.xml</info>
-            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/leia/zips/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/leia/zips/</datadir>
-        </dir>
-        <dir minversion="18.9.0" maxversion="19.9.0">
-            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/addons.xml</info>
-            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/</datadir>
-        </dir>
-        <dir minversion="19.9.1">
-            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/addons.xml</info>
-            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/</datadir>
-        </dir>
-        </extension>
-        <extension point="xbmc.addon.metadata">
-            <summary>Notoco Univ Repo</summary>
-            <description>Prywatne repozytorium notoco</description>
-            <platform>all</platform>
-            <assets>
-                <icon>icon.png</icon>
-            </assets>
-        </extension>
-    </addon>
-
-<addon id="skin.arctic.horizon.2.notoco" name="Arctic Horizon 2 NOTOCO" provider-name="jurialmunkey - notoco mod" version="2023.09.25.0">
-    <requires>
-        <import addon="xbmc.gui" version="5.15.0" />
-        <import addon="script.skinshortcuts" version="0.4.0" />
-        <import addon="script.skinvariables" version="1.0.0" />
-        <import addon="script.texturemaker" version="0.2.8" />
-        <import addon="plugin.video.themoviedb.helper" version="5.1.11~nexus" />
-        <import addon="resource.images.weathericons.white" version="0.0.1" />
-        <import addon="resource.images.studios.coloured" version="0.0.1" />
-        <import addon="resource.font.robotocjksc" version="0.0.1" />
-    </requires>
-    <extension debugging="false" defaultthemename="Textures.xbt" effectslowdown="1" point="xbmc.gui.skin">
-        <res aspect="16:9" default="true" folder="1080i" height="1080" width="1920" />
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en">Minimal. Classic. Gradients. Widgets.</summary>
-        <description lang="en">Arctic Horizon 2</description>
-        <platform>all</platform>
-        <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
-        <forum />
-        <source />
-        <assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
-        </assets>
-    </extension>
-</addon>
-
-<addon id="script.audio.profiles" name="Audio Profiles" version="2.2.4" provider-name="pkscout, notoco, Regss">
-	<requires>
-        <import addon="xbmc.python" version="3.0.0" />
-	</requires>
-	<extension point="xbmc.python.script" library="default.py"/>
-	<extension point="xbmc.service" library="service.py" />
-	<extension point="xbmc.addon.metadata">
-		<news>
-v.2.1.1
-- fix for depreciated call that was removed from Nexus
-		</news>
-		<assets>
-			<icon>icon.png</icon>
-		</assets>
-		<summary lang="en_GB">Save audio profile and easily switch between them.</summary>
-		<summary lang="es_AR">Guarde el perfil de audio y cambie fácilmente entre ellos.</summary>
-		<summary lang="es_ES">Guarde el perfil de audio y cambie fácilmente entre ellos.</summary>
-		<summary lang="es_MX">Guarde el perfil de audio y cambie fácilmente entre ellos.</summary>
-		<summary lang="hu_HU">Hangbeállítások profilba mentése, és könnyű váltás közöttük.</summary>
-		<summary lang="it_IT">Salva il profilo audio e cambia facilmente da uno all'altro.</summary>
-		<summary lang="pl_PL">Zapisuje profile ustawień audio i łatwo przełącza między nimi.</summary>
-		<description lang="en_GB">Save audio profile and easily switch between them.</description>
-		<description lang="es_AR">Guarde el perfil de audio y cambie fácilmente entre ellos.</description>
-		<description lang="es_ES">Guarde el perfil de audio y cambie fácilmente entre ellos.</description>
-		<description lang="es_MX">Guarde el perfil de audio y cambie fácilmente entre ellos.</description>
-		<description lang="hu_HU">Hangbeállítások profilba mentése, és könnyű váltás közöttük.</description>
-		<description lang="it_IT">Salva il profilo audio e cambia facilmente da uno all'altro.</description>
-		<description lang="pl_PL">Zapisuje profile ustawień audio i łatwo przełącza między nimi.</description>
-		<platform>all</platform>
-		<license>GPL-3.0-only</license>
-		<forum>https://forum.kodi.tv/showthread.php?tid=353852</forum>
-		<website>https://kodi.wiki/view/Add-on:Audio_Profiles</website>
-		<source>https://github.com/pkscout/script.audio.profiles</source>
-	</extension>
-</addon>
-
-<addon id="context.video.favourites"
-version="0.1.0"
-name="Video Favourites Context Menu"
-provider-name="primaeval">
-<requires>
-  <import addon="xbmc.python" version="3.0.0"/>
-  <import addon="script.module.xbmcswift2" version="2.4.0"/>
-  <import addon="script.module.requests" version="2.9.1" />
-  <import addon="plugin.video.favourites" version="0.0.1" />
-</requires>
-<extension point="kodi.context.item">
-<menu id="kodi.core.main">
-  <item library="context.py">
-    <label>Dodaj do[COLOR darkorange] Video Favourites[/COLOR]</label>
-    <visible>True</visible>
-  </item>
-</menu>
-</extension>
-<extension point="xbmc.addon.metadata">
-  <summary lang="en">Video Favourites Context Menu</summary>
-  <description lang="en"></description>
-  <disclaimer lang="en">.</disclaimer>
-  <assets>
-    <icon>icon.png</icon>
-  </assets>
-</extension>
 </addon>
 
 <addon id="service.upnext" name="UpNext" version="2.0.26+dev.0" provider-name="im85288">
@@ -374,7 +105,182 @@ Många befintliga tillägg integreras redan med den här utanför lådan-tjänst
     </extension>
 </addon>
 
-<addon id="service.upnext" name="UpNext" version="2023.09.25.0" provider-name="im85288">
+<addon id="context.video.favourites"
+version="0.1.0"
+name="Video Favourites Context Menu"
+provider-name="primaeval">
+<requires>
+  <import addon="xbmc.python" version="3.0.0"/>
+  <import addon="script.module.xbmcswift2" version="2.4.0"/>
+  <import addon="script.module.requests" version="2.9.1" />
+  <import addon="plugin.video.favourites" version="0.0.1" />
+</requires>
+<extension point="kodi.context.item">
+<menu id="kodi.core.main">
+  <item library="context.py">
+    <label>Dodaj do[COLOR darkorange] Video Favourites[/COLOR]</label>
+    <visible>True</visible>
+  </item>
+</menu>
+</extension>
+<extension point="xbmc.addon.metadata">
+  <summary lang="en">Video Favourites Context Menu</summary>
+  <description lang="en"></description>
+  <disclaimer lang="en">.</disclaimer>
+  <assets>
+    <icon>icon.png</icon>
+  </assets>
+</extension>
+</addon>
+
+<addon id="skin.arctic.horizon.notoco" name="Arctic Horizon Notoco" provider-name="jurialmunkey+notoco" version="2022.11.16.0">
+    <requires>
+        <import addon="xbmc.gui" version="5.15.0" />
+        <import addon="script.skinshortcuts" version="0.4.0" />
+        <import addon="script.skinvariables" version="0.2.3" />
+        <import addon="script.image.resource.select" version="0.0.5" />
+        <import addon="plugin.video.themoviedb.helper" version="4.2.3" />
+        <import addon="resource.images.studios.white" version="0.0.10" />
+        <import addon="resource.images.studios.coloured" version="0.0.19" />
+        <import addon="resource.images.weathericons.white" version="0.0.1" />
+        <import addon="resource.images.moviegenreicons.transparent" version="0.0.6" />
+        <import addon="resource.images.moviecountryicons.maps" version="0.0.1" />
+        <import addon="resource.images.arctic.waves" version="0.0.1" optional="true" />
+    </requires>
+    <extension debugging="false" defaultthemename="Textures.xbt" effectslowdown="1" point="xbmc.gui.skin">
+        <res aspect="16:9" default="true" folder="1080i" height="1080" width="1920" />
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">Minimal. Simple.</summary>
+        <summary lang="es">Mínimo. Simple.</summary>
+        <description lang="en">Arctic Horizon is a minimalistic skin with an emphasis on simplicity.</description>
+        <description lang="es">Arctic Horizon es un skin minimalista con énfasis en la simplicidad.</description>
+        <platform>all</platform>
+        <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
+        <forum />
+        <source />
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+            <screenshot>resources/screenshot-01.jpg</screenshot>
+            <screenshot>resources/screenshot-02.jpg</screenshot>
+            <screenshot>resources/screenshot-03.jpg</screenshot>
+            <screenshot>resources/screenshot-04.jpg</screenshot>
+            <screenshot>resources/screenshot-05.jpg</screenshot>
+            <screenshot>resources/screenshot-06.jpg</screenshot>
+            <screenshot>resources/screenshot-07.jpg</screenshot>
+        </assets>
+    </extension>
+</addon>
+
+<addon id="plugin.video.favourites" version="0.1.0" name="Video Favourites" provider-name="primaeval">
+    <requires>
+        <import addon="xbmc.python" version="3.0.0"/>
+        <import addon="script.module.xbmcswift2" version="2.4.0"/>
+        <import addon="script.module.requests" version="2.9.1"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="main.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">Video Favourites</summary>
+        <description lang="en"/>
+        <disclaimer lang="en"/>
+    </extension>
+    <extension point="kodi.context.item">
+        <menu id="kodi.core.main">
+
+            <item library="add_item_context.py">
+                <label>Add to video favorites</label>
+                <visible>true</visible>
+            </item>
+
+        </menu>
+    </extension>
+</addon>
+
+<addon id="script.notoco.helper" name="pomocnik notoco" version="1.5.0" provider-name="notoco">
+    <requires>
+        <import addon="xbmc.python" version="3.0.0"/>
+        <import addon="script.module.requests"/>
+    </requires>
+    <extension point="xbmc.python.script" library="addon.py" />
+    <extension point="xbmc.service" library="autoexec.py" />
+    <extension point="xbmc.addon.metadata">
+        <platform>windows</platform>
+        <summary lang="en">Pomocne skróty</summary>
+        <assets>
+            <icon>icon.png</icon>
+        </assets>
+    </extension>
+</addon>
+
+<addon id="script.audio.profiles" name="Audio Profiles" version="2.2.4" provider-name="pkscout, notoco, Regss">
+	<requires>
+        <import addon="xbmc.python" version="3.0.0" />
+	</requires>
+	<extension point="xbmc.python.script" library="default.py"/>
+	<extension point="xbmc.service" library="service.py" />
+	<extension point="xbmc.addon.metadata">
+		<news>
+v.2.1.1
+- fix for depreciated call that was removed from Nexus
+		</news>
+		<assets>
+			<icon>icon.png</icon>
+		</assets>
+		<summary lang="en_GB">Save audio profile and easily switch between them.</summary>
+		<summary lang="es_AR">Guarde el perfil de audio y cambie fácilmente entre ellos.</summary>
+		<summary lang="es_ES">Guarde el perfil de audio y cambie fácilmente entre ellos.</summary>
+		<summary lang="es_MX">Guarde el perfil de audio y cambie fácilmente entre ellos.</summary>
+		<summary lang="hu_HU">Hangbeállítások profilba mentése, és könnyű váltás közöttük.</summary>
+		<summary lang="it_IT">Salva il profilo audio e cambia facilmente da uno all'altro.</summary>
+		<summary lang="pl_PL">Zapisuje profile ustawień audio i łatwo przełącza między nimi.</summary>
+		<description lang="en_GB">Save audio profile and easily switch between them.</description>
+		<description lang="es_AR">Guarde el perfil de audio y cambie fácilmente entre ellos.</description>
+		<description lang="es_ES">Guarde el perfil de audio y cambie fácilmente entre ellos.</description>
+		<description lang="es_MX">Guarde el perfil de audio y cambie fácilmente entre ellos.</description>
+		<description lang="hu_HU">Hangbeállítások profilba mentése, és könnyű váltás közöttük.</description>
+		<description lang="it_IT">Salva il profilo audio e cambia facilmente da uno all'altro.</description>
+		<description lang="pl_PL">Zapisuje profile ustawień audio i łatwo przełącza między nimi.</description>
+		<platform>all</platform>
+		<license>GPL-3.0-only</license>
+		<forum>https://forum.kodi.tv/showthread.php?tid=353852</forum>
+		<website>https://kodi.wiki/view/Add-on:Audio_Profiles</website>
+		<source>https://github.com/pkscout/script.audio.profiles</source>
+	</extension>
+</addon>
+
+<addon id="plugin.program.simple.favourites"
+       version="0.1.17"
+       name="Simple Favourites"
+       provider-name="primaeval">
+    <requires>
+        <import addon="xbmc.python" version="3.0.0"/>
+        <import addon="script.module.xbmcswift2"/>
+        <import addon="script.module.requests"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="main.py">
+        <provides>executable</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">Simple Favourites</summary>
+        <description lang="en"/>
+        <disclaimer lang="en">.</disclaimer>
+    </extension>
+    <extension point="kodi.context.item">
+        <menu id="kodi.core.main">
+
+            <item library="add_item_context.py">
+                <label>Add to simple favorites</label>
+                <visible>true</visible>
+            </item>
+
+        </menu>
+    </extension>
+</addon>
+
+<addon id="service.upnext" name="UpNext" version="2023.10.07.0" provider-name="im85288">
     <requires>
         <import addon="xbmc.python" version="3.0.0" optional="true"/>
         <import addon="script.module.pil" version="1.1.7"/>
@@ -431,4 +337,70 @@ Många befintliga tillägg integreras redan med den här utanför lådan-tjänst
         </assets>
     </extension>
 </addon>
+
+<addon id="skin.arctic.horizon.2.notoco" name="Arctic Horizon 2 NOTOCO" provider-name="jurialmunkey - notoco mod" version="2023.09.25.0">
+    <requires>
+        <import addon="xbmc.gui" version="5.15.0" />
+        <import addon="script.skinshortcuts" version="0.4.0" />
+        <import addon="script.skinvariables" version="1.0.0" />
+        <import addon="script.texturemaker" version="0.2.8" />
+        <import addon="plugin.video.themoviedb.helper" version="5.1.11~nexus" />
+        <import addon="resource.images.weathericons.white" version="0.0.1" />
+        <import addon="resource.images.studios.coloured" version="0.0.1" />
+        <import addon="resource.font.robotocjksc" version="0.0.1" />
+    </requires>
+    <extension debugging="false" defaultthemename="Textures.xbt" effectslowdown="1" point="xbmc.gui.skin">
+        <res aspect="16:9" default="true" folder="1080i" height="1080" width="1920" />
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">Minimal. Classic. Gradients. Widgets.</summary>
+        <description lang="en">Arctic Horizon 2</description>
+        <platform>all</platform>
+        <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
+        <forum />
+        <source />
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>
+
+<addon id="repository.notoco.univ19" name="Notoco Univ Repo" version="3.1" provider-name="notoco">
+        <extension point="xbmc.addon.repository" name="Notoco Univ Repo">
+            <dir minversion="18.9.0">
+                <info>https://github.com/notoco/univk19/raw/master/addons.xml</info>
+                <checksum>https://github.com/notoco/univk19/raw/master/addons.xml.md5</checksum>
+                <datadir zip="true">https://github.com/notoco/univk19/raw/master/zip</datadir>
+            </dir>
+        <dir>
+            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/</datadir>
+        </dir>
+		<dir minversion="18.0" maxversion="18.9.0">
+            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/leia/zips/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/leia/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/leia/zips/</datadir>
+        </dir>
+        <dir minversion="18.9.0" maxversion="19.9.0">
+            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/</datadir>
+        </dir>
+        <dir minversion="19.9.1">
+            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/</datadir>
+        </dir>
+        </extension>
+        <extension point="xbmc.addon.metadata">
+            <summary>Notoco Univ Repo</summary>
+            <description>Prywatne repozytorium notoco</description>
+            <platform>all</platform>
+            <assets>
+                <icon>icon.png</icon>
+            </assets>
+        </extension>
+    </addon>
 </addons>
