@@ -87,12 +87,10 @@ def add_favourite(favourites_file, name, url, thumbnail, fanart, playable):
         data = '<favourites>\n</favourites>'
     if playable == "True":
         filetype = "file"
-    elif url.find("action=play")!=-1:
-        filetype = "file"
     else:
         filetype = "folder"
-    fav = '    <favourite name="%s" filetype="%s" thumb="%s" fanart="%s">%s</favourite>\n</favourites>' % (
-        name, filetype, thumbnail, fanart, url)
+    fav = '    <favourite name="%s" filetype="%s" thumb="%s">%s</favourite>\n</favourites>' % (
+        name, filetype, thumbnail, url)
     data = data.replace('</favourites>', fav)
     f = xbmcvfs.File(favourites_file, "wb")
     f.write(unquote(html.unescape(data)))
@@ -110,38 +108,36 @@ def move_favourite(favourites_file, name, url):
     favs = []
     for fav in favourites:
         fav_url = ''
-        match = re.search('<favourite name="(.*?)" filetype="(.*?)" thumb="(.*?)" fanart="(.*?)">(.*?)<', fav)
+        match = re.search('<favourite name="(.*?)" filetype="(.*?)" thumb="(.*?)">(.*?)<', fav)
         if match:
             label = match.group(1)
             filetype = match.group(2)
             thumbnail = match.group(3)
-            fanart = match.group(4)
-            fav_url = match.group(5)
+            fav_url = match.group(4)
         if url == fav_url:
             fav_thumbnail = thumbnail
-            fav_fanart = fanart
             fav_filetype = filetype
             continue
-        favs.append((label, filetype, thumbnail, fanart, fav_url))
+        favs.append((label, filetype, thumbnail, fav_url))
 
     labels = [x[0] for x in favs]
     d = xbmcgui.Dialog()
     where = d.select("Move [ %s ] After" % name, labels)
     if where > -1 and where < len(favs):
-        favs.insert(where + 1, (name, fav_filetype, fav_thumbnail, fav_fanart, url))
+        favs.insert(where + 1, (name, fav_filetype, fav_thumbnail, url))
 
     f = xbmcvfs.File(favourites_file, "wb")
     f.write("<favourites>\n")
     for fav in favs:
-        str = '    <favourite name="%s" filetype="%s" thumb="%s" fanart="%s">%s</favourite>\n' % fav
+        str = '    <favourite name="%s" filetype="%s" thumb="%s">%s</favourite>\n' % fav
         f.write(str)
     f.write("</favourites>")
     f.close()
     xbmc.executebuiltin('Container.Refresh')
 
 
-@plugin.route('/move_favourite_to_folder/<favourites_file>/<name>/<url>/<thumbnail>/<fanart>/<filetype>')
-def move_favourite_to_folder(favourites_file, name, url, thumbnail, fanart, filetype):
+@plugin.route('/move_favourite_to_folder/<favourites_file>/<name>/<url>/<thumbnail>/<filetype>')
+def move_favourite_to_folder(favourites_file, name, url, thumbnail, filetype):
     d = xbmcgui.Dialog()
     top_folder = 'special://profile/addon_data/%s/folders/' % addon_id()
     where = d.browse(0, 'Choose Folder', 'files', '', False, True, top_folder)
@@ -152,7 +148,7 @@ def move_favourite_to_folder(favourites_file, name, url, thumbnail, fanart, file
         return
     remove_favourite(favourites_file, name, url)
     favourites_file = "%sfavourites.xml" % where
-    add_favourite(favourites_file, name, url, thumbnail, fanart, filetype)
+    add_favourite(favourites_file, name, url, thumbnail, None, filetype)
 
 
 @plugin.route('/remove_favourite/<favourites_file>/<name>/<url>')
@@ -201,22 +197,6 @@ def change_favourite_thumbnail(favourites_file, thumbnail, fav):
     f.close()
     xbmc.executebuiltin('Container.Refresh')
 
-@plugin.route('/change_favourite_fanart/<favourites_file>/<fanart>/<fav>')
-def change_favourite_fanart(favourites_file, fanart, fav):
-    d = xbmcgui.Dialog()
-    new_fanart = d.browse(2, 'Choose Image', 'files')
-    if not new_fanart:
-        return
-    f = xbmcvfs.File(favourites_file, "rb")
-    data = f.read()
-    f.close()
-    new_fav = fav.replace('fanart="%s"' % fanart, 'fanart="%s"' % escape(new_fanart))
-    data = data.replace(fav, new_fav)
-    f = xbmcvfs.File(favourites_file, "wb")
-    f.write(data)
-    f.close()
-    xbmc.executebuiltin('Container.Refresh')
-
 
 @plugin.route('/favourites/<folder_path>')
 def favourites(folder_path):
@@ -227,13 +207,12 @@ def favourites(folder_path):
     favourites = re.findall("<favourite.*?</favourite>", data)
     for fav in favourites:
         url = ''
-        match = re.search('<favourite name="(.*?)" filetype="(.*?)" thumb="(.*?)" fanart="(.*?)">(.*?)<', fav)
+        match = re.search('<favourite name="(.*?)" filetype="(.*?)" thumb="(.*?)">(.*?)<', fav)
         if match:
             label = match.group(1)
             filetype = match.group(2)
             thumbnail = match.group(3)
-            fanart = match.group(4)
-            url = match.group(5)
+            url = match.group(4)
         if url:
             context_items = []
             if plugin.get_setting('add') == 'false':
@@ -244,16 +223,14 @@ def favourites(folder_path):
                     plugin.url_for(move_favourite, favourites_file=favourites_file, name=label, url=url))))
             context_items.append(("[COLOR yellow][B]%s[/B][/COLOR] " % 'Move to Folder', 'RunPlugin(%s)' % (
                 plugin.url_for(move_favourite_to_folder, favourites_file=favourites_file, name=label, url=url,
-                               thumbnail=thumbnail, fanart=fanart, filetype=filetype))))
+                               thumbnail=thumbnail, filetype=filetype))))
             context_items.append(("[COLOR yellow][B]%s[/B][/COLOR] " % 'Remove', 'RunPlugin(%s)' % (
                 plugin.url_for(remove_favourite, favourites_file=favourites_file, name=label, url=url))))
             context_items.append(("[COLOR yellow][B]%s[/B][/COLOR] " % 'Rename', 'RunPlugin(%s)' % (
                 plugin.url_for(rename_favourite, favourites_file=favourites_file, name=label, fav=fav))))
-            context_items.append(("[COLOR yellow][B]%s[/B][/COLOR] " % 'Change Thumbnail', 'RunPlugin(%s)' % (
+            context_items.append(("[COLOR yellow][B]%s[/B][/COLOR] " % 'Change Image', 'RunPlugin(%s)' % (
                 plugin.url_for(change_favourite_thumbnail, favourites_file=favourites_file, thumbnail=thumbnail,
                                fav=fav))))
-            context_items.append(("[COLOR yellow][B]%s[/B][/COLOR] " % 'Change Fanart', 'RunPlugin(%s)' % (
-                plugin.url_for(change_favourite_fanart, favourites_file=favourites_file, fanart=fanart, fav=fav))))
             if filetype == "file":
                 is_playable = True
             else:
@@ -261,7 +238,7 @@ def favourites(folder_path):
             items.append({'label': unescape(label), 'path': url,  # plugin.url_for('execute',url=unescape(url)),
                           # 'path': plugin.url_for('play',url=unescape(url)),
                           'thumbnail': unescape(thumbnail), 'context_menu': context_items, 'is_playable': is_playable,
-                          'info_type': 'Video', 'info': {"mediatype": "episode", "title": unescape(label)}, 'properties': {'Fanart_Image': fanart}})
+                          'info_type': 'Video', 'info': {"mediatype": "episode", "title": unescape(label)}, })
     plugin.set_content("episodes")
     return items
 
@@ -287,25 +264,13 @@ def add_favourites(path):
         match = re.search('thumb="(.*?)"', fav)
         if match:
             thumbnail = match.group(1)
-        fanart = 'none'
-        match = re.search('fanart="(.*?)"', fav)
-        if match:
-            fanart = match.group(1)
-        if not fanart.strip():
-            fanart = 'none'
-        if url == fav_url:
-            fav_thumbnail = thumbnail
-            fav_fanart = fanart
-            continue
         if url:
             context_items = []
             context_items.append(("[COLOR yellow][B]%s[/B][/COLOR] " % 'Add', 'RunPlugin(%s)' % (
                 plugin.url_for(add_favourite, favourites_file=output_file, name=label, url=transform(url),
-                               thumbnail=thumbnail, fanart=fanart, playable=True))))
+                               thumbnail=thumbnail, fanart=" ", playable=True))))
             item = {'label': unescape(label), 'path': url,  # plugin.url_for('execute',url=unescape(url)),
                     'thumbnail': unescape(thumbnail), 'context_menu': context_items, }
-            if fanart != 'none':
-                item['properties'] = {'Fanart_Image': fanart}
             items.append(item)
     return items
 
@@ -325,8 +290,6 @@ def add_folder(path):
     folder_icon = get_icon_path('folder')
     icon_file = path + "icon.txt"
     xbmcvfs.File(icon_file, "wb").write(folder_icon)
-    fanart_file = path + "fanart.txt"
-    xbmcvfs.File(fanart_file, "wb").write('none')
 
 
 def remove_files(path):
@@ -378,21 +341,11 @@ def change_folder_thumbnail(path):
     xbmcvfs.File(icon_file, "wb").write(new_thumbnail)
     xbmc.executebuiltin('Container.Refresh')
 
-@plugin.route('/change_folder_fanart/<path>')
-def change_folder_fanart(path):
-    d = xbmcgui.Dialog()
-    new_fanart = d.browse(2, 'Choose Image', 'files')
-    if not new_fanart:
-        return
-    fanart_file = "%sfanart.txt" % path
-    xbmcvfs.File(fanart_file, "wb").write(new_fanart)
-    xbmc.executebuiltin('Container.Refresh')
-
 
 @plugin.route('/add_addons_folder/<favourites_file>/<media>/<path>')
 def add_addons_folder(favourites_file, media, path):
     try:
-        response = RPC.files.get_directory(media=media, directory=path, properties=["thumbnail", "fanart"])
+        response = RPC.files.get_directory(media=media, directory=path, properties=["thumbnail"])
     except:
         return
     files = response["files"]
@@ -416,9 +369,6 @@ def add_addons_folder(favourites_file, media, path):
                     thumbnail = thumbnail[-1]
                 else:
                     thumbnail = ""
-        fanart = f.get('fanart', 'none')
-        if not fanart.strip():
-            fanart = 'none'
         context_items = []
         if f['filetype'] == 'directory':
             if media == "video":
@@ -431,7 +381,7 @@ def add_addons_folder(favourites_file, media, path):
             # play_url = url
             context_items.append(("[COLOR yellow][B]%s[/B][/COLOR] " % 'Add', 'RunPlugin(%s)' % (
                 plugin.url_for(add_favourite, favourites_file=favourites_file, name=label.encode("utf8"), url=play_url,
-                               thumbnail=thumbnail, fanart=fanart, playable=False))))
+                               thumbnail=thumbnail, fanart=" ", playable=False))))
             dir_items.append({'label': "[B]%s[/B]" % label,
                               'path': plugin.url_for('add_addons_folder', favourites_file=favourites_file,
                                                      media="files", path=url), 'thumbnail': f['thumbnail'],
@@ -441,7 +391,7 @@ def add_addons_folder(favourites_file, media, path):
             play_url = url
             context_items.append(("[COLOR yellow][B]%s[/B][/COLOR] " % 'Add', 'RunPlugin(%s)' % (
                 plugin.url_for(add_favourite, favourites_file=favourites_file, name=label.encode("utf8"), url=play_url,
-                               thumbnail=thumbnail, fanart=fanart, playable=True))))
+                               thumbnail=thumbnail, fanart=" ", playable=True))))
             file_items.append({'label': "%s" % label, 'path': url,  # plugin.url_for('play',url=url),
                                'thumbnail': f['thumbnail'], 'context_menu': context_items, 'is_playable': True, })
     return sorted(dir_items, key=lambda x: x["label"].lower()) + sorted(file_items, key=lambda x: x["label"].lower())
@@ -493,8 +443,6 @@ def index_of(path=None, silent=False):
         folder_path = "%s%s/" % (path, folder)
         thumbnail_file = "%sicon.txt" % folder_path
         thumbnail = xbmcvfs.File(thumbnail_file, "rb").read()
-        fanart_file = "%sfanart.txt" % folder_path
-        fanart = xbmcvfs.File(fanart_file, "rb").read()
         context_items = []
         if plugin.get_setting('add') == 'false':
             context_items.append(("[COLOR yellow][B]%s[/B][/COLOR] " % 'Add Menu',
@@ -505,8 +453,6 @@ def index_of(path=None, silent=False):
                               'RunPlugin(%s)' % (plugin.url_for(rename_folder, path=path, name=folder))))
         context_items.append(("[COLOR yellow][B]%s[/B][/COLOR] " % 'Change Image',
                               'RunPlugin(%s)' % (plugin.url_for(change_folder_thumbnail, path=folder_path))))
-        context_items.append(("[COLOR yellow][B]%s[/B][/COLOR] " % 'Change Fanart',
-                              'RunPlugin(%s)' % (plugin.url_for(change_folder_fanart, path=folder_path))))
         items.append({'label': folder, 'path': plugin.url_for('index_of', path=folder_path), 'thumbnail': thumbnail,
                       'context_menu': context_items, })
 
