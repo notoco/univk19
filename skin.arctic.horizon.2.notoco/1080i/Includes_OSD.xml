@@ -393,6 +393,7 @@
                 <width>auto</width><!--notoco -->
                 <include content="Info_Title_Label">
                     <param name="colordiffuse">panel_fg</param>
+                    <top>140</top>
                     <param name="label">$VAR[Label_OSD_Title]</param>
                     <visible>String.IsEmpty(Window(Home).Property(TMDBHelper.Player.CropImage))</visible>
                 </include>
@@ -411,7 +412,6 @@
                     <textcolor>main_fg_70</textcolor>
                     <visible>!String.IsEmpty(Window(Home).Property(TMDBHelper.Player.CropImage))</visible>
                 </control>
-
             </control>
             <control type="group">
                 <height>40</height>
