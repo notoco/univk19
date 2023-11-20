@@ -1837,7 +1837,7 @@
             <control type="group">
                 <nested />
                 <control type="grouplist">
-                    <top>-60</top>
+                    <top>-40</top>
                     <hitrect x="0" y="0" w="0" h="0" />
                     <orientation>vertical</orientation>
                     <itemgap>0</itemgap>
@@ -1850,6 +1850,7 @@
                     </include>
                     <control type="group">
                         <height>40</height>
+                        <top>10</top>
                         <visible>$PARAM[infoline]</visible>
                         <include content="Info_Line">
                             <param name="colordiffuse" value="$PARAM[colordiffuse]" />
