@@ -1,109 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="script.service.hyperion-control" name="Hyperion Control" version="20.0.1" provider-name="hyperion-project">
-  <requires>
-	<import addon="xbmc.addon"  version="20.0.0"/>
-    <import addon="xbmc.python" version="3.0.1"/>
-    <import addon="script.module.requests" version="2.3.0"/>
-  </requires>
-  <extension point="xbmc.service" library="service.py"/>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en_GB">Control Hyperion Ambilight</summary>
-    <summary lang="de_DE">Hyperion Ambilight Steuerung</summary>
-    <description lang="en_GB">Enable and disable components (like capture) of Hyperion automatically based on playing/screensaver state of Kodi[CR]-Supports auto detection of Hyperion Servers[CR]-Token authentication</description>
-    <description lang="de_DE">Aktiviere und deaktiviere automatisch Hyperion Komponenten basierend auf dem aktuellen Kodi Status[CR]-Unterstützt Hyperion Server suche[CR]-Token Autorisierung</description>
-    <language>en de es fr hu pl</language>
-    <platform>all</platform>
-    <license>MIT</license>
-    <forum>https://hyperion-project.org/forum</forum>
-    <website>https://hyperion-project.org/forum</website>
-    <source>https://github.com/hyperion-project/hyperion.control</source>
-    <news>
-      20.0.0
-      - Kodi 20 (Nexus) support
-      - major refactor to adhere to SOLID principles
-
-      19.0.2
-      - New languages: Español, Français, Polski
-
-      19.0.1
-      - Kodi 19 support
-      - minor cleanups and corrections
-
-      1.0.1
-      - Fixed a crash with 3d mode @b-jesch
-
-      1.0.0
-      - Added support for server search
-      - Added support token authentication
-      - Fixed issue where kodi api does not properly announce video playing states
-    </news>
-	<assets>
-		<icon>resources/icon.png</icon>
-		<fanart>resources/fanart.png</fanart>
-		<screenshot>resources/screenshot-01.png</screenshot>
-	</assets>
-  </extension>
-</addon>
-
-<addon id="service.upnext" name="UpNext" version="2.0.27+dev.0" provider-name="im85288">
-    <requires>
-        <import addon="xbmc.python" version="3.0.0"/>
-        <import addon="script.module.pil" version="1.1.7"/>
-        <import addon="script.module.dateutil" version="2.8.1"/>
-        <import addon="plugin.video.themoviedb.helper" version="5.0.46" optional="true"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource" library="resources/lib/plugin_entry.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.python.script" library="resources/lib/script_entry.py">
-        <provides>executable</provides>
-    </extension>
-    <extension point="xbmc.service" library="resources/lib/service_entry.py"/>
-    <extension point="xbmc.python.module" library="resources/lib"/>
-    <extension point="xbmc.addon.metadata">
-        <reuselanguageinvoker>true</reuselanguageinvoker>
-        <summary lang="en_GB">Propose to play the next episode automatically</summary>
-        <description lang="en_GB">A service add-on that shows a Netflix-style notification for watching the next episode. After a few automatic iterations it asks the user if he is still there watching.
-
-A lot of existing add-ons already integrate with this service out-of-the-box.</description>
-        <summary lang="de_DE">Bietet Ihnen an, die nächste Episode automatisch wiederzugeben</summary>
-        <description lang="de_DE">Ein kleines Hilfs-Add-on, welches eine Netflix-artige Benachrichtigung zur Wiedergabe der nächsten Episode anzeigt. Nach ein paar automatischen Iterationen fragt es den Anwender, ob er sie immer noch anschaut.
-
-Viele existierende Add-ons haben diesen Dienst bereits von Haus aus integriert.</description>
-        <summary lang="it_IT">Propone di riprodurre automaticamente il prossimo episodio</summary>
-        <description lang="it_IT">Un add-on di servizio che mostra una notifica in stile Netflix per guardare il prossimo episodio. Dopo alcune iterazioni automatiche, chiede all'utente se è ancora lì a guardare.
-
-Molti add-on esistenti hanno già integrato questo servizio.</description>
-        <summary lang="el_GR">Προτάση για αναπαραγωγή του επόμενου επεισοδίου αυτόματα</summary>
-        <description lang="el_GR">Ένα υπηρεσιακό πρόσθετο που δείχνει σε στύλ ειδοποίησης τύπου Νέτφλιξ για την αναπαραγωγή του επόμενου επεισοδίου. Μετά από μερικές αυτόματες εκτελέσεις, ρωτάει τον χρήστη εάν παρακολουθεί ακόμα.
-
-Πολλά από τα υπάρχοντα πρόσθετα ενσωματώνουν την λειτουργία αυτού του υπηρεσιακού προσθέτου εξ'ορισμού.</description>
-        <summary lang="sv_SE">Låter dig spela upp nästa avsnitt automatiskt</summary>
-        <description lang="sv_SE">Ett tillägg som visar en Netflix-liknande avisering för att se nästa avsnitt. Efter att några avsnitt automatiskt spelats upp frågar den användaren om han fortfarande är där och vill titta vidare.
-
-Många befintliga tillägg integreras redan med den här utanför lådan-tjänsten.</description>
-         <summary lang="ru_RU">Предлагает автоматически проиграть следующую серию</summary>
-        <description lang="ru_RU">Сервисное дополнение, которое показывает уведомление в стиле Netflix для просмотра следующей серии. После нескольких автоматических итераций спрашивает пользователя, он еще смотрит или нет.
-
-Многие существующие дополнения уже интегрированы с этим сервисом "из коробки".</description>
-        <summary lang="es_ES">Sugiere reproducir el próximo episodio automáticamente</summary>
-        <description lang="es_ES">Un complemento de servicio que muestra una notificación al estilo Netflix para ver el próximo episodio. Después de algunas iteraciones automáticas, le pregunta al usuario si todavía está allí mirando.
-
-            Muchos complementos existentes ya se integran con este servicio listo para usar.</description>
-        <platform>all</platform>
-        <license>GPL-2.0-only</license>
-        <assets>
-            <icon>resources/media/icon.png</icon>
-            <fanart>resources/media/fanart.jpg</fanart>
-            <screenshot>resources/media/screenshot01.jpg</screenshot>
-            <screenshot>resources/media/screenshot02.jpg</screenshot>
-            <screenshot>resources/media/upnext-settings.jpg</screenshot>
-            <screenshot>resources/media/upnext-developer.jpg</screenshot>
-        </assets>
-    </extension>
-</addon>
-
 <addon id="context.video.favourites"
 version="0.1.0"
 name="Video Favourites Context Menu"
@@ -130,124 +26,6 @@ provider-name="primaeval">
     <icon>icon.png</icon>
   </assets>
 </extension>
-</addon>
-
-<addon id="skin.arctic.horizon.notoco" name="Arctic Horizon Notoco" provider-name="jurialmunkey+notoco" version="2022.11.16.0">
-    <requires>
-        <import addon="xbmc.gui" version="5.15.0" />
-        <import addon="script.skinshortcuts" version="0.4.0" />
-        <import addon="script.skinvariables" version="0.2.3" />
-        <import addon="script.image.resource.select" version="0.0.5" />
-        <import addon="plugin.video.themoviedb.helper" version="4.2.3" />
-        <import addon="resource.images.studios.white" version="0.0.10" />
-        <import addon="resource.images.studios.coloured" version="0.0.19" />
-        <import addon="resource.images.weathericons.white" version="0.0.1" />
-        <import addon="resource.images.moviegenreicons.transparent" version="0.0.6" />
-        <import addon="resource.images.moviecountryicons.maps" version="0.0.1" />
-        <import addon="resource.images.arctic.waves" version="0.0.1" optional="true" />
-    </requires>
-    <extension debugging="false" defaultthemename="Textures.xbt" effectslowdown="1" point="xbmc.gui.skin">
-        <res aspect="16:9" default="true" folder="1080i" height="1080" width="1920" />
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en">Minimal. Simple.</summary>
-        <summary lang="es">Mínimo. Simple.</summary>
-        <description lang="en">Arctic Horizon is a minimalistic skin with an emphasis on simplicity.</description>
-        <description lang="es">Arctic Horizon es un skin minimalista con énfasis en la simplicidad.</description>
-        <platform>all</platform>
-        <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
-        <forum />
-        <source />
-        <assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
-            <screenshot>resources/screenshot-01.jpg</screenshot>
-            <screenshot>resources/screenshot-02.jpg</screenshot>
-            <screenshot>resources/screenshot-03.jpg</screenshot>
-            <screenshot>resources/screenshot-04.jpg</screenshot>
-            <screenshot>resources/screenshot-05.jpg</screenshot>
-            <screenshot>resources/screenshot-06.jpg</screenshot>
-            <screenshot>resources/screenshot-07.jpg</screenshot>
-        </assets>
-    </extension>
-</addon>
-
-<addon id="plugin.video.favourites" version="0.1.1" name="Video Favourites" provider-name="primaeval">
-    <requires>
-        <import addon="xbmc.python" version="3.0.0"/>
-        <import addon="script.module.xbmcswift2" version="2.4.0"/>
-        <import addon="script.module.requests" version="2.9.1"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource" library="main.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en">Video Favourites</summary>
-        <description lang="en"/>
-        <disclaimer lang="en"/>
-    </extension>
-    <extension point="kodi.context.item">
-        <menu id="kodi.core.main">
-
-            <item library="add_item_context.py">
-                <label>Add to video favorites</label>
-                <visible>true</visible>
-            </item>
-
-        </menu>
-    </extension>
-</addon>
-
-<addon id="script.notoco.helper" name="pomocnik notoco" version="1.5.0" provider-name="notoco">
-    <requires>
-        <import addon="xbmc.python" version="3.0.0"/>
-        <import addon="script.module.requests"/>
-    </requires>
-    <extension point="xbmc.python.script" library="addon.py" />
-    <extension point="xbmc.service" library="autoexec.py" />
-    <extension point="xbmc.addon.metadata">
-        <platform>windows</platform>
-        <summary lang="en">Pomocne skróty</summary>
-        <assets>
-            <icon>icon.png</icon>
-        </assets>
-    </extension>
-</addon>
-
-<addon id="script.audio.profiles" name="Audio Profiles" version="2.2.4" provider-name="pkscout, notoco, Regss">
-	<requires>
-        <import addon="xbmc.python" version="3.0.0" />
-	</requires>
-	<extension point="xbmc.python.script" library="default.py"/>
-	<extension point="xbmc.service" library="service.py" />
-	<extension point="xbmc.addon.metadata">
-		<news>
-v.2.1.1
-- fix for depreciated call that was removed from Nexus
-		</news>
-		<assets>
-			<icon>icon.png</icon>
-		</assets>
-		<summary lang="en_GB">Save audio profile and easily switch between them.</summary>
-		<summary lang="es_AR">Guarde el perfil de audio y cambie fácilmente entre ellos.</summary>
-		<summary lang="es_ES">Guarde el perfil de audio y cambie fácilmente entre ellos.</summary>
-		<summary lang="es_MX">Guarde el perfil de audio y cambie fácilmente entre ellos.</summary>
-		<summary lang="hu_HU">Hangbeállítások profilba mentése, és könnyű váltás közöttük.</summary>
-		<summary lang="it_IT">Salva il profilo audio e cambia facilmente da uno all'altro.</summary>
-		<summary lang="pl_PL">Zapisuje profile ustawień audio i łatwo przełącza między nimi.</summary>
-		<description lang="en_GB">Save audio profile and easily switch between them.</description>
-		<description lang="es_AR">Guarde el perfil de audio y cambie fácilmente entre ellos.</description>
-		<description lang="es_ES">Guarde el perfil de audio y cambie fácilmente entre ellos.</description>
-		<description lang="es_MX">Guarde el perfil de audio y cambie fácilmente entre ellos.</description>
-		<description lang="hu_HU">Hangbeállítások profilba mentése, és könnyű váltás közöttük.</description>
-		<description lang="it_IT">Salva il profilo audio e cambia facilmente da uno all'altro.</description>
-		<description lang="pl_PL">Zapisuje profile ustawień audio i łatwo przełącza między nimi.</description>
-		<platform>all</platform>
-		<license>GPL-3.0-only</license>
-		<forum>https://forum.kodi.tv/showthread.php?tid=353852</forum>
-		<website>https://kodi.wiki/view/Add-on:Audio_Profiles</website>
-		<source>https://github.com/pkscout/script.audio.profiles</source>
-	</extension>
 </addon>
 
 <addon id="plugin.program.simple.favourites"
@@ -279,89 +57,29 @@ v.2.1.1
     </extension>
 </addon>
 
-<addon id="service.upnext" name="UpNext" version="2023.12.05.0" provider-name="im85288">
+<addon id="plugin.video.favourites" version="0.1.1" name="Video Favourites" provider-name="primaeval">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
-        <import addon="script.module.pil" version="1.1.7"/>
-        <import addon="script.module.dateutil" version="2.8.1"/>
-        <import addon="plugin.video.themoviedb.helper" version="5.0.46" optional="true"/>
+        <import addon="script.module.xbmcswift2" version="2.4.0"/>
+        <import addon="script.module.requests" version="2.9.1"/>
     </requires>
-    <extension point="xbmc.python.pluginsource" library="resources/lib/plugin_entry.py">
+    <extension point="xbmc.python.pluginsource" library="main.py">
         <provides>video</provides>
     </extension>
-    <extension point="xbmc.python.script" library="resources/lib/script_entry.py">
-        <provides>executable</provides>
-    </extension>
-    <extension point="xbmc.service" library="resources/lib/service_entry.py"/>
-    <extension point="xbmc.python.module" library="resources/lib"/>
     <extension point="xbmc.addon.metadata">
-        <reuselanguageinvoker>true</reuselanguageinvoker>
-        <summary lang="en_GB">Propose to play the next episode automatically</summary>
-        <description lang="en_GB">A service add-on that shows a Netflix-style notification for watching the next episode. After a few automatic iterations it asks the user if he is still there watching.
-
-A lot of existing add-ons already integrate with this service out-of-the-box.</description>
-        <summary lang="de_DE">Bietet Ihnen an, die nächste Episode automatisch wiederzugeben</summary>
-        <description lang="de_DE">Ein kleines Hilfs-Add-on, welches eine Netflix-artige Benachrichtigung zur Wiedergabe der nächsten Episode anzeigt. Nach ein paar automatischen Iterationen fragt es den Anwender, ob er sie immer noch anschaut.
-
-Viele existierende Add-ons haben diesen Dienst bereits von Haus aus integriert.</description>
-        <summary lang="it_IT">Propone di riprodurre automaticamente il prossimo episodio</summary>
-        <description lang="it_IT">Un add-on di servizio che mostra una notifica in stile Netflix per guardare il prossimo episodio. Dopo alcune iterazioni automatiche, chiede all'utente se è ancora lì a guardare.
-
-Molti add-on esistenti hanno già integrato questo servizio.</description>
-        <summary lang="el_GR">Προτάση για αναπαραγωγή του επόμενου επεισοδίου αυτόματα</summary>
-        <description lang="el_GR">Ένα υπηρεσιακό πρόσθετο που δείχνει σε στύλ ειδοποίησης τύπου Νέτφλιξ για την αναπαραγωγή του επόμενου επεισοδίου. Μετά από μερικές αυτόματες εκτελέσεις, ρωτάει τον χρήστη εάν παρακολουθεί ακόμα.
-
-Πολλά από τα υπάρχοντα πρόσθετα ενσωματώνουν την λειτουργία αυτού του υπηρεσιακού προσθέτου εξ'ορισμού.</description>
-        <summary lang="sv_SE">Låter dig spela upp nästa avsnitt automatiskt</summary>
-        <description lang="sv_SE">Ett tillägg som visar en Netflix-liknande avisering för att se nästa avsnitt. Efter att några avsnitt automatiskt spelats upp frågar den användaren om han fortfarande är där och vill titta vidare.
-
-Många befintliga tillägg integreras redan med den här utanför lådan-tjänsten.</description>
-         <summary lang="ru_RU">Предлагает автоматически проиграть следующую серию</summary>
-        <description lang="ru_RU">Сервисное дополнение, которое показывает уведомление в стиле Netflix для просмотра следующей серии. После нескольких автоматических итераций спрашивает пользователя, он еще смотрит или нет.
-
-Многие существующие дополнения уже интегрированы с этим сервисом "из коробки".</description>
-        <summary lang="es_ES">Sugiere reproducir el próximo episodio automáticamente</summary>
-        <description lang="es_ES">Un complemento de servicio que muestra una notificación al estilo Netflix para ver el próximo episodio. Después de algunas iteraciones automáticas, le pregunta al usuario si todavía está allí mirando.
-
-            Muchos complementos existentes ya se integran con este servicio listo para usar.</description>
-        <platform>all</platform>
-        <license>GPL-2.0-only</license>
-        <assets>
-            <icon>resources/media/icon.png</icon>
-            <fanart>resources/media/fanart.jpg</fanart>
-            <screenshot>resources/media/screenshot01.jpg</screenshot>
-            <screenshot>resources/media/screenshot02.jpg</screenshot>
-            <screenshot>resources/media/upnext-settings.jpg</screenshot>
-            <screenshot>resources/media/upnext-developer.jpg</screenshot>
-        </assets>
+        <summary lang="en">Video Favourites</summary>
+        <description lang="en"/>
+        <disclaimer lang="en"/>
     </extension>
-</addon>
+    <extension point="kodi.context.item">
+        <menu id="kodi.core.main">
 
-<addon id="skin.arctic.horizon.2.notoco" name="Arctic Horizon 2 NOTOCO" provider-name="jurialmunkey - notoco mod" version="2023.09.25.0">
-    <requires>
-        <import addon="xbmc.gui" version="5.15.0" />
-        <import addon="script.skinshortcuts" version="0.4.0" />
-        <import addon="script.skinvariables" version="1.0.0" />
-        <import addon="script.texturemaker" version="0.2.8" />
-        <import addon="plugin.video.themoviedb.helper" version="5.1.11~nexus" />
-        <import addon="resource.images.weathericons.white" version="0.0.1" />
-        <import addon="resource.images.studios.coloured" version="0.0.1" />
-        <import addon="resource.font.robotocjksc" version="0.0.1" />
-    </requires>
-    <extension debugging="false" defaultthemename="Textures.xbt" effectslowdown="1" point="xbmc.gui.skin">
-        <res aspect="16:9" default="true" folder="1080i" height="1080" width="1920" />
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en">Minimal. Classic. Gradients. Widgets.</summary>
-        <description lang="en">Arctic Horizon 2</description>
-        <platform>all</platform>
-        <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
-        <forum />
-        <source />
-        <assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
-        </assets>
+            <item library="add_item_context.py">
+                <label>Add to video favorites</label>
+                <visible>true</visible>
+            </item>
+
+        </menu>
     </extension>
 </addon>
 
@@ -485,5 +203,264 @@ v0.28.0 (2020-02-08)
 			<icon>icon.png</icon>
 		</assets>
 	</extension>
+</addon>
+
+<addon id="script.audio.profiles" name="Audio Profiles" version="2.2.4" provider-name="pkscout, notoco, Regss">
+	<requires>
+        <import addon="xbmc.python" version="3.0.0" />
+	</requires>
+	<extension point="xbmc.python.script" library="default.py"/>
+	<extension point="xbmc.service" library="service.py" />
+	<extension point="xbmc.addon.metadata">
+		<news>
+v.2.1.1
+- fix for depreciated call that was removed from Nexus
+		</news>
+		<assets>
+			<icon>icon.png</icon>
+		</assets>
+		<summary lang="en_GB">Save audio profile and easily switch between them.</summary>
+		<summary lang="es_AR">Guarde el perfil de audio y cambie fácilmente entre ellos.</summary>
+		<summary lang="es_ES">Guarde el perfil de audio y cambie fácilmente entre ellos.</summary>
+		<summary lang="es_MX">Guarde el perfil de audio y cambie fácilmente entre ellos.</summary>
+		<summary lang="hu_HU">Hangbeállítások profilba mentése, és könnyű váltás közöttük.</summary>
+		<summary lang="it_IT">Salva il profilo audio e cambia facilmente da uno all'altro.</summary>
+		<summary lang="pl_PL">Zapisuje profile ustawień audio i łatwo przełącza między nimi.</summary>
+		<description lang="en_GB">Save audio profile and easily switch between them.</description>
+		<description lang="es_AR">Guarde el perfil de audio y cambie fácilmente entre ellos.</description>
+		<description lang="es_ES">Guarde el perfil de audio y cambie fácilmente entre ellos.</description>
+		<description lang="es_MX">Guarde el perfil de audio y cambie fácilmente entre ellos.</description>
+		<description lang="hu_HU">Hangbeállítások profilba mentése, és könnyű váltás közöttük.</description>
+		<description lang="it_IT">Salva il profilo audio e cambia facilmente da uno all'altro.</description>
+		<description lang="pl_PL">Zapisuje profile ustawień audio i łatwo przełącza między nimi.</description>
+		<platform>all</platform>
+		<license>GPL-3.0-only</license>
+		<forum>https://forum.kodi.tv/showthread.php?tid=353852</forum>
+		<website>https://kodi.wiki/view/Add-on:Audio_Profiles</website>
+		<source>https://github.com/pkscout/script.audio.profiles</source>
+	</extension>
+</addon>
+
+<addon id="script.notoco.helper" name="pomocnik notoco" version="1.5.0" provider-name="notoco">
+    <requires>
+        <import addon="xbmc.python" version="3.0.0"/>
+        <import addon="script.module.requests"/>
+    </requires>
+    <extension point="xbmc.python.script" library="addon.py" />
+    <extension point="xbmc.service" library="autoexec.py" />
+    <extension point="xbmc.addon.metadata">
+        <platform>windows</platform>
+        <summary lang="en">Pomocne skróty</summary>
+        <assets>
+            <icon>icon.png</icon>
+        </assets>
+    </extension>
+</addon>
+
+<addon id="script.service.hyperion-control" name="Hyperion Control" version="20.0.1" provider-name="hyperion-project">
+  <requires>
+	<import addon="xbmc.addon"  version="20.0.0"/>
+    <import addon="xbmc.python" version="3.0.1"/>
+    <import addon="script.module.requests" version="2.3.0"/>
+  </requires>
+  <extension point="xbmc.service" library="service.py"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en_GB">Control Hyperion Ambilight</summary>
+    <summary lang="de_DE">Hyperion Ambilight Steuerung</summary>
+    <description lang="en_GB">Enable and disable components (like capture) of Hyperion automatically based on playing/screensaver state of Kodi[CR]-Supports auto detection of Hyperion Servers[CR]-Token authentication</description>
+    <description lang="de_DE">Aktiviere und deaktiviere automatisch Hyperion Komponenten basierend auf dem aktuellen Kodi Status[CR]-Unterstützt Hyperion Server suche[CR]-Token Autorisierung</description>
+    <language>en de es fr hu pl</language>
+    <platform>all</platform>
+    <license>MIT</license>
+    <forum>https://hyperion-project.org/forum</forum>
+    <website>https://hyperion-project.org/forum</website>
+    <source>https://github.com/hyperion-project/hyperion.control</source>
+    <news>
+      20.0.0
+      - Kodi 20 (Nexus) support
+      - major refactor to adhere to SOLID principles
+
+      19.0.2
+      - New languages: Español, Français, Polski
+
+      19.0.1
+      - Kodi 19 support
+      - minor cleanups and corrections
+
+      1.0.1
+      - Fixed a crash with 3d mode @b-jesch
+
+      1.0.0
+      - Added support for server search
+      - Added support token authentication
+      - Fixed issue where kodi api does not properly announce video playing states
+    </news>
+	<assets>
+		<icon>resources/icon.png</icon>
+		<fanart>resources/fanart.png</fanart>
+		<screenshot>resources/screenshot-01.png</screenshot>
+	</assets>
+  </extension>
+</addon>
+
+<addon id="service.upnext" name="UpNext" version="2023.12.05.0" provider-name="im85288">
+    <requires>
+        <import addon="xbmc.python" version="3.0.0"/>
+        <import addon="script.module.pil" version="1.1.7"/>
+        <import addon="script.module.dateutil" version="2.8.1"/>
+        <import addon="plugin.video.themoviedb.helper" version="5.0.46" optional="true"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="resources/lib/plugin_entry.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.python.script" library="resources/lib/script_entry.py">
+        <provides>executable</provides>
+    </extension>
+    <extension point="xbmc.service" library="resources/lib/service_entry.py"/>
+    <extension point="xbmc.python.module" library="resources/lib"/>
+    <extension point="xbmc.addon.metadata">
+        <reuselanguageinvoker>true</reuselanguageinvoker>
+        <summary lang="en_GB">Propose to play the next episode automatically</summary>
+        <description lang="en_GB">A service add-on that shows a Netflix-style notification for watching the next episode. After a few automatic iterations it asks the user if he is still there watching.
+
+A lot of existing add-ons already integrate with this service out-of-the-box.</description>
+        <summary lang="de_DE">Bietet Ihnen an, die nächste Episode automatisch wiederzugeben</summary>
+        <description lang="de_DE">Ein kleines Hilfs-Add-on, welches eine Netflix-artige Benachrichtigung zur Wiedergabe der nächsten Episode anzeigt. Nach ein paar automatischen Iterationen fragt es den Anwender, ob er sie immer noch anschaut.
+
+Viele existierende Add-ons haben diesen Dienst bereits von Haus aus integriert.</description>
+        <summary lang="it_IT">Propone di riprodurre automaticamente il prossimo episodio</summary>
+        <description lang="it_IT">Un add-on di servizio che mostra una notifica in stile Netflix per guardare il prossimo episodio. Dopo alcune iterazioni automatiche, chiede all'utente se è ancora lì a guardare.
+
+Molti add-on esistenti hanno già integrato questo servizio.</description>
+        <summary lang="el_GR">Προτάση για αναπαραγωγή του επόμενου επεισοδίου αυτόματα</summary>
+        <description lang="el_GR">Ένα υπηρεσιακό πρόσθετο που δείχνει σε στύλ ειδοποίησης τύπου Νέτφλιξ για την αναπαραγωγή του επόμενου επεισοδίου. Μετά από μερικές αυτόματες εκτελέσεις, ρωτάει τον χρήστη εάν παρακολουθεί ακόμα.
+
+Πολλά από τα υπάρχοντα πρόσθετα ενσωματώνουν την λειτουργία αυτού του υπηρεσιακού προσθέτου εξ'ορισμού.</description>
+        <summary lang="sv_SE">Låter dig spela upp nästa avsnitt automatiskt</summary>
+        <description lang="sv_SE">Ett tillägg som visar en Netflix-liknande avisering för att se nästa avsnitt. Efter att några avsnitt automatiskt spelats upp frågar den användaren om han fortfarande är där och vill titta vidare.
+
+Många befintliga tillägg integreras redan med den här utanför lådan-tjänsten.</description>
+         <summary lang="ru_RU">Предлагает автоматически проиграть следующую серию</summary>
+        <description lang="ru_RU">Сервисное дополнение, которое показывает уведомление в стиле Netflix для просмотра следующей серии. После нескольких автоматических итераций спрашивает пользователя, он еще смотрит или нет.
+
+Многие существующие дополнения уже интегрированы с этим сервисом "из коробки".</description>
+        <summary lang="es_ES">Sugiere reproducir el próximo episodio automáticamente</summary>
+        <description lang="es_ES">Un complemento de servicio que muestra una notificación al estilo Netflix para ver el próximo episodio. Después de algunas iteraciones automáticas, le pregunta al usuario si todavía está allí mirando.
+
+            Muchos complementos existentes ya se integran con este servicio listo para usar.</description>
+        <platform>all</platform>
+        <license>GPL-2.0-only</license>
+        <assets>
+            <icon>resources/media/icon.png</icon>
+            <fanart>resources/media/fanart.jpg</fanart>
+            <screenshot>resources/media/screenshot01.jpg</screenshot>
+            <screenshot>resources/media/screenshot02.jpg</screenshot>
+            <screenshot>resources/media/upnext-settings.jpg</screenshot>
+            <screenshot>resources/media/upnext-developer.jpg</screenshot>
+        </assets>
+    </extension>
+</addon>
+
+<addon id="skin.arctic.horizon.2.notoco" name="Arctic Horizon 2 NOTOCO" provider-name="jurialmunkey - notoco mod" version="2023.09.25.0">
+    <requires>
+        <import addon="xbmc.gui" version="5.15.0" />
+        <import addon="script.skinshortcuts" version="0.4.0" />
+        <import addon="script.skinvariables" version="1.0.0" />
+        <import addon="script.texturemaker" version="0.2.8" />
+        <import addon="plugin.video.themoviedb.helper" version="5.1.11~nexus" />
+        <import addon="resource.images.weathericons.white" version="0.0.1" />
+        <import addon="resource.images.studios.coloured" version="0.0.1" />
+        <import addon="resource.font.robotocjksc" version="0.0.1" />
+    </requires>
+    <extension debugging="false" defaultthemename="Textures.xbt" effectslowdown="1" point="xbmc.gui.skin">
+        <res aspect="16:9" default="true" folder="1080i" height="1080" width="1920" />
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">Minimal. Classic. Gradients. Widgets.</summary>
+        <description lang="en">Arctic Horizon 2</description>
+        <platform>all</platform>
+        <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
+        <forum />
+        <source />
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>
+
+<addon id="skin.arctic.horizon.notoco" name="Arctic Horizon Notoco" provider-name="jurialmunkey+notoco" version="2022.11.16.0">
+    <requires>
+        <import addon="xbmc.gui" version="5.15.0" />
+        <import addon="script.skinshortcuts" version="0.4.0" />
+        <import addon="script.skinvariables" version="0.2.3" />
+        <import addon="script.image.resource.select" version="0.0.5" />
+        <import addon="plugin.video.themoviedb.helper" version="4.2.3" />
+        <import addon="resource.images.studios.white" version="0.0.10" />
+        <import addon="resource.images.studios.coloured" version="0.0.19" />
+        <import addon="resource.images.weathericons.white" version="0.0.1" />
+        <import addon="resource.images.moviegenreicons.transparent" version="0.0.6" />
+        <import addon="resource.images.moviecountryicons.maps" version="0.0.1" />
+        <import addon="resource.images.arctic.waves" version="0.0.1" optional="true" />
+    </requires>
+    <extension debugging="false" defaultthemename="Textures.xbt" effectslowdown="1" point="xbmc.gui.skin">
+        <res aspect="16:9" default="true" folder="1080i" height="1080" width="1920" />
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">Minimal. Simple.</summary>
+        <summary lang="es">Mínimo. Simple.</summary>
+        <description lang="en">Arctic Horizon is a minimalistic skin with an emphasis on simplicity.</description>
+        <description lang="es">Arctic Horizon es un skin minimalista con énfasis en la simplicidad.</description>
+        <platform>all</platform>
+        <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
+        <forum />
+        <source />
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+            <screenshot>resources/screenshot-01.jpg</screenshot>
+            <screenshot>resources/screenshot-02.jpg</screenshot>
+            <screenshot>resources/screenshot-03.jpg</screenshot>
+            <screenshot>resources/screenshot-04.jpg</screenshot>
+            <screenshot>resources/screenshot-05.jpg</screenshot>
+            <screenshot>resources/screenshot-06.jpg</screenshot>
+            <screenshot>resources/screenshot-07.jpg</screenshot>
+        </assets>
+    </extension>
+</addon>
+
+<addon id="slyguy.disney.plus" name="Disney+" provider-name="Slyguy" version="2023.12.15.2">
+  <requires>
+    <import addon="script.module.slyguy" version="0.63.1"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py" provides="video">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <description lang="en">Disney+ is the exclusive home for your favorite movies and TV shows from Disney, Pixar, Marvel, Star Wars, and National Geographic.
+
+Subscription required.</description>
+    <description lang="it">Disney+ è la casa esclusiva per i tuoi film e programmi TV preferiti di Disney, Pixar, Marvel, Star Wars e National Geographic.
+
+Abbonamento richiesto.</description>
+    <description lang="fr">Disney+ est la destination exclusive de vos films et séries TV préférés des univers Disney, Pixar, Marvel, Star Wars et National Geographic.
+
+Abonnement requis.</description>
+    <description lang="cs">Disney+ je exkluzivní místo pro vaše oblíbené filmy a televizní pořady ze světa Disney, Pixar, Marvel, Star Wars a National Geographic.
+
+Je nutné předplatné.</description>
+      <description lang="pl">Disney+ to wyłączne miejsce dla twoich ulubionych filmów i programów telewizyjnych od Disneya, Pixara, Marvela, Gwiezdnych wojen i National Geographic.
+
+Wymagana subskrypcja.</description>
+    <reuselanguageinvoker>true</reuselanguageinvoker>
+    <license></license>
+    <language></language>
+    <website></website>
+    <news>Fix search. Hulu results now in search</news>
+    <assets>
+      <icon>icon.png</icon>
+      <fanart>fanart.jpg</fanart>
+    </assets>
+  </extension>
 </addon>
 </addons>
