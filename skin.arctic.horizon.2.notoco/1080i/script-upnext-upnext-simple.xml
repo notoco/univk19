@@ -3,23 +3,31 @@
     <defaultcontrol always="true">3012</defaultcontrol>
     <onload>Dialog.Close(fullscreeninfo,true)</onload>
     <onload>Dialog.Close(videoosd,true)</onload>
-    <include>Animation_FadeIn</include>
     <controls>
-        <control type="image">
-            <height>80</height>                
-            <width>700</width>
-            <centerleft>50%</centerleft>
-            <texture colordiffuse="dialog_bg_100" border="20">common/dialog2.png</texture>
-        </control>
         <control type="group">
+                        <animation type="WindowOpen" reversible="false">
+                <effect type="fade" start="0" end="100" time="400" />
+                <effect type="slide" start="0,-80" end="0,0" time="400"/>
+            </animation>
+            <animation type="WindowClose" reversible="false">
+                <effect type="fade" start="100" end="0" time="400" />
+                <effect type="slide" start="0,0" end="0,-80" time="400" />
+            </animation>
                 <top>70</top>
                 <height>80</height>
                 <width>700</width>
                 <centerleft>50%</centerleft>
+                <control type="image">
+                    <height>70</height>
+                    <top>-70</top>                
+                    <width>700</width>
+                    <centerleft>50%</centerleft>
+                    <texture colordiffuse="dialog_bg_100" border="20">common/dialog2.png</texture>
+                </control>
                 <control type="progress" id="3014">
                     <top>-60</top>
                     <left>120</left>
-                    <right>80</right>
+                    <right>40</right>
                     <height>8</height>
                 </control>
                 <control type="label">
@@ -37,23 +45,50 @@
                     <orientation>horizontal</orientation>
                     <itemgap>10</itemgap>
                     <left>10</left>
+                    <!-- <control type="button" id="3012">
+                            <label>       $ADDON[service.upnext 30006]</label>
+                            <height>56</height>
+                            <width min="50">auto</width>
+                            <font>font20_title</font>
+                            <textoffsetx>15</textoffsetx>
+                            <textcolor>DDFFFFFF</textcolor>
+                            <shadowcolor>FF000000</shadowcolor>
+                            <aligny>center</aligny>
+                            <align>center</align>
+                            <texturefocus border="10" colordiffuse="$INFO[Window.Property(accent_colour)]">button.png</texturefocus>
+                            <texturenofocus border="10" colordiffuse="FF212121">button.png</texturenofocus>
+                            <pulseonselect>no</pulseonselect>
+                        </control> -->
                     <include content="OSD_Button">
                         <param name="icon" value="special://skin/extras/icons/play2.png" />
                         <param name="visible" value="true" />
                         <param name="id" value="3012" />
-                        <param name="groupid" value="5012" />
-                        <param name="size" value="40" />
-                        <param name="itemgap" value="10" />
-                    </include>
-                    <include content="OSD_Button">
-                        <param name="icon" value="special://skin/extras/icons/xmark.png" />
-                        <param name="visible" value="true" />
-                        <param name="id" value="4013" />
                         <param name="groupid" value="5013" />
                         <param name="size" value="40" />
                         <param name="itemgap" value="10" />
-                        <onclick>SetFocus(3013)</onclick>
-                        <onclick>Action(Select)</onclick>
+                    </include>
+                        <!--<control type="button" id="3013">
+                            <label>$INFO[Window.Property(stop_close_label)]</label>
+                            <height>56</height>
+                            <width min="50">auto</width>
+                            <font>font20_title</font>
+                            <textoffsetx>15</textoffsetx>
+                            <textcolor>DDFFFFFF</textcolor>
+                            <shadowcolor>FF000000</shadowcolor>
+                            <aligny>center</aligny>
+                            <align>center</align>
+                            <texturefocus border="10" colordiffuse="$INFO[Window.Property(accent_colour)]">button.png</texturefocus>
+                            <texturenofocus border="10" colordiffuse="FF212121">button.png</texturenofocus>
+                            <pulseonselect>no</pulseonselect>
+                        </control> -->
+                     
+                    <include content="OSD_Button">
+                        <param name="icon" value="special://skin/extras/icons/xmark.png" />
+                        <param name="visible" value="true" />
+                        <param name="id" value="3013" />
+                        <param name="groupid" value="5013" />
+                        <param name="size" value="40" />
+                        <param name="itemgap" value="10" />
                     </include>
                 </control>
         </control>
