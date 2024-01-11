@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import xbmc
+import xbmcaddon
 import control
 import time
 import json
@@ -29,7 +30,10 @@ if __name__ == '__main__':
         control.ambilight_bright_up()
     elif arg == "amb_down":
         control.ambilight_bright_down()
-
+    elif arg == "amb_start":
+        xbmcaddon.Addon('script.service.hyperion-control').setSetting('menuEnabled', 'true')
+        time.sleep(5) 
+        xbmcaddon.Addon('script.service.hyperion-control').setSetting('menuEnabled', 'false')     
 #ESC
     elif arg == "esc":
         osd = xbmc.getCondVisibility('Window.IsActive(seekbar)')
@@ -41,7 +45,14 @@ if __name__ == '__main__':
         if (pause == True):  
             xbmc.executebuiltin("PlayerControl(Play)")
             xbmc.executebuiltin("Action(Info)")
-            
+     
+#CLOSE
+    elif arg == "close":
+        ffdialog = xbmc.getCondVisibility('Window.Is(SourcesDialog.xml)')
+        if (ffdialog == True):  
+            xbmc.executebuiltin("Action(Close)")
+        else:
+            xbmc.executebuiltin("Action(Back)")
 #EPG
     elif arg == "epg":
         playing = xbmc.getCondVisibility('Player.Playing')
@@ -56,11 +67,12 @@ if __name__ == '__main__':
 #Hyperion restart
     elif arg == "hypereset":
         xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Addons.SetAddonEnabled","id":7,"params":{"addonid": "service.hyperion.ng","enabled":false}}')
-        xbmc.sleep(2)
+        time.sleep(2)
         xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Addons.SetAddonEnabled","id":7,"params":{"addonid": "service.hyperion.ng","enabled":true}}')
         xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Addons.SetAddonEnabled","id":7,"params":{"addonid": "script.service.hyperion-control","enabled":false}}')
-        xbmc.sleep(2)
+        time.sleep(2)
         xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Addons.SetAddonEnabled","id":7,"params":{"addonid": "script.service.hyperion-control","enabled":true}}')
+
 
 
 

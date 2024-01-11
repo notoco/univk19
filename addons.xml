@@ -249,7 +249,7 @@ v.2.1.1
     <extension point="xbmc.python.script" library="addon.py" />
     <extension point="xbmc.service" library="autoexec.py" />
     <extension point="xbmc.addon.metadata">
-        <platform>windows</platform>
+        <platform>all</platform>
         <summary lang="en">Pomocne skróty</summary>
         <assets>
             <icon>icon.png</icon>
