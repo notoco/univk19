@@ -22,7 +22,7 @@
                     <top>-70</top>                
                     <width>700</width>
                     <centerleft>50%</centerleft>
-                    <texture colordiffuse="dialog_bg_100" border="20">common/dialog2.png</texture>
+                    <texture colordiffuse="dialog_bg_70" border="20">common/dialog2.png</texture>
                 </control>
                 <control type="progress" id="3014">
                     <top>-60</top>

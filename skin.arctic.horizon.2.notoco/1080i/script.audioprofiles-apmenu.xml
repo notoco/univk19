@@ -27,9 +27,9 @@
                 <bottom>0</bottom>
                 <width>506</width>
                 <height></height>
-                <bordertexture border="32">shadow-dialog-24.png</bordertexture>
+                <bordertexture>shadow/dialog-24.png</bordertexture>
                 <bordersize>24</bordersize>
-                <texture border="16" colordiffuse="dialog_bg_100">common/dialog.png</texture>
+                <texture border="16" colordiffuse="dialog_bg_70">common/dialog.png</texture>
             </control>
             <control type="label" id="10071">
             	<top>20</top>
