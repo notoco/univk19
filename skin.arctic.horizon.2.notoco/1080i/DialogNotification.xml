@@ -13,7 +13,7 @@
                 <centerleft>50%</centerleft>
                 <control type="image">
                     <height>100</height>
-                    <texture colordiffuse="dialog_bg_100" border="20">common/dialog2.png</texture>
+                    <texture colordiffuse="dialog_bg_70" border="20">common/dialog2.png</texture>
                 </control>
                 <control type="group">
                     <width>60</width>

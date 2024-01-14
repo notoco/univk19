@@ -101,14 +101,11 @@
                 <include content="Info_Codecs_StackedText">
                     <param name="toplabel">$INFO[VideoPlayer.VideoCodec]</param>
                     <param name="bottomlabel">$INFO[VideoPlayer.VideoAspect,,:1]</param>
-                    <param name="topcolor">$PARAM[color_fg_70]</param>
-                    <param name="bottomcolor">$PARAM[color_fg_70]</param>
                     <visible>!String.IsEmpty(VideoPlayer.VideoCodec)</visible>
                     <visible>!String.IsEmpty(VideoPlayer.VideoAspect)</visible>
                 </include>
                 <!-- FPS Rate -->
                 <include content="OSD_Codecs_FPS">
-                    <param name="color_fg_70">$PARAM[color_fg_70]</param>
                     <param name="directory">monochrome</param>
                 </include>
 
