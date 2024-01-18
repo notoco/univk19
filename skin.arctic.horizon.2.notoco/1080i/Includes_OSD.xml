@@ -106,6 +106,7 @@
                 </include>
                 <!-- FPS Rate -->
                 <include content="OSD_Codecs_FPS">
+                    <param name="color_fg_70">$PARAM[color_fg_70]</param>
                     <param name="directory">monochrome</param>
                 </include>
 

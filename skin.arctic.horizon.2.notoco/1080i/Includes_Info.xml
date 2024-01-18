@@ -1347,7 +1347,6 @@
                     <height>14</height>
                     <label>$PARAM[toplabel]</label>
                     <font>font_videocodec_bold</font>
-                    <textcolor>$PARAM[topcolor]</textcolor>
                     <align>center</align>
                     <width>80</width>
                     <centerleft>50%</centerleft>
@@ -1357,7 +1356,6 @@
                     <height>12</height>
                     <label>$PARAM[bottomlabel]</label>
                     <font>font_hint</font>
-                    <textcolor>$PARAM[bottomcolor]</textcolor>
                     <align>center</align>
                     <width>60</width>
                     <centerleft>50%</centerleft>
