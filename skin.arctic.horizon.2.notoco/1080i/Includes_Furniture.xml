@@ -337,14 +337,6 @@
     </include>
 
     <include name="Furniture_Busy">
-        <animation type="WindowOpen" reversible="false">
-            <effect type="fade" start="0" end="100" time="400" />
-            <effect type="slide" start="0,-80" end="0,0" time="400"/>
-        </animation>
-        <animation type="WindowClose" reversible="false">
-            <effect type="fade" start="100" end="0" time="400" />
-            <effect type="slide" start="0,0" end="0,-80" time="400" />
-        </animation>
         <param name="mainlabel" default="$LOCALIZE[20186]" />
         <param name="minilabel" default="$LOCALIZE[31023]..." />
         <param name="hasspinner" default="true" />
@@ -359,6 +351,14 @@
         <definition>
             <include content="$PARAM[groupinclude]">
                 <nested />
+                <animation type="WindowOpen" reversible="false">
+                    <effect type="fade" start="0" end="100" time="400" />
+                    <effect type="slide" start="0,-80" end="0,0" time="400"/>
+                </animation>
+                    <animation type="WindowClose" reversible="false">
+                    <effect type="fade" start="100" end="0" time="400" />
+                    <effect type="slide" start="0,0" end="0,-80" time="400" />
+                </animation>
                 <include content="Furniture_Gutters">
                     <width>700</width>
                     <height>40</height>
