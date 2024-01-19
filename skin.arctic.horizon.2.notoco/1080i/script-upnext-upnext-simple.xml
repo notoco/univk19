@@ -5,7 +5,7 @@
     <onload>Dialog.Close(videoosd,true)</onload>
     <controls>
         <control type="group">
-                        <animation type="WindowOpen" reversible="false">
+            <animation type="WindowOpen" reversible="false">
                 <effect type="fade" start="0" end="100" time="400" />
                 <effect type="slide" start="0,-80" end="0,0" time="400"/>
             </animation>
@@ -13,32 +13,32 @@
                 <effect type="fade" start="100" end="0" time="400" />
                 <effect type="slide" start="0,0" end="0,-80" time="400" />
             </animation>
-                <top>70</top>
-                <height>80</height>
+            <top>70</top>
+            <height>80</height>
+            <width>700</width>
+            <centerleft>50%</centerleft>
+            <control type="image">
+                <height>70</height>
+                <top>-70</top>                
                 <width>700</width>
                 <centerleft>50%</centerleft>
-                <control type="image">
-                    <height>70</height>
-                    <top>-70</top>                
-                    <width>700</width>
-                    <centerleft>50%</centerleft>
-                    <texture colordiffuse="dialog_bg_70" border="20">common/dialog2.png</texture>
-                </control>
-                <control type="progress" id="3014">
-                    <top>-60</top>
-                    <left>120</left>
-                    <right>40</right>
-                    <height>8</height>
-                </control>
-                <control type="label">
-                    <top>-50</top>
-                    <left>120</left>
-                    <aligny>center</aligny>
-                    <height>40</height>
-                    <label>[COLOR=panel_fg_100]$LOCALIZE[31129] [/COLOR]$INFO[Window.Property(remaining)][COLOR=panel_fg_100] [LOWERCASE]$LOCALIZE[31130][/LOWERCASE]...[/COLOR]</label>
-                    <textcolor>$VAR[ColorHighlight]</textcolor>
-                    <font>font_mini_black</font>
-                </control>
+                <texture colordiffuse="dialog_bg_70" border="20">common/dialog2.png</texture>
+            </control>
+            <control type="progress" id="3014">
+                <top>-60</top>
+                <left>120</left>
+                <right>40</right>
+                <height>8</height>
+            </control>
+            <control type="label">
+                <top>-50</top>
+                <left>120</left>
+                <aligny>center</aligny>
+                <height>40</height>
+                <label>[COLOR=panel_fg_100]$LOCALIZE[31129] [/COLOR]$INFO[Window.Property(remaining)][COLOR=panel_fg_100] [LOWERCASE]$LOCALIZE[31130][/LOWERCASE]...[/COLOR]</label>
+                <textcolor>$VAR[ColorHighlight]</textcolor>
+                <font>font_mini_black</font>
+            </control>
             <control type="grouplist">
                     <height>60</height>
                     <top>-60</top>
