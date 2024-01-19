@@ -32,8 +32,9 @@
                     <itemgap>30</itemgap>
                     <onleft>6800</onleft>
                     <onright>6500</onright>
-                    <ondown condition="$EXP[Exp_OSD_HasPlaylist]">ActivateWindow(1140)</ondown>
-                    <ondown condition="![$EXP[Exp_OSD_HasPlaylist]]">ActivateWindow(1141)</ondown><!-- notoco -->
+                    <ondown condition="VideoPlayer.Content(livetv)">ActivateWindow(pvrchannelguide)</ondown>
+                    <ondown condition="$EXP[Exp_OSD_HasPlaylist] || !VideoPlayer.Content(livetv)">ActivateWindow(1140)</ondown>
+
 
                     <include content="OSD_Button">
                         <param name="autoclose" value="true" />
