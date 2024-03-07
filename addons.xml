@@ -251,7 +251,7 @@ v0.28.0 (2020-02-08)
   </extension>
 </addon>
 
-<addon id="service.upnext" name="UpNext" version="2023.12.05.0" provider-name="im85288">
+<addon id="service.upnext" name="UpNext" version="2024.03.07.0" provider-name="im85288">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.pil" version="1.1.7"/>
