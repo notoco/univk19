@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="context.video.favourites"
-version="0.1.0"
-name="Video Favourites Context Menu"
-provider-name="primaeval">
+<addon id="context.video.favourites" version="0.1.0" name="Video Favourites Context Menu" provider-name="primaeval">
 <requires>
   <import addon="xbmc.python" version="3.0.0"/>
   <import addon="script.module.xbmcswift2" version="2.4.0"/>
