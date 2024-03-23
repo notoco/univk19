@@ -27,7 +27,6 @@ provider-name="primaeval">
   </assets>
 </extension>
 </addon>
-
 <addon id="plugin.program.simple.favourites"
        version="0.1.17"
        name="Simple Favourites"
@@ -56,7 +55,6 @@ provider-name="primaeval">
         </menu>
     </extension>
 </addon>
-
 <addon id="plugin.video.favourites" version="0.1.1" name="Video Favourites" provider-name="primaeval">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
@@ -82,7 +80,6 @@ provider-name="primaeval">
         </menu>
     </extension>
 </addon>
-
 <addon id="repository.notoco.univ19" name="Notoco Univ Repo" version="3.1" provider-name="notoco">
         <extension point="xbmc.addon.repository" name="Notoco Univ Repo">
             <dir minversion="18.9.0">
@@ -120,91 +117,21 @@ provider-name="primaeval">
             </assets>
         </extension>
     </addon>
-
-<addon id="script.artwork.beef" name="Artwork Beef" version="0.28.7" provider-name="rmrector">
-	<requires>
-		<import addon="xbmc.python" version="3.0.0" />
-		<import addon="xbmc.json" version="6.20.0" />
-		<import addon="script.module.simplejson" version="3.3.0" />
-		<import addon="script.module.requests" version="2.9.1" />
-		<import addon="script.common.plugin.cache" version="2.5.8" />
-	</requires>
-	<extension point="xbmc.python.script" library="default.py">
-		<provides>executable</provides>
-	</extension>
-	<extension point="kodi.context.item">
-		<menu id="kodi.core.main">
-			<menu id="kodi.core.manage">
-				<item library="context.py">
-					<label>AB: $ADDON[script.artwork.beef 32410]</label>
-					<visible>!Skin.HasSetting(disablecontext:script.artwork.beef) + [StringCompare(ListItem.DBTYPE, movie) | StringCompare(ListItem.DBTYPE, set) | StringCompare(ListItem.DBTYPE, tvshow) | StringCompare(ListItem.DBTYPE, episode) | StringCompare(ListItem.DBTYPE, musicvideo) | String.IsEqual(ListItem.DBTYPE, movie) | String.IsEqual(ListItem.DBTYPE, set) | String.IsEqual(ListItem.DBTYPE, tvshow) | String.IsEqual(ListItem.DBTYPE, episode) | String.IsEqual(ListItem.DBTYPE, musicvideo)]</visible>
-				</item>
-				<item library="context_gui.py">
-					<label>AB: $ADDON[script.artwork.beef 32411]</label>
-					<visible>!Skin.HasSetting(disablecontext:script.artwork.beef) + [StringCompare(ListItem.DBTYPE, movie) | StringCompare(ListItem.DBTYPE, set) | StringCompare(ListItem.DBTYPE, tvshow) | StringCompare(ListItem.DBTYPE, episode) | StringCompare(ListItem.DBTYPE, musicvideo) | String.IsEqual(ListItem.DBTYPE, movie) | String.IsEqual(ListItem.DBTYPE, set) | String.IsEqual(ListItem.DBTYPE, tvshow) | String.IsEqual(ListItem.DBTYPE, episode) | String.IsEqual(ListItem.DBTYPE, musicvideo)]</visible>
-				</item>
-				<item library="context_debug_remove.py">
-					<label>AB: $ADDON[script.artwork.beef 32427]</label>
-					<visible>Skin.HasSetting(enablecontext:script.artwork.beef.debug) + [StringCompare(ListItem.DBTYPE, movie) | StringCompare(ListItem.DBTYPE, set) | StringCompare(ListItem.DBTYPE, tvshow) | StringCompare(ListItem.DBTYPE, episode) | StringCompare(ListItem.DBTYPE, musicvideo) | StringCompare(ListItem.DBTYPE, season) | String.IsEqual(ListItem.DBTYPE, movie) | String.IsEqual(ListItem.DBTYPE, set) | String.IsEqual(ListItem.DBTYPE, tvshow) | String.IsEqual(ListItem.DBTYPE, episode) | String.IsEqual(ListItem.DBTYPE, musicvideo) | StringCompare(ListItem.DBTYPE, season)]</visible>
-				</item>
-				<item library="context_debug_logitem.py">
-					<label>AB: $ADDON[script.artwork.beef 32430]</label>
-					<visible>Skin.HasSetting(enablecontext:script.artwork.beef.debug) + [StringCompare(ListItem.DBTYPE, movie) | StringCompare(ListItem.DBTYPE, set) | StringCompare(ListItem.DBTYPE, tvshow) | StringCompare(ListItem.DBTYPE, episode) | StringCompare(ListItem.DBTYPE, musicvideo) | String.IsEqual(ListItem.DBTYPE, movie) | String.IsEqual(ListItem.DBTYPE, set) | String.IsEqual(ListItem.DBTYPE, tvshow) | String.IsEqual(ListItem.DBTYPE, episode) | String.IsEqual(ListItem.DBTYPE, musicvideo)]</visible>
-				</item>
-			</menu>
-			<item library="context.py">
-				<label>AB: $ADDON[script.artwork.beef 32410]</label>
-				<visible>!Skin.HasSetting(disablecontext:script.artwork.beef) + [String.StartsWith(System.BuildVersion,18) | String.StartsWith(System.BuildVersion,19)] + [String.IsEqual(ListItem.DBTYPE, artist) | String.IsEqual(ListItem.DBTYPE, album) | String.IsEqual(ListItem.DBTYPE, song)]</visible>
-			</item>
-			<item library="context_gui.py">
-				<label>AB: $ADDON[script.artwork.beef 32411]</label>
-				<visible>!Skin.HasSetting(disablecontext:script.artwork.beef) + [String.StartsWith(System.BuildVersion,18) | String.StartsWith(System.BuildVersion,19)] + [String.IsEqual(ListItem.DBTYPE, artist) | String.IsEqual(ListItem.DBTYPE, album) | String.IsEqual(ListItem.DBTYPE, song)]</visible>
-			</item>
-			<item library="context_debug_remove.py">
-				<label>AB: $ADDON[script.artwork.beef 32427]</label>
-				<visible>Skin.HasSetting(enablecontext:script.artwork.beef.debug) + [String.StartsWith(System.BuildVersion,18) | String.StartsWith(System.BuildVersion,19)] + [String.IsEqual(ListItem.DBTYPE, artist) | String.IsEqual(ListItem.DBTYPE, album) | String.IsEqual(ListItem.DBTYPE, song)]</visible>
-			</item>
-			<item library="context_debug_logitem.py">
-				<label>AB: $ADDON[script.artwork.beef 32430]</label>
-				<visible>Skin.HasSetting(enablecontext:script.artwork.beef.debug) + [String.StartsWith(System.BuildVersion,18) | String.StartsWith(System.BuildVersion,19)] + [String.IsEqual(ListItem.DBTYPE, artist) | String.IsEqual(ListItem.DBTYPE, album) | String.IsEqual(ListItem.DBTYPE, song)]</visible>
-			</item>
-		</menu>
-	</extension>
-	<extension point="xbmc.service" start="login" library="service.py" />
-	<extension point="xbmc.addon.metadata">
-		<summary lang="en">Automatically adds extra artwork for your media.</summary>
-		<description lang="en">Artwork Beef automatically adds extra artwork for TV shows and movies into your library. It grabs them from wonderful web services and the file system.</description>
-		<disclaimer lang="en">Artwork sources: fanart.tv, TheTVDB.com, The Movie Database, TheAudioDB, KyraDB</disclaimer>
-		<summary lang="es">Agrega automáticamente ilustraciones adicionales para sus medios.</summary>
-		<description lang="es">Artwork Beef agrega automáticamente ilustraciones adicionales para Series TV y Películas a su biblioteca. Las ilustraciones son agregadas desde Servicios web y el Sistema de archivos local.</description>
-		<disclaimer lang="es">Fuente para ilustraciones: fanart.tv, TheTVDB.com, The Movie Database, TheAudioDB, KyraDB</disclaimer>
-		<news>v0.28.5 (2020-11-26)
-- fix: really really treat 403 as 404 and replace it
-
-v0.28.4 (2020-11-21)
-- fix: 403 change causing errors with other web service issues
-
-v0.28.1 - v0.28.3
-- fix: treat 403 as 404 and replace it
-- fix: don't throw an error when a movie set is lost
-- Fix: avoid adding duplicate fanart from TVDB
-- Fix: log full URL when download fails
-- Fix: remove KyraDB
-
-v0.28.0 (2020-02-08)
-- Feature: Add "Path exclusion" settings to skip processing media items by path
-		</news>
-		<source>https://github.com/rmrector/script.artwork.beef</source>
-		<forum>https://forum.kodi.tv/showthread.php?tid=258886</forum>
-		<website>https://rmrector.github.io/script.artwork.beef/</website>
-		<license>The MIT License</license>
-		<platform>all</platform>
-		<assets>
-			<icon>icon.png</icon>
-		</assets>
-	</extension>
+<addon id="script.notoco.helper" name="pomocnik notoco" version="1.5.5" provider-name="notoco">
+    <requires>
+        <import addon="xbmc.python" version="3.0.0"/>
+        <import addon="script.module.requests"/>
+    </requires>
+    <extension point="xbmc.python.script" library="addon.py" />
+    <extension point="xbmc.service" library="autoexec.py" />
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <summary lang="en">Pomocne skróty</summary>
+        <assets>
+            <icon>icon.png</icon>
+        </assets>
+    </extension>
 </addon>
-
 <addon id="script.service.hyperion-control" name="Hyperion Control" version="20.0.1" provider-name="hyperion-project">
   <requires>
 	<import addon="xbmc.addon"  version="20.0.0"/>
@@ -250,23 +177,6 @@ v0.28.0 (2020-02-08)
 	</assets>
   </extension>
 </addon>
-
-<addon id="script.skinhelper" name="SkinHelper" version="0.0.4" provider-name="heppen">
-	<requires>
-		<import addon="xbmc.python" version="3.0.0"/>
-		<import addon="script.module.pil"/>
-	</requires>
-	<extension point="xbmc.python.script" library="default.py">
-		<provides>executable</provides>
-	</extension>
-	<extension point="xbmc.addon.metadata">
-		<summary lang="en_GB">Simple Skin Helper</summary>
-		<description lang="en_GB">This script is made by heppen to help skinning</description>
-		<language></language>
-		<platform>all</platform>
-	</extension>
-</addon>
-
 <addon id="service.upnext" name="UpNext" version="2024.03.07.0" provider-name="im85288">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
@@ -324,7 +234,6 @@ Många befintliga tillägg integreras redan med den här utanför lådan-tjänst
         </assets>
     </extension>
 </addon>
-
 <addon id="skin.arctic.horizon.2.notoco" name="Arctic Horizon 2 NOTOCO" provider-name="jurialmunkey - notoco mod" version="2024.03.11.0">
     <requires>
         <import addon="xbmc.gui" version="5.17.0" />
@@ -352,7 +261,6 @@ Många befintliga tillägg integreras redan med den här utanför lådan-tjänst
         </assets>
     </extension>
 </addon>
-
 <addon id="skin.arctic.horizon.notoco" name="Arctic Horizon Notoco" provider-name="jurialmunkey+notoco" version="2022.11.16.0">
     <requires>
         <import addon="xbmc.gui" version="5.15.0" />
@@ -389,57 +297,6 @@ Många befintliga tillägg integreras redan med den här utanför lådan-tjänst
             <screenshot>resources/screenshot-05.jpg</screenshot>
             <screenshot>resources/screenshot-06.jpg</screenshot>
             <screenshot>resources/screenshot-07.jpg</screenshot>
-        </assets>
-    </extension>
-</addon>
-
-<addon id="skin.arctic.zephyr.2.resurrection.mod" name="Arctic: Zephyr 2 - Resurrection" provider-name="jurialmunkey, pkscout, heppen" version="1.0.7">
-    <requires>
-        <import addon="xbmc.gui" version="5.17.0" />
-        <import addon="script.skinshortcuts"/>
-        <import addon="script.skinhelper"/>
-        <import addon="plugin.video.themoviedb.helper"/>
-        <import addon="resource.images.studios.white"/>
-        <import addon="resource.images.moviegenreicons.transparent"/>
-        <import addon="resource.images.weathericons.white"/>
-        <import addon="resource.images.moviecountryicons.maps"/>
-    </requires>
-    <extension point="xbmc.gui.skin" debugging="false">
-		<res width="1920" height="1080" aspect="16:9" default="true" folder="1080i" />
-	</extension>
-    <extension point="xbmc.addon.metadata">
-        <news></news>
-        <summary lang="de">Klar, minimalistisch, elegant, einfach, leicht</summary>
-        <summary lang="en">Clean, minimal, elegant, simple, light.</summary>
-        <summary lang="en_AU">Clean, minimal, elegant, simple, light.</summary>
-        <summary lang="en_US">Clean, minimal, elegant, simple, light.</summary>
-        <summary lang="es">Limpio, minimalista, elegante, simple, ligero.</summary>
-        <summary lang="fr">Clair, minimaliste, élégant, simple et léger.</summary>
-        <summary lang="fr_CA">Net, minimal, élégant, simple, léger.</summary>
-        <summary lang="it">Pulita, minimale, elegante, semplice, leggera.</summary>
-        <summary lang="lt">Švari, minimali, elegantiška, paprasta, lengva.</summary>
-        <summary lang="nl">Schoon, minimaal, elegant, simpel, licht.</summary>
-        <summary lang="no">Rent, minimalt, elegant, enkelt, lett.</summary>
-        <summary lang="pl">Prosta, minimalistyczna, elegancka i lekka.</summary>
-        <summary lang="pt_BR">Limpa, simplista, elegante, leve.</summary>
-        <summary lang="ro">Curat, minimalist, elegant, simplu, ușor</summary>
-        <summary lang="ru">Опрятный, минималистичный, элегантный, простой, светлый.</summary>
-
-        <description lang="en">This is a light mod of Arctic Zephyr 2 by heppen. Arctic Zephyr 2 is a minimalistic skin created by jurialmunkey and moded to work with Kodi 19 Matrix by pkscout. The skin is designed to be simple so that the user can focus on their media content. In addition to the default light colour scheme, the skin also includes a number of darker variations.</description>
-        <description lang="pl">Jest to modyfikacja skórki Arctic Zephyr 2 autorstwa heppen. Arctic Zephyr 2 jest minimalistyczną skórką stworzoną przez jurialmunkey i zmodowaną do pracy z Kodi 19 Matrix przez pkscout. Skórka została zaprojektowana jako prosta, aby użytkownik mógł skupić się na swojej zawartości multimedialnej. Oprócz domyślnego jasnego schematu kolorów, skórka zawiera również kilka ciemniejszych wariantów.</description>
-        <platform>all</platform>
-        <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
-        <forum>https://forum.kodi.tv/showthread.php?tid=362941</forum>
-        <source>https://github.com/heppen7/skin.arctic.zephyr.2.resurrection.mod</source>
-        <assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
-            <screenshot>resources/screenshot-01.jpg</screenshot>
-            <screenshot>resources/screenshot-02.jpg</screenshot>
-            <screenshot>resources/screenshot-03.jpg</screenshot>
-            <screenshot>resources/screenshot-04.jpg</screenshot>
-            <screenshot>resources/screenshot-05.jpg</screenshot>
-            <screenshot>resources/screenshot-06.jpg</screenshot>
         </assets>
     </extension>
 </addon>

@@ -55,7 +55,7 @@ class GeneratorXML:
         # addon list
         addons = os.listdir( "." )
         # final addons text
-        addons_xml = u("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<addons>\n")
+        addons_xml = u("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n<addons>\r\n")
         # loop thru and add each addons addon.xml file
         for addon in addons:
             try:
@@ -73,12 +73,9 @@ class GeneratorXML:
                     # skip encoding format line
                     if ( line.find( "<?xml" ) >= 0 ): continue
                     # add line
-                    if sys.version < '3':
-                        addon_xml += unicode( line.rstrip() + "\n", "UTF-8" )
-                    else:
-                        addon_xml += line.rstrip() + "\n"
+                    addon_xml += line.rstrip() + "\r\n"
                 # we succeeded so add to our final addons.xml text
-                addons_xml += addon_xml.rstrip() + "\n\n"
+                addons_xml += addon_xml.rstrip() + "\r\n"
                 print(_path + " Udało się!")
             except Exception as e:
                 # missing or poorly formatted addon.xml
@@ -86,25 +83,26 @@ class GeneratorXML:
                 print("Exception: %s\r\n" % e)
                 continue
         # clean and add closing tag
-        addons_xml = addons_xml.strip() + u("\n</addons>\n")
+        addons_xml = addons_xml.strip() + u("\r\n</addons>\r\n")
         # save file
         self._save_file( addons_xml.encode( "UTF-8" ), file="addons.xml" )
 
     def _generate_md5_file( self ):
         # create a new md5 hash
         try:
-            import md5
-            m = md5.new( open( "addons.xml", "r" , encoding="utf8").read() ).hexdigest()
-        except ImportError:
             import hashlib
             m = hashlib.md5( open( "addons.xml", "r", encoding="UTF-8" ).read().encode( "UTF-8" ) ).hexdigest()
+        except Exception as e:
+            # oops
+            print("Wystąpił błąd poczas tworzenia pliku addons.xml.md5!\n%s" % e)
+            return
 
         # save file
         try:
             self._save_file( m.encode( "UTF-8" ), file="addons.xml.md5" )
         except Exception as e:
             # oops
-            print("Wystąpił błąd poczas tworzenia pliku addons.xml.md5!\n%s" % e)
+            print("Wystąpił błąd poczas zapisywania pliku addons.xml.md5!\n%s" % e)
 
     def _save_file( self, data, file ):
         try:
@@ -112,7 +110,7 @@ class GeneratorXML:
             open(file, "wb").write(data)
         except Exception as e:
             # oops
-            print("Wystąpił błąd podczas zapisywania pliku %s !\n%s" % ( file, e ))
+            print("Wystąpił błąd podczas zapisywania pliku %s!\n%s" % ( file, e ))
 
 class GeneratorZIP:
     def __init__( self ):
@@ -153,6 +151,7 @@ class GeneratorZIP:
             return
 
     def zipdir(self, path, ziph):
+        # ziph is
         # ziph is zipfile handle
         for root, dirs, files in os.walk(path):
             for file in files:
