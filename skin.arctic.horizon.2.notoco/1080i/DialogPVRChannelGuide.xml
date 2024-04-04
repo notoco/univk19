@@ -5,14 +5,14 @@
     <include condition="Window.IsVisible(fullscreenvideo)">Animation_WindowTransition_FadeInOut</include>
     <controls>
 
-        <include content="Object_Control" condition="!Window.IsVisible(fullscreenvideo)">
+        <include content="Object_Control">
             <param name="control">group</param>
             <include>Animation_FadeIn_Delay</include>
             <include>Animation_FadeOut</include>
             <visible>!$EXP[Exp_InfoDialogs]</visible>
-            <control type="image">
+            <!--<control type="image">
                 <texture colordiffuse="7f000000">common/white.png</texture>
-            </control>
+            </control>-->
             <control type="image">
                 <texture colordiffuse="panel_bg">background/floor.png</texture>
             </control>
@@ -67,14 +67,14 @@
                     <top>-40</top>
                     <onup>6400</onup>
                     <left>-40</left>
-                    <width>1441</width>
+                    <width>100%</width>
                     <onup>Close</onup>
                     <ondown>2</ondown>
                 </include>
 
                 <include content="OSD_Episodes_Arrows">
                     <param name="id">11</param>
-                    <width>1361</width>
+                    <width>100%</width>
                     <height>240</height>
                 </include>
 

@@ -75,7 +75,8 @@
                     <top>0</top>
                     <label>$PARAM[label]</label>
                     <textcolor>$PARAM[colordiffuse]_100</textcolor>
-                    <font>$PARAM[font]</font>
+                    <font>$PARAM[font]_doublerow</font>
+                    <autoscroll>true</autoscroll>
                     <visible>Integer.IsEqual(Container(99991).NumPages,1)</visible>
                 </control>
                 <control type="label">

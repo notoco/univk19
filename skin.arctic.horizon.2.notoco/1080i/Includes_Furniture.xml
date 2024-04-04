@@ -47,7 +47,7 @@
             <control type="group">
                 <visible>!Window.IsVisible(DialogBusy.xml)</visible>
                 <visible>!Window.IsVisible(DialogExtendedProgressBar.xml)</visible>
-                <visible>!Window.IsVisible(DialogNotification.xml)</visible>
+                <!--<visible>!Window.IsVisible(DialogNotification.xml)</visible> -->
                 <visible>!Window.IsVisible(DialogVolumeBar.xml) | Player.Muted</visible>
                 <include content="Furniture_Topbar_Group" condition="$PARAM[enabled]">
                     <include content="Furniture_Gutters">
