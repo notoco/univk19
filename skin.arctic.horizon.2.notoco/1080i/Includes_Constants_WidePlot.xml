@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
-    <constant name="info_plot_w">100%</constant>
-    <constant name="info_panel_w">100%</constant><!-- notoco -->
+    <constant name="info_plot_w">auto</constant>
+    <constant name="info_panel_w">auto</constant><!-- notoco -->
 </includes>
