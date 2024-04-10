@@ -828,9 +828,9 @@
                 <include content="Object_Control" condition="!Skin.HasSetting(Indicator.DisableProgress)">
                     <param name="control">image</param>
                     <include content="Dimension_Padding"><param name="pad" value="0" /></include>
-                    <texture colordiffuse="$VAR[ColorWatchedProgress]">$VAR[Defs_PercentPlayed$PARAM[affix],progress/circle/p,.png]</texture>
+                    <texture colordiffuse="ff333333">$VAR[Defs_PercentPlayed$PARAM[affix],progress/circle/p,.png]</texture>
                     <aspectratio align="center" aligny="center">keep</aspectratio>
-                    <visible>String.IsEmpty($PARAM[listitem].Property(role))</visible>
+                   
                 </include>
                 <control type="image">
                     <texture>$VAR[Image_Overlay_Backing$PARAM[affix],,-fg.png]</texture>
@@ -838,8 +838,8 @@
                 <control type="image">
                     <include content="Dimension_Padding"><param name="pad" value="20" /></include>
                     <texture>$VAR[Image_Overlay$PARAM[affix]]</texture>
-                    <!-- remove timer for tvshow -->
-                    <visible>!String.IsEqual($PARAM[listitem].DBType,tvshow)</visible>
+                    <visible>![!Integer.IsEqual($PARAM[listitem].Property(UnWatchedEpisodes),0) + [String.IsEqual($PARAM[listitem].DBType,tvshow) | String.IsEqual($PARAM[listitem].DBType,season) | String.IsEqual($PARAM[listitem].DBType,episode)] + !Skin.HasSetting(Indicator.DisableEpisodes)]</visible>
+                    <visible>[!String.IsEmpty($PARAM[listitem].Property(role)) + [String.IsEqual($PARAM[listitem].DBType,tvshow) | String.IsEqual($PARAM[listitem].DBType,episode) | String.IsEqual($PARAM[listitem].DBType,season)] + !Skin.HasSetting(Indicator.DisableEpisodes)]</visible>
                 </control>
                 <control type="image">
                     <include content="Dimension_Padding"><param name="pad" value="20" /></include>
@@ -858,11 +858,15 @@
                     <textcolor>panel_fg_100</textcolor>
                     <label>$INFO[$PARAM[listitem].Property(UnWatchedEpisodes)]</label>
                     <visible>[!Integer.IsEqual($PARAM[listitem].Property(UnWatchedEpisodes),0) + [String.IsEqual($PARAM[listitem].DBType,tvshow) | String.IsEqual($PARAM[listitem].DBType,season) | String.IsEqual($PARAM[listitem].DBType,episode)] + !Skin.HasSetting(Indicator.DisableEpisodes)]</visible>
-                    
-                <!--  *** Removed as blocks Unwatched episodes after show has been started                    
-                    <visible>!$PARAM[listitem].IsResumable | Skin.HasSetting(Indicator.DisableProgress)</visible>
-                -->                    
                     <visible>![!String.IsEmpty($PARAM[listitem].Property(role)) + [String.IsEqual($PARAM[listitem].DBType,tvshow) | String.IsEqual($PARAM[listitem].DBType,episode) | String.IsEqual($PARAM[listitem].DBType,season)] + !Skin.HasSetting(Indicator.DisableEpisodes)]</visible>
+                </control>
+                <control type="label">
+                    <font>font_hint_bold</font>
+                    <align>center</align>
+                    <aligny>center</aligny>
+                    <textcolor>panel_fg_100</textcolor>
+                    <label>$INFO[$PARAM[listitem].Property(Episodes)]</label>
+                    <visible>!String.IsEmpty($PARAM[listitem].Property(role)) + [String.IsEqual($PARAM[listitem].DBType,tvshow) | String.IsEqual($PARAM[listitem].DBType,season)] + !Skin.HasSetting(Indicator.DisableEpisodes)</visible>
                 </control>
             </control>
         </definition>
@@ -883,7 +887,7 @@
                     <colordiffuse>main_fg_30</colordiffuse>
                     <texture>progress/circle/p100.png</texture>
                     <aspectratio align="center" aligny="center">keep</aspectratio>
-                    <visible>$EXP[Exp_HasWatchedProgress]</visible>
+                    <visible>$EXP[1Exp_HasWatchedProgress]</visible>
                 </control>
                 <control type="image">
                     <include content="Dimension_Padding"><param name="pad" value="10" /></include>
@@ -891,13 +895,13 @@
                     <colordiffuse>main_fg_90</colordiffuse>
                     <texture>$VAR[Defs_PercentPlayed,progress/circle/p,.png]</texture>
                     <aspectratio align="center" aligny="center">keep</aspectratio>
-                    <visible>$EXP[Exp_HasWatchedProgress]</visible>
+                    <visible>$EXP[2Exp_HasWatchedProgress]</visible>
                 </control>
                 <control type="image">
                     <include content="Dimension_Padding"><param name="pad" value="16" /></include>
                     <include content="Object_ColorDiffuse" condition="$PARAM[selected]"><param name="colordiffuse">$VAR[ColorSelected]</param></include>
                     <colordiffuse>main_fg_100</colordiffuse>
-                    <texture>$VAR[Image_Overlay_List]</texture>
+                    <texture>$VAR[3Image_Overlay_List]</texture>
                 </control>
             </control>
         </definition>
