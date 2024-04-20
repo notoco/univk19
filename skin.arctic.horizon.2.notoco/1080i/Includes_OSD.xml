@@ -205,10 +205,11 @@
         <param name="width" default="1040" />
         <param name="enabled" default="true" />
         <param name="toggle" default="false" />
+        <param name="right" default="40" />
         <definition>
             <control type="group">
                 <include>Animation_SlideIn_Dialog</include>
-                <right>40</right>
+                <right>$PARAM[right]</right>
                 <width>$PARAM[width]</width>
                 <bottom>200</bottom>
                 <height>700</height>

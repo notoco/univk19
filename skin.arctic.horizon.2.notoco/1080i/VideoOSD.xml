@@ -49,7 +49,7 @@
                     </include>
 
                     <!-- Button 2 -->
-                    <include content="OSD_Button" condition="!VideoPlayer.Content(livetv)">
+                    <!-- <include content="OSD_Button" condition="!VideoPlayer.Content(livetv)">
                         <param name="autoclose" value="true" />
                         <param name="visible" value="true" />
                         <param name="icon" value="$VAR[Image_OSD_Back]" />
@@ -68,10 +68,10 @@
                         <onclick>Close</onclick>
                         <onclick>ActivateWindow(pvrosdchannels)</onclick>
                         <onup>8200</onup>
-                    </include>
+                    </include> -->
 
                     <!-- Button 3 -->
-                    <include content="OSD_Button" condition="!VideoPlayer.Content(livetv)">
+                    <!-- <include content="OSD_Button" condition="!VideoPlayer.Content(livetv)">
                         <param name="autoclose" value="true" />
                         <param name="visible" value="true" />
                         <param name="icon" value="$VAR[Image_OSD_Forward]" />
@@ -90,8 +90,8 @@
                         <onclick>Close</onclick>
                         <onclick>ActivateWindow(TVGuide)</onclick>
                         <onup>8200</onup>
-                    </include>
-
+                    </include> 
+                    -->
                     <include content="OSD_Button">
                         <param name="autoclose" value="true" />
                         <param name="visible" value="true" />
@@ -102,7 +102,7 @@
                         <onclick condition="String.IsEqual(VideoPlayer.PlaylistPosition,VideoPlayer.PlaylistLength) | Skin.HasSetting(OSD.AlwaysDisplayStop)">PlayerControl(Stop)</onclick>
                         <onup>8200</onup>
                     </include>
-
+                    <!--
                     <include content="OSD_Button">
                         <param name="autoclose" value="true" />
                         <param name="visible" value="PVR.CanRecordPlayingChannel + VideoPlayer.Content(livetv)" />
@@ -119,7 +119,26 @@
                         <textoffsetx>0</textoffsetx>
                         <onclick>PVR.ToggleRecordPlayingChannel</onclick>
                     </include>
-
+-->
+                    <include content="OSD_Button">
+                        <param name="autoclose" value="true" />
+                        <param name="visible" value="true" />
+                        <param name="icon" value="flags/monochrome/channels/$INFO[VideoPlayer.AudioChannels].png" /><!-- notoco -->
+                        <param name="visible" value="true" />
+                        <param name="id" value="6600" />
+                        <param name="groupid" value="6699" />
+                        <label>[CR][CR][CR]$INFO[VideoPlayer.AudioLanguage,[UPPERCASE],[/UPPERCASE]]</label>
+                        <textcolor>panel_fg_100</textcolor>
+                        <focusedcolor>panel_fg_100</focusedcolor>
+                        <shadowcolor>shadow_hard</shadowcolor>
+                        <font>font_hint</font>
+                        <align>center</align>
+                        <aligny>top</aligny>
+                        <textoffsetx>0</textoffsetx>
+                        <onclick>ActivateWindow(osdaudiosettings)</onclick>
+                        <onup condition="!Skin.HasSetting(OSD.DisablePopUpDialogs)">SetFocus(6601)</onup>
+                        <onup condition="Skin.HasSetting(OSD.DisablePopUpDialogs)">ActivateWindow(1143)</onup>
+                    </include>
                 </control>
 
                 <!-- Playback Speed Display -->
@@ -201,25 +220,6 @@
                     <include content="OSD_Button">
                         <param name="autoclose" value="true" />
                         <param name="visible" value="true" />
-                        <param name="icon" value="flags/monochrome/channels/$INFO[VideoPlayer.AudioChannels].png" /><!-- notoco -->
-                        <param name="visible" value="true" />
-                        <param name="id" value="6600" />
-                        <param name="groupid" value="6699" />
-                        <label>[CR][CR][CR]$INFO[VideoPlayer.AudioLanguage,[UPPERCASE],[/UPPERCASE]]</label>
-                        <textcolor>panel_fg_100</textcolor>
-                        <focusedcolor>panel_fg_100</focusedcolor>
-                        <shadowcolor>shadow_hard</shadowcolor>
-                        <font>font_hint</font>
-                        <align>center</align>
-                        <aligny>top</aligny>
-                        <textoffsetx>0</textoffsetx>
-                        <onclick>ActivateWindow(osdaudiosettings)</onclick>
-                        <onup condition="!Skin.HasSetting(OSD.DisablePopUpDialogs)">SetFocus(6601)</onup>
-                        <onup condition="Skin.HasSetting(OSD.DisablePopUpDialogs)">ActivateWindow(1143)</onup>
-                    </include>
-                    <include content="OSD_Button">
-                        <param name="autoclose" value="true" />
-                        <param name="visible" value="true" />
                         <param name="icon" value="special://skin/extras/icons/quote.png" />
                         <param name="id" value="6700" />
                         <param name="groupid" value="6799" />
@@ -253,7 +253,8 @@
                     <param name="buttonid" value="6600" />
                     <param name="stream_type" value="audio" />
                     <param name="header" value="$LOCALIZE[292]" />
-                    <param name="nibpos" value="250" />
+                    <param name="nibpos" value="830" />
+                    <param name="right" value="800" />
                     <param name="method" value="set_player_audiostream" />
                     <visible>!Window.IsVisible(DialogSettings.xml)</visible>
                     <visible>Control.HasFocus(6600) | Control.HasFocus(6601)</visible>
