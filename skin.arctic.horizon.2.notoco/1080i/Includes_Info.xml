@@ -1701,6 +1701,31 @@
                     <visible>!String.IsEmpty(ListItem.AddonCreator)</visible>
                 </include>
 
+                <!-- Addon Version -->
+                <include content="Info_Codec_Label">
+                    <param name="icon" value="special://skin/extras/icons/code-branch.png" />
+                    <param name="label" value="$INFO[ListItem.AddonVersion]" />
+                    <visible>Container.Content(addons)</visible>
+                    <visible>!String.IsEmpty(ListItem.AddonVersion)</visible>
+                </include>
+
+                <!-- Addon AddonInstallDate -->
+                <include content="Info_Codec_Label">
+                    <param name="icon" value="special://skin/extras/icons/calendar-check-regular.png" />
+                    <param name="label" value="$INFO[ListItem.AddonInstallDate]" />
+                    <visible>Container.Content(addons)</visible>
+                    <visible>!String.IsEmpty(ListItem.AddonInstallDate)</visible>
+                </include>
+
+                
+                <!-- Addon AddonLastUpdated -->
+                <include content="Info_Codec_Label">
+                    <param name="icon" value="special://skin/extras/icons/calendar-check.png" />
+                    <param name="label" value="$INFO[ListItem.AddonLastUpdated]" />
+                    <visible>Container.Content(addons) || Window.IsVisible(AddonBrowser)</visible>
+                    <visible>!String.IsEmpty(ListItem.AddonLastUpdated)</visible>
+                </include>
+
             </control>
         </definition>
     </include>
