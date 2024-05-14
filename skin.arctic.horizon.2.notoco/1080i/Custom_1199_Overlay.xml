@@ -375,14 +375,6 @@
                     <textcolor>yellowgreen</textcolor>
                 </include>
                 <include content="Overlay_InfoLabel">
-                    <label>    --recommendations.prev: $INFO[Window(Home).Property(TMDBHelper.Recommendations.HideRecs),ANI: , ]$INFO[Window(Home).Property(TMDBHelper.Recommendations.HideInfo),HID: , ]$INFO[Window(Home).Property(TMDBHelper.Recommendations.IsActive),POS: , ]</label>
-                    <textcolor>yellowgreen</textcolor>
-                </include>
-                <include content="Overlay_InfoLabel">
-                    <label>   --tmdbhelper.isupdating: $INFO[Window(Home).Property(TMDBHelper.WidgetContainer),widget: , ]$INFO[Window(Home).Property(TMDBHelper.CurrentWindow),window: , ]$INFO[Window(Home).Property(TMDBHelper.IsUpdating),details: , ]$INFO[Window(Home).Property(TMDBHelper.IsUpdatingRatings),ratings: , ]</label>
-                    <textcolor>yellowgreen</textcolor>
-                </include>
-                <include content="Overlay_InfoLabel">
                     <label>         --slide.container: $INFO[Window(Home).Property(Slide.WidgetInfoStyle),style: , ]$INFO[Window(Home).Property(Slide.WidgetContainer),container: , ]</label>
                     <textcolor>yellowgreen</textcolor>
                 </include>
@@ -447,7 +439,7 @@
                 <shadowcolor>ff000000</shadowcolor>
                 <align>right</align>
                 <aligny>top</aligny>
-
+                <include content="Overlay_InfoLabel">
                 <label>$INFO[ListItem.DBType,[COLOR=FF00FF00]  DBTYPE  [/COLOR],]$INFO[ListItem.Property(dbtype),[COLOR=FF00FF00]  PROP_DBTYPE  [/COLOR],]$INFO[Container.SortMethod,[COLOR=FF00FF00]  SORT  [/COLOR],]
                     $INFO[ListItem.Property(Container.Info),[COLOR=FF00FF00]  C.INFO  [/COLOR],]$INFO[ListItem.Property(Container.Type),[COLOR=FF00FF00]  C.TYPE  [/COLOR],]$INFO[ListItem.Property(Item.Info),[COLOR=FF00FF00]  I.INFO  [/COLOR],]$INFO[ListItem.Property(Item.Type),[COLOR=FF00FF00]  I.TYPE  [/COLOR],]
                     $INFO[Window(Home).Property(TMDbHelper.ListItem.Oscar_Wins),[COLOR=FF00FF00]  OSCARS_W  [/COLOR],]$INFO[Window(Home).Property(TMDbHelper.ListItem.Oscar_Nominations),[COLOR=FF00FF00]  OSCARS_N  [/COLOR],]$INFO[Window(Home).Property(TMDbHelper.ListItem.Award_Wins),[COLOR=FF00FF00]  AWARDS_W  [/COLOR],]$INFO[Window(Home).Property(TMDbHelper.ListItem.Award_Nominations),[COLOR=FF00FF00]  AWARDS_N  [/COLOR],]$INFO[ListItem.Rating,[COLOR=FF00FF00]  RATING  [/COLOR],]$INFO[ListItem.UserRating,[COLOR=FF00FF00]  USER RATING  [/COLOR],]$INFO[ListItem.Top250,[COLOR=FF00FF00]  TOP250-DB  [/COLOR],]$INFO[Window(Home).Property(TMDbHelper.ListItem.Top250),[COLOR=FF00FF00]  TOP250-SM  [/COLOR],]
@@ -462,6 +454,7 @@
                     $INFO[ListItem.Year,[COLOR=FF00FF00]  YEAR  [/COLOR],]   
                     $INFO[ListItem.premiered,[COLOR=FF00FF00]  Premiered  [/COLOR],]   
                     $INFO[ListItem.TITLE,[COLOR=FF00FF00]  TITLE  [/COLOR],]
+                    $INFO[ListItem.TVShowTitle,[COLOR=FF00FF00]  TVShowTitle  [/COLOR],]	
                     $INFO[Skin.String(Testing),[COLOR=FF00FF00]  SS-TEST  [/COLOR],]
                     $INFO[ListItem.DBID,[COLOR=FF00FF00]DBID  [/COLOR],]$INFO[ListItem.IMDBNumber,[COLOR=FF00FF00]  IMDBNUMBER  [/COLOR],]$INFO[ListItem.Property(tmdb_id),[COLOR=FF00FF00]  TMDB  [/COLOR],]$INFO[ListItem.Property(tvshow.tmdb_id),[COLOR=FF00FF00]  TMDB TV  [/COLOR],]$INFO[ListItem.Property(tvdb_id),[COLOR=FF00FF00]  TVDB  [/COLOR],]$INFO[ListItem.Property(tvshow.tvdb_id),[COLOR=FF00FF00]  TVDB TV  [/COLOR],]$INFO[ListItem.Property(imdb_id),[COLOR=FF00FF00]  IMDB  [/COLOR],]$INFO[ListItem.Property(tvshow.imdb_id),[COLOR=FF00FF00]  IMDB TV  [/COLOR],]
                     $INFO[Container.NumItems,[COLOR=FF00FF00]NUM ITEMS:  [/COLOR],]$INFO[Container.Property(NumItems.DBID),  [COLOR=FF00FF00]KODI:  [/COLOR],]$INFO[Container.Property(NumItems.TMDB),[COLOR=FF00FF00]  TMDB:  [/COLOR],]
@@ -469,21 +462,7 @@
                     $INFO[ListItem.Property(UnWatchedEpisodes),[COLOR=FF00FF00]U  [/COLOR],]$INFO[ListItem.Property(WatchedEpisodes),  [COLOR=FF00FF00]W  [/COLOR],]$INFO[ListItem.PlayCount,  [COLOR=FF00FF00]P  [/COLOR],]$INFO[ListItem.LastPlayed,   [COLOR=FF00FF00]LP  [/COLOR],]$INFO[ListItem.Overlay,  [COLOR=FF00FF00]O  [/COLOR],]$INFO[ListItem.AddonName,[COLOR=FF00FF00]ADDON  [/COLOR],]
                     $INFO[Container.PluginName,[COLOR=FF00FF00]PLUGIN  [/COLOR],]$INFO[Container.PluginCategory,  [COLOR=FF00FF00]NAME  [/COLOR],]
                 </label>
-
-            </control>
-
-            <control type="label">
-                <left>15</left>
-                <bottom>80</bottom>
-                <right>15</right>
-                <height>160</height>
-                <textcolor>FF00FFFF</textcolor>
-                <scroll>true</scroll>
-                <font>font_debug</font>
-                <shadowcolor>ff000000</shadowcolor>
-                <align>left</align>
-                <aligny>center</aligny>
-                <label>$INFO[Window(Home).Property(TMDbHelper.Path.Current)][CR]$INFO[Window(Home).Property(TMDbHelper.Position),Position: ]$INFO[Window(Home).Property(TMDbHelper.Locked),  Locked: ]</label>
+                </include>
 
             </control>
 
