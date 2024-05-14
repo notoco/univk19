@@ -191,7 +191,7 @@
     </variable>
 
     <variable name="Label_TitleLabel">
-        <value condition="!String.IsEmpty(ListItem.Title)">$INFO[ListItem.Title]</value>
+        <value condition="[!String.IsEmpty(ListItem.Title) + !Container.Content(seasons)]">$INFO[ListItem.Title]</value>
         <value>$INFO[ListItem.Label]</value>
     </variable>
 
@@ -427,7 +427,7 @@
         <value condition="[Control.IsVisible(520) | Control.IsVisible(524) | Control.IsVisible(580) | Control.IsVisible(550)| Control.IsVisible(570) | Control.IsVisible(58)] + !Container.Content(tvshows) + !Container.Content(seasons) + !String.IsEmpty(ListItem.Year) + !String.IsEmpty(ListItem.Duration)">$INFO[ListItem.Title] ($INFO[ListItem.Year]) - $INFO[ListItem.Duration]</value> <!-- notoco -->
         <value condition="[Control.IsVisible(520) | Control.IsVisible(524) | Control.IsVisible(580) | Control.IsVisible(550)| Control.IsVisible(570) | Control.IsVisible(58)] + !Container.Content(tvshows) + !Container.Content(seasons) + !String.IsEmpty(ListItem.Year)">$INFO[ListItem.Title] ($INFO[ListItem.Year])</value> <!-- notoco -->
         <value condition="[Control.IsVisible(520) | Control.IsVisible(524) | Control.IsVisible(580) | Control.IsVisible(550)| Control.IsVisible(570) | Control.IsVisible(58)] + Container.Content(tvshows)">$INFO[ListItem.Title]</value> <!-- notoco -->
-        <value condition="Container.Content(seasons) + !String.IsEmpty(ListItem.Year)">[B]$INFO[ListItem.TvShowTitle][/B][COLOR=$VAR[ColorHighlight]]  |  [/COLOR]$INFO[ListItem.Title]  ($INFO[ListItem.Year])</value> <!-- notoco -->
+        <value condition="Container.Content(seasons) + !String.IsEmpty(ListItem.Year)">[B]$INFO[ListItem.TvShowTitle][/B][COLOR=$VAR[ColorHighlight]]  |  [/COLOR]$INFO[ListItem.Label]  ($INFO[ListItem.Year])</value> <!-- notoco -->
         <value condition="Window.IsVisible(weather) + !String.IsEmpty(Window(Weather).Property(WeatherProvider))">$INFO[Window(Weather).Property(WeatherProvider)]</value>
         <!-- <value condition="Window.IsVisible(weather) + !String.IsEmpty(Weather.Location)">$INFO[Weather.Location]</value> -->
         <value condition="Window.IsVisible(weather)">$LOCALIZE[8]</value>
