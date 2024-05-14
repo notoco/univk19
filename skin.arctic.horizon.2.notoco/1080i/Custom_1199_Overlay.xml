@@ -439,7 +439,6 @@
                 <shadowcolor>ff000000</shadowcolor>
                 <align>right</align>
                 <aligny>top</aligny>
-                <include content="Overlay_InfoLabel">
                 <label>$INFO[ListItem.DBType,[COLOR=FF00FF00]  DBTYPE  [/COLOR],]$INFO[ListItem.Property(dbtype),[COLOR=FF00FF00]  PROP_DBTYPE  [/COLOR],]$INFO[Container.SortMethod,[COLOR=FF00FF00]  SORT  [/COLOR],]
                     $INFO[ListItem.Property(Container.Info),[COLOR=FF00FF00]  C.INFO  [/COLOR],]$INFO[ListItem.Property(Container.Type),[COLOR=FF00FF00]  C.TYPE  [/COLOR],]$INFO[ListItem.Property(Item.Info),[COLOR=FF00FF00]  I.INFO  [/COLOR],]$INFO[ListItem.Property(Item.Type),[COLOR=FF00FF00]  I.TYPE  [/COLOR],]
                     $INFO[Window(Home).Property(TMDbHelper.ListItem.Oscar_Wins),[COLOR=FF00FF00]  OSCARS_W  [/COLOR],]$INFO[Window(Home).Property(TMDbHelper.ListItem.Oscar_Nominations),[COLOR=FF00FF00]  OSCARS_N  [/COLOR],]$INFO[Window(Home).Property(TMDbHelper.ListItem.Award_Wins),[COLOR=FF00FF00]  AWARDS_W  [/COLOR],]$INFO[Window(Home).Property(TMDbHelper.ListItem.Award_Nominations),[COLOR=FF00FF00]  AWARDS_N  [/COLOR],]$INFO[ListItem.Rating,[COLOR=FF00FF00]  RATING  [/COLOR],]$INFO[ListItem.UserRating,[COLOR=FF00FF00]  USER RATING  [/COLOR],]$INFO[ListItem.Top250,[COLOR=FF00FF00]  TOP250-DB  [/COLOR],]$INFO[Window(Home).Property(TMDbHelper.ListItem.Top250),[COLOR=FF00FF00]  TOP250-SM  [/COLOR],]
@@ -462,7 +461,7 @@
                     $INFO[ListItem.Property(UnWatchedEpisodes),[COLOR=FF00FF00]U  [/COLOR],]$INFO[ListItem.Property(WatchedEpisodes),  [COLOR=FF00FF00]W  [/COLOR],]$INFO[ListItem.PlayCount,  [COLOR=FF00FF00]P  [/COLOR],]$INFO[ListItem.LastPlayed,   [COLOR=FF00FF00]LP  [/COLOR],]$INFO[ListItem.Overlay,  [COLOR=FF00FF00]O  [/COLOR],]$INFO[ListItem.AddonName,[COLOR=FF00FF00]ADDON  [/COLOR],]
                     $INFO[Container.PluginName,[COLOR=FF00FF00]PLUGIN  [/COLOR],]$INFO[Container.PluginCategory,  [COLOR=FF00FF00]NAME  [/COLOR],]
                 </label>
-                </include>
+
 
             </control>
 
