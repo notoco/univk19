@@ -398,6 +398,7 @@
                 </include>
                 <control type="image">
                     <height>200</height>
+                    <width>400</width>
                     <top>0</top>
                     <aspectratio align="left">keep</aspectratio>
                     <fadetime>600</fadetime>
