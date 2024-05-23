@@ -177,7 +177,7 @@ provider-name="primaeval">
 	</assets>
   </extension>
 </addon>
-<addon id="service.upnext" name="UpNext" version="2024.04.14.0" provider-name="im85288">
+<addon id="service.upnext" name="UpNext" version="2.0.28+dev.0" provider-name="im85288">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.pil" version="1.1.7"/>
