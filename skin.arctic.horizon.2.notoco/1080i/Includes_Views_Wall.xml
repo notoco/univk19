@@ -69,11 +69,14 @@
                         <height>info_landscape_h</height>
                     </include>
                     <include content="Info_Panel">
+                        <param name="subtitle">false</param>
                         <param name="title">false</param>
                         <param name="plotheight">info_plot_large_h</param>
                         <param name="plotwidth">100%</param>
                         <param name="shortline">true</param>
+                        <param name="top">-20</param>
                         <param name="line_id">$PARAM[line_id]</param>
+                        <param name="plotlabel">[COLOR=main_fg_90]$VAR[Label_Plot_Widget_Title,[B],[/B]][/COLOR]$VAR[Label_Plot_Widget]</param>
                         <top>info_landscape_details_t</top>
                     </include>
                 </control>
