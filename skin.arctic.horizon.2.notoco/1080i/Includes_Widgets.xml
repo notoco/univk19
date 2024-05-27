@@ -104,6 +104,7 @@
                         <top>infowidget_plot_t</top>
                         <include content="Info_Panel">
                             <param name="title">false</param>
+                            <param name="subtitle">false</param>
                             <param name="infoline">false</param>
                             <param name="container">Container($PARAM[id]).</param>
                             <param name="details">true</param>
@@ -111,6 +112,7 @@
                             <param name="controltype">label</param>
                             <param name="plotbox">true</param>
                             <param name="plotheight">info_plot_h</param>
+                            <param name="top">-20</param>
                             <param name="plotlabel">[COLOR=main_fg_90]$VAR[Label_Plot_Widget_Title,[B],[/B]][/COLOR]$VAR[Label_Plot_Widget]</param>
                             <width>info_panel_w</width>
                             <height>160</height>
