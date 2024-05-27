@@ -120,6 +120,64 @@
         </definition>
     </include>
 
+    <!-- boss added -->
+    <include name="_Info_Title_SubTitleLabel">
+        <param name="font">font_main_bold</param>
+        <param name="label">$VAR[Label_Tagline]</param>
+        <definition>
+            <control type="group">
+                <nested />
+                <width>info_plot_w</width>
+                <control type="label">
+                    <aligny>center</aligny>
+                    <height>32</height>
+                    <!-- <top>0</top> -->
+                    <label>$PARAM[label]</label>
+                    <textcolor>$PARAM[colordiffuse]_100</textcolor>
+                    <font>font_main_bold</font>
+                    <visible>Integer.IsEqual(Container(99991).NumPages,1)</visible>
+                </control>
+                <control type="label">
+                    <wrapmultiline>true</wrapmultiline>
+                    <aligny>center</aligny>
+                    <height>32</height>
+                    <!-- <top>0</top> -->
+                    <label>$PARAM[label]</label>
+                    <textcolor>$PARAM[colordiffuse]_100</textcolor>
+                    <font>font_main_bold</font>
+                    <width>50%</width>
+                    <visible>!Integer.IsEqual(Container(99991).NumPages,1)</visible>
+                    <visible>Integer.IsEqual(Container(99992).NumPages,1)</visible>
+                </control>
+                <control type="label">
+                    <wrapmultiline>true</wrapmultiline>
+                    <aligny>center</aligny>
+                    <height>32</height>
+                    <!-- <top>0</top> -->
+                    <label>$PARAM[label]</label>
+                    <textcolor>$PARAM[colordiffuse]_100</textcolor>
+                    <font>font_main_bold</font>
+                    <width>70%</width>
+                    <visible>!Integer.IsEqual(Container(99991).NumPages,1)</visible>
+                    <visible>!Integer.IsEqual(Container(99992).NumPages,1)</visible>
+                    <visible>Integer.IsEqual(Container(99993).NumPages,1)</visible>
+                </control>
+                <control type="label">
+                    <wrapmultiline>true</wrapmultiline>
+                    <aligny>center</aligny>
+                    <height>32</height>
+                    <!-- <top>0</top> -->
+                    <label>$PARAM[label]</label>
+                    <textcolor>$PARAM[colordiffuse]_100</textcolor>
+                    <font>font_main_bold</font>
+                    <visible>!Integer.IsEqual(Container(99991).NumPages,1)</visible>
+                    <visible>!Integer.IsEqual(Container(99992).NumPages,1)</visible>
+                    <visible>!Integer.IsEqual(Container(99993).NumPages,1)</visible>
+                </control>
+            </control>
+        </definition>
+    </include>
+
     <include name="Info_Title_Label">
         <include content="_Info_Title_Label" condition="!Skin.HasSetting(UseLightFont) + Skin.HasSetting(Titles.EnableWrapping)">
             <param name="font">font_info_black</param>
@@ -140,7 +198,36 @@
             <nested />
         </include>
         <include content="_Info_Title_Label_NoWrap" condition="Skin.HasSetting(UseLightFont) + !Skin.HasSetting(Titles.EnableWrapping)">
+            <param name="font">font_info_light</param>
+            <param name="colordiffuse">$PARAM[colordiffuse]</param>
+            <param name="label">$PARAM[label]</param>
+            <nested />
+        </include>
+    </include>
+
+
+    <!-- boss added -->
+    <include name="Info_Title_SubtitleLabel">
+        <include content="_Info_Title_SubTitleLabel" condition="!Skin.HasSetting(UseLightFont) + Skin.HasSetting(Titles.EnableWrapping)">
             <param name="font">font_info_black</param>
+            <param name="colordiffuse">$PARAM[colordiffuse]</param>
+            <param name="label">$PARAM[label]</param>
+            <nested />
+        </include>
+        <include content="_Info_Title_SubTitleLabel" condition="Skin.HasSetting(UseLightFont) + Skin.HasSetting(Titles.EnableWrapping)">
+            <param name="font">font_info_light</param>
+            <param name="colordiffuse">$PARAM[colordiffuse]</param>
+            <param name="label">$PARAM[label]</param>
+            <nested />
+        </include>
+        <include content="_Info_Title_SubTitleLabel" condition="!Skin.HasSetting(UseLightFont) + !Skin.HasSetting(Titles.EnableWrapping)">
+            <param name="font">font_info_black</param>
+            <param name="colordiffuse">$PARAM[colordiffuse]</param>
+            <param name="label">$PARAM[label]</param>
+            <nested />
+        </include>
+        <include content="_Info_Title_SubTitleLabel" condition="Skin.HasSetting(UseLightFont) + !Skin.HasSetting(Titles.EnableWrapping)">
+            <param name="font">font_info_light</param>
             <param name="colordiffuse">$PARAM[colordiffuse]</param>
             <param name="label">$PARAM[label]</param>
             <nested />
@@ -185,6 +272,31 @@
                 <width>$PARAM[width]</width>
                 <!-- Title Only -->
                 <include content="Info_Title_Label" condition="!Skin.HasSetting(TMDbHelper.EnableCrop)">
+                    <param name="colordiffuse">$PARAM[colordiffuse]</param>
+                </include>
+                <!-- Other -->
+                <include content="Info_Title_Logo" condition="Skin.HasSetting(TMDbHelper.EnableCrop)">
+                    <param name="colordiffuse">$PARAM[colordiffuse]</param>
+                    <param name="mainlogo_visible">$PARAM[mainlogo_visible]</param>
+                    <param name="mainlogo_texture">$PARAM[mainlogo_texture]</param>
+                </include>
+            </control>
+        </definition>
+    </include>
+
+    <!-- Boss added: -->
+    <include name="Info_SubTitle">
+        <param name="colordiffuse" default="main_fg" />
+        <param name="container" default="" />
+        <param name="width" default="info_plot_w" />
+        <param name="mainlogo_visible">[!String.IsEmpty(Container(99950).ListItem.Art(cropimage)) | !String.IsEmpty(Container(99950).ListItem.Property(base_clearlogo))]</param>
+        <param name="mainlogo_texture">$VAR[Image_CropLogo]</param>
+        <definition>
+            <control type="group">
+                <height>45</height>
+                <width>$PARAM[width]</width>
+                <!-- Title Only -->
+                <include content="Info_Title_SubtitleLabel" condition="!Skin.HasSetting(TMDbHelper.EnableCrop)">
                     <param name="colordiffuse">$PARAM[colordiffuse]</param>
                 </include>
                 <!-- Other -->
@@ -1854,9 +1966,12 @@
         <param name="ratingsheight" default="80" />
         <param name="details" default="true" />
         <param name="title" default="true" />
+        <param name="subtitle" default="true" />
         <param name="infoline" default="true" />
         <param name="plotlabel">$VAR[Label_Plot_Main]</param>
         <param name="shortline" default="false" />
+        <param name="top" default="-65" />
+        <param name="tagline">$VAR[Label_Tagline]</param>
         <definition>
             <control type="group">
                 <nested />
@@ -1868,10 +1983,18 @@
                     <control type="group" description="Avoid grouplist chop with spacer">
                         <height>20</height>
                     </control>
+                    <!-- Video Title -->
                     <include content="Info_Title" condition="$PARAM[title]">
                         <param name="colordiffuse" value="$PARAM[colordiffuse]" />
                         <param name="width" value="$PARAM[plotwidth]" />
                     </include>
+                    <!-- Boss - TagLine -->
+                    <include content="Info_SubTitle" condition="$PARAM[subtitle]">
+                        <param name="colordiffuse" value="$PARAM[colordiffuse]" />
+                        <param name="width" value="$PARAM[plotwidth]" />
+                        <visible>!String.IsEmpty($VAR[Label_Tagline])</visible>
+                    </include>
+                    <!-- Info row (4k, duration, year, etc) -->
                     <control type="group">
                         <height>40</height>
                         <top>10</top>
