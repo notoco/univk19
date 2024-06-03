@@ -399,7 +399,7 @@
                 <control type="image">
                     <height>200</height>
                     <width>400</width>
-                    <top>0</top>
+                    <bottom>20</bottom>
                     <aspectratio align="left">keep</aspectratio>
                     <fadetime>600</fadetime>
                     <texture background="true">$INFO[Window(Home).Property(TMDBHelper.Player.CropImage)]</texture>
