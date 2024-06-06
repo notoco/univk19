@@ -19,7 +19,7 @@
             <centerleft>50%</centerleft>
             <control type="image">
                 <height>70</height>
-                <top>-70</top>                
+                <top>-80</top>                
                 <width>700</width>
                 <centerleft>50%</centerleft>
                 <texture colordiffuse="dialog_bg_70" border="20">common/dialog2.png</texture>
