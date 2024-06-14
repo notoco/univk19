@@ -2123,11 +2123,12 @@
                     <param name="colordiffuse">$VAR[ColorSelected]</param>
                 </include>
                 <colordiffuse>main_fg_90</colordiffuse>
-                <texture background="true" diffuse="$PARAM[diffuse]" fallback="$PARAM[icon_other_fallback]">$PARAM[icon_other]</texture>
+                <aspectratio scalediffuse="true">keep</aspectratio>
+                <texture background="true" diffuse="$PARAM[diffuse]" fallback="$PARAM[icon_other_fallback]">$PARAM[icon]</texture>
                 <fadetime>$PARAM[fadetime]</fadetime>
                 <aspectratio scalediffuse="false">keep</aspectratio>
                 <visible>$PARAM[is_other]</visible>
-                <bordersize>$PARAM[icon_other_bordersize]</bordersize>
+                <bordersize>$PARAM[icon_default_bordersize]</bordersize>
             </control>
         </definition>
     </include>
