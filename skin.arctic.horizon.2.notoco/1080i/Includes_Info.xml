@@ -1209,7 +1209,7 @@
                     <param name="colordiffuse">$PARAM[colordiffuse]</param>
                     <param name="icon">special://skin/extras/icons/bolt.png</param>
                     <param name="icon_colordiffuse">black</param>
-                    <param name="back_colordiffuse">fffb74e6</param>
+                    <param name="back_colordiffuse">white</param>
                     <param name="backing">true</param>
                     <param name="icon_top">1</param>
                     <param name="icon_width">31</param>
