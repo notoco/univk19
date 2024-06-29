@@ -64,7 +64,7 @@
                         <param name="visible" value="true" />
                         <param name="id" value="3012" />
                         <param name="groupid" value="5013" />
-                        <param name="size" value="60" />
+                        <param name="size" value="40" />
                         <param name="itemgap" value="10" />
                     </include>
                         <!--<control type="button" id="3013">
@@ -87,7 +87,7 @@
                         <param name="visible" value="true" />
                         <param name="id" value="3013" />
                         <param name="groupid" value="5013" />
-                        <param name="size" value="60" />
+                        <param name="size" value="40" />
                         <param name="itemgap" value="10" />
                     </include>
                 </control>
