@@ -16,12 +16,12 @@
             <top>70</top>
             <height>80</height>
             <width>700</width>
-            <centerleft>50%</centerleft>
+            <right>20</right>
             <control type="image">
                 <height>70</height>
                 <top>-80</top>                
                 <width>700</width>
-                <centerleft>50%</centerleft>
+                <right>20</right>
                 <texture colordiffuse="dialog_bg_70" border="20">common/dialog2.png</texture>
             </control>
             <control type="progress" id="3014">
@@ -83,7 +83,7 @@
                         </control> -->
                      
                     <include content="OSD_Button">
-                        <param name="icon" value="special://skin/extras/icons/xmark.png" />
+                        <param name="icon" value="special://skin/extras/icons/$INFO[Window.Property(stop_close_label)].png" />
                         <param name="visible" value="true" />
                         <param name="id" value="3013" />
                         <param name="groupid" value="5013" />
