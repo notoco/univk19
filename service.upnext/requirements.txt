@@ -1,8 +1,0 @@
-python-dateutil
-pillow
-kodi-addon-checker; python_version >= '3.7'
-polib
-pylint
-tox
-pytest-cov
-git+https://github.com/ruuk/script.module.addon.signals.git@master#egg=AddonSignals

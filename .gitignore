@@ -11,3 +11,4 @@ Thumbs.db
 *.pyc
 *.pyo
 service.upnext — master.lnk
+*.upnext-master

@@ -137,7 +137,7 @@ class TMDB(TMDb):  # pylint: disable=inherit-non-class,too-few-public-methods
 
 # pylint: disable=inherit-non-class,too-few-public-methods
 class Player(Players):
-    @Players._substitute  # pylint: disable-next=no-member
+    @Players._substitute  # pylint: disable=no-member
     def __init__(self, **kwargs):
         if 'tmdb_id' not in kwargs:
             # pylint: disable-next=no-value-for-parameter,not-callable
@@ -194,7 +194,8 @@ class Player(Players):
             episode.path = 'plugin://service.upnext/play_plugin'
         return episodes
 
-    def queue(self, episodes):
+    @staticmethod
+    def queue(episodes):
         from xbmc import PlayList, PLAYLIST_VIDEO
 
         playlist = PlayList(PLAYLIST_VIDEO)
