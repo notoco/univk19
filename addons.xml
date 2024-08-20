@@ -227,6 +227,60 @@ Många befintliga tillägg integreras redan med den här utanför lådan-tjänst
         </assets>
     </extension>
 </addon>
+<addon id="service.hyperion.ng"
+       name="Hyperion.NG"
+       version="2024.07.13.1"
+       provider-name="Team CoreELEC">
+  <requires>
+    <import addon="xbmc.python" version="3.0.0"/>
+
+  </requires>
+  <extension point="xbmc.service" library="default.py">
+    <provides></provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>Hyperion.NG: an AmbiLight controller</summary>
+    <description>
+Hyperion.NG(2.0.16) is an modern opensource AmbiLight implementation.
+    </description>
+    <disclaimer>
+
+    </disclaimer>
+    <platform>all</platform>
+    <news>
+114
+- Update to 2.0.16
+113
+- Update to 2.0.15
+112
+- fix dependencies and add new suspend/resume support suspend/resume support by PR hyperion-project/hyperion.ng#1535
+111
+- Update to 2.0.14
+110
+- Update to 2.0.13
+109
+- Update to 2.0.12
+108
+- Update to 2.0.0-alpha.11
+...
+101
+- Add Platform script
+100
+
+- Initial Release @e438bc6
+    </news>
+    <assets>
+      <icon>resources/icon.png</icon>
+      <fanart>resources/fanart.png</fanart>
+<screenshot>resources/screenshot-01.jpg</screenshot>
+<screenshot>resources/screenshot-02.jpg</screenshot>
+<screenshot>resources/screenshot-03.jpg</screenshot>
+<screenshot>resources/screenshot-04.jpg</screenshot>
+<screenshot>resources/screenshot-05.jpg</screenshot>
+
+    </assets>
+  </extension>
+</addon>
 <addon id="repository.notoco.univ19" name="Notoco Univ Repo" version="3.1" provider-name="notoco">
         <extension point="xbmc.addon.repository" name="Notoco Univ Repo">
             <dir minversion="18.9.0">
