@@ -97,7 +97,7 @@ class ClassImport(ObjectImport):  # pylint: disable=too-few-public-methods
 
 
 # pylint: disable=invalid-name
-TMDb = ClassImport(
+_TMDb = ClassImport(
     'tmdbhelper_lib.api.tmdb.api',
     'TMDb',
     obj_attrs={'api_key': 'b5004196f5004839a7b0a89e623d3bd2'},
@@ -105,24 +105,24 @@ TMDb = ClassImport(
 get_next_episodes = ObjectImport(
     'tmdbhelper_lib.player.details',
     'get_next_episodes',
-    mod_attrs={'TMDb': TMDb},
+    mod_attrs={'TMDb': _TMDb},
 )
 get_item_details = ObjectImport(
     'tmdbhelper_lib.player.details',
     'get_item_details',
-    mod_attrs={'TMDb': TMDb},
+    mod_attrs={'TMDb': _TMDb},
 )
-Players = ClassImport(
+_Players = ClassImport(
     'tmdbhelper_lib.player.players',
     'Players',
     mod_attrs={
-        'TMDb': TMDb,
+        'TMDb': _TMDb,
         'get_item_details': get_item_details,
     },
 )
 
 
-class TMDB(TMDb):  # pylint: disable=inherit-non-class,too-few-public-methods
+class TMDb(_TMDb):  # pylint: disable=inherit-non-class,too-few-public-methods
     def get_id_details(self, title, season, episode):
         tmdb_id = self.get_tmdb_id(
             tmdb_type='tv', query=title, season=season, episode=episode
@@ -136,26 +136,26 @@ class TMDB(TMDb):  # pylint: disable=inherit-non-class,too-few-public-methods
 
 
 # pylint: disable=inherit-non-class,too-few-public-methods
-class Player(Players):
-    @Players._substitute  # pylint: disable=no-member
+class Players(_Players):
+    @_Players._substitute  # pylint: disable=no-member
     def __init__(self, **kwargs):
         if 'tmdb_id' not in kwargs:
             # pylint: disable-next=no-value-for-parameter,not-callable
-            kwargs['tmdb_id'] = TMDB().get_tmdb_id(**kwargs)
-        super(Player, self).__init__(**kwargs)
+            kwargs['tmdb_id'] = TMDb().get_tmdb_id(**kwargs)
+        super(Players, self).__init__(**kwargs)
         self._success = False
 
-    @Players._substitute  # pylint: disable=no-member
+    @_Players._substitute  # pylint: disable=no-member
     def _get_path_from_actions(self, actions, is_folder=True):
         if SETTINGS.exact_tmdb_match and 'dialog' in actions:
             actions['dialog'] = False
-        return super(Player, self)._get_path_from_actions(
+        return super(Players, self)._get_path_from_actions(
             actions, is_folder
         )
 
-    @Players._substitute  # pylint: disable=no-member
+    @_Players._substitute  # pylint: disable=no-member
     def _get_player_or_fallback(self, *args, **kwargs):
-        player = super(Player, self)._get_player_or_fallback(*args, **kwargs)
+        player = super(Players, self)._get_player_or_fallback(*args, **kwargs)
         if player and SETTINGS.exact_tmdb_match:
             assert_keys = set(
                 self.players.get(player.get('file'), {})
@@ -168,9 +168,9 @@ class Player(Players):
         self.current_player = player
         return player
 
-    @Players._substitute  # pylint: disable=no-member
+    @_Players._substitute  # pylint: disable=no-member
     def get_resolved_path(self, *args, **kwargs):
-        path = super(Player, self).get_resolved_path(*args, **kwargs)
+        path = super(Players, self).get_resolved_path(*args, **kwargs)
         self._success = (self.action_log and self.action_log[-2] == 'SUCCESS!')
         if not self._success:
             utils.notification('UpNext', 'Unable to play video')
@@ -183,15 +183,20 @@ class Player(Players):
             self.current_player['make_playlist'] = 'false'
         return path
 
-    def get_next_episodes(self):
-        player = self.current_player or self.get_default_player()
-        if not player:
-            return None
+    @_Players._substitute  # pylint: disable=no-member
+    def get_next_episodes(self, player=None):
         # pylint: disable-next=not-callable
-        episodes = get_next_episodes(self.tmdb_id, self.season, self.episode,
-                                     player.get('file')) or []
-        for episode in episodes:
-            episode.path = 'plugin://service.upnext/play_plugin'
+        episodes = get_next_episodes(self.tmdb_id,
+                                     self.season,
+                                     self.episode,
+                                     player)
+        if episodes and len(episodes) > 1:
+            if episodes[1].is_unaired(check_hide_settings=False):
+                episodes = None
+        else:
+            episodes = None
+        # pylint: disable-next=attribute-defined-outside-init
+        self._next_episodes = episodes
         return episodes
 
     @staticmethod
@@ -203,49 +208,56 @@ class Player(Players):
             return False
 
         for li in episodes[1:]:
+            li.path = 'plugin://service.upnext/play_plugin'
             listitem = li.get_listitem()
             playlist.add(listitem.getPath(), listitem)
         return True
 
-    @Players._substitute  # pylint: disable=no-member
+    @_Players._substitute  # pylint: disable=no-member
     def select_player(self, *args, **kwargs):
         if SETTINGS.exact_tmdb_match:
-            return None
-        return super(Player, self).select_player(*args, **kwargs)
+            return self.get_default_player()
+        return super(Players, self).select_player(*args, **kwargs)
 
 
-def generate_tmdbhelper_play_url(upnext_data, player):
+def generate_player_data(upnext_data, player=None, play_url=False):
     video_details = upnext_data.get('next_video')
     if video_details:
         offset = 0
-        play_url = ''.join((
-            'plugin://',
-            constants.ADDON_ID,
-            '/play_plugin?{0}',
-        ))
+        if play_url:
+            play_url = ''.join((
+                'plugin://',
+                constants.ADDON_ID,
+                '/play_plugin?{0}',
+            ))
     else:
         video_details = upnext_data.get('current_video')
         offset = 1
-        play_url = ''.join((
-            'plugin://',
-            constants.TMDBH_ADDON_ID,
-            '/?{0}',
-        ))
+        if play_url:
+            play_url = ''.join((
+                'plugin://',
+                constants.TMDBH_ADDON_ID,
+                '/?{0}',
+            ))
 
     tmdb_id = video_details.get('tmdb_id', '')
     title = video_details.get('showtitle', '')
     season = utils.get_int(video_details, 'season')
     episode = utils.get_int(video_details, 'episode') + offset
 
-    query = urlencode({
+    data = {
         'info': 'play',
-        'mode': 'play',
-        'player': player,
+        'query': title,
         'tmdb_type': 'tv',
         'tmdb_id': tmdb_id,
-        'query': title,
         'season': season,
-        'episode': episode
-    })
+        'episode': episode,
+        'ignore_default': False,
+        'islocal': False,
+        'player': player,
+        'mode': 'play',
+    }
 
-    return play_url.format(query)
+    if play_url:
+        return play_url.format(urlencode(data))
+    return data

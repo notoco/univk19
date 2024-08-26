@@ -162,10 +162,13 @@ if utils.supports_python_api(20):
         'writer': (_InfoTagVideo.setWriters, _wrap, True),
         'year': (_InfoTagVideo.setYear, int, False),
     }
+    _set_info.info_tag = None
 
 
 def _create_video_listitem(video,
-                           kwargs=None, infolabels=None, properties=None):
+                           kwargs=None,
+                           infolabels=None,
+                           properties=None):
     """Create a xbmcgui.ListItem from provided video details"""
 
     _infolabels = {
@@ -228,14 +231,17 @@ def _create_video_listitem(video,
     return listitem
 
 
-def create_episode_listitem(episode,  # pylint: disable=too-many-locals
-                            kwargs=None, infolabels=None, properties=None):
+# pylint: disable=too-many-locals
+def create_episode_listitem(episode,
+                            kwargs=None,
+                            infolabels=None,
+                            properties=None):
     """Create a xbmcgui.ListItem from provided episode details"""
 
     episode_num = episode.get('episode')
     episode_title = episode.get('title', '')
-    first_aired = episode.get('firstaired', '')
-    first_aired, first_aired_short = utils.localize_date(first_aired)
+    first_aired = episode.get('firstaired') or episode.get('premiered') or ''
+    year = episode.get('year', 0)
     season = episode.get('season')
     show_title = episode.get('showtitle', '')
 
@@ -246,11 +252,12 @@ def create_episode_listitem(episode,  # pylint: disable=too-many-locals
     progress = round(100 * num_watched / num_episodes) if num_episodes else 0
 
     if first_aired:
-        year = first_aired.year
-        first_aired_string = str(first_aired)
+        first_aired_obj, first_aired_short = utils.localize_date(first_aired)
+        if first_aired_obj:
+            year = first_aired_obj.year
+            first_aired = str(first_aired_obj)
     else:
-        year = first_aired_short
-        first_aired_string = first_aired_short
+        first_aired_short = first_aired
 
     season_episode = (
         '' if episode_num is None
@@ -285,8 +292,8 @@ def create_episode_listitem(episode,  # pylint: disable=too-many-locals
         'tvshowtitle': show_title,
         'season': constants.UNDEFINED if season is None else season,
         'episode': constants.UNDEFINED if episode_num is None else episode_num,
-        'aired': first_aired_string,
-        'premiered': first_aired_string,
+        'aired': first_aired,
+        'premiered': first_aired,
         'year': year,
         'mediatype': 'episode'
     }
@@ -408,6 +415,7 @@ def create_listitem(item, kwargs=None, infolabels=None, properties=None):
     return None
 
 
+# pylint: disable=too-many-locals
 def send_signal(sender, upnext_info):
     """Helper function for video plugins to send data to UpNext"""
 
@@ -505,14 +513,18 @@ def send_signal(sender, upnext_info):
         upnext_data[key] = video_info
 
     if 'player' in upnext_info:
-        from tmdb_helper import generate_tmdbhelper_play_url
+        from tmdb_helper import generate_player_data
 
-        upnext_data['play_url'] = generate_tmdbhelper_play_url(
-            upnext_data, upnext_info['player']
-        )
+        player = upnext_info['player']
+        if player:
+            upnext_data['play_url'] = generate_player_data(
+                upnext_data, player, play_url=True,
+            )
+        else:
+            upnext_data['play_data'] = generate_player_data(upnext_data)
         upnext_data['play_direct'] = True
-    upnext_data = _copy_video_details(upnext_data)
 
+    upnext_data = _copy_video_details(upnext_data)
     return utils.event(sender=sender,
                        message='upnext_data',
                        data=upnext_data,

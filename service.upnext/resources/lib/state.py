@@ -139,10 +139,10 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
             # Show Still Watching? popup if next episode is from next season or
             # next item is a movie
             if (next_video and (
-                    next_video['type'] == 'movie'
+                    next_video.get('type') == 'movie'
                     or (not self.shuffle_on
                         and len({constants.SPECIALS,
-                                 next_video['season'],
+                                 next_video.get('season'),
                                  self.current_item['details']['season']}) == 3)
             )):
                 self.played_in_a_row = SETTINGS.played_limit
@@ -312,7 +312,7 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
         # listitem is resolved. Fallback to Player notification data.
         for info, value in play_info['item'].items():
             current_value = current_video.get(info, '')
-            if current_value in (constants.UNDEFINED, constants.UNKNOWN, ''):
+            if current_value in {constants.UNDEFINED, constants.UNKNOWN, ''}:
                 current_video[info] = value
 
         tvshowid = current_video.get('tvshowid', constants.UNDEFINED)
@@ -320,15 +320,23 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
         season = utils.get_int(current_video, 'season')
         episode = utils.get_int(current_video, 'episode')
 
-        if not title or constants.UNDEFINED in (season, episode):
+        if not title or constants.UNDEFINED in {season, episode}:
             return None
 
         for plugin_url in ('mediapath', 'file'):
             plugin_url = current_video.get(plugin_url, '')
             if plugin_url.startswith('plugin://'):
+                addon_id, _, addon_args = utils.parse_url(plugin_url)
+                if addon_id in {constants.ADDON_ID, constants.TMDBH_ADDON_ID}:
+                    if 'player' in addon_args:
+                        addon_id = addon_args['player']
+                        break
+                    addon_id = None
+                    continue
                 break
         else:
             plugin_url = None
+            addon_id = None
 
         if tvshowid == constants.UNDEFINED or plugin_url:
             # Video plugins can provide a plugin specific tvshowid. Search Kodi
@@ -336,9 +344,11 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
             tvshowid = api.get_tvshowid(title)
         # Now playing show not found in Kodi library
         if tvshowid == constants.UNDEFINED:
-            return cls._get_tmdb_now_playing(
-                current_video, title, season, episode, plugin_url
-            ) if SETTINGS.enable_tmdbhelper_fallback else None
+            if SETTINGS.enable_tmdbhelper_fallback:
+                return cls._get_tmdb_now_playing(
+                    current_video, title, season, episode, addon_id
+                )
+            return None
         # Use found tvshowid for library integrated plugins e.g. Emby,
         # Jellyfin, Plex, etc.
         current_video['tvshowid'] = tvshowid
@@ -356,19 +366,12 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
         return current_video
 
     @staticmethod
-    def _get_tmdb_now_playing(current_video, title, season, episode, url):
-        addon_id, _, addon_args = utils.parse_url(url)
-        if (addon_id in (constants.ADDON_ID, constants.TMDBH_ADDON_ID)
-                and 'player' in addon_args):
-            addon_id = addon_args['player']
-        if addon_id == constants.TMDBH_ADDON_ID:
-            addon_id = None
-
+    def _get_tmdb_now_playing(current_video, title, season, episode, addon_id):
         # TMDBHelper not importable, use plugin url instead
         if SETTINGS.import_tmdbhelper:
-            from tmdb_helper import Player, TMDB
+            from tmdb_helper import Players, TMDb
 
-            no_integration = not TMDB.is_initialised()
+            no_integration = not TMDb.is_initialised()
         else:
             no_integration = True
 
@@ -379,25 +382,30 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
                                             'player': addon_id})
             return
 
+        # noinspection PyUnboundLocalVariable
         # pylint: disable-next=no-value-for-parameter
-        tmdb_id, current_video = TMDB().get_id_details(title, season, episode)
+        tmdb_id, current_video = TMDb().get_id_details(title, season, episode)
         if not tmdb_id or not current_video:
             return
 
-        # pylint: disable-next=no-value-for-parameter,unexpected-keyword-arg
-        player = Player(query=title,
-                        season=season,
-                        episode=episode,
-                        tmdb_id=tmdb_id,
-                        tmdb_type='tv',
-                        player=addon_id,
-                        mode='play')
+        # noinspection PyUnboundLocalVariable
+        # pylint: disable-next=possibly-used-before-assignment,no-value-for-parameter,unexpected-keyword-arg
+        players = Players(tmdb_type='tv',
+                          tmdb_id=tmdb_id,
+                          season=season,
+                          episode=episode,
+                          ignore_default=False,
+                          islocal=False,
+                          player=addon_id,
+                          mode='play')
 
-        episodes = player.get_next_episodes()
-        if not episodes or len(episodes) < 2:
+        player = players.current_player or players.get_default_player()
+        player = (player and player.get('file')) or addon_id
+        episodes = players.get_next_episodes(player)
+        if not episodes:
             return
 
-        if SETTINGS.queue_from_tmdb and player.queue(episodes):
+        if player and SETTINGS.queue_from_tmdb and players.queue(episodes):
             utils.event('OnAVStart', internal=True)
         else:
             upnext.send_signal(sender='UpNext.TMDBHelper',
@@ -415,19 +423,20 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
                                        showtitle=title,
                                    ),
                                    'play_url': None,
-                                   'player': addon_id,
+                                   'player': player,
                                })
 
     def get_plugin_type(self, playlist_next=None):
         if self.data:
+            _get = self.data.get
             plugin_type = constants.PLUGIN_DATA_ERROR
-            if self.data.get('play_direct'):
+            if _get('play_direct'):
                 plugin_type += constants.PLUGIN_DIRECT
             elif playlist_next:
                 plugin_type += constants.PLUGIN_PLAYLIST
-            if self.data.get('play_url'):
+            if _get('play_url'):
                 plugin_type += constants.PLUGIN_PLAY_URL
-            elif self.data.get('play_info'):
+            elif _get('play_info'):
                 plugin_type += constants.PLUGIN_PLAY_INFO
             return plugin_type
         return None

@@ -4,6 +4,7 @@
 from __future__ import absolute_import, division, unicode_literals
 
 import api
+import constants
 import dialog
 import utils
 from settings import SETTINGS
@@ -74,13 +75,17 @@ class UpNextPopupHandler(object):
 
         return self._popup_state(abort=False, show_upnext=show_upnext)
 
-    def _popup_state(self, old_state=None, **kwargs):
+    def _popup_state(self, old_state=None, check_focus=False, **kwargs):
         old_state = old_state or {
             'auto_play': SETTINGS.auto_play,
             'cancel': False,
             'abort': False,
             'play_now': False,
-            'play_on_cue': SETTINGS.auto_play and self.state.popup_cue,
+            'play_on_cue': (
+                SETTINGS.auto_play
+                and (self.state.popup_cue
+                     or SETTINGS.force_default_action)
+            ),
             'show_upnext': False,
             'shuffle_on': False,
             'shuffle_start': False,
@@ -97,6 +102,9 @@ class UpNextPopupHandler(object):
             remaining = kwargs.get('remaining')
             if remaining is not None:
                 popup.update_progress(remaining)
+
+            if check_focus and SETTINGS.auto_play == constants.AUTO_PLAY_FOCUS:
+                popup.update_popup_focus_state()
 
             cancel = popup.is_cancel()
             play_now = popup.is_playnow()
@@ -123,7 +131,8 @@ class UpNextPopupHandler(object):
                 and old_state['show_upnext']
                 and not cancel
                 and not play_now
-                and self.state.popup_cue
+                and (self.state.popup_cue
+                     or SETTINGS.force_default_action)
             ),
             'show_upnext': old_state['show_upnext'],
             'shuffle_on': shuffle_on,
@@ -168,7 +177,19 @@ class UpNextPopupHandler(object):
 
         # Fallback plugin playback method, or if plugin provides play_info
         elif source.startswith('plugin'):
-            api.play_plugin_item(self.state.data, self.state.encoding, resume)
+            plugin_data = self.state.data
+
+            play_data = plugin_data.get('play_data')
+            if play_data:
+                if not play_data['player']:
+                    self.player.pause()
+
+                from tmdb_helper import Players
+
+                Players(**play_data).play()
+                return keep_playing
+
+            api.play_plugin_item(plugin_data, self.state.encoding, resume)
 
         # Fallback library playback method, not normally used
         else:
@@ -219,9 +240,13 @@ class UpNextPopupHandler(object):
         self.state.shuffle_on = popup_state['shuffle_on']
 
         # Signal to Trakt that current item has been watched
-        utils.event(message='NEXTUPWATCHEDSIGNAL',
-                    data=api.get_item_id(self.state.current_item),
-                    encoding='base64')
+        current_item = self.state.current_item
+        if current_item:
+            current_id = current_item.get('id')
+            if current_id and current_id != constants.UNDEFINED:
+                utils.event(message='NEXTUPWATCHEDSIGNAL',
+                            data=api.get_item_id(current_item),
+                            encoding='base64')
 
         play_next = False
         # Stop playing if Stop button was clicked on popup, or if Still
@@ -285,7 +310,7 @@ class UpNextPopupHandler(object):
         # If cue point was provided then UpNext will auto play after a fixed
         # delay time, rather than waiting for the end of the file
         if popup_state['play_on_cue']:
-            popup_duration = SETTINGS.auto_play_delay
+            popup_duration = SETTINGS.default_action_delay
             if popup_duration:
                 popup_start = max(play_time, self.state.get_popup_time())
                 total_time = min(popup_start + popup_duration, total_time)
@@ -331,7 +356,9 @@ class UpNextPopupHandler(object):
         else:
             popup_abort = True
 
-        return self._popup_state(old_state=popup_state, abort=popup_abort)
+        return self._popup_state(old_state=popup_state,
+                                 check_focus=True,
+                                 abort=popup_abort)
 
     def cancel(self):
         self.stop()
