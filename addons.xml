@@ -229,7 +229,7 @@ Många befintliga tillägg integreras redan med den här utanför lådan-tjänst
 </addon>
 <addon id="plugin.video.amazon-test"
        name="Amazon VOD"
-       version="1.1.2+matrix.1"
+       version="n1.1.3+matrix.1"
        provider-name="Sandmann79, Varstahl">
   <requires>
     <import addon="xbmc.python" version="3.0.0"/>
