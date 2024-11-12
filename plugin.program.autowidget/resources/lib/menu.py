@@ -465,6 +465,7 @@ def call_path(path_id):
 
     if final_path:
         utils.log("Calling path from {} using {}".format(path_id, final_path), "debug")
+        utils.call_builtin("Dialog.Close(busydialog)", 500)
         utils.call_builtin(final_path)
 
 
