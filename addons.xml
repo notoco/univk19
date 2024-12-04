@@ -462,7 +462,7 @@
         </assets>
     </extension>
 </addon>
-<addon id="service.upnext" name="UpNext" version="2.0.30+dev.0" provider-name="im85288, MoojMidge">
+<addon id="service.upnext" name="UpNext" version="2.0.29+dev.0" provider-name="im85288">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.pil" version="1.1.7"/>
@@ -534,7 +534,7 @@ Många befintliga tillägg integreras redan med den här utanför lådan-tjänst
         </assets>
     </extension>
 </addon>
-<addon id="service.upnext" name="UpNext" version="2.0.30+dev.0" provider-name="im85288, MoojMidge">
+<addon id="service.upnext" name="UpNext" version="2.0.29+dev.2" provider-name="im85288">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.pil" version="1.1.7"/>

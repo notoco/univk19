@@ -1056,7 +1056,7 @@ def handle_just_watched(item, reset_playcount=False, resume_from_end=0.1):
     ), utils.LOGDEBUG)
 
 
-# pylint: disable=too-many-locals, too-many-branches, too-many-statements
+# pylint: disable=too-many-locals
 def get_upnext_episodes_from_library(limit=25,
                                      next_season=True,
                                      unwatched_only=False,
@@ -1080,101 +1080,58 @@ def get_upnext_episodes_from_library(limit=25,
         ]
         sort = SORT_EPISODE
 
-    chunk_size = limit * 10
-    inprogress_limit = {
-        'start': 0,
-        'end': chunk_size,
-    }
-    watched_limit = {
-        'start': 0,
-        'end': chunk_size,
-    }
+    inprogress, _ = get_videos_from_library(db_type='episodes',
+                                            limit=limit,
+                                            sort=SORT_LASTPLAYED,
+                                            filters=filters[0])
+
+    watched, _ = get_videos_from_library(db_type='episodes',
+                                         limit=limit,
+                                         sort=SORT_LASTPLAYED,
+                                         filters=filters[1])
+
+    episodes = utils.merge_iterable(inprogress, watched,
+                                    sort='lastplayed', unique='episodeid')
 
     upnext_episodes = []
     tvshow_index = set()
-    while 1:
-        if inprogress_limit:
-            inprogress, _ = get_videos_from_library(db_type='episodes',
-                                                    limit=inprogress_limit,
-                                                    sort=SORT_LASTPLAYED,
-                                                    filters=filters[0])
+    for episode in episodes:
+        tvshowid = episode['tvshowid']
+        if tvshowid in tvshow_index:
+            continue
+
+        resume = episode['resume']
+        if 0 < resume['position'] < (1 - resume_from_end) * resume['total']:
+            upnext_episode = episode
         else:
-            inprogress = []
+            FILTER_THIS_SEASON['value'] = str(episode['season'])
+            FILTER_NEXT_EPISODE['value'] = str(episode['episode'])
+            aired = utils.iso_datetime(episode['firstaired'])
+            FILTER_AIRED['value'] = aired.split()[0]
+            FILTER_NEXT_AIRED['value'] = aired
 
-        if watched_limit:
-            watched, _ = get_videos_from_library(db_type='episodes',
-                                                 limit=watched_limit,
-                                                 sort=SORT_LASTPLAYED,
-                                                 filters=filters[1])
-        else:
-            watched = []
-
-        episodes = utils.merge_iterable(inprogress,
-                                        watched,
-                                        sort='lastplayed',
-                                        unique='tvshowid',
-                                        filter_by='tvshowid',
-                                        exclude=tvshow_index)
-
-        for episode in episodes:
-            tvshowid = episode['tvshowid']
-
-            resume = episode['resume']
-            if 0 < resume['position'] < (1 - resume_from_end) * resume['total']:
-                upnext_episode = episode
-            else:
-                FILTER_THIS_SEASON['value'] = str(episode['season'])
-                FILTER_NEXT_EPISODE['value'] = str(episode['episode'])
-                aired = utils.iso_datetime(episode['firstaired'])
-                FILTER_AIRED['value'] = aired.split()[0]
-                FILTER_NEXT_AIRED['value'] = aired
-
-                upnext_episode, _ = get_videos_from_library(
-                    db_type='episodes',
-                    limit=1,
-                    sort=sort,
-                    filters=filters[2],
-                    params={'tvshowid': tvshowid},
-                )
-
-                if not upnext_episode:
-                    tvshow_index.add(tvshowid)
-                    continue
-
-            # Restore current episode lastplayed for sorting of next-up episode
-            upnext_episode['lastplayed'] = episode['lastplayed']
-            art_fallbacks(upnext_episode, EPISODE_ART_MAP)
-            # Combine tvshow details with episode details
-            tvshow_details, _ = get_details_from_library(
-                db_type='tvshow', db_id=tvshowid,
+            upnext_episode, _ = get_videos_from_library(
+                db_type='episodes',
+                limit=1,
+                sort=sort,
+                filters=filters[2],
+                params={'tvshowid': tvshowid},
             )
-            tvshow_details.update(upnext_episode)
-            upnext_episodes.append(tvshow_details)
-            tvshow_index.add(tvshowid)
 
-            if len(upnext_episodes) >= limit:
-                break
-        else:
-            chunk_continue = False
-
-            if chunk_size:
-                if len(inprogress) == chunk_size:
-                    inprogress_limit['start'] += chunk_size
-                    inprogress_limit['end'] += chunk_size
-                    chunk_continue = True
-                else:
-                    inprogress_limit = None
-
-                if len(watched) == chunk_size:
-                    watched_limit['start'] += chunk_size
-                    watched_limit['end'] += chunk_size
-                    chunk_continue = True
-                else:
-                    watched_limit = None
-
-            if chunk_continue:
+            if not upnext_episode:
+                tvshow_index.add(tvshowid)
                 continue
-        break
+
+        # Restore current episode lastplayed for sorting of next-up episode
+        upnext_episode['lastplayed'] = episode['lastplayed']
+        art_fallbacks(upnext_episode, EPISODE_ART_MAP)
+        # Combine tvshow details with episode details
+        tvshow_details, _ = get_details_from_library(
+            db_type='tvshow', db_id=tvshowid,
+        )
+        tvshow_details.update(upnext_episode)
+        upnext_episodes.append(tvshow_details)
+        tvshow_index.add(tvshowid)
 
     return upnext_episodes
 
@@ -1239,8 +1196,8 @@ def get_upnext_movies_from_library(limit=25,
 
     return upnext_movies
 
-# pylint: disable=too-many-arguments, too-many-positional-arguments
-def get_videos_from_library(db_type,
+
+def get_videos_from_library(db_type,  # pylint: disable=too-many-arguments
                             limit=25,
                             sort=None,
                             properties=None,
@@ -1463,7 +1420,7 @@ class InfoTagComparator(object):
         return 0
 
     @staticmethod
-    # pylint: disable-next=too-many-arguments, dangerous-default-value, too-many-positional-arguments
+    # pylint: disable-next=too-many-arguments, dangerous-default-value
     def tokenise(values,
                  split=_token_split,
                  min_length=constants.TOKEN_LENGTH,
@@ -1494,7 +1451,7 @@ class InfoTagComparator(object):
         return processed_tokens - ignore_set
 
 
-# pylint: disable=too-many-arguments, too-many-locals, too-many-statements, too-many-branches, too-many-positional-arguments
+# pylint: disable=too-many-arguments, too-many-locals, too-many-statements, too-many-branches
 def get_similar_from_library(db_type,
                              limit=25,
                              original=None,

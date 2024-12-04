@@ -497,7 +497,7 @@ def get_year(date_string):
     try:
         date_object = dateutil_parse(date_string)
         return date_object.year
-    except (OverflowError, TypeError, ValueError):
+    except ValueError:
         return date_string
 
 
@@ -506,7 +506,7 @@ def iso_datetime(date_string, separator=str(' ')):
 
     try:
         date_object = dateutil_parse(date_string).replace(microsecond=0)
-    except (OverflowError, TypeError, ValueError):
+    except ValueError:
         return date_string
 
     return date_object.isoformat(separator)
@@ -519,7 +519,7 @@ def localize_date(date_string):
 
     try:
         date_object = dateutil_parse(date_string)
-    except (OverflowError, TypeError, ValueError):
+    except ValueError:
         return None, date_string
 
     return date_object, date_object.strftime(date_format)
@@ -665,59 +665,30 @@ def merge_iterable(*iterables, **kwargs):
     sort = kwargs.get('sort')
     unique = kwargs.get('unique')
 
-    filter_by = kwargs.get('filter_by')
-    if filter_by:
-        include = kwargs.get('include')
-        exclude = kwargs.get('exclude')
-    else:
-        include = None
-        exclude = None
-
     merged = chain.from_iterable(iterables)
 
-    if sort or unique or filter_by:
+    if sort or unique:
         descending = kwargs.get('ascending', True)
         subset = set()
-
         threshold = {'num': 0}
-        value = kwargs.get('threshold')
-        if value is not None:
-            threshold['value'] = value
 
-        # pylint: disable=dangerous-default-value, too-many-arguments, too-many-positional-arguments
-        def key(item,
-                sort=sort,
-                unique=unique,
-                filter_by=filter_by,
-                include=include,
-                exclude=exclude,
-                subset=subset,
-                threshold=threshold):
-            if sort and sort in item:
-                sort = item[sort]
-            if 'value' in threshold:
-                cut_off = threshold['value']
-            else:
-                cut_off = threshold['value'] = type(sort)()
-
-            if unique and unique in item:
+        def key(item,  # pylint: disable=dangerous-default-value
+                sort=sort, unique=unique,
+                subset=subset, threshold=threshold):
+            if unique in item:
                 unique = item[unique]
+            if sort in item:
+                sort = item[sort]
+            if 'value' not in threshold:
+                threshold['value'] = kwargs.get('threshold') or type(sort)()
+            if unique is not None:
                 if unique in subset:
-                    return cut_off
+                    return threshold['value']
                 subset.add(unique)
-
-            if filter_by and filter_by in item:
-                filter_by = item[filter_by]
-                if exclude and filter_by in exclude:
-                    return cut_off
-                if include and filter_by not in include:
-                    return cut_off
-
-            if sort is None or sort > cut_off:
+            if sort is None or sort > threshold['value']:
                 threshold['num'] += 1
                 return sort
-
-            return cut_off
+            return threshold['value']
 
         merged = sorted(merged, key=key, reverse=descending)
         if not threshold['num']:
