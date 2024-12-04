@@ -127,6 +127,9 @@ def generate_similar_movies_list(addon_handle, addon_id, **kwargs):  # pylint: d
         title = movie['title']
         label = utils.localize(constants.MORE_LIKE_THIS_STR_ID).format(title)
         xbmcplugin.setPluginCategory(addon_handle, label)
+    else:
+        title = ''
+        label = ''
 
     listing = []
     for movie in movies:
@@ -203,6 +206,9 @@ def generate_similar_tvshows_list(addon_handle, addon_id, **kwargs):  # pylint: 
         title = tvshow['title']
         label = utils.localize(constants.MORE_LIKE_THIS_STR_ID).format(title)
         xbmcplugin.setPluginCategory(addon_handle, label)
+    else:
+        title = ''
+        label = ''
 
     listing = []
     for tvshow in tvshows:
@@ -320,6 +326,9 @@ def generate_similar_media_list(addon_handle, addon_id, **kwargs):  # pylint: di
         title = original['title']
         label = utils.localize(constants.MORE_LIKE_THIS_STR_ID).format(title)
         xbmcplugin.setPluginCategory(addon_handle, label)
+    else:
+        title = ''
+        label = ''
 
     videos = utils.merge_iterable(*similar_list, sort='__similarity__')
 
@@ -387,6 +396,10 @@ def play_plugin(addon_handle, addon_id, **kwargs):  # pylint: disable=unused-arg
     Players(**kwargs).play(handle=addon_handle)
 
 
+_reload = {
+    'last': 0,
+}
+
 @utils.Profiler(enabled=SETTINGS.widget_debug, lazy=True)
 def run(argv):
     addon_handle = int(argv[1])
@@ -400,6 +413,13 @@ def run(argv):
     content_items = content.get('items')
     content_handler = content.get('handler')
     addon_args['__path__'] = addon_path
+
+    reload_time = utils.get_property(constants.WIDGET_RELOAD_PROPERTY_NAME)
+    if reload_time:
+        reload_time = int(reload_time)
+        if _reload['last'] != reload_time:
+            _reload['last'] = reload_time
+            SETTINGS.update()
 
     if content_type == 'action' and content_handler:
         return content_handler(addon_handle, addon_id, **addon_args)
