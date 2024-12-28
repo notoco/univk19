@@ -45,7 +45,7 @@
                 <!-- No Image -->
                 <control type="group">
                     <left>context_icon_w</left>
-                    <bottom>0</bottom>
+                    <bottom>100</bottom>
                     <visible>!$EXP[Exp_ContextMenu_HasQuickNav]</visible>
                     <control type="image" id="999">
                         <include>Texture_Shadow_20</include>
@@ -103,11 +103,14 @@
                     <!-- Main Menu -->
                     <control type="grouplist" id="996">
                         <top>200</top>
-                        <bottom>-40</bottom>
+                        <bottom>40</bottom>
                         <orientation>vertical</orientation>
                         <itemgap>0</itemgap>
                         <onleft>Close</onleft>
                         <onright>Close</onright>
+                        <onup>8000</onup>
+                        <ondown>SetFocus(1001)</ondown>
+                        <ondown>SetFocus(8000)</ondown>
                         <animation effect="slide" end="0,-80" condition="!$EXP[Exp_ContextMenu_HasQuickNav]">Conditional</animation>
                     </control>
                     <control type="image">
