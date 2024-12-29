@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Foundation -->
+<includes>
+
+    <include file="Defaults.xml" />
+
+    <include file="Includes_View_50_List.xml" />
+    <include file="Includes_View_51_Wall.xml" />
+    <include file="Includes_View_52_Showcase.xml" />
+    <include file="Includes_View_53_Poster.xml" />
+    <include file="Includes_View_54_AEL.xml" />
+    <include file="Includes_Info.xml" />
+    <include file="Includes_Home.xml" />
+    <include file="Includes_DialogVideoInfo.xml" />
+    <include file="Includes_DialogMusicInfo.xml" />
+
+    <include file="Includes_Animations.xml" />
+    <include file="Includes_Defs.xml" />
+    <include file="Includes_Dialog.xml" />
+    <include file="Includes_Global.xml" />
+    <include file="Includes_Items.xml" />
+    <include file="Includes_Images.xml" />
+    <include file="Includes_Labels.xml" />
+    <include file="Includes_Object.xml" />
+    <include file="Includes_Variable_Object.xml" />
+    <include file="Includes_OSD.xml" />
+    <include file="Includes_Topbar.xml" />
+    <include file="Includes_VideoLyrics.xml" />
+    <include file="Includes_Weather.xml" />
+    <include file="Includes_AEL.xml" />
+    <include file="Includes_PVRWidgets.xml" />
+
+    <include file="Includes_View.xml" />
+
+    <include file="script-skinshortcuts-includes.xml"/>
+    <include file="script-skinvariables-includes.xml" />
+    <include file="script-skinviewtypes-includes.xml" />
+
+    <include file="Constants_Main.xml" />
+
+    <include file="Includes_Views_Fallbacks.xml" />
+
+    <!-- Highlight Color -->
+    <variable name="ColorHighlight">
+        <value>$INFO[Skin.String(focuscolor.name)]</value>
+    </variable>
+
+    <!-- Gradient Color -->
+    <variable name="ColorGradient">
+        <value>$INFO[Skin.String(gradientcolor.name)]</value>
+    </variable>
+
+    <!-- Invert Text Color -->
+    <variable name="ColorSelected">
+        <value condition="Skin.HasSetting(InvertTextColor)">ff333333</value>
+        <value>Selected</value>
+    </variable>
+    <variable name="ColorSelected_100">
+        <value condition="[[String.IsEqual(Skin.String(PosterHighlight),Mix) | String.IsEqual(Skin.String(PosterHighlight),White) | String.IsEmpty(Skin.String(PosterHighlight))] + !Skin.HasSetting(InvertTextColor)] | [String.IsEqual(Skin.String(PosterHighlight),Highlight) + Skin.HasSetting(InvertTextColor)]">main_bg_100</value>
+        <value condition="[[String.IsEqual(Skin.String(PosterHighlight),Mix) | String.IsEqual(Skin.String(PosterHighlight),White)] + Skin.HasSetting(InvertTextColor)] | [String.IsEqual(Skin.String(PosterHighlight),Highlight) + !Skin.HasSetting(InvertTextColor)]">dialog_fg_100</value>
+    </variable>
+    <variable name="ColorSelected_70">
+        <value condition="[[String.IsEqual(Skin.String(PosterHighlight),Mix) | String.IsEqual(Skin.String(PosterHighlight),White) | String.IsEmpty(Skin.String(PosterHighlight))] + !Skin.HasSetting(InvertTextColor)] | [String.IsEqual(Skin.String(PosterHighlight),Highlight) + Skin.HasSetting(InvertTextColor)]">main_bg_70</value>
+        <value condition="[[String.IsEqual(Skin.String(PosterHighlight),Mix) | String.IsEqual(Skin.String(PosterHighlight),White)] + Skin.HasSetting(InvertTextColor)] | [String.IsEqual(Skin.String(PosterHighlight),Highlight) + !Skin.HasSetting(InvertTextColor)]">main_fg_70</value>
+    </variable>
+    <variable name="ColorFG_Highlight">
+        <value condition="String.IsEqual(Skin.String(PosterHighlight),White) | String.IsEqual(Skin.String(PosterHighlight),Mix) | String.IsEmpty(Skin.String(PosterHighlight))">main_fg_100</value>
+        <value condition="String.IsEqual(Skin.String(PosterHighlight),Highlight)">$VAR[ColorHighlight]</value>
+    </variable>
+
+    <!-- Overlay Color -->
+    <variable name="ColorOverlay">
+        <value condition="Skin.HasSetting(DisableOverlay)">7f000000</value>
+        <value condition="Skin.HasSetting(TMDbHelper.EnableColors) + !String.IsEmpty(Window(home).Property(TMDbHelper.ListItem.Colors.Main))">$INFO[Window(home).Property(TMDbHelper.ListItem.Colors.Main)]</value>
+        <value condition="!String.IsEmpty(Skin.String(overlaycolor.name))">$INFO[Skin.String(overlaycolor.name)]</value>
+        <value>Highlight</value>
+    </variable>
+
+    <variable name="ColorHighlightOverlay">
+        <value condition="String.IsEqual(Skin.String(PosterHighlight),White) | String.IsEmpty(Skin.String(PosterHighlight))">ffffffff</value>
+        <value condition="String.IsEqual(Skin.String(PosterHighlight),Mix) | String.IsEqual(Skin.String(PosterHighlight),Highlight)">$VAR[ColorHighlight]</value>
+    </variable>
+
+    <!-- Watched / Progress Color -->
+    <variable name="ColorWatchedProgress">
+        <value condition="!String.IsEmpty(Skin.String(watchedprogresscolor.name))">$INFO[Skin.String(watchedprogresscolor.name)]</value>
+        <value>WatchedProgress</value>
+    </variable>
+
+    <variable name="IconsColor_Var">
+        <value condition="String.IsEmpty(Skin.String(Icons))">monochrome</value>
+        <value>$INFO[Skin.String(Icons)]</value>
+    </variable>
+
+    <variable name="IconsDiffuse_Var">
+        <value condition="String.IsEmpty(Skin.String(icons.diffuse))">main_fg_100</value>
+        <value>$INFO[Skin.String(icons.diffuse)]</value>
+    </variable>
+
+    <variable name="IconsColorLabel_Var">
+        <value condition="String.IsEmpty(Skin.String(icons.label))">Monochrome</value>
+        <value>$INFO[Skin.String(icons.label)]</value>
+    </variable>
+
+    <variable name="PVRTimeRemainingMMVar">
+        <value condition="Integer.IsEqual(PVR.EpgEventRemainingTime(mm),09)">9m</value>
+        <value condition="Integer.IsEqual(PVR.EpgEventRemainingTime(mm),08)">8m</value>
+        <value condition="Integer.IsEqual(PVR.EpgEventRemainingTime(mm),07)">7m</value>
+        <value condition="Integer.IsEqual(PVR.EpgEventRemainingTime(mm),06)">6m</value>
+        <value condition="Integer.IsEqual(PVR.EpgEventRemainingTime(mm),05)">5m</value>
+        <value condition="Integer.IsEqual(PVR.EpgEventRemainingTime(mm),04)">4m</value>
+        <value condition="Integer.IsEqual(PVR.EpgEventRemainingTime(mm),03)">3m</value>
+        <value condition="Integer.IsEqual(PVR.EpgEventRemainingTime(mm),02)">2m</value>
+        <value condition="Integer.IsEqual(PVR.EpgEventRemainingTime(mm),01)">1m</value>
+    </variable>
+
+    <variable name="PVRTimeRemainingVar">
+        <value condition="Integer.IsGreater(PVR.EpgEventRemainingTime(h),0) + Integer.IsGreater(PVR.EpgEventRemainingTime(mm),9)">$INFO[PVR.EpgEventRemainingTime(h),,h]$INFO[PVR.EpgEventRemainingTime(mm),,m]</value>
+        <value condition="Integer.IsGreater(PVR.EpgEventRemainingTime(h),0) + Integer.IsLessOrEqual(PVR.EpgEventRemainingTime(mm),9)">$INFO[PVR.EpgEventRemainingTime(h),,h]$VAR[PVRTimeRemainingMMVar]</value>
+        <value condition="Integer.IsLessOrEqual(PVR.EpgEventRemainingTime(h),0) + Integer.IsGreater(PVR.EpgEventRemainingTime(mm),9)">$INFO[PVR.EpgEventRemainingTime(mm),,m]</value>
+        <value condition="Integer.IsLessOrEqual(PVR.EpgEventRemainingTime(h),0) + Integer.IsLessOrEqual(PVR.EpgEventRemainingTime(mm),9)">$VAR[PVRTimeRemainingMMVar]</value>
+        <value>$INFO[PVR.EpgEventRemainingTime(ss)]s</value>
+    </variable>
+
+    <variable name="Path_Param_Widget">
+        <value>&amp;nextpage=false&amp;fanarttv=false&amp;cacheonly=true&amp;length=1</value>
+    </variable>
+
+    <variable name="Path_Param_Query">
+        <value condition="[String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.base_dbtype),movie) | String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.base_dbtype),tvshow)] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.tmdb_id))">&amp;tmdb_id=$INFO[Window(Home).Property(TMDbHelper.ListItem.tmdb_id)]</value>
+        <value condition="[String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.base_dbtype),season) | String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.base_dbtype),episode)] + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.tvshow.tmdb_id))">&amp;tmdb_id=$INFO[Window(Home).Property(TMDbHelper.ListItem.tvshow.tmdb_id)]</value>
+        <value condition="[String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow)] + !String.IsEmpty(ListItem.UniqueID(tmdb))">&amp;tmdb_id=$INFO[ListItem.UniqueID(tmdb)]</value>
+        <value condition="[String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)] + !String.IsEmpty(ListItem.UniqueID(tvshow.tmdb))">&amp;tmdb_id=$INFO[ListItem.UniqueID(tvshow.tmdb)]</value>
+        <value condition="String.IsEqual(ListItem.DBType,movie) + !String.IsEmpty(ListItem.Property(imdb_id))">&amp;imdb_id=$INFO[ListItem.Property(imdb_id)]</value>
+        <value condition="String.IsEqual(ListItem.DBType,movie) + !String.IsEmpty(ListItem.IMDBNumber) + String.StartsWith(ListItem.IMDBNumber,tt)">&amp;imdb_id=$INFO[ListItem.IMDBNumber]</value>
+        <value condition="[String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)] + !String.IsEmpty(ListItem.TvShowTitle)">&amp;query=$INFO[ListItem.TvShowTitle]$INFO[ListItem.Year,&amp;episode_year=,]</value>
+        <value condition="[String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)] + !String.IsEmpty(ListItem.Title)">&amp;query=$INFO[ListItem.Title]$INFO[ListItem.Year,&amp;year=,]</value>
+        <value condition="[String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)]">$INFO[ListItem.Label,&amp;query=,]</value>
+    </variable>
+
+    <variable name="Path_Param_Type">
+        <value condition="String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.base_dbtype),movie)">type=movie</value>
+        <value condition="String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.base_dbtype),tvshow) | String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.base_dbtype),season) | String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.base_dbtype),episode)">type=tv</value>
+        <value condition="String.IsEqual(ListItem.DBType,movie)">type=movie</value>
+        <value condition="String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)">type=tv</value>
+        <value condition="$EXP[Exp_IsPersonInfo]">type=person</value>
+    </variable>
+
+    <variable name="Path_VideoOSD_TMDbType">
+        <value condition="VideoPlayer.Content(movies)">movie</value>
+        <value condition="VideoPlayer.Content(episodes)">tv</value>
+    </variable>
+
+    <variable name="Path_VideoOSD_TMDbQuery">
+        <value condition="VideoPlayer.Content(movies) + !String.IsEmpty(VideoPlayer.IMDBNumber) + String.StartsWith(VideoPlayer.IMDBNumber,tt)">$INFO[VideoPlayer.IMDBNumber,&amp;imdb_id=,]</value>
+        <value condition="VideoPlayer.Content(movies)">$INFO[Window(Home).Property(TMDbHelper.Player.TMDb_ID),&amp;tmdb_id=,]$INFO[Player.Title,&amp;query=,]$INFO[VideoPlayer.Year,&amp;year=,]</value>
+        <value condition="VideoPlayer.Content(episodes)">$INFO[Window(Home).Property(TMDbHelper.Player.TVShow.TMDb_ID),&amp;tmdb_id=,]$INFO[VideoPlayer.TVShowTitle,&amp;query=,]$INFO[VideoPlayer.Season,&amp;season=,]$INFO[VideoPlayer.Episode,&amp;episode=,]$INFO[VideoPlayer.Year,&amp;episode_year=,]</value>
+    </variable>
+
+    <variable name="Path_FromDirector">
+        <value condition="!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Director.1.Name)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Director.1.job)) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.Director.1.job),Director)">$INFO[Window(Home).Property(TMDbHelper.ListItem.Director.1.TMDb_ID),&amp;tmdb_id=,]</value>
+        <value condition="!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Director.2.Name)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Director.2.job)) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.Director.2.job),Director)">$INFO[Window(Home).Property(TMDbHelper.ListItem.Director.2.TMDb_ID),&amp;tmdb_id=,]</value>
+        <value condition="!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Director.3.Name)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Director.3.job)) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.Director.3.job),Director)">$INFO[Window(Home).Property(TMDbHelper.ListItem.Director.3.TMDb_ID),&amp;tmdb_id=,]</value>
+        <value condition="!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Director.4.Name)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Director.4.job)) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.Director.4.job),Director)">$INFO[Window(Home).Property(TMDbHelper.ListItem.Director.4.TMDb_ID),&amp;tmdb_id=,]</value>
+        <value condition="!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Director.5.Name)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Director.5.job)) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.Director.5.job),Director)">$INFO[Window(Home).Property(TMDbHelper.ListItem.Director.5.TMDb_ID),&amp;tmdb_id=,]</value>
+        <value condition="!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Director.6.Name)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Director.6.job)) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.Director.6.job),Director)">$INFO[Window(Home).Property(TMDbHelper.ListItem.Director.6.TMDb_ID),&amp;tmdb_id=,]</value>
+        <value condition="!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Director.7.Name)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Director.7.job)) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.Director.7.job),Director)">$INFO[Window(Home).Property(TMDbHelper.ListItem.Director.7.TMDb_ID),&amp;tmdb_id=,]</value>
+        <value condition="!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Director.8.Name)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Director.8.job)) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.Director.8.job),Director)">$INFO[Window(Home).Property(TMDbHelper.ListItem.Director.8.TMDb_ID),&amp;tmdb_id=,]</value>
+        <value condition="!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Director.9.Name)) + !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Director.9.job)) + String.IsEqual(Window(Home).Property(TMDbHelper.ListItem.Director.9.job),Director)">$INFO[Window(Home).Property(TMDbHelper.ListItem.Director.9.TMDb_ID),&amp;tmdb_id=,]</value>
+        <value condition="!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Director))">$INFO[Window(Home).Property(TMDbHelper.ListItem.Director),&amp;query=,]</value>
+        <value>$INFO[ListItem.Director,&amp;query=,]</value>
+    </variable>
+
+    <variable name="Path_FromStudio">
+        <value condition="!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Network.1.TMDb_ID))">$INFO[Window(Home).Property(TMDbHelper.ListItem.Network.1.TMDb_ID),&amp;type=tv&amp;with_networks=,&amp;with_id=True]</value>
+        <value condition="!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Network.2.TMDb_ID))">$INFO[Window(Home).Property(TMDbHelper.ListItem.Network.2.TMDb_ID),&amp;type=tv&amp;with_networks=,&amp;with_id=True]</value>
+        <value condition="!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Network.3.TMDb_ID))">$INFO[Window(Home).Property(TMDbHelper.ListItem.Network.3.TMDb_ID),&amp;type=tv&amp;with_networks=,&amp;with_id=True]</value>
+        <value condition="!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Studio.1.TMDb_ID))">$INFO[Window(Home).Property(TMDbHelper.ListItem.Studio.1.TMDb_ID),&amp;type=movie&amp;with_companies=,&amp;with_id=True]</value>
+        <value condition="!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Studio.2.TMDb_ID))">$INFO[Window(Home).Property(TMDbHelper.ListItem.Studio.2.TMDb_ID),&amp;type=movie&amp;with_companies=,&amp;with_id=True]</value>
+        <value condition="!String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Studio.3.TMDb_ID))">$INFO[Window(Home).Property(TMDbHelper.ListItem.Studio.3.TMDb_ID),&amp;type=movie&amp;with_companies=,&amp;with_id=True]</value>
+    </variable>
+
+    <variable name="Path_OSD_Cast">
+        <value condition="VideoPlayer.Content(movies) + !String.IsEmpty(VideoPlayer.IMDBNumber) + String.StartsWith(VideoPlayer.IMDBNumber,tt)">plugin://plugin.video.themoviedb.helper/?info=$INFO[Skin.String(VideoOSD.PersonCredits.CastCrew)]&amp;type=movie$INFO[VideoPlayer.IMDBNumber,&amp;imdb_id=,]</value>
+        <value condition="VideoPlayer.Content(movies)">plugin://plugin.video.themoviedb.helper/?info=$INFO[Skin.String(VideoOSD.PersonCredits.CastCrew)]&amp;type=movie$INFO[Window(Home).Property(TMDbHelper.Player.TMDb_ID),&amp;tmdb_id=,]$INFO[Player.Title,&amp;query=,]$INFO[VideoPlayer.Year,&amp;year=,]</value>
+        <value condition="VideoPlayer.Content(episodes)">plugin://plugin.video.themoviedb.helper/?info=$INFO[Skin.String(VideoOSD.PersonCredits.CastCrew)]&amp;type=tv$INFO[Window(Home).Property(TMDbHelper.Player.TVShow.TMDb_ID),&amp;tmdb_id=,]$INFO[VideoPlayer.TVShowTitle,&amp;query=,]$INFO[VideoPlayer.Season,&amp;season=,]$INFO[VideoPlayer.Episode,&amp;episode=,]$INFO[VideoPlayer.Year,&amp;episode_year=,]</value>
+    </variable>
+
+    <variable name="Path_OSD_Episodes">
+        <value condition="!Integer.IsEqual(VideoPlayer.PlaylistLength,1) + !Integer.IsEqual(VideoPlayer.PlaylistLength,0) + Integer.IsLess(VideoPlayer.PlaylistPosition,VideoPlayer.PlaylistLength)">playlistvideo://?reload=$INFO[VideoPlayer.Season,,_]$INFO[VideoPlayer.Episode,,_]$INFO[VideoPlayer.PlaylistPosition,,_]</value>
+        <value condition="VideoPlayer.Content(episodes) + !String.IsEmpty(VideoPlayer.TvShowDBID) + !String.IsEmpty(VideoPlayer.Season)">videodb://tvshows/titles/$INFO[VideoPlayer.TvShowDBID]/$INFO[VideoPlayer.Season]/?tvshowid=$INFO[VideoPlayer.TvShowDBID]</value>
+        <value condition="VideoPlayer.Content(episodes)">plugin://plugin.video.themoviedb.helper/?info=episodes&amp;type=tv$INFO[Window(Home).Property(TMDbHelper.Player.TVShow.TMDb_ID),&amp;tmdb_id=,]$INFO[VideoPlayer.TVShowTitle,&amp;query=,]$INFO[VideoPlayer.Season,&amp;season=,]$VAR[Path_Param_Widget]</value>
+    </variable>
+
+    <variable name="Path_VideoInfo_Generic">
+        <value condition="String.IsEqual(ListItem.DBType,movie)">plugin://plugin.video.themoviedb.helper?tmdb_id=$INFO[Window(Home).Property(TMDbHelper.ListItem.TMDb_ID)]&amp;tmdb_type=movie$VAR[Path_Param_Widget]</value>
+        <value condition="String.IsEqual(ListItem.DBType,tvshow)">plugin://plugin.video.themoviedb.helper?tmdb_id=$INFO[Window(Home).Property(TMDbHelper.ListItem.TMDb_ID)]&amp;tmdb_type=tv$VAR[Path_Param_Widget]</value>
+        <value condition="String.IsEqual(ListItem.DBType,season)">plugin://plugin.video.themoviedb.helper?tmdb_id=$INFO[Window(Home).Property(TMDbHelper.ListItem.TVShow.TMDb_ID)]&amp;tmdb_type=tv$INFO[Window(Home).Property(TMDbHelper.ListItem.Season),&amp;season=,]$VAR[Path_Param_Widget]</value>
+        <value condition="String.IsEqual(ListItem.DBType,episode)">plugin://plugin.video.themoviedb.helper?tmdb_id=$INFO[Window(Home).Property(TMDbHelper.ListItem.TVShow.TMDb_ID)]&amp;tmdb_type=tv$INFO[Window(Home).Property(TMDbHelper.ListItem.Season),&amp;season=,]$INFO[Window(Home).Property(TMDbHelper.ListItem.Episode),&amp;episode=,]$VAR[Path_Param_Widget]</value>
+        <value>-</value>
+    </variable>
+
+    <include name="Dimensions_Fullscreen">
+        <left>0</left>
+        <top>0</top>
+        <width>1920</width>
+        <height>1080</height>
+    </include>
+
+    <include name="Dimensions_TrailerScreen">
+        <top>-100</top>
+        <right>-20</right>
+        <width>1520</width>
+        <height>925</height>
+    </include>
+
+    <include name="Dimension_Object_InfoCircle_Text_Top">
+        <height>10</height>
+        <centertop>24</centertop>
+    </include>
+    <include name="Dimension_Object_InfoCircle_Text_Sub">
+        <height>10</height>
+        <centerbottom>25</centerbottom>
+    </include>
+
+    <include name="AutoCompletion">
+        <content>plugin://plugin.program.autocompletion?info=autocomplete&amp;&amp;id=$INFO[Control.GetLabel(312).index(1)]&amp;&amp;limit=9</content>
+    </include>
+</includes>
