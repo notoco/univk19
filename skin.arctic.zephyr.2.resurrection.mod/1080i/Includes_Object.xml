@@ -1673,7 +1673,7 @@
             <control type="textbox">
                 <nested />
                 <top>$PARAM[top]</top>
-                <label fallback="19055">$PARAM[label]</label>
+                <label>$PARAM[label]</label>
                 <height>$PARAM[height]</height>
                 <width max="$PARAM[maxwidth]">$PARAM[width]</width>
                 <aligny>top</aligny>
@@ -1692,7 +1692,7 @@
             <control type="textbox">
                 <nested />
                 <top>10</top>
-                <label fallback="19055">$PARAM[label]</label>
+                <label>$PARAM[label]</label>
                 <height max="$PARAM[maxheight]">$PARAM[height]</height>
                 <aligny>top</aligny>
                 <textcolor>main_fg_70</textcolor>
@@ -2222,7 +2222,7 @@
                 <visible>!String.IsEmpty($PARAM[listitem]Title) | !String.IsEmpty($PARAM[listitem]ChannelNumber)</visible>
             </control>
             <control type="textbox">
-                <label fallback="19055">$INFO[$PARAM[listitem]Plot]</label>
+                <label>$INFO[$PARAM[listitem]Plot]</label>
                 <height>260</height>
                 <aligny>top</aligny>
                 <textcolor>main_fg_70</textcolor>
@@ -3009,7 +3009,7 @@
                             <align>left</align>
                             <textcolor>main_fg_70</textcolor>
                             <font>font_overlay_plotbox</font>
-                            <label fallback="19055">$VAR[Label_OverlayPlot]</label>
+                            <label>$VAR[Label_OverlayPlot]</label>
                             <pagecontrol>9601</pagecontrol>
                             <autoscroll delay="8000" time="4000" repeat="12000">false</autoscroll>
                         </control>
