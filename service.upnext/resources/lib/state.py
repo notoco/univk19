@@ -138,14 +138,14 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
 
             # Show Still Watching? popup if next episode is from next season or
             # next item is a movie
-            #if (next_video and (
-            #        next_video.get('type') == 'movie'
-            #        or (not self.shuffle_on
-            #            and len({constants.SPECIALS,
-            #                     next_video.get('season'),
-            #                     self.current_item['details']['season']}) == 3)
-            #)):
-            #    self.played_in_a_row = SETTINGS.played_limit
+            if (next_video and (
+                    next_video.get('type') == 'movie'
+                    or (not self.shuffle_on
+                        and len({constants.SPECIALS,
+                                 next_video.get('season'),
+                                 self.current_item['details']['season']}) == 3)
+            )):
+                self.played_in_a_row = SETTINGS.played_limit
 
         if next_video:
             self.next_item = utils.create_item_details(next_video, source,

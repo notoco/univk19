@@ -40,12 +40,12 @@ class UpNextPopupHandler(object):
 
     def _create_popup(self, next_item):
         # Only use Still Watching? popup if played limit has been reached
-        #if SETTINGS.played_limit:
-        #    show_upnext = SETTINGS.played_limit > self.state.played_in_a_row
+        if SETTINGS.played_limit:
+            show_upnext = SETTINGS.played_limit > self.state.played_in_a_row
         # Don't show Still Watching? popup if played limit is zero, unless
         # played in a row count has been set to zero for testing
-        #else:
-        #show_upnext = SETTINGS.played_limit != self.state.played_in_a_row
+        else:
+            show_upnext = SETTINGS.played_limit != self.state.played_in_a_row
 
         self.log('Auto played in a row: {0} of {1}'.format(
             self.state.played_in_a_row, SETTINGS.played_limit
