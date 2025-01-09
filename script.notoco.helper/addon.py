@@ -10,7 +10,7 @@ state = control.get_setting('state')
 
 # Funkcje pomocnicze
 def toggle_addon(addon_id, enabled):
-    """Przełączanie dodatku."""
+    """Przełącza stan dodatku."""
     xbmc.executeJSONRPC(json.dumps({
         "jsonrpc": "2.0",
         "method": "Addons.SetAddonEnabled",
@@ -18,12 +18,23 @@ def toggle_addon(addon_id, enabled):
         "params": {"addonid": addon_id, "enabled": enabled}
     }))
 
+def restart_addon(addon_id, delay=2):
+    """Restartuje dodatek z opcjonalnym opóźnieniem."""
+    toggle_addon(addon_id, False)
+    time.sleep(delay)
+    toggle_addon(addon_id, True)
+
 def handle_ambilight_command(arg):
     """Obsługuje polecenia Ambilight."""
-    if arg == "amb_on":
-        control.ambilight_turn_on()
-    elif arg == "amb_off":
-        control.ambilight_turn_off()
+    commands = {
+        "amb_on": control.ambilight_turn_on,
+        "amb_off": control.ambilight_turn_off,
+        "amb_up": control.ambilight_bright_up,
+        "amb_down": control.ambilight_bright_down,
+        "amb_start": lambda: restart_addon('script.service.hyperion-control')
+    }
+    if arg in commands:
+        commands[arg]()
     elif arg == "amb_switch":
         if state == 'true':
             control.ambilight_turn_off()
@@ -31,68 +42,51 @@ def handle_ambilight_command(arg):
         else:
             control.ambilight_turn_on()
             control.send_notification("Ambilight", "Włączono podświetlenie")
-    elif arg == "amb_up":
-        control.ambilight_bright_up()
-    elif arg == "amb_down":
-        control.ambilight_bright_down()
-    elif arg == "amb_start":
-        toggle_addon('script.service.hyperion-control', True)
-        time.sleep(2)
-        toggle_addon('script.service.hyperion-control', False)
 
 def handle_esc_command():
     """Obsługuje polecenie ESC."""
-    osd = xbmc.getCondVisibility('Window.IsActive(seekbar)')
-    pause = xbmc.getCondVisibility('Player.Paused')
-    if osd:
+    if xbmc.getCondVisibility('Window.IsActive(seekbar)'):
         xbmc.executebuiltin("Action(Info)")
     else:
         xbmc.executebuiltin("PlayerControl(Stop)")
-    if pause:
+    if xbmc.getCondVisibility('Player.Paused'):
         xbmc.executebuiltin("PlayerControl(Play)")
         xbmc.executebuiltin("Action(Info)")
 
 def handle_close_command():
     """Obsługuje polecenie CLOSE."""
-    ffdialog = xbmc.getCondVisibility('Window.Is(SourcesDialog.xml)')
-    xbmc.executebuiltin("Action(Close)" if ffdialog else "Action(Back)")
+    if xbmc.getCondVisibility('Window.Is(SourcesDialog.xml)'):
+        xbmc.executebuiltin("Action(Close)")
+    else:
+        xbmc.executebuiltin("Action(Back)")
 
 def handle_epg_command():
     """Obsługuje polecenie EPG."""
-    playing = xbmc.getCondVisibility('Player.Playing')
-    xbmc.executebuiltin('ActivateWindow(12005)' if playing else "Action(Back)")
+    xbmc.executebuiltin('ActivateWindow(12005)' if xbmc.getCondVisibility('Player.Playing') else "Action(Back)")
 
 def handle_hyperion_reset():
     """Obsługuje restart Hyperiona."""
-    toggle_addon("service.hyperion.ng", False)
-    time.sleep(2)
-    toggle_addon("service.hyperion.ng", True)
-    toggle_addon("script.service.hyperion-control", False)
-    time.sleep(2)
-    toggle_addon("script.service.hyperion-control", True)
+    restart_addon("service.hyperion.ng")
+    restart_addon("script.service.hyperion-control")
 
 def handle_fanfilm_restart():
     """Obsługuje restart Fanfilm."""
-    toggle_addon("plugin.video.fanfilm", False)
-    time.sleep(180)
-    toggle_addon("plugin.video.fanfilm", True)
+    restart_addon("plugin.video.fanfilm", delay=180)
 
 # Obsługa argumentów
 if __name__ == '__main__':
     arg = sys.argv[1].lower() if len(sys.argv) > 1 else None
-
+    command_handlers = {
+        "esc": handle_esc_command,
+        "close": handle_close_command,
+        "epg": handle_epg_command,
+        "cpu": control.cpu,
+        "hypereset": handle_hyperion_reset,
+        "fanfilmrestart": handle_fanfilm_restart
+    }
+    
     if arg:
         if arg.startswith("amb"):
             handle_ambilight_command(arg)
-        elif arg == "esc":
-            handle_esc_command()
-        elif arg == "close":
-            handle_close_command()
-        elif arg == "epg":
-            handle_epg_command()
-        elif arg == "cpu":
-            control.cpu()
-        elif arg == "hypereset":
-            handle_hyperion_reset()
-        elif arg == "fanfilmrestart":
-            handle_fanfilm_restart()
+        elif arg in command_handlers:
+            command_handlers[arg]()
