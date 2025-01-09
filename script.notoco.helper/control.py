@@ -33,9 +33,9 @@ def ambilight_turn_on():
 
 def adjust_brightness(change):
     bright = int(addon.getSetting('bright')) + change
-    if 0 <= bright <= 100:
-        send_request("adjustment", {"adjustment": {"brightness": bright}})
-        set_setting_and_notify('bright', bright, f"Jasność: {bright}")
+    bright = max(0, min(100, bright))  # Ograniczenie do przedziału 0-100
+    send_request("adjustment", {"adjustment": {"brightness": bright}})
+    set_setting_and_notify('bright', bright, f"Jasność: {bright}")
 
 def ambilight_bright_up():
     adjust_brightness(10)
