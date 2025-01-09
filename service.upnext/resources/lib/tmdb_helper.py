@@ -191,7 +191,7 @@ class Players(_Players):
                                      self.episode,
                                      player)
         if episodes and len(episodes) > 1:
-            if episodes[1].is_unaired():
+            if episodes[1].is_unaired(check_hide_settings=False):
                 episodes = None
         else:
             episodes = None
