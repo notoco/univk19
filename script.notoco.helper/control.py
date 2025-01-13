@@ -19,6 +19,9 @@ def set_setting_and_notify(name, value, message=None):
     if message:
         send_notification("Ambilight", message)
 
+def get_setting(name):
+    return addon.getSetting(name)
+
 def send_notification(komponent, message):
     xbmcgui.Dialog().notification(komponent, message, icon=icon)
 
