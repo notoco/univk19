@@ -182,7 +182,7 @@
         <definition>
             <control type="group">
                 <height>120</height>
-                <width>$PARAM[width]</width>
+                <width>100%</width>
                 <!-- Title Only -->
                 <include content="Info_Title_Label" condition="!Skin.HasSetting(TMDbHelper.EnableCrop)">
                     <param name="colordiffuse">$PARAM[colordiffuse]</param>
@@ -409,14 +409,14 @@
                     </include>
                     <include content="Info_Line_Label" condition="$PARAM[player]">
                         <param name="controltype" value="$PARAM[controltype]" />
-                        <param name="label" value="$INFO[VideoPlayer.Year]" />
-                        <param name="visible" value="!String.IsEmpty(VideoPlayer.Year) + String.IsEmpty(VideoPlayer.Premiered)" />
+                        <param name="label" value="$INFO[VideoPlayer.Premiered]" />
+                        <param name="visible" value="!String.IsEmpty(VideoPlayer.Premiered) + !String.IsEmpty(VideoPlayer.Episode)" />
                         <param name="textcolor" value="$PARAM[colordiffuse]_90" />
                     </include>
                     <include content="Info_Line_Label" condition="$PARAM[player]">
                         <param name="controltype" value="$PARAM[controltype]" />
-                        <param name="label" value="$INFO[VideoPlayer.Premiered]" />
-                        <param name="visible" value="!String.IsEmpty(VideoPlayer.Premiered)" />
+                        <param name="label" value="$INFO[VideoPlayer.Year]" />
+                        <param name="visible" value="!String.IsEmpty(VideoPlayer.Year)" />
                         <param name="textcolor" value="$PARAM[colordiffuse]_90" />
                     </include>
                     <include content="Info_Line_Label" condition="$PARAM[player] + !Skin.HasSetting(Infoline.DisableMPAA)">
@@ -1717,7 +1717,7 @@
                     <visible>!String.IsEmpty(ListItem.AddonInstallDate)</visible>
                 </include>
 
-                
+
                 <!-- Addon AddonLastUpdated -->
                 <include content="Info_Codec_Label">
                     <param name="icon" value="special://skin/extras/icons/calendar-check.png" />
