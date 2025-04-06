@@ -108,6 +108,9 @@
                         <itemgap>0</itemgap>
                         <onleft>Close</onleft>
                         <onright>Close</onright>
+                        <onup>8000</onup>
+                        <ondown>SetFocus(1001)</ondown>
+                        <ondown>SetFocus(8000)</ondown>
                         <animation effect="slide" end="0,-80" condition="!$EXP[Exp_ContextMenu_HasQuickNav]">Conditional</animation>
                     </control>
                     <control type="image">
