@@ -737,7 +737,7 @@ msgstr "Nome sezione"
 
 #: /1080i/SkinSettings.xml
 msgctxt "#31149"
-msgid "Clock and weather"
+msgid "Clock and weather in all windows (except home)"
 msgstr "Ora e meteo"
 
 msgctxt "#31150"
@@ -1806,11 +1806,6 @@ msgid "Color Highlight"
 msgstr ""
 
 #: /1080i/SkinSettings.xml
-msgctxt "#30099"
-msgid "Disable background overlay"
-msgstr ""
-
-#: /1080i/SkinSettings.xml
 msgctxt "#30100"
 msgid "Disable skin splash art on startup"
 msgstr ""
@@ -2206,4 +2201,24 @@ msgstr ""
 #: /1080i/SkinSettings.xml
 msgctxt "#31506"
 msgid "Show time remaining instead of duration"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31507"
+msgid "Hide info panel"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31508"
+msgid "Blur background for some Flix views only"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31509"
+msgid "Hide header"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31510"
+msgid "Clock and weather in home window"
 msgstr ""

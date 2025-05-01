@@ -261,7 +261,7 @@
                     <height>view_bottom</height>
                     <visible allowhiddenfocus="true">!$EXP[Exp_ShowPlotOverlay]</visible>
                     <include>Animation_FadeInOut</include>
-                    <include content="Topbar_Right">
+                    <include content="Topbar_Right" condition="!Skin.HasSetting(DisableClockHome)">
                         <param name="fgcolor" value="main_fg" />
                     </include>
                 </control>
@@ -379,7 +379,15 @@
         <include>Global_Background</include>
 
         <control type="group">
-
+            <control type="group">
+                <top>30</top>
+                <height>120</height>
+                <visible allowhiddenfocus="true">!$EXP[Exp_ShowPlotOverlay]</visible>
+                <include>Animation_FadeInOut</include>
+                <include content="Topbar_Right" condition="!Skin.HasSetting(DisableClockHome)">
+                    <param name="fgcolor" value="main_fg" />
+                </include>
+            </control>
             <control type="group">
                 <include content="View_Group">
                     <param name="animation" value="Defs_Null" />
@@ -550,11 +558,17 @@
                 <onright condition="!String.IsEqual(Container(9989).ListItem.Property(list),Settings) + !String.IsEqual(Container(9989).ListItem.Property(list),Weather)">3000</onright>
                 <onright condition="String.IsEqual(Container(9989).ListItem.Property(list),Settings)">5000</onright>
                 <onright condition="String.IsEqual(Container(9989).ListItem.Property(list),Weather)">6000</onright>
-                <top>293</top>
-                <left>62</left>
+                <include content="Defs_Margins" condition="!Skin.HasSetting(DisabledProfileInfo)">
+                    <param name="top" value="293" />
+                    <param name="left" value="62" />
+                </include>
+                <include content="Defs_Margins_Centertop" condition="Skin.HasSetting(DisabledProfileInfo)">
+                    <param name="centertop" value="50%" />
+                    <param name="left" value="32" />
+                </include>
                 <width>714</width>
                 <height>787</height>
-                <onup>303</onup>
+                <onup condition="!Skin.HasSetting(DisabledProfileInfo)">303</onup>
                 <orientation>vertical</orientation>
                 <itemlayout width="714" height="item_list_height" condition="!Skin.HasSetting(HomeIcons) + !Skin.HasSetting(VerticalIconsOnly)">
                     <control type="label">
@@ -562,7 +576,7 @@
                         <font>font_topbar_small</font>
                         <align>left</align>
                         <aligny>center</aligny>
-                        <textcolor>main_fg_100</textcolor>
+                        <textcolor>main_fg_30</textcolor>
                         <label>$INFO[ListItem.Label]</label>
                     </control>
                 </itemlayout>
@@ -584,15 +598,16 @@
                         <left>0</left>
                         <aspectratio>keep</aspectratio>
                         <width>item_list_height</width>
-                        <texture colordiffuse="main_fg_100">$INFO[ListItem.Icon]</texture>
-                        <animation effect="slide" start="0" end="444" time="200" reversible="false" condition="ControlGroup(3000).HasFocus() + !Skin.HasSetting(FlixHideMenu)">Conditional</animation>
+                        <texture colordiffuse="main_fg_30">$INFO[ListItem.Icon]</texture>
+                        <animation effect="slide" start="0" end="444" time="200" reversible="false" condition="ControlGroup(3000).HasFocus() + !Skin.HasSetting(FlixHideMenu) + !Skin.HasSetting(DisabledProfileInfo)">Conditional</animation>
+                        <animation effect="slide" start="0" end="484" time="200" reversible="false" condition="ControlGroup(3000).HasFocus() + !Skin.HasSetting(FlixHideMenu) + Skin.HasSetting(DisabledProfileInfo)">Conditional</animation>
                     </control>
                     <control type="label">
                         <left>80</left>
                         <font>font_topbar_small</font>
                         <align>left</align>
                         <aligny>center</aligny>
-                        <textcolor>main_fg_100</textcolor>
+                        <textcolor>main_fg_30</textcolor>
                         <label>$INFO[ListItem.Label]</label>
                     </control>
                 </itemlayout>
@@ -623,7 +638,8 @@
                         <aspectratio>keep</aspectratio>
                         <width>item_list_height</width>
                         <texture colordiffuse="main_fg_30">$INFO[ListItem.Icon]</texture>
-                        <animation effect="slide" start="0" end="454" time="200" reversible="false" condition="ControlGroup(3000).HasFocus() + !Skin.HasSetting(FlixHideMenu)">Conditional</animation>
+                        <animation effect="slide" start="0" end="454" time="200" reversible="false" condition="ControlGroup(3000).HasFocus() + !Skin.HasSetting(FlixHideMenu) + !Skin.HasSetting(DisabledProfileInfo)">Conditional</animation>
+                        <animation effect="slide" start="0" end="484" time="200" reversible="false" condition="ControlGroup(3000).HasFocus() + !Skin.HasSetting(FlixHideMenu) + Skin.HasSetting(DisabledProfileInfo)">Conditional</animation>
                     </control>
                 </itemlayout>
                 <focusedlayout width="400" height="item_list_height" condition="!Skin.HasSetting(HomeIcons) + Skin.HasSetting(VerticalIconsOnly)">
@@ -668,12 +684,13 @@
                         <height>item_list_height</height>
                         <include>Animation_Left</include>
                         <visible allowhiddenfocus="true">Control.HasFocus(302) | Control.HasFocus(3002)</visible>
+                        <visible>!Skin.HasSetting(Home.HideHeader)</visible>
                     </control>
                     <control type="panel" id="302">
                         <include>Animation_Left</include>
                         <visible allowhiddenfocus="true">Control.HasFocus(302) | Control.HasFocus(3002)</visible>
-                        <onup>3002</onup>
-                        <ondown>3002</ondown>
+                        <onup condition="!Skin.HasSetting(Home.HideHeader)">3002</onup>
+                        <ondown condition="!Skin.HasSetting(Home.HideHeader)">3002</ondown>
                         <onleft>301</onleft>
                         <onright>301</onright>
                         <onback>301</onback>
@@ -684,17 +701,17 @@
                         <width>257.14</width>
                         <onright>3000</onright>
                         <orientation>vertical</orientation>
-                        <itemlayout width="257.14" height="item_list_height">
+                        <itemlayout width="257.14" height="item_list_height" condition="!Skin.HasSetting(HomeIcons) + !Skin.HasSetting(VerticalIconsOnly)">
                             <control type="label">
                                 <right>40</right>
                                 <font>font_submenu_small</font>
                                 <align>right</align>
                                 <aligny>center</aligny>
-                                <textcolor>main_fg_100</textcolor>
+                                <textcolor>main_fg_30</textcolor>
                                 <label>$INFO[ListItem.Label]</label>
                             </control>
                         </itemlayout>
-                        <focusedlayout width="257.14" height="item_list_height">
+                        <focusedlayout width="257.14" height="item_list_height" condition="!Skin.HasSetting(HomeIcons) + !Skin.HasSetting(VerticalIconsOnly)">
                             <control type="label">
                                 <right>40</right>
                                 <font>font_submenu</font>
@@ -702,6 +719,26 @@
                                 <aligny>center</aligny>
                                 <textcolor>main_fg_100</textcolor>
                                 <label>$INFO[ListItem.Label]</label>
+                            </control>
+                        </focusedlayout>
+                        <itemlayout width="400" height="item_list_height" condition="!Skin.HasSetting(HomeIcons) + Skin.HasSetting(VerticalIconsOnly)">
+                            <control type="image">
+                                <centertop>53%</centertop>
+                                <height>64</height>
+                                <right>330</right>
+                                <aspectratio>keep</aspectratio>
+                                <width>item_list_height</width>
+                                <texture colordiffuse="main_fg_30">$INFO[ListItem.Icon]</texture>
+                            </control>
+                        </itemlayout>
+                        <focusedlayout width="400" height="item_list_height" condition="!Skin.HasSetting(HomeIcons) + Skin.HasSetting(VerticalIconsOnly)">
+                            <control type="image">
+                                <centertop>53%</centertop>
+                                <height>64</height>
+                                <right>330</right>
+                                <aspectratio>keep</aspectratio>
+                                <width>item_list_height</width>
+                                <texture colordiffuse="main_fg_100">$INFO[ListItem.Icon]</texture>
                             </control>
                         </focusedlayout>
                         <content>
@@ -1596,7 +1633,7 @@
                 <height>120</height>
                 <visible allowhiddenfocus="true">!$EXP[Exp_ShowPlotOverlay]</visible>
                 <include>Animation_FadeInOut</include>
-                <include content="Topbar_Right">
+                <include content="Topbar_Right" condition="!Skin.HasSetting(DisableClockHome)">
                     <param name="fgcolor" value="main_fg" />
                 </include>
             </control>

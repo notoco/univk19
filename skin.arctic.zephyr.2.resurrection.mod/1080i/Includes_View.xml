@@ -98,17 +98,18 @@
 
     <include name="View_PVR_Guide_Info">
         <control type="image">
-			<top>-545</top>
-			<width>395</width>
-			<aspectratio align="center" aligny="center">keep</aspectratio>
-			<texture>$INFO[ListItem.Icon]</texture>
-		</control>
+            <top>-5</top>
+            <width>395</width>
+            <height>222</height>
+            <aspectratio align="center" aligny="center">keep</aspectratio>
+            <texture>$INFO[ListItem.Icon]</texture>
+        </control>
         <control type="grouplist">
             <orientation>vertical</orientation>
             <usecontrolcoords>true</usecontrolcoords>
             <itemgap>0</itemgap>
             <right>0</right>
-			<width>1340</width>
+            <width>1340</width>
             <include content="Object_Info_Title">
                 <param name="label" value="$VAR[Label_PVRGuide_Title]" />
             </include>
@@ -477,7 +478,7 @@
                         <visible>Control.HasFocus($PARAM[id]) | Control.HasFocus($PARAM[altid])</visible>
                         <visible>!String.IsEmpty(Container($PARAM[id]).ListItem.Label)</visible>
                         <visible>Integer.IsGreater(Container($PARAM[id]).NumItems,0) + !Container($PARAM[id]).IsUpdating</visible>
-                        <visible>!Skin.HasSetting(HomeMultiFlixView)</visible>
+                        <visible>[!Skin.HasSetting(HomeMultiFlixView) | [Skin.HasSetting(HomeMultiFlixView) + !Window.IsVisible(Home)]]</visible>
                     </control>
                     <control type="label">
                         <top>20</top>
@@ -492,7 +493,7 @@
                         <visible>!String.StartsWith(ListItem.FolderPath,pvr://)</visible>
                         <visible>!String.IsEqual(Container($PARAM[id]).ListItem.DBType,episode)</visible>
                         <visible>!$PARAM[uselabel2]</visible>
-                        <visible>!Skin.HasSetting(HomeMultiFlixView)</visible>
+                        <visible>[!Skin.HasSetting(HomeMultiFlixView) | [Skin.HasSetting(HomeMultiFlixView) + !Window.IsVisible(Home)]]</visible>
                     </control>
                     <control type="label">
                         <top>20</top>
@@ -509,7 +510,7 @@
                         <visible>!String.IsEqual(Container($PARAM[id]).ListItem.DBType,episode)</visible>
                         <visible>!String.IsEmpty(Container($PARAM[id]).ListItem.Year)</visible>
                         <visible>!$PARAM[uselabel2]</visible>
-                        <visible>!Skin.HasSetting(HomeMultiFlixView)</visible>
+                        <visible>[!Skin.HasSetting(HomeMultiFlixView) | [Skin.HasSetting(HomeMultiFlixView) + !Window.IsVisible(Home)]]</visible>
                     </control>
                     <control type="group">
                         <include>Defs_SmallBusySpinner</include>
@@ -1026,7 +1027,7 @@
             <control type="image">
                 <bordersize>20</bordersize>
                 <texture colordiffuse="ffffffff">$VAR[Image_Overlay]</texture>
-                <visible>!Integer.IsGreater(ListItem.Property(UnWatchedEpisodes),0) | ![String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)]</visible>
+                <visible>![Integer.IsGreater(ListItem.Property(UnWatchedEpisodes),0) + [!Integer.IsEqual(ListItem.Property(WatchedEpisodes),0) | Skin.HasSetting(UnwatchedCountIndicator)] + [String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)]]</visible>
             </control>
             <control type="label">
                 <font>font_unwatched</font>
@@ -1072,7 +1073,7 @@
             <control type="image">
                 <bordersize>20</bordersize>
                 <texture colordiffuse="ffffffff">$VAR[Image_Overlay_Focus]</texture>
-                <visible>!Integer.IsGreater(ListItem.Property(UnWatchedEpisodes),0) | ![Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | Window.IsVisible(Home)]</visible>
+                <visible>![Integer.IsGreater(ListItem.Property(UnWatchedEpisodes),0) + [!Integer.IsEqual(ListItem.Property(WatchedEpisodes),0) | Skin.HasSetting(UnwatchedCountIndicator)] + [String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,episode)]]</visible>
             </control>
             <control type="label">
                 <font>font_unwatched</font>

@@ -94,34 +94,7 @@
             <bottom>25</bottom>
             <aligny>center</aligny>
             <align>right</align>
-            <label>$INFO[ListItem.Duration]</label>
-        </control>
-    </include>
-
-        <include name="View_51_Wall_LandscapeSmall_Label">
-        <control type="label">
-            <left>15</left>
-            <right>15</right>
-            <font>font_statusbar</font>
-            <selectedcolor>main_fg_100</selectedcolor>
-            <textcolor>main_fg_100</textcolor>
-            <top>$PARAM[iconheight]</top>
-            <bottom>25</bottom>
-            <aligny>center</aligny>
-            <align>left</align>
-            <label>$INFO[ListItem.Label]</label>
-        </control>
-        <control type="label">
-
-            <right>90</right>
-            <font>font_statusbar</font>
-            <selectedcolor>main_fg_100</selectedcolor>
-            <textcolor>main_fg_100</textcolor>
-            <top>$PARAM[iconheight]</top>
-            <bottom>25</bottom>
-            <aligny>center</aligny>
-            <align>right</align>
-            <label>$INFO[ListItem.Duration]</label>
+            <label>$INFO[ListItem.Label2]</label>
         </control>
     </include>
 
@@ -895,7 +868,7 @@
                 <param name="diffuse" value="diffuse/landscape-small-wall.png" />
                 <param name="viewtype" value="Landscape Wall Small" />
                 <param name="viewtypename" value="wide" />
-                <param name="labelinclude" value="View_51_Wall_LandscapeSmall_Label" />
+                <param name="labelinclude" value="Defs_Null" />
                 <param name="visible" value="$EXP[Exp_View_515] | $EXP[InGameAEL]" />
                 <include>View_Vertical_Movement</include>
             </include>

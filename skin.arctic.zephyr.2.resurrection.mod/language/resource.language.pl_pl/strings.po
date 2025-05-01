@@ -736,8 +736,8 @@ msgstr "Nazwa sekcji"
 
 #: /1080i/SkinSettings.xml
 msgctxt "#31149"
-msgid "Clock and weather"
-msgstr "Zegar i pogoda"
+msgid "Clock and weather in all windows (except home)"
+msgstr "Zegar i pogoda we wszystkich oknach (oprócz głównego)"
 
 msgctxt "#31150"
 msgid "Home background image"
@@ -1790,11 +1790,6 @@ msgid "Color Highlight"
 msgstr "Kolor podświetlenia"
 
 #: /1080i/SkinSettings.xml
-msgctxt "#30099"
-msgid "Disable background overlay"
-msgstr "Wyłącz nakładkę na tło"
-
-#: /1080i/SkinSettings.xml
 msgctxt "#30100"
 msgid "Disable skin splash art on startup"
 msgstr "Wyłącz ekran ładowania skórki"
@@ -2191,3 +2186,23 @@ msgstr "Wyłącz okno z playlistą/odcinkami w VideoOSD"
 msgctxt "#31506"
 msgid "Show time remaining instead of duration"
 msgstr "Pokaż pozostały czas zamiast czas trwania"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31507"
+msgid "Hide info panel"
+msgstr "Ukryj panel z informacjami"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31508"
+msgid "Blur background for some Flix views only"
+msgstr "Rozmycie tła tylko dla niektórych widoków flix"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31509"
+msgid "Hide header"
+msgstr "Ukryj nagłówek"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31510"
+msgid "Clock and weather in home window"
+msgstr "Zegar i pogoda w oknie głównym"
