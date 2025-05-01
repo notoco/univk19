@@ -497,7 +497,7 @@ def get_year(date_string):
     try:
         date_object = dateutil_parse(date_string)
         return date_object.year
-    except ValueError:
+    except (OverflowError, TypeError, ValueError):
         return date_string
 
 
@@ -506,7 +506,7 @@ def iso_datetime(date_string, separator=str(' ')):
 
     try:
         date_object = dateutil_parse(date_string).replace(microsecond=0)
-    except ValueError:
+    except (OverflowError, TypeError, ValueError):
         return date_string
 
     return date_object.isoformat(separator)
@@ -519,7 +519,7 @@ def localize_date(date_string):
 
     try:
         date_object = dateutil_parse(date_string)
-    except ValueError:
+    except (OverflowError, TypeError, ValueError):
         return None, date_string
 
     return date_object, date_object.strftime(date_format)
@@ -599,16 +599,20 @@ def calc_wait_time(end_time=None, start_time=0, rate=None):
     return max(0, (end_time - start_time) // rate)
 
 
-def create_item_details(item, source=None, position=None):
+def create_item_details(item, source=None, position=None, reset=False):
     """Create item_details dict used by state, api and plugin modules"""
 
-    if item == 'empty':
+    if reset:
         return {
             'details': {},
             'source': None,
             'type': None,
             'id': constants.UNDEFINED,
-            'group_name': constants.UNKNOWN,
+            'group_name': (
+                item.get('group_name') or constants.UNKNOWN
+                if item else
+                constants.UNKNOWN
+            ),
             'group_idx': constants.UNDEFINED,
         }
 

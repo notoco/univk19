@@ -43,7 +43,7 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
         self.data = None
         self.encoding = 'base64'
         # Current video details
-        self.current_item = utils.create_item_details('empty')
+        self.current_item = utils.create_item_details(item=None, reset=True)
         self.filename = None
         self.total_time = 0
         # Popup state variables
@@ -74,7 +74,10 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
         if self.next_item:
             self.current_item = self.next_item
         else:
-            self.current_item = utils.create_item_details('empty')
+            self.current_item = utils.create_item_details(
+                item=self.current_item,
+                reset=True,
+            )
         self.next_item = None
 
     def get_tracked_file(self):
@@ -192,6 +195,12 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
     def set_popup_time(self, total_time):
         popup_time = 0
 
+        # Use 1s offset from total_time to try and avoid race condition with
+        # internal Kodi playlist handling
+        self.total_time = total_time
+        if SETTINGS.enable_queue:
+            total_time -= 1
+
         # Alway use plugin data, when available
         if self.get_plugin_type():
             # Some plugins send the time from video end
@@ -230,7 +239,6 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
             self.popup_cue = SETTINGS.sim_cue == constants.SETTING_ON
 
         self.popup_time = popup_time
-        self.total_time = total_time
         self._set_detect_time()
 
         self.log('Popup: due at {0}s of {1}s (cue: {2})'.format(
@@ -310,9 +318,9 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
 
         # Previously resolved listitems may lose infotags that are set when the
         # listitem is resolved. Fallback to Player notification data.
+        values_to_replace = {constants.UNDEFINED, constants.UNKNOWN, ''}
         for info, value in play_info['item'].items():
-            current_value = current_video.get(info, '')
-            if current_value in {constants.UNDEFINED, constants.UNKNOWN, ''}:
+            if current_video.get(info, '') in values_to_replace:
                 current_video[info] = value
 
         tvshowid = current_video.get('tvshowid', constants.UNDEFINED)
@@ -357,11 +365,13 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
         episodeid = (utils.get_int(current_video, 'episodeid', None)
                      or utils.get_int(current_video, 'id'))
         if episodeid == constants.UNDEFINED:
-            episodeid = api.get_episodeid(tvshowid, season, episode)
-        # Now playing episode not found in library
-        if episodeid == constants.UNDEFINED:
-            return None
-        current_video['episodeid'] = episodeid
+            details = api.get_episode_info(tvshowid, season, episode)
+            # Now playing episode not found in library
+            if not details:
+                return None
+            current_video = dict(current_video, **details)
+        else:
+            current_video['episodeid'] = episodeid
 
         return current_video
 
