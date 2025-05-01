@@ -6,11 +6,8 @@
         <include content="Object_ShadowSpot_Group">
             <param name="width" value="1200" />
             <param name="height" value="355" />
-            <param name="top" value="10" />
+            <param name="top" value="-20" />
             <include content="Object_ShadowSpot_Grouplist">
-                <include content="Object_ShadowSpot_Label">
-                    <param name="label" value="$INFO[Player.Process(videodecoder),[COLOR panel_fg_100]$LOCALIZE[31279]:[/COLOR] ]$VAR[Label_VideoHWDecoder, (,)]     $INFO[System.Uptime]" />
-                </include>
                 <include content="Object_ShadowSpot_Label">
                     <param name="label" value="$INFO[Player.Process(videowidth),[COLOR panel_fg_100]$LOCALIZE[38031]:[/COLOR] ,x]$INFO[Player.Process(videoheight),, px]$INFO[Player.Process(videodar),$COMMA , AR]$INFO[Player.Process(videofps),$COMMA , FPS] " />
                 </include>
@@ -21,7 +18,10 @@
                     <param name="label" value="[COLOR panel_fg_100]$LOCALIZE[14301]:[/COLOR] $INFO[VideoPlayer.AudioChannels]  [COLOR panel_fg_100]$LOCALIZE[304]:[/COLOR]  $INFO[VideoPlayer.AudioLanguage]" />
                 </include>
                 <include content="Object_ShadowSpot_Label">
-                    <param name="label" value="$INFO[System.CpuUsage,[COLOR panel_fg_100]CPU: [/COLOR] ,       ]$INFO[System.Memory(used.percent),[COLOR panel_fg_100]RAM:[/COLOR] ,       ]$INFO[System.CPUTemperature,[COLOR panel_fg_100]Temperatura:[/COLOR] ,]" />
+                    <param name="label" value="$INFO[System.CpuUsage,[COLOR panel_fg_100]CPU: [/COLOR] ,       ]$INFO[System.Memory(used.percent),[COLOR panel_fg_100]RAM:[/COLOR]"/>
+                </include>
+                                <include content="Object_ShadowSpot_Label">
+                    <param name="label" value="$INFO[System.CPUTemperature,[COLOR panel_fg_100]Temperatura:[/COLOR] ,]" />
                 </include>
                 <control type="progress">
                     <top>5</top>
@@ -47,7 +47,7 @@
         <control type="group">
             <include>Animation_FadeIn</include>
             <include>Animation_FadeOut</include>
-            <top>0</top>
+            <top>-30</top>
             <width>1920</width>
             <height>420</height>
 

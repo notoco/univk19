@@ -276,7 +276,8 @@
             <right>0</right>
             <top>view_pad</top>
             <bottom>0</bottom>
-
+                <include>Animation_FadeIn</include>
+                <include>Animation_FadeOut</include>
             <control type="group" description="Channel Icon">
                 <left>0</left>
                 <width>307</width>
