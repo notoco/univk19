@@ -690,12 +690,11 @@
                 <!-- Detailed Info -->
                 <control type="group">
                     <visible>[String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | [String.IsEqual(ListItem.DBType,episode) + !String.IsEmpty(ListItem.Episode)] | String.IsEqual(ListItem.DBType,season) | String.IsEqual(ListItem.DBType,set) | String.IsEqual(ListItem.DBType,song) | String.IsEqual(ListItem.DBType,album)]</visible>
-                    <left>grid_x02</left>
-                    <right>grid_x02</right>
+                    <left>grid_x04</left>
+                    <right>grid_x04</right>
                     <control type="group">
                         <visible>![String.IsEqual(ListItem.DBType,song) | String.IsEqual(ListItem.DBType,album)]</visible>
                         <include content="Object_Control">
-                            <visible>!Container.Content(files)</visible>
                             <param name="control">label</param>
                             <include condition="$PARAM[selected]">Color_SelectedText</include>
                             <textcolor>main_fg_70</textcolor>
@@ -708,9 +707,8 @@
                         </include>
                         <include content="Object_Control">
                             <param name="control">label</param>
-                            <visible>!Container.Content(files)</visible>
-                            <left>grid_x08</left>
-                            <right>grid_x20</right>
+                            <left>grid_x12</left>
+                            <right>grid_x14</right>
                             <include condition="$PARAM[selected]">Color_SelectedText</include>
                             <textcolor>main_fg_70</textcolor>
                             <selectedcolor>main_fg_70</selectedcolor>
@@ -718,42 +716,17 @@
                             <font>font_main_bold</font>
                             <bottom>3</bottom>
                         </include>
-                        <include content="Object_Control">
-                            <param name="control">label</param>
-                            <visible>Container.Content(files)</visible>
-                            <left>grid_x10</left>
-                            <right>grid_x16</right>
-                            <include condition="$PARAM[selected]">Color_SelectedText</include>
-                            <textcolor>main_fg_70</textcolor>
-                            <selectedcolor>main_fg_70</selectedcolor>
-                            <label>$INFO[ListItem.Label]</label>
-                            <font>font_main_bold</font>
-                            <bottom>3</bottom>
-                        </include>
-                        <include content="Object_Control">
-                            <param name="control">label</param>
-                            <visible>Container.Content(files)</visible>
-                            <left>grid_x10</left>
-                            <right>grid_x16</right>
-                            <include condition="$PARAM[selected]">Color_SelectedText</include>
-                            <textcolor>main_fg_70</textcolor>
-                            <selectedcolor>main_fg_70</selectedcolor>
-                            <label>$INFO[ListItem.Label2]</label>
-                            <font>font_main</font>
-                        </include>
                         <include content="Object_Indicator_List">
                             <param name="selected">$PARAM[selected]</param>
-                            <visible>!Container.Content(files)</visible>
                             <centertop>50%</centertop>
-                            <centerright>160</centerright><!-- notoco -->
+                            <centerright>100</centerright>
                         </include>
                         <include content="Object_Control">
                             <param name="control">label</param>
-                            <visible>!Container.Content(files)</visible>
                             <include condition="$PARAM[selected]">Color_SelectedText</include>
                             <textcolor>main_fg_70</textcolor>
                             <selectedcolor>main_fg_70</selectedcolor>
-                            <label>$INFO[ListItem.Duration]</label><!-- notoco -->
+                            <label>$INFO[ListItem.Rating]</label>
                             <font>font_main</font>
                             <align>right</align>
                             <bottom>3</bottom>
@@ -1634,7 +1607,7 @@
                                 <label>$VAR[Label_PVRRecordings_Mainlabel]</label>
                                 <textcolor>$PARAM[textcolor]_70</textcolor>
                                 <selectedcolor>$PARAM[textcolor]_70</selectedcolor>
-                                <font>font_head_bold</font> <!-- notoco -->
+                                <font>font_main_bold</font>
                                 <align>left</align>
                                 <visible>![!String.IsEmpty(ListItem.EpisodeName) | !String.IsEmpty(ListItem.Genre) | ListItem.IsFolder | [[Window.IsVisible(MyPVRChannels.xml) | Window.IsVisible(fullscreenvideo)] + !String.ISEmpty(ListItem.Title)]]</visible>
                             </control>
@@ -1646,7 +1619,7 @@
                                 <label>$VAR[Label_PVRRecordings_Mainlabel]</label>
                                 <textcolor>$PARAM[textcolor]_70</textcolor>
                                 <selectedcolor>$PARAM[textcolor]_70</selectedcolor>
-                                <font>font_head_bold</font> <!-- notoco -->
+                                <font>font_main_bold</font>
                                 <align>left</align>
                                 <visible>!String.IsEmpty(ListItem.EpisodeName) | !String.IsEmpty(ListItem.Genre) | ListItem.IsFolder | [[Window.IsVisible(MyPVRChannels.xml) | Window.IsVisible(fullscreenvideo)] + !String.ISEmpty(ListItem.Title)]</visible>
                             </control>
@@ -2250,6 +2223,80 @@
                     <texture colordiffuse="$PARAM[colordiffuse]">$PARAM[icon]</texture>
                 </control>
                 <nested />
+            </control>
+        </definition>
+    </include>
+
+    <include name="Layout_GameVideoFilterOrView">
+        <param name="detailed">false</param>
+        <param name="selected">false</param>
+        <param name="misc">ListItem.IsSelected</param>
+        <definition>
+            <include content="Object_Control" condition="$PARAM[selected]">
+                <param name="control">image</param>
+                <include>Texture_Highlight</include>
+            </include>
+            <control type="group">
+                <left>40</left>
+                <top>20</top>
+                <bottom>20</bottom>
+                <width>100</width>
+                <include content="Object_Control" condition="Window.IsVisible(ingamesaves) | Window.IsVisible(gamesaves)">
+                    <param name="control">image</param>
+                    <aspectratio>scale</aspectratio>
+                    <texture border="4">$INFO[ListItem.Icon]</texture>
+                    <bordersize>4</bordersize>
+                </include>
+                <include content="Object_Control" condition="Window.IsVisible(ingamesaves) | Window.IsVisible(gamesaves)">
+                    <param name="control">image</param>
+                    <aspectratio>scale</aspectratio>
+                    <texture border="4">$INFO[ListItem.Art(screenshot)]</texture>
+                    <bordersize>4</bordersize>
+                </include>
+                <include content="Object_Control" condition="Window.IsVisible(ingamesaves) | Window.IsVisible(gamesaves)">
+                    <param name="control">gamewindow</param>
+                    <pixels>$INFO[ListItem.FilenameAndPath]</pixels>
+                </include>
+                <include content="Object_Control" condition="!Window.IsVisible(ingamesaves)">
+                    <param name="control">gamewindow</param>
+                    <videofilter>$INFO[ListItem.Property(game.videofilter)]</videofilter>
+                    <stretchmode>$INFO[ListItem.Property(game.stretchmode)]</stretchmode>
+                    <rotation>$INFO[ListItem.Property(game.videorotation)]</rotation>
+                </include>
+            </control>
+            <control type="group">
+                <left>140</left>
+                <control type="label">
+                    <include condition="$PARAM[selected]">Color_SelectedText</include>
+                    <textoffsetx>40</textoffsetx>
+                    <textcolor>dialog_fg_70</textcolor>
+                    <selectedcolor>dialog_fg_70</selectedcolor>
+                    <label>$INFO[ListItem.Label]</label>
+                    <visible>String.IsEmpty(ListItem.Label2)</visible>
+                </control>
+
+                <control type="label">
+                    <include condition="$PARAM[selected]">Color_SelectedText</include>
+                    <textoffsetx>40</textoffsetx>
+                    <font>font_main_bold</font>
+                    <textcolor>dialog_fg_70</textcolor>
+                    <selectedcolor>dialog_fg_70</selectedcolor>
+                    <label>$INFO[ListItem.Label]</label>
+                    <visible>!String.IsEmpty(ListItem.Label2)</visible>
+                    <top>20</top>
+                    <height>30</height>
+                </control>
+                <control type="label">
+                    <include condition="$PARAM[selected]">Color_SelectedText</include>
+                    <textoffsetx>40</textoffsetx>
+                    <font>font_tiny</font>
+                    <textcolor>dialog_fg_70</textcolor>
+                    <selectedcolor>dialog_fg_70</selectedcolor>
+                    <label>$INFO[ListItem.Label2]</label>
+                    <visible>!String.IsEmpty(ListItem.Label2)</visible>
+                    <bottom>20</bottom>
+                    <height>30</height>
+                </control>
             </control>
         </definition>
     </include>

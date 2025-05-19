@@ -94,9 +94,16 @@
     </include>
     <include name="Dimension_DialogSelect">
         <centerleft>50%</centerleft>
-        <width>1800</width>
+        <width>1360</width>
         <height>dialog_tall_h</height>
         <centertop>dialog_tall_centertop</centertop>
+    </include>
+
+    <include name="Dimension_DialogSelectGame">
+        <right>grid_x04</right>
+        <width>680</width>
+        <top>160</top>
+        <height>800</height>
     </include>
 
     <include name="Dimension_DialogSkinShortcuts_FullscreenWidget">
