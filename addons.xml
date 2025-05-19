@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="service.upnext" name="UpNext" version="2.0.30+dev.5" provider-name="im85288, MoojMidge">
+<addon id="service.upnext" name="UpNext" version="2.0.30+dev.6" provider-name="im85288, MoojMidge">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.pil" version="1.1.7"/>
@@ -724,7 +724,7 @@ provider-name="primaeval">
 	</assets>
   </extension>
 </addon>
-<addon id="skin.arctic.horizon.2.notoco" name="Arctic Horizon 2 NOTOCO" provider-name="jurialmunkey - notoco mod" version="2025.04.06.0">
+<addon id="skin.arctic.horizon.2.notoco" name="Arctic Horizon 2 NOTOCO" provider-name="jurialmunkey - notoco mod" version="2025.05.19.0">
     <requires>
         <import addon="xbmc.gui" version="5.17.0" />
         <import addon="script.skinshortcuts" version="0.4.0" />
