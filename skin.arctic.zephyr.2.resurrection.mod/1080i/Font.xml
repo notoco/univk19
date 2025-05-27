@@ -122,7 +122,7 @@
             <size>80</size>
             <style>bold</style>
         </font>
-        <!-- Big weather temp -->        
+        <!-- Big weather temp -->
         <font>
             <name>font_weather_currenttemp</name>
             <filename>RobotoCondensed-Bold.ttf</filename>
@@ -185,7 +185,7 @@
         <font>
             <name>font_topbar</name>
             <filename>RobotoCondensed-Bold.ttf</filename>
-            <size>40</size>
+            <size>38</size>
             <aspect>0.9</aspect>
             <style>bold</style>
         </font>
@@ -372,7 +372,7 @@
             <size>80</size>
             <style>bold</style>
         </font>
-        <!-- Big weather temp -->        
+        <!-- Big weather temp -->
         <font>
             <name>font_weather_currenttemp</name>
             <filename>Roboto-Bold.ttf</filename>
@@ -435,7 +435,7 @@
         <font>
             <name>font_topbar</name>
             <filename>Roboto-Bold.ttf</filename>
-            <size>40</size>
+            <size>38</size>
             <aspect>0.9</aspect>
             <style>bold</style>
         </font>
@@ -610,7 +610,7 @@
             <size>80</size>
             <style>bold</style>
         </font>
-        <!-- Big weather temp -->        
+        <!-- Big weather temp -->
         <font>
             <name>font_weather_currenttemp</name>
             <filename>Roboto-Bold.ttf</filename>
@@ -673,7 +673,7 @@
         <font>
             <name>font_topbar</name>
             <filename>Roboto-Bold.ttf</filename>
-            <size>40</size>
+            <size>38</size>
             <aspect>0.9</aspect>
             <style>bold</style>
         </font>
@@ -857,7 +857,7 @@
             <size>80</size>
             <style>bold</style>
         </font>
-        <!-- Big weather temp -->        
+        <!-- Big weather temp -->
         <font>
             <name>font_weather_currenttemp</name>
             <filename>arial.ttf</filename>
@@ -920,7 +920,7 @@
         <font>
             <name>font_topbar</name>
             <filename>arial.ttf</filename>
-            <size>40</size>
+            <size>38</size>
             <aspect>0.9</aspect>
             <style>bold</style>
         </font>
