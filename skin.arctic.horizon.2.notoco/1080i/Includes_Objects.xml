@@ -806,7 +806,7 @@
                 <right>25</right>
                 <width>64</width>
                 <height>64</height>
-                
+
                 <!--  *** Adds the selected overlay circle -->
                 <include content="Object_Control" condition="$PARAM[selected]">
                     <param name="control" value="group" />
@@ -827,7 +827,7 @@
                 <control type="image">
                     <texture colordiffuse="ff333333">$VAR[Image_Overlay_Backing$PARAM[affix],,-bg.png]</texture>
                 </control>
-                
+
                 <!--  *** Adds the green progress indicator. -->
                 <include content="Object_Control" condition="!Skin.HasSetting(Indicator.DisableProgress)">
                     <param name="control">image</param>
@@ -839,7 +839,7 @@
                     <include content="Dimension_Padding"><param name="pad" value="20" /></include>
                     <texture>$VAR[Image_Overlay$PARAM[affix]]</texture>
                     <visible>String.IsEmpty($PARAM[listitem].Property(UnWatchedEpisodes))</visible>
-                    
+
                 </control>
                 <control type="image">
                     <include content="Dimension_Padding"><param name="pad" value="20" /></include>
@@ -857,7 +857,7 @@
                     <aligny>center</aligny>
                     <textcolor>panel_fg_100</textcolor>
                     <label>$INFO[$PARAM[listitem].Property(UnWatchedEpisodes)]</label>
-                    <visible>!Integer.IsEqual($PARAM[listitem].Property(UnWatchedEpisodes),0)</visible>                  
+                    <visible>!Integer.IsEqual($PARAM[listitem].Property(UnWatchedEpisodes),0)</visible>
                 </control>
                 <control type="label">
                     <font>font_hint</font>
@@ -2108,10 +2108,6 @@
                 <visible>!$PARAM[is_other]</visible>
             </control>
             <control type="image">
-                <include content="Object_ColorDiffuse" condition="$PARAM[selected]">
-                    <param name="colordiffuse">$VAR[ColorSelected]</param>
-                </include>
-                <colordiffuse>main_fg_90</colordiffuse>
                 <aspectratio scalediffuse="true">keep</aspectratio>
                 <texture background="true" diffuse="$PARAM[diffuse]" fallback="$PARAM[icon_other_fallback]">$PARAM[icon]</texture>
                 <fadetime>$PARAM[fadetime]</fadetime>
@@ -2120,10 +2116,6 @@
                 <bordersize>$PARAM[icon_default_bordersize]</bordersize>
             </control>
             <control type="image">
-                <include content="Object_ColorDiffuse" condition="$PARAM[selected]">
-                    <param name="colordiffuse">$VAR[ColorSelected]</param>
-                </include>
-                <colordiffuse>main_fg_90</colordiffuse>
                 <aspectratio scalediffuse="true">keep</aspectratio>
                 <texture background="true" diffuse="$PARAM[diffuse]" fallback="$PARAM[icon_other_fallback]">$PARAM[icon]</texture>
                 <fadetime>$PARAM[fadetime]</fadetime>
