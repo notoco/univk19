@@ -637,7 +637,7 @@ Många befintliga tillägg integreras redan med den här utanför lådan-tjänst
         </menu>
     </extension>
 </addon>
-<addon id="script.notoco.helper" name="pomocnik notoco" version="1.7.0" provider-name="notoco">
+<addon id="script.notoco.helper" name="pomocnik notoco" version="1.8.0" provider-name="notoco">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
         <import addon="script.module.requests"/>
