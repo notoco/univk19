@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import xbmc
 import xbmcaddon
+import xbmcgui
 import control
 import time
 import json
+import subprocess
 
 
 state = control.get_setting('state')
@@ -32,38 +34,38 @@ if __name__ == '__main__':
         control.ambilight_bright_down()
     elif arg == "amb_start":
         xbmcaddon.Addon('script.service.hyperion-control').setSetting('menuEnabled', 'true')
-        time.sleep(2) 
-        xbmcaddon.Addon('script.service.hyperion-control').setSetting('menuEnabled', 'false')     
+        time.sleep(2)
+        xbmcaddon.Addon('script.service.hyperion-control').setSetting('menuEnabled', 'false')
 #ESC
     elif arg == "esc":
         osd = xbmc.getCondVisibility('Window.IsActive(seekbar)')
         pause = xbmc.getCondVisibility('Player.Paused')
-        if (osd == True):  
+        if (osd == True):
             xbmc.executebuiltin("Action(Info)")
         else:
             xbmc.executebuiltin("PlayerControl(Stop)")
-        if (pause == True):  
+        if (pause == True):
             xbmc.executebuiltin("PlayerControl(Play)")
             xbmc.executebuiltin("Action(Info)")
-     
+
 #CLOSE
     elif arg == "close":
         ffdialog = xbmc.getCondVisibility('Window.Is(SourcesDialog.xml)')
-        if (ffdialog == True):  
+        if (ffdialog == True):
             xbmc.executebuiltin("Action(Close)")
         else:
             xbmc.executebuiltin("Action(Back)")
 #EPG
     elif arg == "epg":
         playing = xbmc.getCondVisibility('Player.Playing')
-        if (playing == True):  
+        if (playing == True):
             xbmc.executebuiltin('ActivateWindow(12005)')
         else:
             xbmc.executebuiltin("Action(Back)")
 #CPU
     elif arg == "cpu":
         control.cpu()
-        
+
 #Hyperion restart
     elif arg == "hypereset":
         xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Addons.SetAddonEnabled","id":7,"params":{"addonid": "service.hyperion.ng","enabled":false}}')
@@ -73,14 +75,22 @@ if __name__ == '__main__':
         time.sleep(2)
         xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Addons.SetAddonEnabled","id":7,"params":{"addonid": "script.service.hyperion-control","enabled":true}}')
 
-    elif arg == "fanfilmrestart":
-        xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Addons.SetAddonEnabled","id":7,"params":{"addonid": "plugin.video.fanfilm","enabled":false}}')
-        time.sleep(180)
-        xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Addons.SetAddonEnabled","id":7,"params":{"addonid": "plugin.video.fanfilm","enabled":true}}')
+    elif arg == "restart":
+        dialog = xbmcgui.Dialog()
 
+        choice = dialog.yesno(
+            heading="Restart Kodi",
+            message="Kodi zostanie automatycznie zrestartowane za 30 sekund.",
+            yeslabel="Restartuj teraz",
+            nolabel="Przerwij",
+            autoclose=30000  # 30 sekund (30 000 ms)
+        )
 
-
-
-
-
-
+        # choice:
+        # True  -> kliknięto "Restartuj teraz" LUB minęło 30 sekund (autoclose traktuje to jak Yes)
+        # False -> kliknięto "Przerwij"
+        if choice:
+            control.send_notification("CoreELEC", "Restartuję Kodi...")
+            subprocess.Popen(["systemctl", "restart", "kodi"])
+        else:
+            control.send_notification("CoreELEC", "Restart przerwany")
