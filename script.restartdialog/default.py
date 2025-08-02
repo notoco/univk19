@@ -3,10 +3,14 @@ import xbmc
 import xbmcgui
 import subprocess
 
+# -*- coding: utf-8 -*-
+import xbmc
+import xbmcgui
+import subprocess
+
 class CountdownDialog(xbmcgui.WindowDialog):
     def __init__(self):
         super().__init__()
-        self.setCoordinateResolution(0)
 
         # Tło okna
         self.background = xbmcgui.ControlImage(450, 250, 380, 180, 'special://xbmc/media/white.png')
@@ -32,6 +36,38 @@ class CountdownDialog(xbmcgui.WindowDialog):
 
         self.canceled = False
         self.restart_now = False
+
+    def onControl(self, control):
+        if control == self.button_cancel:
+            self.canceled = True
+            self.close()
+        elif control == self.button_restart:
+            self.restart_now = True
+            self.close()
+
+def show_restart_dialog():
+    dialog = CountdownDialog()
+    dialog.show()
+
+    # Odliczanie 30 sekund
+    for i in range(30, 0, -1):
+        dialog.label_countdown.setLabel(f"Kodi zrestartuje się za {i} sek...")
+        xbmc.sleep(1000)
+        if dialog.canceled or dialog.restart_now:
+            break
+
+    dialog.close()
+
+    # Logika restartu
+    if dialog.restart_now or (not dialog.canceled and not dialog.restart_now):
+        xbmcgui.Dialog().notification("CoreELEC", "🔄 Restartuję Kodi...", xbmcgui.NOTIFICATION_INFO, 3000)
+        subprocess.Popen(["systemctl", "restart", "kodi"])
+    else:
+        xbmcgui.Dialog().notification("CoreELEC", "⛔ Restart przerwany", xbmcgui.NOTIFICATION_INFO, 3000)
+
+if __name__ == "__main__":
+    show_restart_dialog()
+
 
     def onControl(self, control):
         if control == self.button_cancel:

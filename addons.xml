@@ -726,7 +726,7 @@ provider-name="primaeval">
 </addon>
 <addon id="script.restartdialog"
        name="Restart Dialog"
-       version="1.0.0"
+       version="1.0.1"
        provider-name="ChatGPT"
        extension="xbmc.python.script"
        library="default.py">
