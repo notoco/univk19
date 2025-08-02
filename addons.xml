@@ -132,7 +132,7 @@ Många befintliga tillägg integreras redan med den här utanför lådan-tjänst
     </assets>
   </extension>
 </addon>
-<addon id="repository.notoco.univ19" name="Notoco Univ Repo" version="3.1" provider-name="notoco">
+<addon id="repository.notoco.univ19" name="Notoco Univ Repo" version="3.2" provider-name="notoco">
         <extension point="xbmc.addon.repository" name="Notoco Univ Repo">
             <dir minversion="18.9.0">
                 <info>https://github.com/notoco/univk19/raw/master/addons.xml</info>
