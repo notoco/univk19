@@ -76,21 +76,44 @@ if __name__ == '__main__':
         xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Addons.SetAddonEnabled","id":7,"params":{"addonid": "script.service.hyperion-control","enabled":true}}')
 
     elif arg == "restart":
+
         dialog = xbmcgui.Dialog()
+        monitor = xbmc.Monitor()
 
-        choice = dialog.yesno(
-            heading="Restart Kodi",
-            message="Kodi zostanie automatycznie zrestartowane za 30 sekund.",
-            yeslabel="Restartuj teraz",
-            nolabel="Przerwij",
-            autoclose=30000  # 30 sekund (30 000 ms)
-        )
+        # Pokazujemy okno dialogowe bez autoclose (bo sami kontrolujemy czas)
+        start = time.time()
+        timeout = 30
+        clicked = None  # None = brak wyboru, True = Restartuj teraz, False = Przerwij
 
-        # choice:
-        # True  -> kliknięto "Restartuj teraz" LUB minęło 30 sekund (autoclose traktuje to jak Yes)
-        # False -> kliknięto "Przerwij"
-        if choice:
-            control.send_notification("CoreELEC", "Restartuję Kodi...")
+        # Pokazujemy okno w osobnym wątku
+        def ask_user():
+            global clicked
+            choice = dialog.yesno(
+                heading="Restart Kodi",
+                message="Kodi zostanie automatycznie zrestartowane za 30 sekund.",
+                yeslabel="Restartuj teraz",
+                nolabel="Przerwij"
+            )
+            clicked = choice
+
+        import threading
+        t = threading.Thread(target=ask_user)
+        t.start()
+
+        # Czekamy do 30 sekund albo aż użytkownik kliknie
+        while time.time() - start < timeout and clicked is None:
+            if monitor.abortRequested():
+                break
+            time.sleep(0.5)
+
+        # Jeśli użytkownik NIC nie kliknął – traktujemy to jako autoclose
+        if clicked is None:
+            control.send_notification("CoreELEC", "Brak reakcji – automatyczny restart Kodi…")
             subprocess.Popen(["systemctl", "restart", "kodi"])
+
+        elif clicked:
+            control.send_notification("CoreELEC", "Restartuję Kodi…")
+            subprocess.Popen(["systemctl", "restart", "kodi"])
+
         else:
             control.send_notification("CoreELEC", "Restart przerwany")
