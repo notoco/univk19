@@ -1,0 +1,4 @@
+1.0.2
+- uwzględnienie zmian w serwisie www
+1.0.1
+- przystosowanie do obsługi infoTagVideo (od Kodi ver 20)
