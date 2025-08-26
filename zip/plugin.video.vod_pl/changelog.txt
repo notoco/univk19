@@ -1,0 +1,47 @@
+2.0.3
+- przystosowanie do odtwarzania strumieni od TVP
+- implementacja nowej konfiguracji drm (od ISA v.22.1.5)
+2.0.2
+- przystosowanie do obsługi infoTagVideo (od Kodi ver 20)
+- alfabetyczne sortowanie kanałów TV (opcja / Kodi tools)
+- sortowanie odcinków wg numemerów (warunek: lista zawiera komplet odcinków)
+2.0.1
+- poprawka odtwarzania obecnie trwającego programu (catchup/IPTV Simple Client)
+2.0.0
+- nowe api
+1.0.15
+- dodanie kanałów FAST
+1.0.14
+- nowa struktura listy M3U umożliwiająca korzystanie z archiwum TV z poziomu PVR IPTV Simple Client
+1.0.13
+- wydłużenie okresu archiwum TV
+1.0.12
+- dodanie kreatora listy M3U kanałów TV
+1.0.11
+- usunięcie TVN24 (audio) i TVN24BiS (audio)
+1.0.10
+- poprawka w wyświetlaniu listy materiałów (reklamy vod z player.pl)
+- zabezpieczenie przed błędami przy pobieraniu EPG
+- blokkada próby odtwarzania materiałów z kategorii "WKRÓTCE"
+1.0.9
+- poprawka odtwarzania VOD
+1.0.8
+- dodanie dwóch kanałów TV
+1.0.7
+- poprawki w wyświetlaniu wyników wyszukiwania (odcinki)
+1.0.6
+- dodanie treści z zakładki "Ostatnio dodane"
+- dodanie kanałów TV
+1.0.5
+- dostosowanie do ISA dla K21
+1.0.4
+- wybór dostawcy EPG
+- blokada próby odtwarzania niedostępnych materiałów
+1.0.3
+- uszczegółowienie daty dostępności
+- EPG
+- dodanie archiwum kanałów TV
+1.0.2
+- zmiana źródła daty publikacji i dostępności materiałów
+1.0.1
+- nowe sekcje: strona główna, wyszukiwarka, ulubione

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+	<category label="Ustawienia">	
+		<setting id="epCount" type="number" label="Ilość odcinków na stronie" default=25 />
+		<setting id="sortContent" type="select" label="Sortowanie treści" values="Najnowsze|Najstarsze|A-Z|Z-A" default="Najnowsze"/>
+		<setting id="epCount" type="number" label="Ilość odcinków na stronie" default=100/>
+		<setting id="cuOffset" type="slider" label="Różnica czasowa - catchup (Simple Client) [w godz.]" range="-10,1,10" default="0" option='int'/>
+	</category>
+	<category label="Ulubione">
+		<setting type="action" action="RunPlugin(plugin://plugin.video.vod_pl?mode=expFav)" label="Eksportuj ulubione" option="close"/>
+		<setting type="action" action="RunPlugin(plugin://plugin.video.vod_pl?mode=impFav)" label="Importuj ulubione" option="close"/>
+	</category>
+		<category label="Kreator listy m3u">
+        <setting label="Lista m3u (Nazwa Pliku oraz Katalog Docelowy)" type="lsep"/>
+        <setting label="Nazwa" type="text" id="fname" default="iptv.m3u"/>
+        <setting label="Katalog" type="folder" id="path_m3u" source="auto" option="writeable"/>
+        <setting type="action" action="RunPlugin(plugin://plugin.video.vod_pl?mode=m3u_gen)" label="Utwórz listę m3u" option="close"/>
+	</category>
+</settings>
