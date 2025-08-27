@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window xmlns:ff="ff" type="dialog" modality="modal">
+  <coordinates>
+    <top>0</top>
+    <left>0</left>
+    <width>1920</width>
+    <height>1080</height>
+  </coordinates>
+  <controls>
+    <control type="image">
+      <width>1920</width>
+      <height>1080</height>
+      <texture background="true" colordiffuse="BF000000">white.png</texture>
+    </control>
+    <control type="group">
+      <centertop>50%</centertop>
+      <centerleft>50%</centerleft>
+      <top/>
+      <left/>
+      <width>1620</width>
+      <height>800</height>
+
+      <control type="image">
+        <colordiffuse>D9202E39</colordiffuse>
+        <texture border="10">white.png</texture>
+      </control>
+
+      <control type="image">
+        <colordiffuse>D9141519</colordiffuse>
+        <texture border="10">white.png</texture>
+        <bordersize>4</bordersize>
+      </control>
+
+      <!-- QR-CODE -->
+      <control type="image">
+        <centertop>50%</centertop>
+        <top/>
+        <left>30</left>
+        <width>730</width>
+        <height>730</height>
+        <texture>$INFO[Window.Property(icon.path)]</texture>
+        <visible>!String.IsEmpty(Window.Property(icon.path))</visible>
+        <aspectratio>keep</aspectratio>
+      </control>
+
+      <!-- TITLE -->
+      <control type="label">
+        <left>790</left>
+        <right>20</right>
+        <width/>
+        <top>50</top>
+        <height>50</height>
+        <align>center</align>
+        <textcolor>BFFFFFFF</textcolor>
+        <!-- :translate=false: -->
+        <label>$INFO[Window.Property(title)]</label>
+      </control>
+
+      <!-- TEXT BLOCK -->
+      <control type="group">
+        <top>120</top>
+        <left>790</left>
+        <right>20</right>
+        <bottom>20</bottom>
+        <width/>
+        <height/>
+
+        <control type="label">
+          <top>50</top>
+          <right>10</right>
+          <width/>
+          <height>30</height>
+          <align>center</align>
+          <textcolor>BFFFFFFF</textcolor>
+          <label>$ADDON[plugin.video.fanfilm 30118]</label>
+        </control>
+        <control type="textbox">
+          <top>100</top>
+          <right>10</right>
+          <!-- <width>700</width> -->
+          <width/>
+          <height>80</height>
+          <align>center</align>
+          <textcolor>BFFFFFFF</textcolor>
+          <!-- :translate=false: -->
+          <label>$INFO[Window.Property(link)]</label>
+        </control>
+        <control type="label">
+          <top>200</top>
+          <right>10</right>
+          <!-- <width>700</width> -->
+          <width/>
+          <height>30</height>
+          <align>center</align>
+          <textcolor>BFFFFFFF</textcolor>
+          <label>$ADDON[plugin.video.fanfilm 30119]</label>
+        </control>
+
+        <!-- <control type="label"> -->
+        <!--   <top>250</top> -->
+        <!--   <width>700</width> -->
+        <!--   <height>30</height> -->
+        <!--   <align>center</align> -->
+        <!--   <font>font30_title</font> -->
+        <!--   <!-1- :translate=false: -1-> -->
+        <!--   <label>[B]$INFO[Window.Property(code)][/B]</label> -->
+        <!-- </control> -->
+        <control type="textbox">
+          <top>250</top>
+          <right>10</right>
+          <width/>
+          <height>280</height>
+          <align>center</align>
+          <font>font30_title</font>
+          <!-- :translate=false: -->
+          <label>[B]$INFO[Window.Property(code)][/B]</label>
+        </control>
+      </control>
+
+      <!-- BOTTOM BAR (progess, buttons) -->
+      <control type="group">
+        <left>790</left>
+        <right>20</right>
+        <bottom>30</bottom>
+        <width/>
+        <height>120</height>
+
+        <control type="image" id="21">
+          <colordiffuse>ff000000</colordiffuse>
+          <bottom>110</bottom>
+          <left>10</left>
+          <right>10</right>
+          <width/>
+          <height>5</height>
+          <texture>white.png</texture>
+          <visible>!String.IsEmpty(Window.Property(progress.enabled))</visible>
+        </control>
+
+        <control type="image" id="22">
+          <colordiffuse>ffa30707</colordiffuse>
+          <bottom>110</bottom>
+          <left>10</left>
+          <right>10</right>
+          <width>0</width>
+          <height>5</height>
+          <texture>white.png</texture>
+          <visible>!String.IsEmpty(Window.Property(progress.enabled))</visible>
+        </control>
+
+        <!-- OPEN LINK: BUTTON -->
+        <control type="button" id="32">
+          <left>20</left>
+          <bottom>10</bottom>
+          <width>350</width>
+          <height>70</height>
+          <texturenofocus border="6">dialogs/button-nofocus.png</texturenofocus>
+          <texturefocus border="6">dialogs/button-focus.png</texturefocus>
+          <colordiffuse/>
+          <align>center</align>
+          <font ff:style="normal">font13</font>
+          <textcolor>B3FFFFFF</textcolor>
+          <focusedcolor>ffffffff</focusedcolor>
+          <textwidth>330</textwidth>
+          <!-- :translate=false: -->
+          <label>$INFO[Window.Property(link.open)]</label>
+          <onright>31</onright>
+          <visible>!String.IsEmpty(Window.Property(link.open))</visible>
+        </control>
+
+        <!-- CANCEL: BUTTON -->
+        <control type="button" id="31">
+          <right>20</right>
+          <bottom>10</bottom>
+          <width>350</width>
+          <height>70</height>
+          <texturenofocus border="6">dialogs/button-nofocus.png</texturenofocus>
+          <texturefocus border="6">dialogs/button-focus.png</texturefocus>
+          <colordiffuse/>
+          <align>center</align>
+          <font ff:style="normal">font13</font>
+          <textcolor>B3FFFFFF</textcolor>
+          <focusedcolor>ffffffff</focusedcolor>
+          <textwidth>330</textwidth>
+          <label>$LOCALIZE[222]</label>
+          <onleft>32</onleft>
+        </control>
+
+      </control>
+
+    </control>
+  </controls>
+</window>

@@ -1,0 +1,860 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window xmlns:ff="ff" type="dialog" modality="modal">
+  <coordinates>
+    <top>0</top>
+    <left>0</left>
+    <width>1920</width>
+    <height>1080</height>
+  </coordinates>
+
+  <!-- <defaultcontrol>5008</defaultcontrol> -->
+  <!-- <menucontrol>5009</menucontrol> -->
+
+  <controls>
+    <control type="image">
+      <width>1920</width>
+      <height>1080</height>
+      <texture border="10" background="true" colordiffuse="99000000">white.png</texture>
+    </control>
+
+    <!-- Main window -->
+    <control type="group">
+      <centertop>50%</centertop>
+      <centerleft>50%</centerleft>
+      <top/>
+      <bottom/>
+      <left/>
+      <right/>
+      <width>1620</width>
+      <height>940</height>
+
+      <!-- Main window border -->
+      <control type="image">
+        <colordiffuse>D9202E39</colordiffuse>
+        <texture border="10">white.png</texture>
+      </control>
+
+      <!-- Main window background -->
+      <control type="image">
+        <colordiffuse>D9141519</colordiffuse>
+        <texture border="10">white.png</texture>
+        <bordersize>4</bordersize>
+      </control>
+
+      <!--  ===========  Header  ===========  -->
+      <control type="group" id="101">
+        <top>0</top>
+        <left>0</left>
+        <right>0</right>
+        <width/>
+        <height>80</height>
+
+        <!-- Title -->
+        <control type="label">
+          <top>20</top>
+          <left>20</left>
+          <right>20</right>
+          <width/>
+          <height>60</height>
+          <align>center</align>
+          <textcolor>BFFFFFFF</textcolor>
+          <!-- <label>Add $INFO[Window.Property(item_count)] items</label> -->
+          <!-- :translate=false: -->
+          <label>$INFO[Window.Property(window_title)]</label>
+          <font ff:style="heading">font40_title</font>
+        </control>
+
+        <!-- Separator -->
+        <control type="image">
+          <colordiffuse>D9202E39</colordiffuse>
+          <texture border="1">white.png</texture>
+          <height>4</height>
+          <top>80</top>
+        </control>
+
+        <!-- Title -->
+        <control type="label" id="104">
+          <top>90</top>
+          <left>20</left>
+          <right>20</right>
+          <width/>
+          <height>40</height>
+          <align>center</align>
+          <textcolor>BFFFFFFF</textcolor>
+          <!-- <label>[COLOR FFFF6666]1 kolekcja[/COLOR], 5 filmów, 3 seriale, 2 sezony, 12 odcinków, [COLOR FFFF6666]4 osoby[/COLOR], [COLOR 99999999]0 list[/COLOR]</label> -->
+          <!-- :translate=false: -->
+          <label>$INFO[Window.Property(type_label)]</label>
+          <font ff:style="normal">font13</font>
+        </control>
+
+        <!-- Media Type hotizontal icon bar -->
+        <control type="group" id="105">
+          <top>90</top>
+          <left>0</left>
+          <right>0</right>
+          <height>32</height>
+          <!-- <visible>false</visible> -->
+
+          <!-- collections -->
+          <control type="image" id="200">  <!-- icon -->
+            <colordiffuse>$INFO[Window.Property(type.collection.color)]</colordiffuse>
+            <texture border="1">icons/collection.32.png</texture>
+            <width>32</width>
+            <height>32</height>
+            <left>128</left>
+            <top>2</top>
+            <!-- <visible>false</visible> -->
+          </control>
+          <control type="label" id="201">  <!-- count label -->
+            <top>0</top>
+            <left>160</left>
+            <width>64</width>
+            <height>40</height>
+            <align>left</align>
+            <textcolor>BFFFFFFF</textcolor>
+            <!-- :translate=false: -->
+            <label>$INFO[Window.Property(type.collection.count)]</label>
+            <font ff:style="normal">font13</font>
+          </control>
+
+          <!-- movies -->
+          <control type="image" id="202">  <!-- icon -->
+            <colordiffuse>$INFO[Window.Property(type.movie.color)]</colordiffuse>
+            <texture border="1">icons/movie.32.png</texture>
+            <width>32</width>
+            <height>32</height>
+            <left>256</left>
+            <top>2</top>
+          </control>
+          <control type="label" id="203">  <!-- count label -->
+            <top>0</top>
+            <left>288</left>
+            <width>64</width>
+            <height>40</height>
+            <align>left</align>
+            <textcolor>BFFFFFFF</textcolor>
+            <!-- :translate=false: -->
+            <label>$INFO[Window.Property(type.movie.count)]</label>
+            <font ff:style="normal">font13</font>
+          </control>
+
+          <!-- shows -->
+          <control type="image" id="204">  <!-- icon -->
+            <colordiffuse>$INFO[Window.Property(type.show.color)]</colordiffuse>
+            <texture border="1">icons/tv.32.png</texture>
+            <width>32</width>
+            <height>32</height>
+            <left>384</left>
+            <top>2</top>
+          </control>
+          <control type="label" id="205">  <!-- count label -->
+            <top>0</top>
+            <left>416</left>
+            <width>64</width>
+            <height>40</height>
+            <align>left</align>
+            <textcolor>BFFFFFFF</textcolor>
+            <!-- :translate=false: -->
+            <label>$INFO[Window.Property(type.show.count)]</label>
+            <font ff:style="normal">font13</font>
+          </control>
+
+          <!-- seasons -->
+          <control type="image" id="206">  <!-- icon -->
+            <colordiffuse>$INFO[Window.Property(type.season.color)]</colordiffuse>
+            <texture border="1">icons/season.32.png</texture>
+            <width>32</width>
+            <height>32</height>
+            <left>512</left>
+            <top>2</top>
+          </control>
+          <control type="label" id="207">  <!-- count label -->
+            <top>0</top>
+            <left>544</left>
+            <width>64</width>
+            <height>40</height>
+            <align>left</align>
+            <textcolor>BFFFFFFF</textcolor>
+            <!-- :translate=false: -->
+            <label>$INFO[Window.Property(type.season.count)]</label>
+            <font ff:style="normal">font13</font>
+          </control>
+
+          <!-- episodes -->
+          <control type="image" id="208">  <!-- icon -->
+            <!-- <colordiffuse/> -->
+            <colordiffuse>$INFO[Window.Property(type.episode.color)]</colordiffuse>
+            <texture border="1">icons/episode.32.png</texture>
+            <width>32</width>
+            <height>32</height>
+            <left>640</left>
+            <top>2</top>
+          </control>
+          <control type="label" id="209">  <!-- count label -->
+            <top>0</top>
+            <left>672</left>
+            <width>64</width>
+            <height>40</height>
+            <align>left</align>
+            <textcolor>BFFFFFFF</textcolor>
+            <!-- :translate=false: -->
+            <label>$INFO[Window.Property(type.episode.count)]</label>
+            <font ff:style="normal">font13</font>
+          </control>
+
+          <!-- persons -->
+          <control type="image" id="210">  <!-- icon -->
+            <!-- <colordiffuse/> -->
+            <colordiffuse>$INFO[Window.Property(type.person.color)]</colordiffuse>
+            <texture border="1">icons/person.32.png</texture>
+            <width>32</width>
+            <height>32</height>
+            <left>768</left>
+            <top>2</top>
+          </control>
+          <control type="label" id="211">  <!-- count label -->
+            <top>0</top>
+            <left>800</left>
+            <width>64</width>
+            <height>40</height>
+            <align>left</align>
+            <textcolor>BFFFFFFF</textcolor>
+            <!-- :translate=false: -->
+            <label>$INFO[Window.Property(type.person.count)]</label>
+            <font ff:style="normal">font13</font>
+          </control>
+
+          <!-- lists -->
+          <control type="image" id="212">  <!-- icon -->
+            <!-- <colordiffuse/> -->
+            <colordiffuse>$INFO[Window.Property(type.list.color)]</colordiffuse>
+            <texture border="1">icons/list.32.png</texture>
+            <width>32</width>
+            <height>32</height>
+            <left>896</left>
+            <top>2</top>
+          </control>
+          <control type="label" id="213">  <!-- count label -->
+            <top>0</top>
+            <left>928</left>
+            <width>64</width>
+            <height>40</height>
+            <align>left</align>
+            <textcolor>BFFFFFFF</textcolor>
+            <!-- :translate=false: -->
+            <label>$INFO[Window.Property(type.list.count)]</label>
+            <font ff:style="normal">font13</font>
+          </control>
+
+        </control>
+
+        <!-- Separator -->
+        <control type="image">
+          <colordiffuse>D9202E39</colordiffuse>
+          <texture border="1">white.png</texture>
+          <height>4</height>
+          <top>130</top>
+        </control>
+
+      </control>  <!-- header -->
+
+      <!-- Content -->
+      <control type="group" id="201">
+        <top>140</top>
+        <bottom>5</bottom>
+        <left>5</left>
+        <right>5</right>
+        <width/>
+        <height/>
+
+
+        <!--  ===========  Lists (central panel)  ===========  -->
+        <control type="group" id="300">
+          <top>20</top>
+          <bottom>20</bottom>
+          <left>400</left>
+          <width>800</width>
+          <height/>
+
+          <control type="image">
+            <!-- <colordiffuse>66336699</colordiffuse> -->
+            <colordiffuse>ff1d2f42</colordiffuse>
+            <texture border="10">dialogs/service-lists-border.png</texture>
+            <bordersize>0</bordersize>
+          </control>
+
+          <control id="223" type="fixedlist">
+          <!-- <control id="223" type="list"> -->
+            <left>20</left>
+            <right>20</right>
+            <top>20</top>
+            <bottom>20</bottom>
+            <width/>
+            <height/>
+            <description>Service's lists</description>
+            <orientation>vertical</orientation>
+            <visible>true</visible>
+            <movement>6</movement>
+            <focusposition>0</focusposition>
+            <!-- <onright>5005</onright> -->
+            <!-- <onleft>5011</onleft> -->
+            <onleft>222</onleft>
+            <onright>400</onright>
+
+            <itemlayout height="102">
+              <!-- <control type="image"><colordiffuse>99ff9900</colordiffuse><texture border="1">white.png</texture></control> -->
+              <!-- single list item, no indent -->
+              <control type="image">
+                <top>-1</top>
+                <bottom/>
+                <left>100</left>
+                <right>260</right>
+                <height>3</height>
+                <width/>
+                <colordiffuse>99979744</colordiffuse>
+                <texture border="0">dialogs/hline6.png</texture>
+                <bordersize>0</bordersize>
+                <visible>String.IsEqual(ListItem.Property(separator.above),true)</visible>
+              </control>
+              <control type="group">
+                <top>10</top>
+                <bottom>10</bottom>
+                <!-- <left>$INFO[ListItem.Property(item.geom.left)]</left> -->
+                <left>0</left>
+                <right>0</right>
+                <width/>
+                <height/>
+                <control type="image">
+                  <colordiffuse>ff273f58</colordiffuse>
+                  <texture border="10">dialogs/service-lists-border.png</texture>
+                  <bordersize>0</bordersize>
+                </control>
+                <control type="image">
+                  <width>80</width>
+                  <height>80</height>
+                  <top/>
+                  <bottom/>
+                  <left>20</left>
+                  <right/>
+                  <centertop>50%</centertop>
+                  <colordiffuse>99ffffff</colordiffuse>
+                  <texture>$INFO[ListItem.Icon]</texture>
+                  <bordersize>4</bordersize>
+                </control>
+                <control type="label">
+                  <top>0</top>
+                  <bottom>0</bottom>
+                  <left>110</left>
+                  <right/>
+                  <width>350</width>
+                  <height/>
+                  <aligny>center</aligny>
+                  <align>left</align>
+                  <textcolor>B3FFFFFF</textcolor>
+                  <!-- :translate=false: -->
+                  <label>$INFO[ListItem.Label]</label>
+                  <font ff:style="normal">font13</font>
+                </control>
+                <!-- <visible>String.IsEmpty(ListItem.Property(item.indent))</visible> -->
+                <visible>Integer.IsEqual(ListItem.Property(item.indent), 0)</visible>
+              </control>
+              <!-- single list item, indent: 1 or more -->
+              <control type="group">
+                <top>10</top>
+                <bottom>10</bottom>
+                <left>80</left>
+                <right>0</right>
+                <width/>
+                <height/>
+                <control type="image">
+                  <colordiffuse>ff273f58</colordiffuse>
+                  <texture border="10">dialogs/service-lists-border.png</texture>
+                  <bordersize>0</bordersize>
+                </control>
+                <control type="image">
+                  <width>80</width>
+                  <height>80</height>
+                  <top/>
+                  <bottom/>
+                  <left>20</left>
+                  <right/>
+                  <centertop>50%</centertop>
+                  <colordiffuse>99ffffff</colordiffuse>
+                  <texture>$INFO[ListItem.Icon]</texture>
+                  <bordersize>4</bordersize>
+                </control>
+                <control type="label">
+                  <top>0</top>
+                  <left>110</left>
+                  <width>350</width>
+                  <height>80</height>
+                  <aligny>center</aligny>
+                  <align>left</align>
+                  <textcolor>B3FFFFFF</textcolor>
+                  <!-- :translate=false: -->
+                  <label>$INFO[ListItem.Label]</label>
+                  <font ff:style="normal">font13</font>
+                </control>
+                <visible>Integer.IsGreaterOrEqual(ListItem.Property(item.indent), 1)</visible>
+              </control>
+              <!-- indent label for indent 1 (empty) or more -->
+              <control type="label">
+                <top>0</top>
+                <bottom>0</bottom>
+                <left>5</left>
+                <width>75</width>
+                <height/>
+                <aligny>center</aligny>
+                <align>left</align>
+                <textcolor>B3FFFFFF</textcolor>
+                <!-- :translate=false: -->
+                <label>[B]$INFO[ListItem.Property(item.indent.label)][/B]</label>
+                <visible>!String.IsEmpty(ListItem.Property(item.indent))</visible>
+              </control>
+              <!-- list types icon box -->
+              <control type="group">
+                <top>0</top>
+                <bottom/>
+                <right>15</right>
+                <left/>
+                <height>40</height>
+                <width>215</width>
+                <control type="image">
+                  <colordiffuse>ff5d6f82</colordiffuse>
+                  <texture border="10">dialogs/service-lists-border.png</texture>
+                  <bordersize>0</bordersize>
+                </control>
+                <!-- accept collection icon -->
+                <control type="image">
+                  <colordiffuse>$INFO[ListItem.Property(type.collection.color)]</colordiffuse>
+                  <texture>icons/collection.32.png</texture>
+                  <width>32</width><height>32</height>
+                  <left>5</left><right/>
+                  <centertop>50%</centertop><top/><bottom/>
+                </control>
+                <!-- accept movie icon -->
+                <control type="image">
+                  <colordiffuse>$INFO[ListItem.Property(type.movie.color)]</colordiffuse>
+                  <texture>icons/movie.32.png</texture>
+                  <width>32</width><height>32</height>
+                  <left>40</left><right/>
+                  <centertop>50%</centertop><top/><bottom/>
+                </control>
+                <!-- accept show icon -->
+                <control type="image">
+                  <colordiffuse>$INFO[ListItem.Property(type.show.color)]</colordiffuse>
+                  <texture>icons/tv.32.png</texture>
+                  <width>32</width><height>32</height>
+                  <left>75</left><right/>
+                  <centertop>50%</centertop><top/><bottom/>
+                </control>
+                <!-- accept season icon -->
+                <control type="image">
+                  <colordiffuse>$INFO[ListItem.Property(type.season.color)]</colordiffuse>
+                  <texture>icons/season.32.png</texture>
+                  <width>32</width><height>32</height>
+                  <left>110</left><right/>
+                  <centertop>50%</centertop><top/><bottom/>
+                </control>
+                <!-- accept episode icon -->
+                <control type="image">
+                  <colordiffuse>$INFO[ListItem.Property(type.episode.color)]</colordiffuse>
+                  <texture>icons/episode.32.png</texture>
+                  <width>32</width><height>32</height>
+                  <left>145</left><right/>
+                  <centertop>50%</centertop><top/><bottom/>
+                </control>
+                <!-- accept person icon -->
+                <control type="image">
+                  <colordiffuse>$INFO[ListItem.Property(type.person.color)]</colordiffuse>
+                  <texture>icons/person.32.png</texture>
+                  <width>32</width><height>32</height>
+                  <left>180</left><right/>
+                  <centertop>50%</centertop><top/><bottom/>
+                </control>
+              </control>
+            </itemlayout>
+
+            <focusedlayout height="102">
+              <!-- <control type="image"><colordiffuse>999900ff</colordiffuse><texture border="1">white.png</texture></control> -->
+              <!-- single selected list item, no indent -->
+              <control type="image">
+                <top>-1</top>
+                <bottom/>
+                <left>100</left>
+                <right>260</right>
+                <height>3</height>
+                <width/>
+                <colordiffuse>99979744</colordiffuse>
+                <texture border="0">dialogs/hline6.png</texture>
+                <bordersize>0</bordersize>
+                <visible>String.IsEqual(ListItem.Property(separator.above),true)</visible>
+              </control>
+              <control type="group">
+                <top>10</top>
+                <bottom>10</bottom>
+                <left>0</left>
+                <right>0</right>
+                <width/>
+                <height/>
+                <control type="image">
+                  <colordiffuse>ff446e99</colordiffuse>
+                  <texture border="10">dialogs/service-lists-border.png</texture>
+                  <bordersize>0</bordersize>
+                  <visible>Control.HasFocus(223)</visible>
+                </control>
+                <control type="image">
+                  <colordiffuse>ff304e6c</colordiffuse>
+                  <texture border="10">dialogs/service-lists-border.png</texture>
+                  <bordersize>0</bordersize>
+                  <visible>!Control.HasFocus(223)</visible>
+                </control>
+                <control type="image">
+                  <width>80</width>
+                  <height>80</height>
+                  <top/>
+                  <bottom/>
+                  <left>20</left>
+                  <right/>
+                  <centertop>50%</centertop>
+                  <colordiffuse>99ffffff</colordiffuse>
+                  <texture>$INFO[ListItem.Icon]</texture>
+                  <bordersize>4</bordersize>
+                </control>
+                <control type="label">
+                  <top>0</top>
+                  <left>110</left>
+                  <width>350</width>
+                  <height>80</height>
+                  <aligny>center</aligny>
+                  <align>left</align>
+                  <textcolor>B3FFFFFF</textcolor>
+                  <!-- :translate=false: -->
+                  <label>[B]$INFO[ListItem.Label][/B]</label>
+                  <font ff:style="normal">font13</font>
+                </control>
+                <visible>Integer.IsEqual(ListItem.Property(item.indent), 0)</visible>
+              </control>
+              <!-- single selected list item, indent: 1 or more -->
+              <control type="group">
+                <top>10</top>
+                <bottom>10</bottom>
+                <left>80</left>
+                <right>0</right>
+                <width/>
+                <height/>
+                <control type="image">
+                  <colordiffuse>ff446e99</colordiffuse>
+                  <texture border="10">dialogs/service-lists-border.png</texture>
+                  <bordersize>0</bordersize>
+                  <visible>Control.HasFocus(223)</visible>
+                </control>
+                <control type="image">
+                  <colordiffuse>ff335373</colordiffuse>
+                  <texture border="10">dialogs/service-lists-border.png</texture>
+                  <bordersize>0</bordersize>
+                  <visible>!Control.HasFocus(223)</visible>
+                </control>
+                <control type="image">
+                  <width>80</width>
+                  <height>80</height>
+                  <top/>
+                  <bottom/>
+                  <left>20</left>
+                  <right/>
+                  <centertop>50%</centertop>
+                  <colordiffuse>99ffffff</colordiffuse>
+                  <texture>$INFO[ListItem.Icon]</texture>
+                  <bordersize>4</bordersize>
+                </control>
+                <control type="label">
+                  <top>0</top>
+                  <left>110</left>
+                  <width>350</width>
+                  <height>80</height>
+                  <aligny>center</aligny>
+                  <align>left</align>
+                  <textcolor>B3FFFFFF</textcolor>
+                  <!-- :translate=false: -->
+                  <label>[B]$INFO[ListItem.Label][/B]</label>
+                  <font ff:style="normal">font13</font>
+                </control>
+                <!-- <visible>Integer.IsEqual(ListItem.Property(item.indent), 1)</visible> -->
+                <visible>Integer.IsGreaterOrEqual(ListItem.Property(item.indent), 1)</visible>
+                <!-- <visible>!String.IsEmpty(ListItem.Property(item.indent))</visible> -->
+              </control>
+              <!-- indent label for indent 1 (empty) or more -->
+              <control type="label">
+                <top>0</top>
+                <bottom>0</bottom>
+                <left>5</left>
+                <width>75</width>
+                <height/>
+                <aligny>center</aligny>
+                <align>left</align>
+                <textcolor>B3FFFFFF</textcolor>
+                <!-- :translate=false: -->
+                <label>[B]$INFO[ListItem.Property(item.indent.label)][/B]</label>
+                <visible>!String.IsEmpty(ListItem.Property(item.indent))</visible>
+              </control>
+              <!-- list types icon box -->
+              <control type="group">
+                <top>0</top>
+                <bottom/>
+                <right>15</right>
+                <left/>
+                <height>40</height>
+                <width>215</width>
+                <control type="image">
+                  <colordiffuse>ff788797</colordiffuse>
+                  <texture border="10">dialogs/service-lists-border.png</texture>
+                  <bordersize>0</bordersize>
+                </control>
+                <!-- accept collection icon -->
+                <control type="image">
+                  <colordiffuse>$INFO[ListItem.Property(type.collection.color)]</colordiffuse>
+                  <texture>icons/collection.32.png</texture>
+                  <width>32</width><height>32</height>
+                  <left>5</left><right/>
+                  <centertop>50%</centertop><top/><bottom/>
+                </control>
+                <!-- accept movie icon -->
+                <control type="image">
+                  <colordiffuse>$INFO[ListItem.Property(type.movie.color)]</colordiffuse>
+                  <texture>icons/movie.32.png</texture>
+                  <width>32</width><height>32</height>
+                  <left>40</left><right/>
+                  <centertop>50%</centertop><top/><bottom/>
+                </control>
+                <!-- accept show icon -->
+                <control type="image">
+                  <colordiffuse>$INFO[ListItem.Property(type.show.color)]</colordiffuse>
+                  <texture>icons/tv.32.png</texture>
+                  <width>32</width><height>32</height>
+                  <left>75</left><right/>
+                  <centertop>50%</centertop><top/><bottom/>
+                </control>
+                <!-- accept season icon -->
+                <control type="image">
+                  <colordiffuse>$INFO[ListItem.Property(type.season.color)]</colordiffuse>
+                  <texture>icons/season.32.png</texture>
+                  <width>32</width><height>32</height>
+                  <left>110</left><right/>
+                  <centertop>50%</centertop><top/><bottom/>
+                </control>
+                <!-- accept episode icon -->
+                <control type="image">
+                  <colordiffuse>$INFO[ListItem.Property(type.episode.color)]</colordiffuse>
+                  <texture>icons/episode.32.png</texture>
+                  <width>32</width><height>32</height>
+                  <left>145</left><right/>
+                  <centertop>50%</centertop><top/><bottom/>
+                </control>
+                <!-- accept person icon -->
+                <control type="image">
+                  <colordiffuse>$INFO[ListItem.Property(type.person.color)]</colordiffuse>
+                  <texture>icons/person.32.png</texture>
+                  <width>32</width><height>32</height>
+                  <left>180</left><right/>
+                  <centertop>50%</centertop><top/><bottom/>
+                </control>
+              </control>
+            </focusedlayout>
+          </control>
+
+        </control>
+
+
+        <!--  ===========  Services (left panel)  ===========  -->
+        <control type="group" id="300">
+          <top>35</top>
+          <bottom>35</bottom>
+          <left>20</left>
+          <width>384</width>  <!-- +4px for overlap left edge of lists container -->
+          <height/>
+
+          <!-- <control type="image"><colordiffuse>99ff9900</colordiffuse><texture border="1">white.png</texture></control> -->
+
+          <control id="222" type="fixedlist">
+            <!-- <width>400</width> -->
+            <width/>
+            <height/>
+            <description>Service list</description>
+            <orientation>vertical</orientation>
+            <!-- <visible>true</visible> -->
+            <movement>5</movement>
+            <focusposition>0</focusposition>
+            <!-- <onright>5005</onright> -->
+            <!-- <onleft>5011</onleft> -->
+            <onright>223</onright>
+
+            <itemlayout height="120">
+              <!-- <control type="image"><colordiffuse>99ff9900</colordiffuse><texture border="1">white.png</texture></control> -->
+              <control type="image">
+                <colordiffuse>cc1d2f42</colordiffuse>
+                <texture border="26">dialogs/service-inactive-frame.png</texture>
+                <bordersize>0</bordersize>
+              </control>
+              <control type="label">
+                <top>0</top>
+                <left>0</left>
+                <width>250</width>
+                <height>120</height>
+                <aligny>center</aligny>
+                <align>center</align>
+                <textcolor>B3FFFFFF</textcolor>
+                <!-- :translate=false: -->
+                <label>$INFO[ListItem.Label]</label>
+                <font ff:style="normal">font13</font>
+              </control>
+            </itemlayout>
+
+            <focusedlayout height="121">
+              <!-- <control type="image"><colordiffuse>999900ff</colordiffuse><texture border="1">white.png</texture></control> -->
+              <control type="image">
+                <colordiffuse>ff335373</colordiffuse>
+                <texture border="26">dialogs/service-active-border.png</texture>
+                <bordersize>0</bordersize>
+                <visible>Control.HasFocus(222)</visible>
+              </control>
+              <control type="image">
+                <colordiffuse>ff1d2f42</colordiffuse>
+                <texture border="26">dialogs/service-active-border.png</texture>
+                <bordersize>0</bordersize>
+                <visible>!Control.HasFocus(222)</visible>
+              </control>
+              <control type="label">
+                <top>0</top>
+                <left>0</left>
+                <width>250</width>
+                <height>120</height>
+                <aligny>center</aligny>
+                <align>center</align>
+                <textcolor>B3FFFFFF</textcolor>
+                <!-- :translate=false: -->
+                <label>[B]$INFO[ListItem.Label][/B]</label>
+                <font ff:style="normal">font13</font>
+              </control>
+              <!-- next two images are frame on focused active item -->
+              <control type="image">
+                <colordiffuse>992e4b68</colordiffuse>
+                <texture border="26">dialogs/service-inactive-frame.png</texture>
+                <bordersize>1,2,12,2</bordersize>
+                <visible>Control.HasFocus(222)</visible>
+              </control>
+              <control type="image">
+                <colordiffuse>ff2e4b68</colordiffuse>
+                <texture border="26">dialogs/service-inactive-frame.png</texture>
+                <bordersize>0,0,12,0</bordersize>
+                <visible>Control.HasFocus(222)</visible>
+              </control>
+              <control type="image">
+                <colordiffuse>992e4b68</colordiffuse>
+                <texture border="26">dialogs/service-inactive-frame.png</texture>
+                <bordersize>0,0,12,0</bordersize>
+                <visible>!Control.HasFocus(222)</visible>
+              </control>
+            </focusedlayout>
+          </control>
+
+        </control>
+
+        <!-- <control type="image"><colordiffuse>99ff9900</colordiffuse><texture border="1">white.png</texture></control> -->
+
+
+        <!--  ===========  Buttons (right panel)  ===========  -->
+        <control type="group" id="400">
+          <right>20</right>
+          <bottom>10</bottom>
+
+          <!-- Debug button -->
+          <!-- <control type="button" id="39"> -->
+          <!--   <right>20</right> -->
+          <!--   <bottom>210</bottom> -->
+          <!--   <width>350</width> -->
+          <!--   <height>70</height> -->
+          <!--   <texturenofocus border="6">dialogs/button-nofocus.png</texturenofocus> -->
+          <!--   <texturefocus border="6">dialogs/button-focus.png</texturefocus> -->
+          <!--   <colordiffuse/> -->
+          <!--   <align>center</align> -->
+          <!--   <font>font10</font> -->
+          <!--   <textcolor>B3FFFFFF</textcolor> -->
+          <!--   <focusedcolor>ffffffff</focusedcolor> -->
+          <!--   <onleft>222</onleft> -->
+          <!--   <ondown>33</ondown> -->
+          <!--   <label>Dialog</label> -->
+          <!-- </control> -->
+
+          <!-- New list button -->
+          <control type="button" id="33">
+            <right>0</right>
+            <left/>
+            <top/>
+            <bottom>100</bottom>
+            <width>350</width>
+            <height>70</height>
+            <texturenofocus border="6">dialogs/button-nofocus.png</texturenofocus>
+            <texturefocus border="6">dialogs/button-focus.png</texturefocus>
+            <colordiffuse/>
+            <align>center</align>
+            <aligny>center</aligny>
+            <textcolor>B3FFFFFF</textcolor>
+            <focusedcolor>ffffffff</focusedcolor>
+            <onleft>300</onleft>
+            <onup>34</onup>
+            <ondown>31</ondown>
+            <label>$ADDON[plugin.video.fanfilm 30399]</label>
+            <font ff:style="normal">font13</font>
+          </control>
+
+          <!-- Limit items button -->
+          <control type="button" id="34">
+            <right>0</right>
+            <left/>
+            <top/>
+            <bottom>200</bottom>
+            <width>350</width>
+            <height>70</height>
+            <texturenofocus border="6">dialogs/button-nofocus.png</texturenofocus>
+            <texturefocus border="6">dialogs/button-focus.png</texturefocus>
+            <colordiffuse/>
+            <align>center</align>
+            <aligny>center</aligny>
+            <textcolor>B3FFFFFF</textcolor>
+            <focusedcolor>ffffffff</focusedcolor>
+            <onleft>300</onleft>
+            <!-- <onup>39</onup> -->
+            <ondown>33</ondown>
+            <label>$ADDON[plugin.video.fanfilm 30492]</label>
+            <font ff:style="normal">font13</font>
+          </control>
+
+          <!-- Button: CANCEL -->
+          <control type="button" id="31">
+            <right>0</right>
+            <left/>
+            <top/>
+            <bottom>0</bottom>
+            <width>350</width>
+            <height>70</height>
+            <texturenofocus border="6">dialogs/button-nofocus.png</texturenofocus>
+            <texturefocus border="6">dialogs/button-focus.png</texturefocus>
+            <colordiffuse/>
+            <align>center</align>
+            <aligny>center</aligny>
+            <textcolor>B3FFFFFF</textcolor>
+            <focusedcolor>ffffffff</focusedcolor>
+            <onleft>300</onleft>
+            <onup>33</onup>
+            <label>$LOCALIZE[222]</label>
+            <font ff:style="normal">font13</font>
+          </control>
+
+        </control>  <!-- buttons -->
+      </control>  <!-- content -->
+    </control>  <!-- main window -->
+
+  </controls>
+</window><!--
+ vim:sw=2:ts=2:sts=2:
+-->

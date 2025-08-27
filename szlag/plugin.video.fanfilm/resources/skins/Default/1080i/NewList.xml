@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window xmlns:ff="ff" type="dialog" modality="modal">
+  <coordinates>
+    <top>0</top>
+    <left>0</left>
+    <width>1920</width>
+    <height>1080</height>
+  </coordinates>
+
+  <ff:defines>
+    <switch name="ptaszki" toggle-order="off,on">
+      <!-- <background/> -->
+      <icon>
+        <texture colordiffuse="ffffffff" border="64,0,8,0">dialogs/checkbox.{state}.f{focused}.b{border}.h64.png</texture>
+        <texture colordiffuse="ff66ccff" focused="1"/>
+        <texture colordiffuse="cc999999" enabled="0"/>
+      </icon>
+      <state value="0" name="off"/>
+      <state value="1" name="on"/>
+    </switch>
+  </ff:defines>
+
+  <defaultcontrol>5008</defaultcontrol>
+  <!-- <menucontrol>5009</menucontrol> -->
+
+  <controls>
+    <control type="image">
+      <width>1920</width>
+      <height>1080</height>
+      <texture border="10" background="true" colordiffuse="99000000">white.png</texture>
+      <!-- <texture border="10" background="true" colordiffuse="FF000000">white.png</texture> -->
+    </control>
+    <!-- <control type="image"> -->
+    <!--   <width>1920</width> -->
+    <!--   <height>1080</height> -->
+    <!--   <texture background="true" colordiffuse="33FFFFFF">$INFO[Window.Property(item.art.fanart)]</texture> -->
+    <!-- </control> -->
+
+    <!-- Main window -->
+    <control type="group">
+      <centertop>50%</centertop>
+      <centerleft>50%</centerleft>
+      <top/>
+      <bottom/>
+      <left/>
+      <right/>
+      <width>1280</width>
+      <height>800</height>
+
+      <!-- Main window border -->
+      <control type="image">
+        <colordiffuse>D9202E39</colordiffuse>
+        <texture border="10">white.png</texture>
+      </control>
+
+      <!-- Main window background -->
+      <control type="image">
+        <colordiffuse>D9141519</colordiffuse>
+        <texture border="10">white.png</texture>
+        <bordersize>4</bordersize>
+      </control>
+
+      <!--  ===========  Header  ===========  -->
+      <control type="group" id="101">
+        <top>0</top>
+        <left>0</left>
+        <right>0</right>
+        <width/>
+        <height>80</height>
+
+        <!-- Title -->
+        <control type="label">
+          <top>20</top>
+          <left>20</left>
+          <right>20</right>
+          <width/>
+          <height>60</height>
+          <align>center</align>
+          <textcolor>BFFFFFFF</textcolor>
+          <label>$ADDON[plugin.video.fanfilm 30400]</label>
+          <font ff:style="heading">font40_title</font>
+        </control>
+
+      </control>  <!-- Header -->
+
+      <!--  ===========  Content (name and options)  ===========  -->
+      <control type="group" id="102">
+        <top>120</top>
+        <bottom>50</bottom>
+        <left>50</left>
+        <right>50</right>
+        <width/>
+        <height/>
+
+        <!-- Name label -->
+        <control type="label">
+          <top>0</top>
+          <height>60</height>
+          <align>left</align>
+          <textcolor>FFF0F0F0</textcolor>
+          <label>$ADDON[plugin.video.fanfilm 30395]</label>
+          <font ff:style="normal">font13</font>
+        </control>
+
+        <!-- Name edit -->
+        <control type="edit" id="201" format="integer">
+          <left>0</left>
+          <right>0</right>
+          <top>60</top>
+          <height>70</height>
+          <width/>
+          <align>left</align>
+          <aligny>center</aligny>
+          <texturefocus border="10" colordiffuse="FF1A232A">white.png</texturefocus>
+          <texturenofocus/>
+          <focusedcolor/>
+          <!-- <label>List name</label> -->
+          <font ff:style="normal">font13</font>
+          <textoffsetx>25</textoffsetx>
+          <hinttext>$ADDON[plugin.video.fanfilm 30409]</hinttext>
+          <textcolor>$INFO[Window.Property(edit_control.textcolor)]</textcolor>
+          <disabledcolor>40FFFFFF</disabledcolor>
+          <invalidcolor>FFFF0000</invalidcolor>
+          <onup>103</onup>
+          <ondown>302</ondown>
+          <!-- <enable>false</enable> -->
+        </control>
+
+        <!-- List type label -->
+        <control type="label">
+          <top>160</top>
+          <height>60</height>
+          <align>left</align>
+          <textcolor>FFF0F0F0</textcolor>
+          <label>$ADDON[plugin.video.fanfilm 30402]</label>
+          <font ff:style="normal">font13</font>
+        </control>
+
+        <!-- List type chekbox: movie -->
+        <ff:switch id="302" ff:switch="ptaszki">
+          <top>210</top>
+          <height>64</height>
+          <left>30</left>
+          <right>55%</right>
+          <label>$ADDON[plugin.video.fanfilm 30403]</label>
+          <onup>201</onup>
+          <ondown>301</ondown>
+          <!-- <onleft>303</onleft> -->
+          <onright>303</onright>
+          <focusedcolor/>
+          <disabledcolor>40FFFFFF</disabledcolor>
+          <textcolor>BFFFFFFF</textcolor>
+          <!-- <enable>false</enable> -->
+          <!-- <enable>String.IsEqual(Window.Property(type.movie.enabled),true)</enable> -->
+        </ff:switch>
+
+        <!-- List type chekbox: collection -->
+        <ff:switch id="301" ff:switch="ptaszki">
+          <top>290</top>
+          <height>64</height>
+          <left>30</left>
+          <right>55%</right>
+          <label>$ADDON[plugin.video.fanfilm 32032]</label>
+          <onup>302</onup>
+          <ondown>306</ondown>
+          <!-- <onleft>304</onleft> -->
+          <onright>304</onright>
+          <focusedcolor/>
+          <disabledcolor>40FFFFFF</disabledcolor>
+          <textcolor>BFFFFFFF</textcolor>
+          <!-- <enable>String.IsEqual(Window.Property(type.collection.enabled),true)</enable> -->
+        </ff:switch>
+
+        <!-- List type chekbox: person -->
+        <ff:switch id="306" ff:switch="ptaszki">
+          <top>370</top>
+          <height>64</height>
+          <left>30</left>
+          <right>55%</right>
+          <label>$ADDON[plugin.video.fanfilm 30404]</label>
+          <onup>301</onup>
+          <ondown>103</ondown>
+          <!-- <onleft>305</onleft> -->
+          <onright>305</onright>
+          <focusedcolor/>
+          <disabledcolor>40FFFFFF</disabledcolor>
+          <textcolor>BFFFFFFF</textcolor>
+          <!-- <enable>String.IsEqual(Window.Property(type.person.enabled),true)</enable> -->
+        </ff:switch>
+
+        <!-- List type chekbox: show -->
+        <ff:switch id="303" ff:switch="ptaszki">
+          <top>210</top>
+          <height>64</height>
+          <left>50%</left>
+          <right>30</right>
+          <label>$ADDON[plugin.video.fanfilm 30405]</label>
+          <onup>201</onup>
+          <ondown>304</ondown>
+          <onleft>302</onleft>
+          <focusedcolor/>
+          <disabledcolor>40FFFFFF</disabledcolor>
+          <textcolor>BFFFFFFF</textcolor>
+          <!-- <onright>302</onright> -->
+          <!-- <enable>String.IsEqual(Window.Property(type.show.enabled),true)</enable> -->
+          <!-- <visible>String.IsEqual(ListItem.Property(separator.above),true)</visible> -->
+        </ff:switch>
+
+        <!-- List type chekbox: season -->
+        <ff:switch id="304" ff:switch="ptaszki">
+          <top>290</top>
+          <height>64</height>
+          <left>50%</left>
+          <right>30</right>
+          <label>$ADDON[plugin.video.fanfilm 30406]</label>
+          <onup>303</onup>
+          <ondown>305</ondown>
+          <onleft>301</onleft>
+          <focusedcolor/>
+          <disabledcolor>40FFFFFF</disabledcolor>
+          <textcolor>BFFFFFFF</textcolor>
+          <!-- <onright>301</onright> -->
+          <!-- <enable>String.IsEqual(Window.Property(type.season.enabled),true)</enable> -->
+        </ff:switch>
+
+        <!-- List type chekbox: episode -->
+        <ff:switch id="305" ff:switch="ptaszki">
+          <top>370</top>
+          <height>64</height>
+          <left>50%</left>
+          <right>30</right>
+          <label>$ADDON[plugin.video.fanfilm 30407]</label>
+          <onup>304</onup>
+          <ondown>103</ondown>
+          <onleft>306</onleft>
+          <focusedcolor/>
+          <disabledcolor>40FFFFFF</disabledcolor>
+          <textcolor>BFFFFFFF</textcolor>
+          <!-- <onright>306</onright> -->
+        </ff:switch>
+
+      </control>  <!-- Content -->
+
+      <!--  ===========  Footer with buttons  ===========  -->
+      <control type="group" id="103">
+        <left>50</left>
+        <right>50</right>
+        <bottom>30</bottom>
+
+        <!-- Button: OK -->
+        <control type="button" id="32">
+          <right>400</right>
+          <left/>
+          <top/>
+          <bottom>0</bottom>
+          <width>350</width>
+          <height>70</height>
+          <texturenofocus border="6">dialogs/button-nofocus.png</texturenofocus>
+          <texturefocus border="6">dialogs/button-focus.png</texturefocus>
+          <colordiffuse/>
+          <align>center</align>
+          <aligny>center</aligny>
+          <textcolor>B3FFFFFF</textcolor>
+          <focusedcolor>ffffffff</focusedcolor>
+          <disabledcolor>40FFFFFF</disabledcolor>
+          <onup>305</onup>
+          <ondown>201</ondown>
+          <onleft>350</onleft>
+          <onright>31</onright>
+          <label>$LOCALIZE[186]</label>  <!-- See: lib.windows.dialogs.KnownButton -->
+          <font ff:style="normal">font13</font>
+        </control>
+
+        <!--Button:  CANCEL -->
+        <control type="button" id="31">
+          <right>0</right>
+          <left/>
+          <top/>
+          <bottom>0</bottom>
+          <width>350</width>
+          <height>70</height>
+          <texturenofocus border="6">dialogs/button-nofocus.png</texturenofocus>
+          <texturefocus border="6">dialogs/button-focus.png</texturefocus>
+          <colordiffuse/>
+          <align>center</align>
+          <aligny>center</aligny>
+          <textcolor>B3FFFFFF</textcolor>
+          <focusedcolor>ffffffff</focusedcolor>
+          <onup>305</onup>
+          <ondown>201</ondown>
+          <onleft>32</onleft>
+          <label>$LOCALIZE[222]</label>  <!-- See: lib.windows.dialogs.KnownButton -->
+          <font ff:style="normal">font13</font>
+        </control>
+
+        <!-- List type chekbox: episode -->
+        <ff:switch id="350" ff:switch="ptaszki">
+          <top/>
+          <bottom>3</bottom>
+          <height>64</height>
+          <left>0</left>
+          <width>380</width>
+          <label>$ADDON[plugin.video.fanfilm 30408]</label>
+          <onup>306</onup>
+          <ondown>201</ondown>
+          <onright>32</onright>
+          <focusedcolor/>
+          <disabledcolor>40FFFFFF</disabledcolor>
+          <textcolor>BFFFFFFF</textcolor>
+          <!-- <onright>306</onright> -->
+        </ff:switch>
+
+      </control>  <!-- Footer with buttons -->
+
+        <!-- XXX  test wajchhy  -->
+        <!-- <control type="image" id="1901"> -->
+        <!--   <top/> -->
+        <!--   <bottom>20</bottom> -->
+        <!--   <height>200</height> -->
+        <!--   <left>50</left> -->
+        <!--   <right>50%</right> -->
+        <!--   <texture border="195,0,50,0"/> -->
+        <!-- </control> -->
+        <!-- <control type="button" id="901" ff:switch="wajcha"> -->
+        <!--   <bottom>20</bottom> -->
+        <!--   <height>200</height> -->
+        <!--   <left>50</left> -->
+        <!--   <right>50%</right> -->
+        <!--   <label>Przełącznik</label> -->
+        <!--   <align>left</align> -->
+        <!--   <aligny>center</aligny> -->
+        <!--   <textoffsetx>220</textoffsetx> -->
+        <!--   <textwidth>500</textwidth> -->
+        <!--   <colordiffuse>ffffffff</colordiffuse> -->
+        <!--   <texturenofocus/> -->
+        <!--   <texturefocus/> -->
+        <!--   <onup>306</onup> -->
+        <!--   <ondown>201</ondown> -->
+        <!--   <onright>32</onright> -->
+        <!--   <enable>true</enable> -->
+        <!--   <!-1- <visible>String.IsEqual(ListItem.Property(separator.above),true)</visible> -1-> -->
+        <!-- </control> -->
+
+    </control>  <!-- main window -->
+
+  </controls>
+</window><!--
+ vim:sw=2:ts=2:sts=2:
+-->

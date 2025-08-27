@@ -1,0 +1,2627 @@
+#
+msgid ""
+msgstr ""
+
+msgctxt "#32001"
+msgid "Movies"
+msgstr ""
+
+msgctxt "#32002"
+msgid "TV Shows"
+msgstr ""
+
+msgctxt "#32003"
+msgid "My Movies"
+msgstr ""
+
+msgctxt "#32004"
+msgid "My TV Shows"
+msgstr ""
+
+msgctxt "#32005"
+msgid "New Movies"
+msgstr ""
+
+msgctxt "#32007"
+msgid "Today in TV"
+msgstr ""
+
+msgctxt "#32008"
+msgid "Tools"
+msgstr ""
+
+msgctxt "#32010"
+msgid "Search"
+msgstr ""
+
+msgctxt "#32011"
+msgid "Genres"
+msgstr ""
+
+msgctxt "#32012"
+msgid "Year"
+msgstr ""
+
+msgctxt "#32014"
+msgid "Languages"
+msgstr ""
+
+msgctxt "#32016"
+msgid "Networks"
+msgstr ""
+
+msgctxt "#32017"
+msgid "People Watching"
+msgstr ""
+
+msgctxt "#32018"
+msgid "Most Popular"
+msgstr ""
+
+msgctxt "#32019"
+msgid "Top rated"
+msgstr ""
+
+msgctxt "#32020"
+msgid "Box Office"
+msgstr ""
+
+msgctxt "#32022"
+msgid "In Theaters"
+msgstr ""
+
+msgctxt "#32024"
+msgid "Airing today"
+msgstr ""
+
+msgctxt "#32026"
+msgid "New TV Shows"
+msgstr ""
+
+msgctxt "#32032"
+msgid "Collection"
+msgstr ""
+
+msgctxt "#32033"
+msgid "Watchlist"
+msgstr ""
+
+msgctxt "#32034"
+msgid "IMDb"
+msgstr ""
+
+msgctxt "#32035"
+msgid "Featured"
+msgstr ""
+
+msgctxt "#32036"
+msgid "History"
+msgstr ""
+
+msgctxt "#32037"
+msgid "Progress"
+msgstr ""
+
+msgctxt "#32053"
+msgid "[I]Next page[/I]"
+msgstr ""
+
+msgctxt "#32056"
+msgid "Are you sure?"
+msgstr ""
+
+msgctxt "#32303"
+msgid "User"
+msgstr ""
+
+msgctxt "#32306"
+msgid "Authorization..."
+msgstr ""
+
+msgctxt "#32310"
+msgid "General"
+msgstr ""
+
+msgctxt "#32312"
+msgid "Max Search Time"
+msgstr ""
+
+msgctxt "#32316"
+msgid "Info Language"
+msgstr ""
+
+msgctxt "#32317"
+msgid "Flatten TV seasons"
+msgstr ""
+
+msgctxt "#32318"
+msgid "Enable Fanart"
+msgstr ""
+
+msgctxt "#32331"
+msgid "Default action"
+msgstr ""
+
+msgctxt "#32332"
+msgid "Dialog"
+msgstr ""
+
+msgctxt "#32334"
+msgid "Auto Play"
+msgstr ""
+
+msgctxt "#32335"
+msgid "Progress Dialog"
+msgstr ""
+
+msgctxt "#32336"
+msgid "Foreground"
+msgstr ""
+
+msgctxt "#32337"
+msgid "Background"
+msgstr ""
+
+msgctxt "#32338"
+msgid "File Filters"
+msgstr ""
+
+msgctxt "#32339"
+msgid "Max quality"
+msgstr ""
+
+msgctxt "#32340"
+msgid "SD Hosters in Auto Play"
+msgstr ""
+
+msgctxt "#32347"
+msgid "Downloads"
+msgstr ""
+
+msgctxt "#32348"
+msgid "Enable downloads"
+msgstr ""
+
+msgctxt "#32349"
+msgid "Movies"
+msgstr ""
+
+msgctxt "#32350"
+msgid "TV"
+msgstr ""
+
+msgctxt "#32360"
+msgid "Providers Language"
+msgstr ""
+
+msgctxt "#32363"
+msgid "HEVC"
+msgstr ""
+
+msgctxt "#32401"
+msgid "No stream available"
+msgstr ""
+
+msgctxt "#32406"
+msgid "Remaining providers: %s"
+msgstr ""
+
+msgctxt "#32523"
+msgid "Include kodi library in sources"
+msgstr ""
+
+msgctxt "#32539"
+msgid "Configure settings for dependent add-ons."
+msgstr ""
+
+msgctxt "#32540"
+msgid "URLResolver Settings"
+msgstr ""
+
+msgctxt "#32541"
+msgid "Library"
+msgstr ""
+
+msgctxt "#32543"
+msgid "Movies"
+msgstr ""
+
+msgctxt "#32544"
+msgid "TV Shows"
+msgstr ""
+
+msgctxt "#32545"
+msgid "Auto update TV Shows"
+msgstr ""
+
+msgctxt "#32546"
+msgid "Show notifications during update"
+msgstr ""
+
+msgctxt "#32547"
+msgid "Update library after adding content"
+msgstr ""
+
+msgctxt "#32548"
+msgid "Avoid creating duplicate content"
+msgstr ""
+
+msgctxt "#32565"
+msgid "Include episodes with unknown air dates"
+msgstr ""
+
+msgctxt "#32566"
+msgid "Delay since episode premiere (days)"
+msgstr ""
+
+msgctxt "#32570"
+msgid "Show unaired seasons/episodes"
+msgstr ""
+
+msgctxt "#32571"
+msgid "Hide movies in cinema"
+msgstr ""
+
+msgctxt "#32572"
+msgid "Default Source Identifier Color"
+msgstr ""
+
+msgctxt "#32587"
+msgid "Show Extra Source Info"
+msgstr ""
+
+msgctxt "#32588"
+msgid "Premium Source Identifier Color"
+msgstr ""
+
+msgctxt "#32589"
+msgid "Jellyfin"
+msgstr ""
+
+msgctxt "#32601"
+msgid "Total"
+msgstr ""
+
+msgctxt "#32603"
+msgid "New search..."
+msgstr ""
+
+msgctxt "#32606"
+msgid "Prem"
+msgstr ""
+
+msgctxt "#32607"
+msgid "Normal"
+msgstr ""
+
+msgctxt "#32613"
+msgid "Update the library every ... hours/s"
+msgstr ""
+
+msgctxt "#32614"
+msgid "Debrid sources only"
+msgstr ""
+
+msgctxt "#32616"
+msgid "Sync library on Kodi Start"
+msgstr ""
+
+msgctxt "#32618"
+msgid "Pre-emptive Termination"
+msgstr ""
+
+msgctxt "#32619"
+msgid "Pre-emptive Limit"
+msgstr ""
+
+msgctxt "#32622"
+msgid "Sort by"
+msgstr ""
+
+msgctxt "#32630"
+msgid "Popular by decades"
+msgstr ""
+
+msgctxt "#32631"
+msgid "Awards"
+msgstr ""
+
+msgctxt "#32634"
+msgid "Months to Rollback for Hide in Cinema"
+msgstr ""
+
+msgctxt "#32641"
+msgid "Logged as"
+msgstr ""
+
+msgctxt "#32643"
+msgid "Providers"
+msgstr ""
+
+msgctxt "#32644"
+msgid "Hostings"
+msgstr ""
+
+msgctxt "#32645"
+msgid "Size"
+msgstr ""
+
+msgctxt "#32646"
+msgid "Custom"
+msgstr ""
+
+msgctxt "#32647"
+msgid "Login"
+msgstr ""
+
+msgctxt "#32648"
+msgid "Password"
+msgstr ""
+
+msgctxt "#32649"
+msgid "Highlight color"
+msgstr ""
+
+msgctxt "#32650"
+msgid "Highlight color for account items"
+msgstr ""
+
+msgctxt "#32651"
+msgid "E-mail (login)"
+msgstr ""
+
+msgctxt "#32653"
+msgid "Location"
+msgstr ""
+
+msgctxt "#32654"
+msgid "Fanart User Key"
+msgstr ""
+
+msgctxt "#32655"
+msgid "Fanart Dev Key"
+msgstr ""
+
+msgctxt "#32656"
+msgid "TMDb API Key"
+msgstr ""
+
+msgctxt "#32657"
+msgid "Trakt Token"
+msgstr ""
+
+msgctxt "#32658"
+msgid "Trakt Refresh"
+msgstr ""
+
+msgctxt "#32659"
+msgid "User"
+msgstr ""
+
+msgctxt "#32660"
+msgid "Token"
+msgstr ""
+
+msgctxt "#32661"
+msgid "Addon version"
+msgstr ""
+
+msgctxt "#32662"
+msgid "Auto playback of the next episode"
+msgstr ""
+
+msgctxt "#32663"
+msgid "service"
+msgstr ""
+
+msgctxt "#32664"
+msgid "language"
+msgstr ""
+
+msgctxt "#32665"
+msgid "quality"
+msgstr ""
+
+msgctxt "#32666"
+msgid "size"
+msgstr ""
+
+msgctxt "#32667"
+msgid "none"
+msgstr ""
+
+msgctxt "#32668"
+msgid "Automatically select the next items from the playback list"
+msgstr ""
+
+msgctxt "#32669"
+msgid "Additional"
+msgstr ""
+
+msgctxt "#32670"
+msgid "Show source file name"
+msgstr ""
+
+msgctxt "#32672"
+msgid "Movies and TV Series"
+msgstr ""
+
+msgctxt "#32673"
+msgid "AUTO"
+msgstr ""
+
+msgctxt "#32674"
+msgid "Bulgarian"
+msgstr ""
+
+msgctxt "#32675"
+msgid "Chinese"
+msgstr ""
+
+msgctxt "#32676"
+msgid "Croatian"
+msgstr ""
+
+msgctxt "#32677"
+msgid "Czech"
+msgstr ""
+
+msgctxt "#32678"
+msgid "Danish"
+msgstr ""
+
+msgctxt "#32679"
+msgid "Dutch"
+msgstr ""
+
+msgctxt "#32680"
+msgid "English"
+msgstr ""
+
+msgctxt "#32681"
+msgid "Finnish"
+msgstr ""
+
+msgctxt "#32682"
+msgid "French"
+msgstr ""
+
+msgctxt "#32683"
+msgid "German"
+msgstr ""
+
+msgctxt "#32684"
+msgid "Greek"
+msgstr ""
+
+msgctxt "#32685"
+msgid "Hebrew"
+msgstr ""
+
+msgctxt "#32686"
+msgid "Hungarian"
+msgstr ""
+
+msgctxt "#32687"
+msgid "Italian"
+msgstr ""
+
+msgctxt "#32688"
+msgid "Japanese"
+msgstr ""
+
+msgctxt "#32689"
+msgid "Korean"
+msgstr ""
+
+msgctxt "#32690"
+msgid "Norwegian"
+msgstr ""
+
+msgctxt "#32691"
+msgid "Polish"
+msgstr ""
+
+msgctxt "#32692"
+msgid "Portuguese"
+msgstr ""
+
+msgctxt "#32693"
+msgid "Romanian"
+msgstr ""
+
+msgctxt "#32694"
+msgid "Russian"
+msgstr ""
+
+msgctxt "#32695"
+msgid "Serbian"
+msgstr ""
+
+msgctxt "#32696"
+msgid "Slovak"
+msgstr ""
+
+msgctxt "#32697"
+msgid "Slovenian"
+msgstr ""
+
+msgctxt "#32698"
+msgid "Spanish"
+msgstr ""
+
+msgctxt "#32699"
+msgid "Swedish"
+msgstr ""
+
+msgctxt "#32700"
+msgid "Thai"
+msgstr ""
+
+msgctxt "#32701"
+msgid "Turkish"
+msgstr ""
+
+msgctxt "#32702"
+msgid "Ukrainian"
+msgstr ""
+
+msgctxt "#32703"
+msgid "Graphics"
+msgstr ""
+
+msgctxt "#32704"
+msgid "Graphics quality"
+msgstr ""
+
+msgctxt "#32705"
+msgid "low"
+msgstr ""
+
+msgctxt "#32706"
+msgid "high"
+msgstr ""
+
+msgctxt "#32707"
+msgid "highest"
+msgstr ""
+
+msgctxt "#32708"
+msgid "Graphics depends on"
+msgstr ""
+
+msgctxt "#32709"
+msgid "rating"
+msgstr ""
+
+msgctxt "#32710"
+msgid "number of votes"
+msgstr ""
+
+msgctxt "#32712"
+msgid "Movies"
+msgstr ""
+
+msgctxt "#32713"
+msgid "Sort by:"
+msgstr ""
+
+msgctxt "#32714"
+msgid "Popularity"
+msgstr ""
+
+msgctxt "#32715"
+msgid "Year"
+msgstr ""
+
+msgctxt "#32716"
+msgid "Minimum number of user votes"
+msgstr ""
+
+msgctxt "#32717"
+msgid "TV Shows"
+msgstr ""
+
+msgctxt "#32718"
+msgid "Source search"
+msgstr ""
+
+msgctxt "#32720"
+msgid "Sources cache"
+msgstr ""
+
+msgctxt "#32721"
+msgid "4K"
+msgstr ""
+
+msgctxt "#32722"
+msgid "1440"
+msgstr ""
+
+msgctxt "#32723"
+msgid "1080"
+msgstr ""
+
+msgctxt "#32724"
+msgid "720"
+msgstr ""
+
+msgctxt "#32725"
+msgid "480"
+msgstr ""
+
+msgctxt "#32727"
+msgid "Reject titles that are completely unmatched"
+msgstr ""
+
+msgctxt "#32729"
+msgid "Reject CAM quality"
+msgstr ""
+
+msgctxt "#32730"
+msgid "Source services PL"
+msgstr ""
+
+msgctxt "#32731"
+msgid "AnimeZone"
+msgstr ""
+
+msgctxt "#32732"
+msgid "CDAPL"
+msgstr ""
+
+msgctxt "#32734"
+msgid "List order"
+msgstr ""
+
+msgctxt "#32735"
+msgid "Ekinotv"
+msgstr ""
+
+msgctxt "#32736"
+msgid "Filman"
+msgstr ""
+
+msgctxt "#32740"
+msgid "Iitv"
+msgstr ""
+
+msgctxt "#32741"
+msgid "Nopremium"
+msgstr ""
+
+msgctxt "#32742"
+msgid "Automatic use of transfer"
+msgstr ""
+
+msgctxt "#32743"
+msgid "Plex"
+msgstr ""
+
+msgctxt "#32744"
+msgid "Rapideo"
+msgstr ""
+
+msgctxt "#32745"
+msgid "Shinden"
+msgstr ""
+
+msgctxt "#32746"
+msgid "Twojlimit"
+msgstr ""
+
+msgctxt "#32747"
+msgid "TB7"
+msgstr ""
+
+msgctxt "#32749"
+msgid "Use Notes on the account to store information about downloaded files"
+msgstr ""
+
+msgctxt "#32750"
+msgid "XT7"
+msgstr ""
+
+msgctxt "#32751"
+msgid "Use Notes on the account to store information about downloaded files"
+msgstr ""
+
+msgctxt "#32753"
+msgid "Zaluknij.cc"
+msgstr ""
+
+msgctxt "#32755"
+msgid "[External] (required separate addons)"
+msgstr ""
+
+msgctxt "#32756"
+msgid "AU"
+msgstr ""
+
+msgctxt "#32757"
+msgid "DE"
+msgstr ""
+
+msgctxt "#32758"
+msgid "GB"
+msgstr ""
+
+msgctxt "#32759"
+msgid "PL"
+msgstr ""
+
+msgctxt "#32760"
+msgid "US"
+msgstr ""
+
+msgctxt "#32761"
+msgid "Source services EN"
+msgstr ""
+
+msgctxt "#32762"
+msgid "123moviesfree_live"
+msgstr ""
+
+msgctxt "#32763"
+msgid "doomovies"
+msgstr ""
+
+msgctxt "#32764"
+msgid "iwaatch"
+msgstr ""
+
+msgctxt "#32765"
+msgid "streamlord"
+msgstr ""
+
+msgctxt "#32766"
+msgid "vidsrc"
+msgstr ""
+
+msgctxt "#32767"
+msgid "watchseriess_io"
+msgstr ""
+
+msgctxt "#32768"
+msgid "Include in sources"
+msgstr ""
+
+msgctxt "#32769"
+msgid "Accounts, keys and authorizations"
+msgstr ""
+
+msgctxt "#32770"
+msgid "Change default keys"
+msgstr ""
+
+msgctxt "#32771"
+msgid "Trakt.tv"
+msgstr ""
+
+msgctxt "#32775"
+msgid "TMDB"
+msgstr ""
+
+msgctxt "#32776"
+msgid "Authorize account"
+msgstr ""
+
+msgctxt "#32777"
+msgid "Revoke authorization"
+msgstr ""
+
+msgctxt "#32778"
+msgid "Maintenance"
+msgstr ""
+
+msgctxt "#32779"
+msgid "Install Kodi Logfile Uploader"
+msgstr ""
+
+msgctxt "#32780"
+msgid "Generate logs"
+msgstr ""
+
+msgctxt "#32781"
+msgid "Cache settings"
+msgstr ""
+
+msgctxt "#32783"
+msgid "Cache list"
+msgstr ""
+
+msgctxt "#32784"
+msgid "Automatic cache cleaning"
+msgstr ""
+
+msgctxt "#32787"
+msgid "Clean media cache older than ... days"
+msgstr ""
+
+msgctxt "#32797"
+msgid "Required login information (data is not encrypted)"
+msgstr ""
+
+msgctxt "#32800"
+msgid "Changing values may cause addon to not work properly"
+msgstr ""
+
+msgctxt "#32801"
+msgid "Currently watching"
+msgstr ""
+
+msgctxt "#32802"
+msgid "TMDB Watchlist"
+msgstr ""
+
+msgctxt "#32803"
+msgid "TMDB Favorites"
+msgstr ""
+
+msgctxt "#32805"
+msgid "Episodes in progress"
+msgstr ""
+
+msgctxt "#32806"
+msgid "Settings"
+msgstr ""
+
+msgctxt "#32807"
+msgid "Download manager"
+msgstr ""
+
+msgctxt "#32809"
+msgid "criterion 1"
+msgstr ""
+
+msgctxt "#32810"
+msgid "criterion 2"
+msgstr ""
+
+msgctxt "#32811"
+msgid "criterion 3"
+msgstr ""
+
+msgctxt "#32812"
+msgid "criterion 4"
+msgstr ""
+
+msgctxt "#32814"
+msgid "Library collection update settings"
+msgstr ""
+
+msgctxt "#32816"
+msgid "Max number of python threads"
+msgstr ""
+
+msgctxt "#32818"
+msgid "TV Shows - Popular"
+msgstr ""
+
+msgctxt "#32819"
+msgid "Hide anime in popular"
+msgstr ""
+
+msgctxt "#32820"
+msgid "Hide old tv shows"
+msgstr ""
+
+msgctxt "#32821"
+msgid "Hide older than ... years"
+msgstr ""
+
+msgctxt "#32822"
+msgid "The last episode of which is older than ... years."
+msgstr ""
+
+msgctxt "#32823"
+msgid "Don't show sources with subtitles"
+msgstr ""
+
+msgctxt "#32825"
+msgid "Notepad on account"
+msgstr ""
+
+msgctxt "#32826"
+msgid "Data are not hashed in local database"
+msgstr ""
+
+msgctxt "#32827"
+msgid "addons for services are required to work"
+msgstr ""
+
+msgctxt "#32828"
+msgid "Trakt Last Activity"
+msgstr ""
+
+msgctxt "#32829"
+msgid "Never"
+msgstr ""
+
+msgctxt "#32830"
+msgid "If only one season"
+msgstr ""
+
+msgctxt "#32831"
+msgid "Always"
+msgstr ""
+
+msgctxt "#32832"
+msgid "Developer section"
+msgstr ""
+
+msgctxt "#32833"
+msgid "Show developer logs"
+msgstr ""
+
+msgctxt "#32834"
+msgid "No content to display"
+msgstr ""
+
+msgctxt "#30100"
+msgid "Empty Folder"
+msgstr ""
+
+msgctxt "#30101"
+msgid "All languages"
+msgstr ""
+
+msgctxt "#30103"
+msgid "All countries"
+msgstr ""
+
+msgctxt "#30104"
+msgid "Countries"
+msgstr ""
+
+msgctxt "#30105"
+msgid "[B]ColorPicker - choose your own color[/B]"
+msgstr ""
+
+msgctxt "#30106"
+msgid "[I]YOUR CHOICE[/I]"
+msgstr ""
+
+msgctxt "#30107"
+msgid "[I]SELECTED PALETTE[/I]"
+msgstr ""
+
+msgctxt "#30108"
+msgid "DEFAULT COLOR"
+msgstr ""
+
+msgctxt "#30109"
+msgid "OWN COLOR"
+msgstr ""
+
+msgctxt "#30110"
+msgid "CLOSE"
+msgstr ""
+
+msgctxt "#30111"
+msgid "Duration: [B]{duration}[/B] minute|||Duration: [B]{duration}[/B] minutes"
+msgstr ""
+
+msgctxt "#30112"
+msgid "End at: $INFO[Window.Property(item.endtime),[B],[/B]]"
+msgstr ""
+
+msgctxt "#30113"
+msgid "Source: $INFO[Container(5000).CurrentItem,[B],[/B]]$INFO[Container(5000).NumItems, / ,]"
+msgstr ""
+
+msgctxt "#30114"
+msgid "Rescan"
+msgstr ""
+
+msgctxt "#30115"
+msgid "Download"
+msgstr ""
+
+msgctxt "#30116"
+msgid "Buy it again"
+msgstr ""
+
+msgctxt "#30117"
+msgid "[B]Authorize Trakt[/B]"
+msgstr ""
+
+msgctxt "#30118"
+msgid "Open:"
+msgstr ""
+
+msgctxt "#30119"
+msgid "or scan QR code"
+msgstr ""
+
+msgctxt "#30120"
+msgid "Display style for season name"
+msgstr ""
+
+msgctxt "#30121"
+msgid "Limit of displayed actors in the information"
+msgstr ""
+
+msgctxt "#30122"
+msgid "Limits the number of displayed actors in the information. 0 = no limit"
+msgstr ""
+
+msgctxt "#30123"
+msgid "Enable library"
+msgstr ""
+
+msgctxt "#30124"
+msgid "Add to library"
+msgstr ""
+
+msgctxt "#30125"
+msgid "Go to page {page} / {total_pages}"
+msgstr ""
+
+msgctxt "#30126"
+msgid "Inorrect {} type {!r}"
+msgstr ""
+
+msgctxt "#30127"
+msgid "Nothing found"
+msgstr ""
+
+msgctxt "#30128"
+msgid "Mark as watched"
+msgstr ""
+
+msgctxt "#30129"
+msgid "Mark as unwatched"
+msgstr ""
+
+msgctxt "#30130"
+msgid "Movie Collection"
+msgstr ""
+
+msgctxt "#30131"
+msgid "Recommendations"
+msgstr ""
+
+msgctxt "#30132"
+msgid "Similar"
+msgstr ""
+
+msgctxt "#30133"
+msgid "Actors"
+msgstr ""
+
+msgctxt "#30134"
+msgid "Directors"
+msgstr ""
+
+msgctxt "#30135"
+msgid "Producers"
+msgstr ""
+
+msgctxt "#30136"
+msgid "Crew"
+msgstr ""
+
+msgctxt "#30137"
+msgid "Keywords"
+msgstr ""
+
+msgctxt "#30138"
+msgid "Companies"
+msgstr ""
+
+msgctxt "#30139"
+msgid "Year {year}"
+msgstr ""
+
+msgctxt "#30140"
+msgid "Decade {start}–{end}"
+msgstr ""
+
+msgctxt "#30141"
+msgid "All Genres"
+msgstr ""
+
+msgctxt "#30142"
+msgid "All Keywords"
+msgstr ""
+
+msgctxt "#30143"
+msgid "Error: {}"
+msgstr ""
+
+msgctxt "#30144"
+msgid "Likes"
+msgstr ""
+
+msgctxt "#30145"
+msgid "Collections"
+msgstr ""
+
+msgctxt "#30146"
+msgid "Favorites"
+msgstr ""
+
+msgctxt "#30147"
+msgid "Trending Lists"
+msgstr ""
+
+msgctxt "#30148"
+msgid "Popular Lists"
+msgstr ""
+
+msgctxt "#30149"
+msgid "My Lists"
+msgstr ""
+
+msgctxt "#30150"
+msgid "Mixed Collection"
+msgstr ""
+
+msgctxt "#30151"
+msgid "Movies Collection"
+msgstr ""
+
+msgctxt "#30152"
+msgid "TV Shows Collection"
+msgstr ""
+
+msgctxt "#30153"
+msgid "Mixed Recommendations"
+msgstr ""
+
+msgctxt "#30154"
+msgid "Movie Recommendations"
+msgstr ""
+
+msgctxt "#30155"
+msgid "TV Show Recommendations"
+msgstr ""
+
+msgctxt "#30156"
+msgid "Mixed Favorites"
+msgstr ""
+
+msgctxt "#30157"
+msgid "Favorite Movies"
+msgstr ""
+
+msgctxt "#30158"
+msgid "Favorite TV Shows"
+msgstr ""
+
+msgctxt "#30159"
+msgid "Mixed Watchlist"
+msgstr ""
+
+msgctxt "#30160"
+msgid "Watchlist Movies"
+msgstr ""
+
+msgctxt "#30161"
+msgid "Watchlist TV Shows"
+msgstr ""
+
+msgctxt "#30162"
+msgid "Details"
+msgstr ""
+
+msgctxt "#30164"
+msgid "My Trakt Lists"
+msgstr ""
+
+msgctxt "#30165"
+msgid "My TMDB Lists"
+msgstr ""
+
+msgctxt "#30166"
+msgid "Oscar Winner"
+msgstr ""
+
+msgctxt "#30167"
+msgid "Oscar Nominee"
+msgstr ""
+
+msgctxt "#30168"
+msgid "Oscar Best Picture Winner"
+msgstr ""
+
+msgctxt "#30169"
+msgid "Oscar Best Picture Nominee"
+msgstr ""
+
+msgctxt "#30170"
+msgid "Oscar Best Director Winner"
+msgstr ""
+
+msgctxt "#30171"
+msgid "Oscar Best Director Nominee"
+msgstr ""
+
+msgctxt "#30172"
+msgid "Razzie Winner"
+msgstr ""
+
+msgctxt "#30173"
+msgid "Razzie Nominee"
+msgstr ""
+
+msgctxt "#30174"
+msgid "Emmy Nominee"
+msgstr ""
+
+msgctxt "#30175"
+msgid "Persons"
+msgstr ""
+
+msgctxt "#30178"
+msgid "Director"
+msgstr ""
+
+msgctxt "#30179"
+msgid "Producer"
+msgstr ""
+
+msgctxt "#30180"
+msgid "Remove item"
+msgstr ""
+
+msgctxt "#30181"
+msgid "Delete history"
+msgstr ""
+
+msgctxt "#30182"
+msgid "Edit item"
+msgstr ""
+
+msgctxt "#30183"
+msgid "TMDB: Revoke authorization"
+msgstr ""
+
+msgctxt "#30184"
+msgid "TMDB: Authorize"
+msgstr ""
+
+msgctxt "#30185"
+msgid "TRAKT: Revoke authorization"
+msgstr ""
+
+msgctxt "#30186"
+msgid "TRAKT: Synchronize"
+msgstr ""
+
+msgctxt "#30187"
+msgid "TRAKT: Authorize"
+msgstr ""
+
+msgctxt "#30188"
+msgid "Authorization successful"
+msgstr ""
+
+msgctxt "#30189"
+msgid "[FanFilm] TMDB authorization"
+msgstr ""
+
+msgctxt "#30190"
+msgid "Authorization FAILED"
+msgstr ""
+
+msgctxt "#30191"
+msgid "Revoke authorization successful"
+msgstr ""
+
+msgctxt "#30192"
+msgid "[FanFilm] TMDB revoke authorization"
+msgstr ""
+
+msgctxt "#30193"
+msgid "Revoke authorization FAILED"
+msgstr ""
+
+msgctxt "#30194"
+msgid "[FanFilm] Trakt.tv authorization"
+msgstr ""
+
+msgctxt "#30195"
+msgid "[FanFilm] Trakt.tv revoke authorization"
+msgstr ""
+
+msgctxt "#30196"
+msgid "Synchronize successful"
+msgstr ""
+
+msgctxt "#30197"
+msgid "[FanFilm] Trakt.tv synchronize"
+msgstr ""
+
+msgctxt "#30198"
+msgid "Synchronize FAILED"
+msgstr ""
+
+msgctxt "#30199"
+msgid "Calendarium"
+msgstr ""
+
+msgctxt "#30200"
+msgid "sync in progress"
+msgstr ""
+
+msgctxt "#30211"
+msgid "Curiosity Stream"
+msgstr ""
+
+msgctxt "#30212"
+msgid "Requires addon Curiosity Stream"
+msgstr ""
+
+msgctxt "#30213"
+msgid "Disney+"
+msgstr ""
+
+msgctxt "#30214"
+msgid "Requires addon Disney+"
+msgstr ""
+
+msgctxt "#30215"
+msgid "Max"
+msgstr ""
+
+msgctxt "#30216"
+msgid "Requires addon HBOMax"
+msgstr ""
+
+msgctxt "#30217"
+msgid "Hulu"
+msgstr ""
+
+msgctxt "#30218"
+msgid "Requires addon Hulu"
+msgstr ""
+
+msgctxt "#30219"
+msgid "BBC iPlayer"
+msgstr ""
+
+msgctxt "#30220"
+msgid "Requires addon BBC iPlayer"
+msgstr ""
+
+msgctxt "#30221"
+msgid "Netflix"
+msgstr ""
+
+msgctxt "#30222"
+msgid "Requires addon Netflix"
+msgstr ""
+
+msgctxt "#30223"
+msgid "Paramount"
+msgstr ""
+
+msgctxt "#30224"
+msgid "Requires addon Paramount"
+msgstr ""
+
+msgctxt "#30225"
+msgid "Player.pl (by mbebe)"
+msgstr ""
+
+msgctxt "#30226"
+msgid "Requires addon Player.pl"
+msgstr ""
+
+msgctxt "#30229"
+msgid "Amazon Prime"
+msgstr ""
+
+msgctxt "#30230"
+msgid "Requires addon Amazon Prime"
+msgstr ""
+
+msgctxt "#30231"
+msgid "Skyshowtime"
+msgstr ""
+
+msgctxt "#30232"
+msgid "Requires addon Skyshowtime"
+msgstr ""
+
+msgctxt "#30235"
+msgid "Viaplay"
+msgstr ""
+
+msgctxt "#30236"
+msgid "Requires addon Viaplay"
+msgstr ""
+
+msgctxt "#30201"
+msgid "TRAKT Client key"
+msgstr ""
+
+msgctxt "#30202"
+msgid "TRAKT Secret client key"
+msgstr ""
+
+msgctxt "#30102"
+msgid "Scandinavian"
+msgstr ""
+
+msgctxt "#30203"
+msgid "Season 1"
+msgstr ""
+
+msgctxt "#30204"
+msgid "Season 1 - Title"
+msgstr ""
+
+msgctxt "#30205"
+msgid "1. Title"
+msgstr ""
+
+msgctxt "#30206"
+msgid "Try to reject sound recorded from cinema"
+msgstr ""
+
+msgctxt "#30208"
+msgid "also HDTS quality"
+msgstr ""
+
+msgctxt "#30209"
+msgid "Min quality"
+msgstr ""
+
+msgctxt "#30210"
+msgid "Max file size in GB"
+msgstr ""
+
+msgctxt "#30237"
+msgid "Min file size in GB"
+msgstr ""
+
+msgctxt "#30238"
+msgid "Name"
+msgstr ""
+
+msgctxt "#30239"
+msgid "[I]Previous page[/I]"
+msgstr ""
+
+msgctxt "#30240"
+msgid "Go to page {page}"
+msgstr ""
+
+msgctxt "#30241"
+msgid "First page"
+msgstr ""
+
+msgctxt "#30242"
+msgid "Jump to page..."
+msgstr ""
+
+msgctxt "#30243"
+msgid "Last page"
+msgstr ""
+
+msgctxt "#30244"
+msgid "Enter page number (1..{total_pages})"
+msgstr ""
+
+msgctxt "#30245"
+msgid "Allow HDR format"
+msgstr ""
+
+msgctxt "#30246"
+msgid "Allow 3D format"
+msgstr ""
+
+msgctxt "#30247"
+msgid "Allow AV1 codec"
+msgstr ""
+
+msgctxt "#30248"
+msgid "Allow DV format"
+msgstr ""
+
+msgctxt "#30249"
+msgid "Allow HEVC codec"
+msgstr ""
+
+msgctxt "#30250"
+msgid "No sources found"
+msgstr ""
+
+msgctxt "#32057"
+msgid "Process Complete"
+msgstr ""
+
+msgctxt "#30251"
+msgid "External services"
+msgstr ""
+
+msgctxt "#30252"
+msgid "Clear cached source list"
+msgstr ""
+
+msgctxt "#30253"
+msgid "Clear search history"
+msgstr ""
+
+msgctxt "#30254"
+msgid "Cache"
+msgstr ""
+
+msgctxt "#30255"
+msgid "Show service icon in sources window"
+msgstr ""
+
+msgctxt "#32839"
+msgid "Allowed soundtrack language"
+msgstr ""
+
+msgctxt "#32840"
+msgid "All"
+msgstr ""
+
+msgctxt "#32841"
+msgid "Only PL"
+msgstr ""
+
+msgctxt "#32842"
+msgid "PL + Multi"
+msgstr ""
+
+msgctxt "#32843"
+msgid "Only EN"
+msgstr ""
+
+msgctxt "#32844"
+msgid "EN + MULTI"
+msgstr ""
+
+msgctxt "#32845"
+msgid "Polish"
+msgstr ""
+
+msgctxt "#32846"
+msgid "English"
+msgstr ""
+
+msgctxt "#32847"
+msgid "Polish+English"
+msgstr ""
+
+msgctxt "#30207"
+msgid "Edit search"
+msgstr ""
+
+msgctxt "#30256"
+msgid "No sources found."
+msgstr ""
+
+msgctxt "#30257"
+msgid "Edit source search data"
+msgstr ""
+
+msgctxt "#30258"
+msgid "Title:"
+msgstr ""
+
+msgctxt "#30259"
+msgid "English Title:"
+msgstr ""
+
+msgctxt "#30260"
+msgid "Original Title:"
+msgstr ""
+
+msgctxt "#30261"
+msgid "Year:"
+msgstr ""
+
+msgctxt "#30262"
+msgid "Premiered:"
+msgstr ""
+
+msgctxt "#30263"
+msgid "TVShow:"
+msgstr ""
+
+msgctxt "#30264"
+msgid "Season:"
+msgstr ""
+
+msgctxt "#30265"
+msgid "Episode:"
+msgstr ""
+
+msgctxt "#30266"
+msgid "Scan"
+msgstr ""
+
+msgctxt "#30267"
+msgid "Providers"
+msgstr ""
+
+msgctxt "#30268"
+msgid "Run FanFilm on Kodi startup"
+msgstr ""
+
+msgctxt "#30269"
+msgid "Capture playback progress of entire library"
+msgstr ""
+
+msgctxt "#30270"
+msgid "Today"
+msgstr ""
+
+msgctxt "#30271"
+msgid "Tomorrow"
+msgstr ""
+
+msgctxt "#30272"
+msgid "Yesterday"
+msgstr ""
+
+msgctxt "#30273"
+msgid "Monday"
+msgstr ""
+
+msgctxt "#30274"
+msgid "Tuesday"
+msgstr ""
+
+msgctxt "#30275"
+msgid "Wednesday"
+msgstr ""
+
+msgctxt "#30276"
+msgid "Thursday"
+msgstr ""
+
+msgctxt "#30277"
+msgid "Friday"
+msgstr ""
+
+msgctxt "#30278"
+msgid "Saturday"
+msgstr ""
+
+msgctxt "#30279"
+msgid "Sunday"
+msgstr ""
+
+msgctxt "#30280"
+msgid "January"
+msgstr ""
+
+msgctxt "#30281"
+msgid "February"
+msgstr ""
+
+msgctxt "#30282"
+msgid "March"
+msgstr ""
+
+msgctxt "#30283"
+msgid "April"
+msgstr ""
+
+msgctxt "#30284"
+msgid "May"
+msgstr ""
+
+msgctxt "#30285"
+msgid "June"
+msgstr ""
+
+msgctxt "#30286"
+msgid "July"
+msgstr ""
+
+msgctxt "#30287"
+msgid "August"
+msgstr ""
+
+msgctxt "#30288"
+msgid "September"
+msgstr ""
+
+msgctxt "#30289"
+msgid "October"
+msgstr ""
+
+msgctxt "#30290"
+msgid "November"
+msgstr ""
+
+msgctxt "#30291"
+msgid "December"
+msgstr ""
+
+msgctxt "#30292"
+msgid "Last {weekday}"
+msgstr ""
+
+msgctxt "#30293"
+msgid "Videos"
+msgstr ""
+
+msgctxt "#30294"
+msgid "Zerion"
+msgstr ""
+
+msgctxt "#30295"
+msgid "{trailer.type} {trailer.lang}: {trailer.name} | Official"
+msgstr ""
+
+msgctxt "#30296"
+msgid "{trailer.type} {trailer.lang}: {trailer.name}"
+msgstr ""
+
+msgctxt "#30297"
+msgid "Cda.pl"
+msgstr ""
+
+msgctxt "#30298"
+msgid "Requires addon cda"
+msgstr ""
+
+msgctxt "#30299"
+msgid "Obejrzyj.to"
+msgstr ""
+
+msgctxt "#30300"
+msgid "Filmyonline.cc"
+msgstr ""
+
+msgctxt "#30301"
+msgid "Premium"
+msgstr ""
+
+msgctxt "#30228"
+msgid "Details"
+msgstr ""
+
+msgctxt "#30233"
+msgid "Custom search"
+msgstr ""
+
+msgctxt "#30234"
+msgid "Show progressbar in movies and tvshows"
+msgstr ""
+
+msgctxt "#30321"
+msgid "Adding to library..."
+msgstr ""
+
+msgctxt "#30322"
+msgid "Started"
+msgstr ""
+
+msgctxt "#30323"
+msgid "Finished"
+msgstr ""
+
+msgctxt "#30326"
+msgid "Use InputStream Adaptive to play m3u8 links"
+msgstr ""
+
+msgctxt "#30327"
+msgid "My Own Lists"
+msgstr ""
+
+msgctxt "#30328"
+msgid "My Persons"
+msgstr ""
+
+msgctxt "#30329"
+msgid "Favorite Persons"
+msgstr ""
+
+msgctxt "#30330"
+msgid "Favorite Collections"
+msgstr ""
+
+msgctxt "#30331"
+msgid "{n} title|||{n} titles"
+msgstr ""
+
+msgctxt "#30332"
+msgid "Previous page"
+msgstr ""
+
+msgctxt "#30333"
+msgid "Show sync notification"
+msgstr ""
+
+msgctxt "#30337"
+msgid "Selected link is not working"
+msgstr ""
+
+msgctxt "#32049"
+msgid "Viewtypes"
+msgstr ""
+
+msgctxt "#32059"
+msgid "CLICK HERE TO SAVE VIEW"
+msgstr ""
+
+msgctxt "#32640"
+msgid "Clear views..."
+msgstr ""
+
+msgctxt "#30176"
+msgid "Enable/disable context menu items"
+msgstr ""
+
+msgctxt "#30177"
+msgid "cdaplMB"
+msgstr ""
+
+msgctxt "#30324"
+msgid "CDA.pl + CDA TV (Mbebe) addon required. Note: there is no addon detection."
+msgstr ""
+
+msgctxt "#30325"
+msgid "Requires addon player_pl"
+msgstr ""
+
+msgctxt "#30334"
+msgid "Player.pl (by mtr81)"
+msgstr ""
+
+msgctxt "#30335"
+msgid "Ekinotv premium"
+msgstr ""
+
+msgctxt "#30336"
+msgid "Authorization by addon ekino-tv"
+msgstr ""
+
+msgctxt "#30338"
+msgid "Authorization in FanFilm"
+msgstr ""
+
+msgctxt "#30339"
+msgid "Authorization"
+msgstr ""
+
+msgctxt "#30340"
+msgid "Ekinotv - secret key"
+msgstr ""
+
+msgctxt "#30341"
+msgid "Ekinotv - state"
+msgstr ""
+
+msgctxt "#30342"
+msgid "Run ekino-tv addon"
+msgstr ""
+
+msgctxt "#30343"
+msgid "Addon ekino-tv not found"
+msgstr ""
+
+msgctxt "#30344"
+msgid "Required ekino-tv from ekino.pl"
+msgstr ""
+
+msgctxt "#30345"
+msgid "Add to user list"
+msgstr ""
+
+msgctxt "#30346"
+msgid "IMDB Watchlist"
+msgstr ""
+
+msgctxt "#30347"
+msgid "Own Watchlist"
+msgstr ""
+
+msgctxt "#30348"
+msgid "Own Favorites"
+msgstr ""
+
+msgctxt "#30349"
+msgid "My IMDB Lists"
+msgstr ""
+
+msgctxt "#30316"
+msgid "Add extra info"
+msgstr ""
+
+msgctxt "#30317"
+msgid "Save with local title"
+msgstr ""
+
+msgctxt "#30318"
+msgid "Additional folder to search"
+msgstr ""
+
+msgctxt "#30319"
+msgid "Movies downloaded"
+msgstr ""
+
+msgctxt "#30320"
+msgid "TV Shows downloaded"
+msgstr ""
+
+msgctxt "#30227"
+msgid "Clear downloader cache"
+msgstr ""
+
+msgctxt "#30302"
+msgid "Seasons"
+msgstr ""
+
+msgctxt "#30303"
+msgid "Episodes"
+msgstr ""
+
+msgctxt "#30304"
+msgid "Mixed lists"
+msgstr ""
+
+msgctxt "#30305"
+msgid "Menu"
+msgstr ""
+
+msgctxt "#30306"
+msgid "Downloaded"
+msgstr ""
+
+msgctxt "#30307"
+msgid "Add to..."
+msgstr ""
+
+msgctxt "#30308"
+msgid "Add to log"
+msgstr ""
+
+msgctxt "#30310"
+msgid "Play via InputStream"
+msgstr ""
+
+msgctxt "#30311"
+msgid "Play direct"
+msgstr ""
+
+msgctxt "#30312"
+msgid "InputStreamAdaptive Settings"
+msgstr ""
+
+msgctxt "#30313"
+msgid "InputStream Helper Settings"
+msgstr ""
+
+msgctxt "#30314"
+msgid "Update Trakt collection"
+msgstr ""
+
+msgctxt "#30315"
+msgid "Update TMDB collection"
+msgstr ""
+
+msgctxt "#30350"
+msgid "Update IMdb collection"
+msgstr ""
+
+msgctxt "#30351"
+msgid "Filman API"
+msgstr ""
+
+msgctxt "#30352"
+msgid "BKD_REMEMBER cookie"
+msgstr ""
+
+msgctxt "#30353"
+msgid "User agent"
+msgstr ""
+
+msgctxt "#30354"
+msgid "Don't show sources with AI lector"
+msgstr ""
+
+msgctxt "#30888"
+msgid "{n} movie|||{n} movies"
+msgstr ""
+
+msgctxt "#30355"
+msgid "Local"
+msgstr ""
+
+msgctxt "#30356"
+msgid "Trakt"
+msgstr ""
+
+msgctxt "#30357"
+msgid "MDBList"
+msgstr ""
+
+msgctxt "#30358"
+msgid "Own lists"
+msgstr ""
+
+msgctxt "#30359"
+msgid "Logs"
+msgstr ""
+
+msgctxt "#30360"
+msgid "Trakt Favorites"
+msgstr ""
+
+msgctxt "#30361"
+msgid "Trakt Watchlist"
+msgstr ""
+
+msgctxt "#30362"
+msgid "Trakt Collection"
+msgstr ""
+
+msgctxt "#30363"
+msgid "MDBList Watchlist"
+msgstr ""
+
+msgctxt "#30364"
+msgid "[B]Authorize TMDB[/B]"
+msgstr ""
+
+msgctxt "#30365"
+msgid "TMDB has no authorization"
+msgstr ""
+
+msgctxt "#30366"
+msgid "Add movies to..."
+msgstr ""
+
+msgctxt "#30367"
+msgid "My MDBList Lists"
+msgstr ""
+
+msgctxt "#30368"
+msgid "Manage settings"
+msgstr ""
+
+msgctxt "#30369"
+msgid "Clean settings"
+msgstr ""
+
+msgctxt "#30370"
+msgid "Restore settings"
+msgstr ""
+
+msgctxt "#30371"
+msgid "Backup settings"
+msgstr ""
+
+msgctxt "#30372"
+msgid "Clear {addon} settings"
+msgstr ""
+
+msgctxt "#30375"
+msgid "Settings cleared."
+msgstr ""
+
+msgctxt "#30376"
+msgid "Clear settings FAILED."
+msgstr ""
+
+msgctxt "#30377"
+msgid "Backup {addon} settings"
+msgstr ""
+
+msgctxt "#30378"
+msgid "Create new setting's backup?"
+msgstr ""
+
+msgctxt "#30379"
+msgid "Backup created."
+msgstr ""
+
+msgctxt "#30380"
+msgid "Create backup FAILED."
+msgstr ""
+
+msgctxt "#30381"
+msgid "{addon} Settings"
+msgstr ""
+
+msgctxt "#30382"
+msgid "No backups available."
+msgstr ""
+
+msgctxt "#30383"
+msgid "Select a backup to restore"
+msgstr ""
+
+msgctxt "#30384"
+msgid "Restore {addon} settings"
+msgstr ""
+
+msgctxt "#30385"
+msgid "Restore backup: {backup}?\nThis will overwrite current settings!"
+msgstr ""
+
+msgctxt "#30386"
+msgid "Backup restored. Restart the plugin."
+msgstr ""
+
+msgctxt "#30387"
+msgid "Restore backup FAILED."
+msgstr ""
+
+msgctxt "#30388"
+msgid "{n} collection|||{n} collections"
+msgstr ""
+
+msgctxt "#30389"
+msgid "{n} show|||{n} shows"
+msgstr ""
+
+msgctxt "#30390"
+msgid "{n} season|||{n} seasons"
+msgstr ""
+
+msgctxt "#30391"
+msgid "{n} episode|||{n} episodes"
+msgstr ""
+
+msgctxt "#30392"
+msgid "{n} person|||{n} persons"
+msgstr ""
+
+msgctxt "#30393"
+msgid "{n} list|||{n} lists"
+msgstr ""
+
+msgctxt "#30394"
+msgid "Error"
+msgstr ""
+
+msgctxt "#30395"
+msgid "New list name"
+msgstr ""
+
+msgctxt "#30396"
+msgid "[B]Authorize[/B]"
+msgstr ""
+
+msgctxt "#30397"
+msgid "Open link"
+msgstr ""
+
+msgctxt "#30398"
+msgid "Mixed Media"
+msgstr ""
+
+msgctxt "#30399"
+msgid "New list"
+msgstr ""
+
+msgctxt "#30400"
+msgid "Create new list"
+msgstr ""
+
+msgctxt "#30402"
+msgid "List content type"
+msgstr ""
+
+msgctxt "#30403"
+msgid "Movie"
+msgstr ""
+
+msgctxt "#30404"
+msgid "Person"
+msgstr ""
+
+msgctxt "#30405"
+msgid "TV Show"
+msgstr ""
+
+msgctxt "#30406"
+msgid "Season"
+msgstr ""
+
+msgctxt "#30407"
+msgid "Episode"
+msgstr ""
+
+msgctxt "#30408"
+msgid "Public list"
+msgstr ""
+
+msgctxt "#30401"
+msgid "Add {matched} / {n} item|||Add {matched} / {n} items"
+msgstr ""
+
+msgctxt "#30409"
+msgid "Enter new list name"
+msgstr ""
+
+msgctxt "#30163"
+msgid "MDBList API Key"
+msgstr ""
+
+msgctxt "#30309"
+msgid "Golden Globe Winner"
+msgstr ""
+
+msgctxt "#30410"
+msgid "Golden Globe Nominee"
+msgstr ""
+
+msgctxt "#30411"
+msgid "New search with year..."
+msgstr ""
+
+msgctxt "#30412"
+msgid "Year (optional)"
+msgstr ""
+
+msgctxt "#30413"
+msgid "Emmy Winner"
+msgstr ""
+
+msgctxt "#30414"
+msgid "Restart error"
+msgstr ""
+
+msgctxt "#30415"
+msgid "The file link may have expired."
+msgstr ""
+
+msgctxt "#30416"
+msgid "Download resumed"
+msgstr ""
+
+msgctxt "#30417"
+msgid "Download started"
+msgstr ""
+
+msgctxt "#30418"
+msgid "Download error"
+msgstr ""
+
+msgctxt "#30419"
+msgid "WARNING - A download of this file is already in progress"
+msgstr ""
+
+msgctxt "#30420"
+msgid "Do you want to interrupt this download?"
+msgstr ""
+
+msgctxt "#30421"
+msgid "Interrupt"
+msgstr ""
+
+msgctxt "#30422"
+msgid "Continue"
+msgstr ""
+
+msgctxt "#30423"
+msgid "Unable to connect."
+msgstr ""
+
+msgctxt "#30424"
+msgid "Download progress"
+msgstr ""
+
+msgctxt "#30425"
+msgid "Download finished"
+msgstr ""
+
+msgctxt "#30426"
+msgid "{title} (downloaded {downloaded_size} of {full_size})"
+msgstr ""
+
+msgctxt "#30427"
+msgid "[COLOR limegreen]PLAY[/COLOR]"
+msgstr ""
+
+msgctxt "#30428"
+msgid "[COLOR red]STOP[/COLOR]"
+msgstr ""
+
+msgctxt "#30429"
+msgid "[COLOR orange]RESUME[/COLOR]"
+msgstr ""
+
+msgctxt "#30430"
+msgid "[COLOR yellow]RESTART[/COLOR]"
+msgstr ""
+
+msgctxt "#30431"
+msgid "[COLOR red]DELETE[/COLOR]"
+msgstr ""
+
+msgctxt "#30432"
+msgid "[COLOR gray]Starting...[/COLOR]"
+msgstr ""
+
+msgctxt "#30433"
+msgid "[COLOR gray][B]Updating...[/B][/COLOR]"
+msgstr ""
+
+msgctxt "#30434"
+msgid "[COLOR lightblue][B]Refresh list[/B][/COLOR]"
+msgstr ""
+
+msgctxt "#30435"
+msgid "[COLOR white][B]Name[/B][/COLOR]"
+msgstr ""
+
+msgctxt "#30436"
+msgid "[COLOR white][B]Downloaded[/B][/COLOR]"
+msgstr ""
+
+msgctxt "#30437"
+msgid "[COLOR white][B]Size[/B][/COLOR]"
+msgstr ""
+
+msgctxt "#30438"
+msgid "[COLOR white][B]Time[/B][/COLOR]"
+msgstr ""
+
+msgctxt "#30439"
+msgid "[COLOR white][B]Action[/B][/COLOR]"
+msgstr ""
+
+msgctxt "#30440"
+msgid "[COLOR white][B]Delete[/B][/COLOR]"
+msgstr ""
+
+msgctxt "#30441"
+msgid "[COLOR red][B]Close[/B][/COLOR]"
+msgstr ""
+
+msgctxt "#30442"
+msgid "[COLOR yellow]Loading...[/COLOR]"
+msgstr ""
+
+msgctxt "#30443"
+msgid "Delete entry"
+msgstr ""
+
+msgctxt "#30444"
+msgid "Delete"
+msgstr ""
+
+msgctxt "#30445"
+msgid "Cancel"
+msgstr ""
+
+msgctxt "#30446"
+msgid "No downloads in the database"
+msgstr ""
+
+msgctxt "#30447"
+msgid "[COLOR red]error[/COLOR]"
+msgstr ""
+
+msgctxt "#30448"
+msgid "Download Manager"
+msgstr ""
+
+msgctxt "#30449"
+msgid "Continuation impossible"
+msgstr ""
+
+msgctxt "#30450"
+msgid "Missing file from previous download\n"
+msgstr ""
+
+msgctxt "#30451"
+msgid "File size from previous download does not match\n"
+msgstr ""
+
+msgctxt "#30452"
+msgid "No valid server response.\n\n{title}\n\nDownload impossible."
+msgstr ""
+
+msgctxt "#30453"
+msgid "Download will not be processed"
+msgstr ""
+
+msgctxt "#30454"
+msgid "Unsupported video file type\n\n[I]{content_type}[/I]"
+msgstr ""
+
+msgctxt "#30455"
+msgid "resume download"
+msgstr ""
+
+msgctxt "#30456"
+msgid "download"
+msgstr ""
+
+msgctxt "#30457"
+msgid "Confirm {action}"
+msgstr ""
+
+msgctxt "#30458"
+msgid "{filename}\nto download{left_text}: {size}"
+msgstr ""
+
+msgctxt "#30460"
+msgid "WARNING - Existing file detected"
+msgstr ""
+
+msgctxt "#30461"
+msgid "on disk: {fsize}, on server: {content}.\n\nDo you want to continue?"
+msgstr ""
+
+msgctxt "#30462"
+msgid "Replace"
+msgstr ""
+
+msgctxt "#30463"
+msgid "Download cancelled"
+msgstr ""
+
+msgctxt "#30464"
+msgid "Do you want to replace it?"
+msgstr ""
+
+msgctxt "#30465"
+msgid "File not found"
+msgstr ""
+
+msgctxt "#30466"
+msgid "File does not exist in the expected location:\n{dest}"
+msgstr ""
+
+msgctxt "#30467"
+msgid "Playback error"
+msgstr ""
+
+msgctxt "#30468"
+msgid "Failed to play the selected file."
+msgstr ""
+
+msgctxt "#30469"
+msgid "Trakt Movies"
+msgstr ""
+
+msgctxt "#30470"
+msgid "Trakt TV Shows"
+msgstr ""
+
+msgctxt "#30471"
+msgid "Lists"
+msgstr ""
+
+msgctxt "#30472"
+msgid "Multi search"
+msgstr ""
+
+msgctxt "#30473"
+msgid "TV Appearances"
+msgstr ""
+
+msgctxt "#30474"
+msgid "Clear netcache"
+msgstr ""
+
+msgctxt "#30475"
+msgid "Waiting for service..."
+msgstr ""
+
+msgctxt "#30476"
+msgid "Add to {pointer} list"
+msgstr ""
+
+msgctxt "#30477"
+msgid "Add to {name} list"
+msgstr ""
+
+msgctxt "#30478"
+msgid "Added {n} item to {name}|||Added {n} items to {name}"
+msgstr ""
+
+msgctxt "#30479"
+msgid "Delete list"
+msgstr ""
+
+msgctxt "#30480"
+msgid "Remove list item"
+msgstr ""
+
+msgctxt "#30481"
+msgid "Delete {name} list?"
+msgstr ""
+
+msgctxt "#30482"
+msgid "All items in list will be removed!"
+msgstr ""
+
+msgctxt "#30483"
+msgid "Remove item from {name} list?"
+msgstr ""
+
+msgctxt "#30484"
+msgid "Create {service} list"
+msgstr ""
+
+msgctxt "#30485"
+msgid "List {name} has been created"
+msgstr ""
+
+msgctxt "#30486"
+msgid "Failed to {service} create list {name}."
+msgstr ""
+
+msgctxt "#30487"
+msgid "CDA mtr81"
+msgstr ""
+
+msgctxt "#30488"
+msgid "CDA Premium (mtr81) addon required"
+msgstr ""
+
+msgctxt "#30489"
+msgid "Hide sources for which the transfer is insufficient"
+msgstr ""
+
+msgctxt "#30490"
+msgid "[COLOR white]Total: [COLOR cyan]{total}[/COLOR] | Active: [COLOR yellow]{running}[/COLOR] | Finished: [COLOR limegreen]{finished}[/COLOR][/COLOR]"
+msgstr ""
+
+msgctxt "#30491"
+msgid "Enter number of items (1..{total})"
+msgstr ""
+
+msgctxt "#30492"
+msgid "Limit items"
+msgstr ""
+
+msgctxt "#30493"
+msgid "[B][UPPERCASE]The transfer available is insufficient[/UPPERCASE][/B]"
+msgstr ""
+
+msgctxt "#30459"
+msgid "CF Cookie"
+msgstr ""
+
+msgctxt "#30494"
+msgid "Ninateka"
+msgstr ""
+
+msgctxt "#30495"
+msgid "Update defaults too"
+msgstr ""
+
+msgctxt "#30496"
+msgid "CDA-HD"
+msgstr ""
+
+msgctxt "#30497"
+msgid "Factory settings reset"
+msgstr ""
+
+msgctxt "#30498"
+msgid "Reset {addon} settings"
+msgstr ""
+
+msgctxt "#30499"
+msgid "Reset settings to the factory defaults?\nThis will overwrite current settings!"
+msgstr ""
+
+msgctxt "#30500"
+msgid "Factory reset is done"
+msgstr ""
+
+msgctxt "#30501"
+msgid "Factory reset FAILED"
+msgstr ""
+
+msgctxt "#30502"
+msgid "Settings already cleared"
+msgstr ""
+
+msgctxt "#30503"
+msgid "Clear the setting?\nThis will remove undefined user settings."
+msgstr ""
+
+msgctxt "#30373"
+msgid "FanFilm web server"
+msgstr ""

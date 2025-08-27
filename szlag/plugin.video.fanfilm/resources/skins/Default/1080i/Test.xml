@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window type="dialog" modality="modal">
+  <coordinates>
+    <top>0</top>
+    <left>0</left>
+    <width>1920</width>
+    <height>1080</height>
+  </coordinates>
+
+  <controls>
+    <control type="image">
+      <width>1920</width>
+      <height>1080</height>
+      <texture background="true" colordiffuse="99000000">white.png</texture>
+      <!-- <texture border="10" background="true" colordiffuse="FF000000">white.png</texture> -->
+    </control>
+    <!-- <control type="image"> -->
+    <!--   <width>1920</width> -->
+    <!--   <height>1080</height> -->
+    <!--   <texture background="true" colordiffuse="33FFFFFF">$INFO[Window.Property(item.art.fanart)]</texture> -->
+    <!-- </control> -->
+
+    <!-- Main window -->
+    <control type="group">
+      <centertop>50%</centertop>
+      <centerleft>50%</centerleft>
+      <top/>
+      <left/>
+      <width>1620</width>
+      <height>940</height>
+
+      <!-- Main window border -->
+      <control type="image">
+        <colordiffuse>D9202E39</colordiffuse>
+        <texture border="10">white.png</texture>
+      </control>
+
+      <!-- Main window background -->
+      <control type="image">
+        <colordiffuse>D9141519</colordiffuse>
+        <texture border="10">white.png</texture>
+        <bordersize>4</bordersize>
+      </control>
+
+      <control type="image">
+        <colordiffuse>ccffffff</colordiffuse>
+        <!-- <texture border="1">dialogs/frame-sunken-b1-r1.png</texture> -->
+        <texture border="2">dialogs/frame-sunken-b2-r1.png</texture>
+        <bordersize>0</bordersize>
+        <top>20</top>
+        <left>20</left>
+        <width>200</width>
+        <height>4</height>
+      </control>
+
+      <control type="image">
+        <colordiffuse>ffcccccc</colordiffuse>
+        <!-- <texture border="1">dialogs/frame-sunken-b1-r1.png</texture> -->
+        <texture border="2,0,2,0">dialogs/frame-sunken-b2-r1.png</texture>
+        <bordersize>0</bordersize>
+        <top>50</top>
+        <left>20</left>
+        <width>200</width>
+        <height>4</height>
+      </control>
+
+
+      <control type="image">
+        <colordiffuse>ccffffff</colordiffuse>
+        <!-- <texture border="1">dialogs/frame-sunken-b1-r1.png</texture> -->
+        <texture border="1">dialogs/frame-sunken-b1-r1.png</texture>
+        <bordersize>0</bordersize>
+        <top>20</top>
+        <left>320</left>
+        <width>200</width>
+        <height>2</height>
+      </control>
+
+      <control type="image">
+        <colordiffuse>ffcccccc</colordiffuse>
+        <!-- <texture border="1">dialogs/frame-sunken-b1-r1.png</texture> -->
+        <texture border="1,0,1,0">dialogs/frame-sunken-b1-r1.png</texture>
+        <bordersize>0</bordersize>
+        <top>50</top>
+        <left>320</left>
+        <width>200</width>
+        <height>2</height>
+      </control>
+
+    </control>  <!-- main window -->
+  </controls>
+</window>
