@@ -226,6 +226,8 @@ class _source:
 
             final_titles = unique_case_insensitive(final_titles)
 
+            final_titles = [const.sources.xtb7.title_replacements.get(t.lower(), t) for t in final_titles]
+
             def korekty_dla_wyszukiwarki(title):
                 title = title.replace(" - ", " ")
                 title = title.replace("-", "_")
@@ -457,110 +459,108 @@ class _source:
 
         allow_filename_without_year = True
 
-        if settings.getBool("sources.title_validation_filter") and not self.dodatkowy_filtr:
+        titles = self.titles  # zaczytanie wcześniej wybranych (m.in. aliasów)
 
-            titles = self.titles  # zaczytanie wcześniej wybranych (m.in. aliasów)
+        titles = [t.lower() for t in titles]
+        titles = list(dict.fromkeys(titles))  # usunięcie duplikatów
 
-            titles = [t.lower() for t in titles]
-            titles = list(dict.fromkeys(titles))  # usunięcie duplikatów
+        # Dodanie uproszczonych wersji tytułów (tylko do dopasowania, nie do zapytań)
+        extra_titles = []
+        for t in titles:
+            # usuwanie przedrostków the, a, an
+            if t.startswith(("the ", "a ", "an ")):
+                stripped = re.sub(r"^(the|a|an) ", "", t, flags=re.IGNORECASE)
+                if stripped not in titles:
+                    extra_titles.append(stripped)
 
-            # Dodanie uproszczonych wersji tytułów (tylko do dopasowania, nie do zapytań)
-            extra_titles = []
-            for t in titles:
-                # usuwanie przedrostków the, a, an
-                if t.startswith(("the ", "a ", "an ")):
-                    stripped = re.sub(r"^(the|a|an) ", "", t, flags=re.IGNORECASE)
-                    if stripped not in titles:
-                        extra_titles.append(stripped)
+            # usunięcie .sXX z końca
+            if re.search(r"\.s\d{1,2}$", t):
+                base = re.sub(r"\.s\d{1,2}$", "", t)
+                if base not in titles:
+                    extra_titles.append(base)
 
-                # usunięcie .sXX z końca
-                if re.search(r"\.s\d{1,2}$", t):
-                    base = re.sub(r"\.s\d{1,2}$", "", t)
-                    if base not in titles:
-                        extra_titles.append(base)
+        if extra_titles:
+            titles += extra_titles
+        # dodanie bieżącego tytułu do listy (jeśli go tam jeszce nie ma)
+        if title and title not in titles:
+            titles = [title] + titles
 
-            if extra_titles:
-                titles += extra_titles
-            # dodanie bieżącego tytułu do listy (jeśli go tam jeszce nie ma)
-            if title and title not in titles:
-                titles = [title] + titles
+        # opcjonalnie (może pomóc)
+        # "spirited away: w krainie bogów" -> "w krainie bogów - spirited away"
+        tmp = []
+        for t in titles:
+            if ": " in t and "-" not in t:
+                temp1 = " - ".join(t.split(": ")[::-1])
+                if temp1 not in titles:
+                    tmp += [temp1]
+        if tmp:
+            titles += tmp
 
-            # opcjonalnie (może pomóc)
-            # "spirited away: w krainie bogów" -> "w krainie bogów - spirited away"
-            tmp = []
-            for t in titles:
-                if ": " in t and "-" not in t:
-                    temp1 = " - ".join(t.split(": ")[::-1])
-                    if temp1 not in titles:
-                        tmp += [temp1]
-            if tmp:
-                titles += tmp
+        # fflog(f"titles (z aliasami): ({len(titles)}) \n" + "\n".join(titles), 0)  # kontrola
 
-            # fflog(f"titles (z aliasami): ({len(titles)}) \n" + "\n".join(titles), 0)  # kontrola
+        # titles_pat_list = [self.prepare_pattern_for_titles(t) for t in titles]
+        titles_pat_list = [self.prepare_pattern_for_titles_v2(t) for t in titles]
 
-            # titles_pat_list = [self.prepare_pattern_for_titles(t) for t in titles]
-            titles_pat_list = [self.prepare_pattern_for_titles_v2(t) for t in titles]
+        titles_pat_list = list(dict.fromkeys(titles_pat_list))  # usunięcie duplikatów
 
-            titles_pat_list = list(dict.fromkeys(titles_pat_list))  # usunięcie duplikatów
+        # fflog(f"titles_pat_list: ({len(titles_pat_list)}) \n" + "\n".join(titles_pat_list), 0)  # kontrola
 
-            # fflog(f"titles_pat_list: ({len(titles_pat_list)}) \n" + "\n".join(titles_pat_list), 0)  # kontrola
+        title_pat = f'({"|".join(titles_pat_list)})'  # połączenie w 1 string
 
-            title_pat = f'({"|".join(titles_pat_list)})'  # połączenie w 1 string
+        # czasami są jeszcze takie przed rokiem
+        res_pat = r"[ ._]*[(\[]?(720|1080)[pi]?[)\]]?"
 
-            # czasami są jeszcze takie przed rokiem
-            res_pat = r"[ ._]*[(\[]?(720|1080)[pi]?[)\]]?"
+        if episode or allow_filename_without_year:
+            # wzorzec dla rozdzielczości
+            res_pat = r"\b(SD|HD|UHD|2k|4k|480p?|540p?|576p?|720p?|1080[pi]?|1440p?|2160p?)\b"
 
-            if episode or allow_filename_without_year:
-                # wzorzec dla rozdzielczości
-                res_pat = r"\b(SD|HD|UHD|2k|4k|480p?|540p?|576p?|720p?|1080[pi]?|1440p?|2160p?)\b"
+            # wzorzec czasami spotykanych fraz
+            # custom_pat = '([ ._][a-z]{2,})'  # za duża tolerancja i trafić może na ostatnie słowo innego tytułu np. "Titans go" dla filmu "Titans"
+            custom_pat = r"\b(lektor|subbed|napisy|dubbing|polish|po?l(dub|sub)?|us|fr|de|dual|multi|p2p|web[.-]?(dl)?|remux|3d|imax)\b"  # trudnosć polega na przewidzeniu wszystkich możliwości
 
-                # wzorzec czasami spotykanych fraz
-                # custom_pat = '([ ._][a-z]{2,})'  # za duża tolerancja i trafić może na ostatnie słowo innego tytułu np. "Titans go" dla filmu "Titans"
-                custom_pat = r"\b(lektor|subbed|napisy|dubbing|polish|po?l(dub|sub)?|us|fr|de|dual|multi|p2p|web[.-]?(dl)?|remux|3d|imax)\b"  # trudnosć polega na przewidzeniu wszystkich możliwości
+        # nazwa jakiejś grupy ludzi (powinna być na samym początku)
+        # tylko nie wiem jakie mogą być dozwolone kombinacje
+        group_pat = r"^[.[][^.[\]]{3,}[.\]]"
 
-            # nazwa jakiejś grupy ludzi (powinna być na samym początku)
-            # tylko nie wiem jakie mogą być dozwolone kombinacje
-            group_pat = r"^[.[][^.[\]]{3,}[.\]]"
+        # rozszerzenia plików
+        ext_pat = f'({"|".join(self.VIDEO_EXTENSIONS)})'.replace(".", "")
 
-            # rozszerzenia plików
-            ext_pat = f'({"|".join(self.VIDEO_EXTENSIONS)})'.replace(".", "")
+        if not episode:  # czyli dla filmów
 
-            if not episode:  # czyli dla filmów
+            if allow_filename_without_year:
+                after_pat = fr"(\[\w*?\]|{res_pat}|{custom_pat}|{ext_pat}$)"
+            else:
+                after_pat = yr_uni_pat
 
-                if allow_filename_without_year:
-                    after_pat = fr"(\[\w*?\]|{res_pat}|{custom_pat}|{ext_pat}$)"
-                else:
-                    after_pat = yr_uni_pat
-
-                # końcowy wzorzec do porównywania z nazwą pliku
-                # if not self.tit_val_filt_for_one_title:  # to chyba już niepotrzebne
-                if True:  # na razie tak
-                    dodatkowy_filtr = re.compile(
-                        rf"^(\d{{1,2}}|{yr_uni_pat}|{group_pat})?[ .-]*(\W?{title_pat}((?<!\d)\d|[ .-]1)?[ ./()-]{{1,4}})+((?<=[(])\d[)])?[ .-]?[(\[]?({yr_uni_pat}|{after_pat})",
-                        flags=re.I)
-                # zapamiętanie na kolejne wywołaniu tej funkcji, która dotyczyć będzie i tak tego samego filmu
-                # (tylko inna fraza idzie do wyszukiwarki), a wszystkie tytuły zostały na początku ustalone w self.titles
-                self.dodatkowy_filtr = dodatkowy_filtr
-
-            if episode:  # dla seriali
-
-                # do DEBUGOWANIA, jak się nie mieści pattern w logu
-                # res_pat = custom_pat = yr_uni_pat = '()'
-                # title_pat = '()'
-
-                # definiowałem wcześniej do odróżniania filmów od seriali
-                ep_uni_pat = ep_uni_pat[:-1] + r"|\b\d{2,3}\b)"  # dodanie dodatkowego wzorca
-
-                # końcowe wzorce do porównywania z nazwą pliku
+            # końcowy wzorzec do porównywania z nazwą pliku
+            # if not self.tit_val_filt_for_one_title:  # to chyba już niepotrzebne
+            if True:  # na razie tak
                 dodatkowy_filtr = re.compile(
-                    rf"(^({group_pat})?|[/-]|\d{{1,2}})[ .]?(\W?{title_pat}((?<!\d)\d|[ .-]1)?[ ./()-]{{1,4}})+((?<=[(])\d[)])?[ .-]?[([]?([ .-]*({res_pat}|{yr_uni_pat}|{custom_pat}))*[)\]]?[ .-]*[([]?{ep_uni_pat}",
-                    flags=re.I,
-                )
+                    rf"^(\d{{1,2}}|{yr_uni_pat}|{group_pat})?[ .-]*(\W?{title_pat}((?<!\d)\d|[ .-]1)?[ ./()-]{{1,4}})+((?<=[(])\d[)])?[ .-]?[(\[]?({yr_uni_pat}|{after_pat})",
+                    flags=re.I)
+            # zapamiętanie na kolejne wywołaniu tej funkcji, która dotyczyć będzie i tak tego samego filmu
+            # (tylko inna fraza idzie do wyszukiwarki), a wszystkie tytuły zostały na początku ustalone w self.titles
+            self.dodatkowy_filtr = dodatkowy_filtr
 
-                dodatkowy_filtr2 = re.compile(rf"(^\d{{1,2}}\.?\W?|[([]?{ep_uni_pat2}\W*){title_pat}([ .]*[/-]|[ .]{{2,}})", flags=re.I)
-                # zmienna 'dodatkowy_filtr2' jest na przypadek, gdy na początku jest numer odcinka a potem tytuł
-                self.dodatkowy_filtr = dodatkowy_filtr
-                self.dodatkowy_filtr2 = dodatkowy_filtr2
+        if episode:  # dla seriali
+
+            # do DEBUGOWANIA, jak się nie mieści pattern w logu
+            # res_pat = custom_pat = yr_uni_pat = '()'
+            # title_pat = '()'
+
+            # definiowałem wcześniej do odróżniania filmów od seriali
+            ep_uni_pat = ep_uni_pat[:-1] + r"|\b\d{2,3}\b)"  # dodanie dodatkowego wzorca
+
+            # końcowe wzorce do porównywania z nazwą pliku
+            dodatkowy_filtr = re.compile(
+                rf"(^({group_pat})?|[/-]|\d{{1,2}})[ .]?(\W?{title_pat}((?<!\d)\d|[ .-]1)?[ ./()-]{{1,4}})+((?<=[(])\d[)])?[ .-]?[([]?([ .-]*({res_pat}|{yr_uni_pat}|{custom_pat}))*[)\]]?[ .-]*[([]?{ep_uni_pat}",
+                flags=re.I,
+            )
+
+            dodatkowy_filtr2 = re.compile(rf"(^\d{{1,2}}\.?\W?|[([]?{ep_uni_pat2}\W*){title_pat}([ .]*[/-]|[ .]{{2,}})", flags=re.I)
+            # zmienna 'dodatkowy_filtr2' jest na przypadek, gdy na początku jest numer odcinka a potem tytuł
+            self.dodatkowy_filtr = dodatkowy_filtr
+            self.dodatkowy_filtr2 = dodatkowy_filtr2
 
         # poniższe zawsze musi być (niezależnie czy używany będzie filtr dopasowujący tytuły)
         # jeśli episode się nie zmienia, to może można to zapamiętać
