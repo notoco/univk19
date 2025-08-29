@@ -387,8 +387,7 @@ class InfoProvider:
         else:
             date_keys = ('first_air_date', 'air_date')
         for date_key in date_keys:
-            date_str = item.get(date_key)
-            if date_str:
+            if date_str := item.get(date_key):
                 try:
                     date = fromisoformat(date_str)
                     break
@@ -398,6 +397,15 @@ class InfoProvider:
             vtag.setYear(date.year)
         set_if(vtag.setFirstAired, 'first_air_date', 'air_date')
         set_if(vtag.setPremiered, 'release_date')
+        # fallback to first aired date of first episode
+        if not date and ref.is_season and (episodes := item.get('episodes')):
+            if date_str := episodes[0].get('air_date'):
+                try:
+                    date = fromisoformat(date_str)
+                    vtag.setYear(date.year)
+                    vtag.setFirstAired(date_str)
+                except ValueError:
+                    pass
 
         # titles
         vtag.setTitle(translate('title', 'name', default=ff.title))
@@ -434,6 +442,7 @@ class InfoProvider:
 
         # countries and MPAA
         countries = country_translations()
+        vtag.setCountryCodes([c['iso_3166_1'] for c in item.get('production_countries', ())])
         vtag.setCountries([countries.get(c['iso_3166_1'], c['name']) for c in item.get('production_countries', ())])
         vtag.setMpaaList(sorted(cert for rel in item.get('release_dates', {}).get('results', ())
                                 for cert in (rel.get('certification', ''),) if cert))
@@ -577,7 +586,7 @@ class InfoProvider:
                 else:
                     # shorten seasons info
                     ff.children_items = [self._make_sub_item(ff, it) for it in seasons if it['season_number'] > 0]
-                # update kodi seasons
+                    # update kodi seasons
                     ff.vtag.addSeasons([(sz.season, sz.title) for sz in ff.children_items])
         elif ref.episode is None:
             ff.children_items = [self._make_sub_item(ff, it) for it in item.get('episodes', ())]

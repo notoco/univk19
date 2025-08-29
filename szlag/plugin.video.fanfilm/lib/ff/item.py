@@ -340,6 +340,8 @@ class FFVTag(InfoTagVideoProxyType):
         'englishTvShowTitle': '',
         'episodeType':        '',
         'seriesStatus':       '',
+        'countryCodes':       [],
+
     }
 
     class Rating(NamedTuple):
@@ -356,6 +358,8 @@ class FFVTag(InfoTagVideoProxyType):
         self._self_mpaa: List[str] = []
         #: List of countries.
         self._self_countries: List[str] = []
+        #: List of of ISO 3166-1 country codes.
+        self._self_country_codes: List[str] = []
         #: List of studios.
         self._self_studios: List[str] = []
         #: Ratings (keep copy to implement getRatings).
@@ -480,6 +484,14 @@ class FFVTag(InfoTagVideoProxyType):
     def getCountries(self) -> List[str]:
         """Get list of countries (missing in kodi)."""
         return list(self._self_countries)
+
+    def setCountryCodes(self, codes: List[str]) -> None:
+        """Set list of ISO 3166-1 country codes (ex. PL, US)."""
+        self._self_country_codes = list(codes)
+
+    def getCountryCodes(self) -> List[str]:
+        """Get list of ISO 3166-1 country codes (ex. PL, US)."""
+        return list(self._self_country_codes)
 
     def setStudios(self, studios: List[str]) -> None:
         """Set list of studios."""

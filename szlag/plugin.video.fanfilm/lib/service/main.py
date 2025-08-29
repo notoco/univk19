@@ -545,6 +545,10 @@ class FFMonitor(xbmc.Monitor):
                 *((f'playing.{k}', v) for k, v in self.player_info.items() if k.startswith('media.')),  # copy media.* to playing.media.*
                 ('state', 'playing'),
             ))
+            # Call upnext_service.handle_playback_started
+            if info and info.item:
+                from ..ff import upnext_service
+                upnext_service.handle_playback_started(info.item)
         elif notif == 'xbmc.VideoLibrary.OnUpdate':
             # If video should be playing...
             if self.player_info.get('playing.video'):
@@ -569,6 +573,9 @@ class FFMonitor(xbmc.Monitor):
                 fflog('[SERVICE] playing failed (no Player.OnAVStart)')
             self.set_state('state', '')
             self.folder_ready()
+            # Call upnext_service.handle_playback_stopped
+            from ..ff import upnext_service
+            upnext_service.handle_playback_stopped()
         elif notif == 'xbmc.Player.OnSeek':
             info = self.item_info(data)
             seek = self.seek_info(data)
