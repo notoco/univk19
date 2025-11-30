@@ -60,7 +60,7 @@ msgstr "Kolejny za [COLOR $INFO[Window.Property(accent_colour)]]$INFO[Window.Pro
 
 msgctxt "#30037"
 msgid "Next video in [COLOR $INFO[Window.Property(accent_colour)]]$INFO[Window.Property(remaining)][/COLOR] seconds"
-msgstr "Następny odcinek za [COLOR FFFF4081]$INFO[Window.Property(remaining)][/COLOR] sekund"
+msgstr "Następny odcinek za  [COLOR $INFO[Window.Property(accent_colour)]]$INFO[Window.Property(remaining)][/COLOR] sekund"
 
 msgctxt "#30038"
 msgid ""
