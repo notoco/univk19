@@ -601,7 +601,7 @@ def get_playlist_position(offset=0):
     # Use actual playlistid rather than xbmc.PLAYLIST_VIDEO as Kodi sometimes
     # plays video content in a music playlist
     playlistid = get_playlistid()
-    if playlistid is None:
+    if playlistid is None or playlistid < 0:
         return None, None
 
     playlist = xbmc.PlayList(playlistid)
@@ -1235,7 +1235,8 @@ def get_upnext_movies_from_library(limit=25,
                                              sort=SORT_LASTPLAYED,
                                              filters=FILTER_WATCHED)
 
-        movies = utils.merge_iterable(inprogress, watched,
+        movies = utils.merge_iterable(inprogress,
+                                      watched,
                                       sort='lastplayed', unique='movieid')
     else:
         movies = inprogress
