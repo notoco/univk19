@@ -51,92 +51,11 @@
                     <default>FFFF4081</default>
                     <dependencies>
                         <dependency type="visible">
-                            <and>
-                                <condition operator="is" setting="popupAccentColour">4</condition>
-                                <condition on="property" name="infobool">String.StartsWith(System.BuildVersionShort,2)</condition>
-                            </and>
+                            <condition operator="is" setting="popupAccentColour">4</condition>
                         </dependency>
                     </dependencies>
-                    <control type="colorbutton"/>
-                </setting>
-                <setting id="popupCustomAccentColourA" type="integer" label="30516" help="30530" parent="popupAccentColour">
-                    <level>0</level>
-                    <default>255</default>
-                    <constraints>
-                        <minimum>0</minimum>
-                        <step>1</step>
-                        <maximum>255</maximum>
-                    </constraints>
-                    <dependencies>
-                        <dependency type="visible">
-                            <and>
-                                <condition operator="is" setting="popupAccentColour">4</condition>
-                                <condition on="property" name="infobool">!String.StartsWith(System.BuildVersionShort,2)</condition>
-                            </and>
-                        </dependency>
-                    </dependencies>
-                    <control type="slider" format="integer">
-                        <popup>false</popup>
-                    </control>
-                </setting>
-                <setting id="popupCustomAccentColourR" type="integer" label="30517" help="30530" parent="popupAccentColour">
-                    <level>0</level>
-                    <default>255</default>
-                    <constraints>
-                        <minimum>0</minimum>
-                        <step>1</step>
-                        <maximum>255</maximum>
-                    </constraints>
-                    <dependencies>
-                        <dependency type="visible">
-                            <and>
-                                <condition operator="is" setting="popupAccentColour">4</condition>
-                                <condition on="property" name="infobool">!String.StartsWith(System.BuildVersionShort,2)</condition>
-                            </and>
-                        </dependency>
-                    </dependencies>
-                    <control type="slider" format="integer">
-                        <popup>false</popup>
-                    </control>
-                </setting>
-                <setting id="popupCustomAccentColourG" type="integer" label="30518" help="30530" parent="popupAccentColour">
-                    <level>0</level>
-                    <default>64</default>
-                    <constraints>
-                        <minimum>0</minimum>
-                        <step>1</step>
-                        <maximum>255</maximum>
-                    </constraints>
-                    <dependencies>
-                        <dependency type="visible">
-                            <and>
-                                <condition operator="is" setting="popupAccentColour">4</condition>
-                                <condition on="property" name="infobool">!String.StartsWith(System.BuildVersionShort,2)</condition>
-                            </and>
-                        </dependency>
-                    </dependencies>
-                    <control type="slider" format="integer">
-                        <popup>false</popup>
-                    </control>
-                </setting>
-                <setting id="popupCustomAccentColourB" type="integer" label="30519" help="30530" parent="popupAccentColour">
-                    <level>0</level>
-                    <default>129</default>
-                    <constraints>
-                        <minimum>0</minimum>
-                        <step>1</step>
-                        <maximum>255</maximum>
-                    </constraints>
-                    <dependencies>
-                        <dependency type="visible">
-                            <and>
-                                <condition operator="is" setting="popupAccentColour">4</condition>
-                                <condition on="property" name="infobool">!String.StartsWith(System.BuildVersionShort,2)</condition>
-                            </and>
-                        </dependency>
-                    </dependencies>
-                    <control type="slider" format="integer">
-                        <popup>false</popup>
+                    <control type="edit" format="string">
+                        <heading>30520</heading>
                     </control>
                 </setting>
             </group>

@@ -178,15 +178,7 @@ class UpNextSettings(object):
             self.get_int('popupAccentColour', default=0)
         )
         if not accent_colour:
-            if utils.supports_python_api(20):
-                accent_colour = self.get_string('popupCustomAccentColour')
-            else:
-                accent_colour = hex(
-                    (self.get_int('popupCustomAccentColourA') << 24)
-                    + (self.get_int('popupCustomAccentColourR') << 16)
-                    + (self.get_int('popupCustomAccentColourG') << 8)
-                    + self.get_int('popupCustomAccentColourB')
-                )[2:]
+            accent_colour = self.get_string('popupCustomAccentColour')
         self.popup_accent_colour = accent_colour
 
         self.widget_list_limit = self.get_int('widgetListLimit', default=25)
