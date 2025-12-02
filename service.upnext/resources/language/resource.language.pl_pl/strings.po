@@ -122,6 +122,75 @@ msgctxt "#30052"
 msgid "Forced off"
 msgstr "Wymuszenie wyłączone"
 
+msgctxt "#30053"
+msgid "Play or focused popup button action"
+msgstr "Akcja przycisku odtwarzania lub aktywnego okna"
+
+msgctxt "#30054"
+msgid "Stop or focused popup button action"
+msgstr "Akcja przycisku stop lub aktywnego okna"
+
+### Widgets and Plugin listings
+msgctxt "#30100"
+msgid "UpNext"
+msgstr "UpNext"
+
+msgctxt "#30101"
+msgid "Settings"
+msgstr "Ustawienia"
+
+msgctxt "#30102"
+msgid "Movie widgets"
+msgstr "Widgety filmowe"
+
+msgctxt "#30103"
+msgid "TVShow widgets"
+msgstr "Widgety serialowe"
+
+msgctxt "#30104"
+msgid "Combined widgets"
+msgstr "Połączone widgety"
+
+msgctxt "#30108"
+msgid "Because you watched \"{0}\""
+msgstr "Ponieważ oglądałeś \"{0}\""
+
+msgctxt "#30110"
+msgid "UpNext Episodes"
+msgstr "Następne odcinki"
+
+msgctxt "#30111"
+msgid "Watched TVShow recommendations"
+msgstr "Rekomendacje oglądanych seriali"
+
+msgctxt "#30112"
+msgid "More like this... (Watched TVShows)"
+msgstr "Więcej podobnych... (Oglądane seriale)"
+
+msgctxt "#30120"
+msgid "UpNext Movies"
+msgstr "Następne filmy"
+
+msgctxt "#30121"
+msgid "Watched Movie recommendations"
+msgstr "Rekomendacje oglądanych filmów"
+
+msgctxt "#30122"
+msgid "More like this... (Watched Movies)"
+msgstr "Więcej podobnych... (Oglądane filmy)"
+
+msgctxt "#30130"
+msgid "UpNext Media"
+msgstr "Następne media"
+
+msgctxt "#30131"
+msgid "Watched Media recommendations"
+msgstr "Rekomendacje oglądanych mediów"
+
+msgctxt "#30132"
+msgid "More like this... (Watched Media)"
+msgstr "Więcej podobnych... (Oglądane media)"
+
 ### SETTINGS
 msgctxt "#30500"
 msgid "Appearance"
@@ -203,6 +272,90 @@ msgctxt "#30519"
 msgid "Blue channel"
 msgstr "Kanał niebieski"
 
+msgctxt "#30520"
+msgid "Colour selection"
+msgstr "Wybór koloru"
+
+msgctxt "#30530"
+msgid "Requires Kodi skin integration, or selection of default UpNext skin"
+msgstr "Wymaga integracji ze skórką Kodi lub wyboru domyślnej skórki UpNext"
+
+msgctxt "#30540"
+msgid "Widget and Plugin Listings"
+msgstr "Listy widgetów i wtyczek"
+
+msgctxt "#30542"
+msgid "Widget list limit"
+msgstr "Limit listy widgetów"
+
+msgctxt "#30544"
+msgid "Widget refresh period"
+msgstr "Okres odświeżania widgetów"
+
+msgctxt "#30545"
+msgid "Refresh all widgets when using remote database"
+msgstr "Odśwież wszystkie widgety przy użyciu zdalnej bazy danych"
+
+msgctxt "#30546"
+msgid "Recommendation widgets use cast and crew"
+msgstr "Widgety rekomendacji używają obsady i ekipy"
+
+msgctxt "#30547"
+msgid "Recommendation widgets use tags"
+msgstr "Widgety rekomendacji używają tagów"
+
+msgctxt "#30548"
+msgid "Querying the Kodi video database for cast or tags will slow down loading of recommendation widgets"
+msgstr "Wykonywanie zapytań do bazy danych wideo Kodi o obsadę lub tagi spowolni ładowanie widgetów rekomendacji"
+
+msgctxt "#30549"
+msgid "Recommendation widgets include watched videos"
+msgstr "Widgety rekomendacji zawierają obejrzane filmy"
+
+msgctxt "#30551"
+msgid "Episode main label - token 1"
+msgstr "Główna etykieta odcinka - token 1"
+
+msgctxt "#30552"
+msgid "Episode main label - token 2"
+msgstr "Główna etykieta odcinka - token 2"
+
+msgctxt "#30553"
+msgid "Episode main label - token 3"
+msgstr "Główna etykieta odcinka - token 3"
+
+msgctxt "#30554"
+msgid "Episode secondary label - token 1"
+msgstr "Druga etykieta odcinka - token 1"
+
+msgctxt "#30555"
+msgid "Episode secondary label - token 2"
+msgstr "Druga etykieta odcinka - token 2"
+
+msgctxt "#30556"
+msgid "Episode secondary label - token 3"
+msgstr "Druga etykieta odcinka - token 3"
+
+msgctxt "#30560"
+msgid "Empty"
+msgstr "Pusty"
+
+msgctxt "#30561"
+msgid "Show title"
+msgstr "Tytuł serialu"
+
+msgctxt "#30562"
+msgid "Season # x Episode #"
+msgstr "Sezon # x Odcinek #"
+
+msgctxt "#30563"
+msgid "Episode title"
+msgstr "Tytuł odcinka"
+
+msgctxt "#30564"
+msgid "Episode first aired"
+msgstr "Data pierwszej emisji odcinka"
+
 msgctxt "#30600"
 msgid "Behaviour"
 msgstr "Zachowanie"
@@ -212,8 +365,12 @@ msgid "Playback"
 msgstr "Odtwarzanie"
 
 msgctxt "#30603"
-msgid "Default action after UpNext popup is shown"
-msgstr "Domyślna akcja po pokazaniu okienka UpNext"
+msgid "Default popup action"
+msgstr "Domyślna akcja okienka"
+
+msgctxt "#30604"
+msgid "Default action is automatically taken when popup closes and no user input is received"
+msgstr "Domyślna akcja jest wykonywana automatycznie po zamknięciu okienka i braku reakcji użytkownika"
 
 msgctxt "#30605"
 msgid "Play already watched videos"
@@ -224,24 +381,32 @@ msgid "Check if still watching [COLOR gray](stops auto playback if not still wat
 msgstr "Sprawdź, czy nadal oglądasz [COLOR gray](zatrzymuje automatyczne odtwarzanie, jeśli nie nadal oglądasz)[/COLOR]"
 
 msgctxt "#30607"
-msgid "Videos to play before checking if still watching"
-msgstr "Ilość odcinków do odtworzenia przed sprawdzeniem czy nadal oglądasz"
+msgid "Stops automatic playback if user input is not received after the configured number of videos are automatically played"
+msgstr "Zatrzymuje automatyczne odtwarzanie, jeśli użytkownik nie zareaguje po odtworzeniu skonfigurowanej liczby filmów"
+
+msgctxt "#30608"
+msgid "{0:d} videos automatically played"
+msgstr "{0:d} automatycznie odtworzonych filmów"
 
 msgctxt "#30609"
-msgid "When credits time is known (e.g. Netflix) or detected"
-msgstr "Kiedy czas napisów końcowych jest znany (np. Netflix) lub wykrywany"
+msgid "When credits time is known (e.g. Netflix) or detected/forced"
+msgstr "Gdy czas napisów końcowych jest znany (np. Netflix) lub wykryty/wymuszony"
 
 msgctxt "#30611"
-msgid "Delay before default action is taken (in seconds)"
-msgstr "Opóźnienie przed podjęciem akcji domyślnej (w sekundach) "
+msgid "Delay before default action is taken"
+msgstr "Opóźnienie przed podjęciem domyślnej akcji"
+
+msgctxt "#30612"
+msgid "Force default action after popup is shown"
+msgstr "Wymuś domyślną akcję po wyświetleniu okienka"
 
 msgctxt "#30613"
 msgid "When credits time is unknown (e.g. local media, other)"
 msgstr "Gdy czas napisów końcowych jest nieznany (np. lokalne media, inne)"
 
 msgctxt "#30615"
-msgid "Customise popup time (in seconds) by video length"
-msgstr "Dostosuj czas pokazania okienka (w sekundach) wg długości odcinka"
+msgid "Customise popup time by video length"
+msgstr "Dostosuj czas okienka do długości wideo"
 
 msgctxt "#30617"
 msgid "All videos [COLOR gray]any length[/COLOR]"
@@ -275,6 +440,38 @@ msgctxt "#30631"
 msgid "Detection window [COLOR gray](seconds/hr prior to popup appearing by time)[/COLOR]"
 msgstr "Okno wykrywania [COLOR gray](sekundy/godziny przed pojawieniem się okienka wg czasu)[/COLOR]"
 
+msgctxt "#30632"
+msgid "Detection will start prior to popup appearing, within an adjustable time period from the end of the video, based on video runtime. For example, a setting of 300 sec/hr will start detection 150 seconds (2.5 minutes) from the end of a 0.5 hour long video, 300 seconds (5 minutes) from the end of a 1 hour long video, or 600 seconds (10 minutes) from the end of a 2 hour long video."
+msgstr "Wykrywanie rozpocznie się przed pojawieniem się okienka, w regulowanym okresie czasu od końca wideo, w oparciu o czas trwania wideo. Na przykład ustawienie 300 s/godz. rozpocznie wykrywanie 150 sekund (2,5 minuty) od końca filmu o długości 0,5 godziny, 300 sekund (5 minut) od końca filmu o długości 1 godziny lub 600 sekund (10 minut) od końca filmu o długości 2 godzin."
+
+msgctxt "#30633"
+msgid "{0:d} sec/hr of runtime"
+msgstr "{0:d} sek/godz. czasu trwania"
+
+msgctxt "#30634"
+msgid "Mark as watched"
+msgstr "Oznacz jako obejrzane"
+
+msgctxt "#30635"
+msgid "Forced on to mark just watched video as watched. Forced off to mark just watched video as unwatched. Disabled to allow Kodi to handle marking as watched"
+msgstr "Wymuszone włączenie oznacza właśnie obejrzany film jako obejrzany. Wymuszone wyłączenie oznacza właśnie obejrzany film jako nieobejrzany. Wyłączone, aby umożliwić Kodi obsługę oznaczania jako obejrzane"
+
+msgctxt "#30636"
+msgid "Auto resume"
+msgstr "Automatyczne wznawianie"
+
+msgctxt "#30637"
+msgid "Automatically try to resume on next video playback. Disable to play next video from start"
+msgstr "Automatycznie próbuj wznowić odtwarzanie następnego wideo. Wyłącz, aby odtwarzać następne wideo od początku"
+
+msgctxt "#30638"
+msgid "Pause after \"Watch now\""
+msgstr "Pauza po \"Oglądaj teraz\""
+
+msgctxt "#30639"
+msgid "Pause current video until next video starts playing when \"Watch now\" or \"Continue watching\" is selected from popup"
+msgstr "Wstrzymaj bieżące wideo do momentu rozpoczęcia odtwarzania następnego wideo po wybraniu opcji \"Oglądaj teraz\" lub \"Kontynuuj oglądanie\" z okienka"
+
 msgctxt "#30640"
 msgid "Kodi library"
 msgstr "Biblioteka Kodi"
@@ -284,12 +481,24 @@ msgid "Override mark as watched when UpNext popup is shown"
 msgstr "Nadpisanie oznaczenia jako oglądnięte, gdy wyświetlane jest okienki UpNext"
 
 msgctxt "#30642"
-msgid "Resume playback where possible [COLOR gray](disable to play next video from start)[/COLOR]"
-msgstr "Wznowienie odtwarzania gdy to możliwe [COLOR gray](wyłączenie odtwarzania następnego odcinka od początku)[/COLOR]"
+msgid "Previously watched videos"
+msgstr "Poprzednio oglądane filmy"
 
 msgctxt "#30643"
 msgid "Search for next episode in next season"
 msgstr "Szukaj kolejnego odcinka w kolejnym sezonie"
+
+msgctxt "#30644"
+msgid "Next special or season"
+msgstr "Następny odcinek specjalny lub sezon"
+
+msgctxt "#30646"
+msgid "Next item in playlist"
+msgstr "Następny element na liście odtwarzania"
+
+msgctxt "#30648"
+msgid "Next movie in movie set"
+msgstr "Następny film w zestawie filmów"
 
 msgctxt "#30700"
 msgid "Expert"
@@ -307,6 +516,10 @@ msgctxt "#30703"
 msgid "Disable UpNext"
 msgstr "Wyłącz UpNext"
 
+msgctxt "#30704"
+msgid "Pre-emptive UpNext queue reset"
+msgstr "Prewencyjne resetowanie kolejki UpNext"
+
 msgctxt "#30705"
 msgid "Log level"
 msgstr "Poziom logów"
@@ -319,6 +532,50 @@ msgctxt "#30707"
 msgid "Enable UpNext queue [COLOR gray](use playlist to queue and play next video)[/COLOR]"
 msgstr "Włącz kolejkę UpNext [COLOR gray](użyj playlisty do kolejki i odtwarzania następnego odcinka)[/COLOR]"
 
+msgctxt "#30708"
+msgid "Use internal Kodi playlist to queue and play next video"
+msgstr "Użyj wewnętrznej listy odtwarzania Kodi do kolejkowania i odtwarzania następnego wideo"
+
+msgctxt "#30709"
+msgid "Enable TMDbHelper integration"
+msgstr "Włącz integrację z TMDbHelper"
+
+msgctxt "#30710"
+msgid "Use TheMovieDb Helper players for plugin integration fallback"
+msgstr "Użyj odtwarzaczy TheMovieDb Helper jako rezerwowej integracji wtyczki"
+
+msgctxt "#30711"
+msgid "Exact match only"
+msgstr "Tylko dokładne dopasowanie"
+
+msgctxt "#30712"
+msgid "Plugin player must search for exact TVShow title, season, and episode number. Inhibits player dialog and manual episode selection."
+msgstr "Odtwarzacz wtyczki musi wyszukiwać dokładnego tytułu serialu, sezonu i numeru odcinka. Uniemożliwia wyświetlanie okna dialogowego odtwarzacza i ręczny wybór odcinka."
+
+msgctxt "#30713"
+msgid "Queue all next episodes"
+msgstr "Kolejkuj wszystkie następne odcinki"
+
+msgctxt "#30714"
+msgid "Creates a playlist of all remaining episodes in a TVShow, rather than only retrieving the details of the next episode after each current episode finishes."
+msgstr "Tworzy listę odtwarzania wszystkich pozostałych odcinków serialu, zamiast pobierać szczegóły tylko następnego odcinka po zakończeniu każdego bieżącego."
+
+msgctxt "#30715"
+msgid "Max resume point"
+msgstr "Maksymalny punkt wznowienia"
+
+msgctxt "#30716"
+msgid "Percent from end of a video to ignore/reset existing resume point."
+msgstr "Procent od końca wideo, aby zignorować/zresetować istniejący punkt wznowienia."
+
+msgctxt "#30717"
+msgid "General"
+msgstr "Ogólne"
+
+msgctxt "#30718"
+msgid "Event queue delay"
+msgstr "Opóźnienie kolejki zdarzeń"
+
 msgctxt "#30730"
 msgid "Additional detector settings"
 msgstr "Dodatkowe ustawienia detektora"
@@ -328,8 +585,8 @@ msgid "Detector storage location"
 msgstr "Lokalizacja przechowywania danych detektora"
 
 msgctxt "#30732"
-msgid "Number of threads to use"
-msgstr "Liczba wątków do użycia"
+msgid "Detector thread limit"
+msgstr "Limit wątków detektora"
 
 msgctxt "#30733"
 msgid "Data processing limit (kB/frame) [COLOR gray](higher is more accurate, slower)[/COLOR]"
@@ -344,44 +601,80 @@ msgid "Image resize method"
 msgstr "Metoda zmiany rozmiaru obrazu"
 
 msgctxt "#30736"
-msgid "Nearest"
-msgstr "Najbliższy"
+msgid "Nearest (fastest, lowest quality"
+msgstr "Najbliższy (najszybszy, najniższa jakość)"
 
 msgctxt "#30737"
-msgid "Box"
-msgstr "Box"
+msgid "Box (fast, low quality)"
+msgstr "Box (szybki, niska jakość)"
 
 msgctxt "#30738"
-msgid "Bilinear"
-msgstr "Bilinear"
+msgid "Bilinear (slow, low quality)"
+msgstr "Bilinearny (wolny, niska jakość)"
 
 msgctxt "#30739"
-msgid "Hamming"
-msgstr "Hamming"
+msgid "Hamming (slow, medium quality)"
+msgstr "Hamming (wolny, średnia jakość)"
 
 msgctxt "#30740"
-msgid "Bicubic"
-msgstr "Bicubic"
+msgid "Bicubic (slower, high quality)"
+msgstr "Bikubiczny (wolniejszy, wysoka jakość)"
 
 msgctxt "#30741"
-msgid "Lanczos"
-msgstr "Lanczos"
+msgid "Lanczos (slowest, highest quality)"
+msgstr "Lanczos (najwolniejszy, najwyższa jakość)"
 
 msgctxt "#30742"
-msgid "Detection match threshold [COLOR gray](% similarity)[/COLOR]"
-msgstr "Próg dopasowania detekcji [COLOR gray](% podobieństwa)[/COLOR]"
+msgid "Detector similarity threshold"
+msgstr "Próg podobieństwa detektora"
 
 msgctxt "#30743"
-msgid "Max significance for match [COLOR gray](% of areas with significant content)[/COLOR]"
-msgstr "Maks. znaczenie dla dopasowania [COLOR gray](% obszarów o znaczącej zawartości)[/COLOR]"
+msgid "Detector significance limit"
+msgstr "Limit istotności detektora"
 
 msgctxt "#30744"
-msgid "Min number of matches required for detection"
-msgstr "Minimalna liczba dopasowań wymagana do wykrycia"
+msgid "Detector match threshold"
+msgstr "Próg dopasowania detektora"
 
 msgctxt "#30745"
-msgid "Max number of mismatches before match count is reset"
-msgstr "Maksymalna liczba niedopasowań przed wyzerowaniem licznika"
+msgid "Detector mismatch limit"
+msgstr "Limit niedopasowania detektora"
+
+msgctxt "#30750"
+msgid "Location where detected end credit details are stored for comparison with next videos"
+msgstr "Lokalizacja, w której przechowywane są wykryte szczegóły napisów końcowych do porównania z następnymi filmami"
+
+msgctxt "#30751"
+msgid "Number of Python threads used to capture and process video data. One thread is used for capturing data, remaining threads are used for processing captured data.[CR][CR]Increasing the number of threads may reduce video disruption playback on slower devices, but will be slower overall."
+msgstr "Liczba wątków Pythona używanych do przechwytywania i przetwarzania danych wideo. Jeden wątek służy do przechwytywania danych, pozostałe wątki służą do przetwarzania przechwyconych danych.[CR][CR]Zwiększenie liczby wątków może zmniejszyć zakłócenia w odtwarzaniu wideo na wolniejszych urządzeniach, ale ogólnie będzie wolniejsze."
+
+msgctxt "#30752"
+msgid "Limit the amount of data processed per captured video frame by resizing using the selected detector resize method.[CR][CR]Increasing the data limit requires increased processing and can disrupt playback on slower devices."
+msgstr "Ogranicz ilość danych przetwarzanych na przechwyconą klatkę wideo, zmieniając rozmiar za pomocą wybranej metody zmiany rozmiaru detektora.[CR][CR]Zwiększenie limitu danych wymaga zwiększonego przetwarzania i może zakłócać odtwarzanie na wolniejszych urządzeniach."
+
+msgctxt "#30753"
+msgid "Enables additional image processing and filtering to significantly improve end credit detection. Can disrupt playback on slower devices."
+msgstr "Włącza dodatkowe przetwarzanie i filtrowanie obrazu w celu znacznej poprawy wykrywania napisów końcowych. Może zakłócać odtwarzanie na wolniejszych urządzeniach."
+
+msgctxt "#30754"
+msgid "Resampling method used when resizing captured video frame. Methods are ordered by speed and quality. Increasing the quality does not necessarily improve detection."
+msgstr "Metoda ponownego próbkowania używana podczas zmiany rozmiaru przechwyconej klatki wideo. Metody są uporządkowane według szybkości i jakości. Zwiększenie jakości niekoniecznie poprawia wykrywanie."
+
+msgctxt "#30755"
+msgid "End credits will be matched if the percentage similarity of captured image data, compared to previously captured data or typical representations of end credits, exceeds this threshold.[CR][CR]Lowering this value will allow faster moving end credits to be matched, but may result in false-positive matches."
+msgstr "Napisy końcowe zostaną dopasowane, jeśli procentowe podobieństwo przechwyconych danych obrazu w porównaniu z wcześniej przechwyconymi danymi lub typowymi reprezentacjami napisów końcowych przekroczy ten próg.[CR][CR]Obniżenie tej wartości pozwoli na dopasowanie szybciej poruszających się napisów końcowych, ale może skutkować fałszywie dodatnimi dopasowaniami."
+
+msgctxt "#30756"
+msgid "End credits will not be matched if the percentage of the captured image data that is identified as being visually significant exceeds this limit.[CR][CR]Increasing this value will allow more complex end credits (e.g. credits shown over a non-blank or moving background) to be matched, but may result in false-positive matches."
+msgstr "Napisy końcowe nie zostaną dopasowane, jeśli procent przechwyconych danych obrazu, który zostanie zidentyfikowany jako wizualnie znaczący, przekroczy ten limit.[CR][CR]Zwiększenie tej wartości pozwoli na dopasowanie bardziej złożonych napisów końcowych (np. napisy wyświetlane na niepustym lub ruchomym tle), ale może skutkować fałszywie dodatnimi dopasowaniami."
+
+msgctxt "#30757"
+msgid "Minimum number of matches required for end credits to be detected"
+msgstr "Minimalna liczba dopasowań wymagana do wykrycia napisów końcowych"
+
+msgctxt "#30758"
+msgid "Maximum number of mismatches before end credit match count is reset"
+msgstr "Maksymalna liczba niedopasowań przed zresetowaniem licznika dopasowań napisów końcowych"
 
 msgctxt "#30800"
 msgid "Developer"
@@ -412,33 +705,77 @@ msgid "Test UpNext operation"
 msgstr "Test działania UpNext"
 
 msgctxt "#30815"
-msgid "Enable demo mode"
-msgstr "Włącz tryb demo"
+msgid "Simulation mode"
+msgstr "Tryb symulacji"
+
+msgctxt "#30816"
+msgid "Enables configurable simulation of internal Kodi and UpNext operation"
+msgstr "Umożliwia konfigurowalną symulację wewnętrznego działania Kodi i UpNext"
 
 msgctxt "#30817"
-msgid "Auto seek after playback starts"
-msgstr "Automatyczne wyszukiwanie po rozpoczęciu odtwarzania"
+msgid "Simulation seek"
+msgstr "Przewijanie w symulacji"
+
+msgctxt "#30818"
+msgid "Auto seek after playback starts to reduce testing time and avoid having to manually seek to end of video"
+msgstr "Automatyczne przewijanie po rozpoczęciu odtwarzania w celu skrócenia czasu testowania i uniknięcia konieczności ręcznego przewijania do końca wideo"
 
 msgctxt "#30819"
-msgid "Force popup cue point"
-msgstr "Wymuś wyskakujący okienko podpowiedzi"
+msgid "Simulation cue"
+msgstr "Wskazówka symulacji"
+
+msgctxt "#30820"
+msgid "Force creation of popup cue point that is used when end credit detail are detected or provided by video plugin"
+msgstr "Wymuś utworzenie punktu wskazówki w okienku, który jest używany po wykryciu szczegółów napisów końcowych lub dostarczeniu przez wtyczkę wideo"
 
 msgctxt "#30821"
-msgid "Force use plugin data and playback method"
-msgstr "Wymuś używanie danych wtyczki i metody odtwarzania"
+msgid "Simulation plugin"
+msgstr "Wtyczka symulacji"
+
+msgctxt "#30822"
+msgid "Force use of auto-generated plugin data and playback method when playing Kodi library content"
+msgstr "Wymuś użycie automatycznie generowanych danych wtyczki i metody odtwarzania podczas odtwarzania zawartości biblioteki Kodi"
 
 msgctxt "#30823"
 msgid "Additional developer settings"
 msgstr "Dodatkowe ustawienia deweloperskie"
+
+msgctxt "#30824"
+msgid "Detector debug"
+msgstr "Debugowanie detektora"
 
 msgctxt "#30825"
 msgid "Enable detector debug logging and profiling"
 msgstr "Włącz rejestrowanie i profilowania debugowania detektora"
 
 msgctxt "#30826"
+msgid "Detector image debug"
+msgstr "Debugowanie obrazu detektora"
+
+msgctxt "#30827"
 msgid "Enable saving detector debug image output"
 msgstr "Włącz zapisywania wyjścia obrazu debugowania detektora"
+
+msgctxt "#30828"
+msgid "Widget debug"
+msgstr "Debugowanie widgetu"
+
+msgctxt "#30829"
+msgid "Enable widget debug logging and profiling"
+msgstr "Włącz rejestrowanie i profilowanie debugowania widgetu"
 
 msgctxt "#30830"
 msgid "Re-trigger a playback start event on addon start"
 msgstr "Ponów wyzwalanie zdarzenia rozpoczęcia odtwarzania przy uruchamianiu wtyczki"
+
+msgctxt "#30831"
+msgid "Re-trigger a simulated playback start event on addon start"
+msgstr "Ponownie wyzwól symulowane zdarzenie rozpoczęcia odtwarzania przy uruchomieniu dodatku"
+
+msgctxt "#30832"
+msgid "Enable full integration"
+msgstr "Włącz pełną integrację"
+
+msgctxt "#30833"
+msgid "Allows for fetching episode details and playlist integration"
+msgstr "Umożliwia pobieranie szczegółów odcinków i integrację z listą odtwarzania"

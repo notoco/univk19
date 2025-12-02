@@ -54,7 +54,8 @@
                             <condition operator="is" setting="popupAccentColour">4</condition>
                         </dependency>
                     </dependencies>
-                    <control type="edit" format="string">
+                    <control type="button" format="action">
+                        <data>RunScript(service.upnext,colorpicker)</data>
                         <heading>30520</heading>
                     </control>
                 </setting>

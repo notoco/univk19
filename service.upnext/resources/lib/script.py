@@ -154,6 +154,14 @@ def run(argv):
     #   RunScript(service.upnext,test_window,upnext,simple)
     #   RunScript(service.upnext,test_window,stillwatching,simple)
     if len(argv) > 1:
+        if argv[1] == 'colorpicker':
+            import xbmcgui
+            addon = xbmcaddon.Addon()
+            current_color = addon.getSetting('popupCustomAccentColour')
+            new_color = xbmcgui.Dialog().colorpicker(heading=addon.getLocalizedString(30520), selectedcolor=current_color)
+            if new_color:
+                addon.setSetting('popupCustomAccentColour', new_color)
+            return
         test_method = test_popup if argv[1] == 'test_window' else test_upnext
         return test_method(*argv[2:])
     return open_settings()
