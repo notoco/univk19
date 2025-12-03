@@ -39,8 +39,8 @@ msgid "Still there?"
 msgstr "Wciąż jesteś?"
 
 msgctxt "#30032"
-msgid "Enable UpNext when using a playlist"
-msgstr "Włącz UpNext podczas używania list odtwarzania"
+msgid ""
+msgstr ""
 
 msgctxt "#30033"
 msgid "Stop"
@@ -71,12 +71,12 @@ msgid ""
 msgstr ""
 
 msgctxt "#30040"
-msgid "Play next video automatically"
-msgstr "Odtwarzaj kolejny odcinek automatycznie "
+msgid "Play"
+msgstr "Odtwarzaj"
 
 msgctxt "#30041"
-msgid "Stop playback at end of video"
-msgstr "Zatrzymaj odtwarzenie na końcu odcinka"
+msgid "Stop"
+msgstr "Zatrzymaj"
 
 msgctxt "#30042"
 msgid "None"
@@ -201,8 +201,8 @@ msgid "Popup display"
 msgstr "Wygląd okienka"
 
 msgctxt "#30502"
-msgid "Skin customisation [COLOR gray](requires skin integration)[/COLOR]"
-msgstr "Dostosowanie skóry [COLOR gray](wymaga integracji ze skórką)[/COLOR]"
+msgid "Skin customisation"
+msgstr "Dostosowanie skórki"
 
 msgctxt "#30503"
 msgid "Show simple style popup"
@@ -373,12 +373,12 @@ msgid "Default action is automatically taken when popup closes and no user input
 msgstr "Domyślna akcja jest wykonywana automatycznie po zamknięciu okienka i braku reakcji użytkownika"
 
 msgctxt "#30605"
-msgid "Play already watched videos"
-msgstr "Odtwarzaj obejrzane odcinki"
+msgid ""
+msgstr ""
 
 msgctxt "#30606"
-msgid "Check if still watching [COLOR gray](stops auto playback if not still watching)[/COLOR]"
-msgstr "Sprawdź, czy nadal oglądasz [COLOR gray](zatrzymuje automatyczne odtwarzanie, jeśli nie nadal oglądasz)[/COLOR]"
+msgid "Check if still watching"
+msgstr "Sprawdź, czy nadal oglądasz"
 
 msgctxt "#30607"
 msgid "Stops automatic playback if user input is not received after the configured number of videos are automatically played"
@@ -437,7 +437,7 @@ msgid "Auto-detect end credits"
 msgstr "Auto wykrywanie napisów końcowych"
 
 msgctxt "#30631"
-msgid "Detection window [COLOR gray](seconds/hr prior to popup appearing by time)[/COLOR]"
+msgid "Detection window"
 msgstr "Okno wykrywania [COLOR gray](sekundy/godziny przed pojawieniem się okienka wg czasu)[/COLOR]"
 
 msgctxt "#30632"
@@ -473,20 +473,12 @@ msgid "Pause current video until next video starts playing when \"Watch now\" or
 msgstr "Wstrzymaj bieżące wideo do momentu rozpoczęcia odtwarzania następnego wideo po wybraniu opcji \"Oglądaj teraz\" lub \"Kontynuuj oglądanie\" z okienka"
 
 msgctxt "#30640"
-msgid "Kodi library"
-msgstr "Biblioteka Kodi"
-
-msgctxt "#30641"
-msgid "Override mark as watched when UpNext popup is shown"
-msgstr "Nadpisanie oznaczenia jako oglądnięte, gdy wyświetlane jest okienki UpNext"
+msgid "Next selection"
+msgstr "Wybór następnego"
 
 msgctxt "#30642"
 msgid "Previously watched videos"
 msgstr "Poprzednio oglądane filmy"
-
-msgctxt "#30643"
-msgid "Search for next episode in next season"
-msgstr "Szukaj kolejnego odcinka w kolejnym sezonie"
 
 msgctxt "#30644"
 msgid "Next special or season"
@@ -529,8 +521,8 @@ msgid "Kodi JSON-RPC retry attempts"
 msgstr "Kodi JSON-RPC - próby ponawiania"
 
 msgctxt "#30707"
-msgid "Enable UpNext queue [COLOR gray](use playlist to queue and play next video)[/COLOR]"
-msgstr "Włącz kolejkę UpNext [COLOR gray](użyj playlisty do kolejki i odtwarzania następnego odcinka)[/COLOR]"
+msgid "Enable UpNext queue"
+msgstr "Włącz kolejkę UpNext"
 
 msgctxt "#30708"
 msgid "Use internal Kodi playlist to queue and play next video"
@@ -589,15 +581,15 @@ msgid "Detector thread limit"
 msgstr "Limit wątków detektora"
 
 msgctxt "#30733"
-msgid "Data processing limit (kB/frame) [COLOR gray](higher is more accurate, slower)[/COLOR]"
+msgid "Detector data limit"
 msgstr "Limit przetwarzania danych (kB/ramkę) [COLOR gray](wyższy jest dokładniejszy, wolniejszy)[/COLOR]"
 
 msgctxt "#30734"
-msgid "Enable filtering to detect end credits"
-msgstr "Włącz filtrowanie w celu wykrycia napisów końcowych"
+msgid "Detector additional filtering"
+msgstr "Dodatkowe filtrowanie detektora"
 
 msgctxt "#30735"
-msgid "Image resize method"
+msgid "Detector resize method"
 msgstr "Metoda zmiany rozmiaru obrazu"
 
 msgctxt "#30736"
@@ -765,8 +757,8 @@ msgid "Enable widget debug logging and profiling"
 msgstr "Włącz rejestrowanie i profilowanie debugowania widgetu"
 
 msgctxt "#30830"
-msgid "Re-trigger a playback start event on addon start"
-msgstr "Ponów wyzwalanie zdarzenia rozpoczęcia odtwarzania przy uruchamianiu wtyczki"
+msgid "Simulation trigger"
+msgstr "Wyzwalacz symulacji"
 
 msgctxt "#30831"
 msgid "Re-trigger a simulated playback start event on addon start"
