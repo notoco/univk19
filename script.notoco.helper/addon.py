@@ -11,9 +11,12 @@ import subprocess
 state = control.get_setting('state')
 if __name__ == '__main__':
     arg = None
+    brightness_percentage = None
 
     try:
        arg = sys.argv[1].lower()
+       if len(sys.argv) > 2:
+           brightness_percentage = int(sys.argv[2])
     except Exception:
        pass
 # AMBILIGHT
@@ -21,6 +24,11 @@ if __name__ == '__main__':
         control.ambilight_turn_on()
     elif arg == "amb_off":
         control.ambilight_turn_off()
+    elif arg == "amb_set_brightness":
+        if brightness_percentage is not None:
+            control.ambilight_set_brightness(brightness_percentage)
+        else:
+            control.send_notification("Ambilight", "Brak wartości procentowej jasności dla 'amb_set_brightness'")
     elif arg == "amb_switch":
         if state == 'true':
             control.ambilight_turn_off()

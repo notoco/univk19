@@ -41,6 +41,20 @@ def ambilight_bright_down():
         addon.setSetting('bright', str(bright))
         send_notification("Ambilight", "Jasność: "+str(bright))
 
+def ambilight_set_brightness(percentage):
+    try:
+        bright = int(percentage)
+        if not (0 <= bright <= 100):
+            send_notification("Ambilight", "Nieprawidłowa wartość jasności. Zakres 0-100.")
+            return
+
+        data = {"command":"adjustment", "adjustment":{"brightness": bright }, "tan":1}
+        response = requests.post('http://127.0.0.1:8090/json-rpc', headers=headers, json=data)
+        addon.setSetting('bright', str(bright))
+        send_notification("Ambilight", "Jasność ustawiona na: "+str(bright)+"%")
+    except ValueError:
+        send_notification("Ambilight", "Nieprawidłowy format wartości jasności.")
+
 def cpu():
     send_notification("", "[B]CPU:[/B] $INFO[System.CPUUsage] [CR][B]Temperatura:[/B] $INFO[System.CPUTemperature]   [B]RAM:[/B] $INFO[System.memory(used.percent)] [B]Up:[/B] $INFO[System.Uptime]")
 
