@@ -57,42 +57,31 @@ Många befintliga tillägg integreras redan med den här utanför lådan-tjänst
         </assets>
     </extension>
 </addon>
-<addon id="repository.notoco.univ19" name="Notoco Univ Repo" version="3.2" provider-name="notoco">
-        <extension point="xbmc.addon.repository" name="Notoco Univ Repo">
-            <dir minversion="18.9.0">
-                <info>https://github.com/notoco/univk19/raw/master/addons.xml</info>
-                <checksum>https://github.com/notoco/univk19/raw/master/addons.xml.md5</checksum>
-                <datadir zip="true">https://github.com/notoco/univk19/raw/master/zip</datadir>
-            </dir>
+<addon id="repository.notoco.univ19" name="Notoco Univ Repo" version="3.3" provider-name="notoco">
+    <extension point="xbmc.addon.repository" name="FanFilm Repository">
+        <dir minversion="19.90">
+            <info compressed="false">https://fanfilm-pl.github.io/repository.fanfilm/zips/addons.xml</info>
+            <checksum  verify="sha256">https://fanfilm-pl.github.io/repository.fanfilm/zips/addons.xml.sha256</checksum>
+            <datadir zip="true">https://fanfilm-pl.github.io/repository.fanfilm/zips/</datadir>
+            <hashes>sha256</hashes>
+        </dir>
         <dir>
-            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/addons.xml</info>
-            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/</datadir>
+            <info compressed="false">https://raw.githubusercontent.com/Gujal00/smrzips/master/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/Gujal00/smrzips/master/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/Gujal00/smrzips/master/zips/</datadir>
         </dir>
-		<dir minversion="18.0" maxversion="18.9.0">
-            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/leia/zips/addons.xml</info>
-            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/leia/zips/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/leia/zips/</datadir>
-        </dir>
-        <dir minversion="18.9.0" maxversion="19.9.0">
-            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/addons.xml</info>
-            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/</datadir>
-        </dir>
-        <dir minversion="19.9.1">
-            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/addons.xml</info>
-            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/</datadir>
-        </dir>
-        </extension>
-        <extension point="xbmc.addon.metadata">
-            <summary>Notoco Univ Repo</summary>
-            <description>Prywatne repozytorium notoco</description>
-            <platform>all</platform>
-            <assets>
-                <icon>icon.png</icon>
-            </assets>
-        </extension>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary>FanFilm Repository</summary>
+        <summary lang="pl_PL">Repozytorium FanFilm</summary>
+        <description>Repository with stable versions</description>
+        <description lang="pl_PL">Repozytorium z wersjami stabilnymi</description>
+        <platform>all</platform>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
     </addon>
 <addon id="skin.arctic.zephyr.2.resurrection.mod" name="Arctic: Zephyr 2 - Resurrection" provider-name="jurialmunkey, pkscout, heppen" version="n1.0.37">
     <requires>
