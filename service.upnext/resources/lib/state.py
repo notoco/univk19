@@ -25,6 +25,7 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
         'next_item',
         'popup_time',
         'popup_cue',
+        'chapter_detected',
         'detect_time',
         'shuffle_on',
         # Tracking player state variables
@@ -50,6 +51,7 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
         self.next_item = None
         self.popup_time = 0
         self.popup_cue = False
+        self.chapter_detected = False
         self.detect_time = 0
         self.shuffle_on = False
         # Tracking player state variables
@@ -66,6 +68,20 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
     @classmethod
     def log(cls, msg, level=utils.LOGDEBUG):
         utils.log(msg, name=cls.__name__, level=level)
+
+    @classmethod
+    def _get_tmdb_from_trakt_prop(cls):
+        """Return TMDB id from Trakt window property or None."""
+        prop = utils.get_property('script.trakt.ids')
+        if not prop:
+            return None
+        try:
+            traktids, _ = utils.decode_data(serialised_json=prop)
+            if traktids:
+                return traktids.get('tmdb')
+        except Exception:
+            pass
+        return None
 
     def reset(self):
         self.__init__(reset=True)  # pylint: disable=unnecessary-dunder-call
@@ -164,9 +180,10 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
         return self.detect_time
 
     def _set_detect_time(self):
-        # Don't use detection time period if a plugin cue point was provided,
-        # or end credits detection is disabled
-        if self.popup_cue or not SETTINGS.detect_enabled:
+        # Don't use detection time period if end credits detection is disabled.
+        # Allow detection even when a plugin-provided cue point exists so the
+        # subtitle-based detector can run for testing and provide logs.
+        if not SETTINGS.detect_enabled:
             self.detect_time = None
             return
 
@@ -187,15 +204,71 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
             # Force popup time to specified play time
             popup_time = detected_time
 
-            # Enable cue point unless forced off in sim mode
-            self.popup_cue = SETTINGS.sim_cue != constants.SETTING_OFF
+            # Disable cue point to keep popup until video ends (like fallback)
+            self.popup_cue = SETTINGS.sim_cue == constants.SETTING_ON
 
         self.popup_time = popup_time
         self._set_detect_time()
 
-        self.log('Popup: due at {0}s of {1}s (cue: {2})'.format(
-            self.popup_time, self.total_time, self.popup_cue
+        popup_pct = (self.popup_time / self.total_time * 100) if self.total_time > 0 else 0
+        self.log('Popup: due at {0}s of {1}s ({2:.1f}%) (auto_play: {3})'.format(
+            self.popup_time, self.total_time, popup_pct, self.popup_cue
         ), utils.LOGINFO)
+
+    def get_final_chapter_time(self, total_time, threshold):
+        """Get the start time of the final chapter if it's likely credits.
+        Returns the time in seconds, or None if no suitable chapter found.
+        
+        Detection logic (in priority order):
+        1. Method 2 (high confidence): If exactly ONE chapter exists in the
+           last 30% of the video AND it starts in the last 10%, it's credits.
+        2. Method 1 (fallback): If the last chapter starts at or after the
+           threshold percentage, use it as credits.
+        
+        Note: Chapters starting less than 10 seconds from the end are ignored
+        as they represent end-of-video markers, not credits."""
+        try:
+            import xbmc
+            chapters_str = xbmc.getInfoLabel('Player.Chapters')
+            if not chapters_str:
+                self.log('Chapter detection: no chapters found in video')
+                return None
+            # Chapters are comma-separated percentages
+            chapters = [float(c.strip()) for c in chapters_str.split(',') if c.strip()]
+            if len(chapters) < 2:
+                # Need at least 2 chapters (content + credits)
+                self.log('Chapter detection: only {0} chapter(s) found, need at least 2'.format(
+                    len(chapters)))
+                return None
+            
+            # Filter out chapters that start less than 10 seconds from the end
+            # (these are end-of-video markers, not credits)
+            min_threshold = ((total_time - 10) / total_time) * 100 if total_time > 10 else 0
+            valid_chapters = [c for c in chapters if c < min_threshold]
+            if len(valid_chapters) < 2:
+                self.log('Chapter detection: only {0} valid chapter(s) after filtering'.format(
+                    len(valid_chapters)))
+                return None
+            
+            # Method 2 (priority): If exactly ONE chapter in last 30% AND in last 10%
+            chapters_in_last_30 = [c for c in valid_chapters if c >= 70]
+            if len(chapters_in_last_30) == 1 and chapters_in_last_30[0] >= 90:
+                final_chapter = chapters_in_last_30[0]
+                return int((final_chapter / 100) * total_time)
+            
+            # Method 1 (fallback): Use last valid chapter if it's after threshold
+            final_chapter = valid_chapters[-1]
+            if final_chapter >= threshold:
+                return int((final_chapter / 100) * total_time)
+            else:
+                chapter_time = int((final_chapter / 100) * total_time)
+                self.log('Chapter detection: last chapter at {0:.1f}% ({1}s) is below {2}% threshold ({3}s)'.format(
+                    final_chapter, chapter_time, threshold, int((threshold / 100) * total_time)))
+                return None
+                
+        except (ValueError, TypeError, AttributeError) as e:
+            self.log('Chapter detection error: {0}'.format(e))
+        return None
 
     def set_popup_time(self, total_time):
         popup_time = 0
@@ -206,8 +279,24 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
         if SETTINGS.enable_queue:
             total_time -= 1
 
+        # Try chapter detection first if enabled
+        if SETTINGS.detect_chapters:
+            threshold = SETTINGS.detect_chapters_threshold
+            self.log('Attempting chapter detection with {0}% threshold'.format(threshold))
+            chapter_time = self.get_final_chapter_time(
+                total_time, threshold
+            )
+            if chapter_time:
+                popup_time = chapter_time
+                self.chapter_detected = True
+                # Disable cue point to keep popup until video ends (like fallback)
+                self.popup_cue = SETTINGS.sim_cue == constants.SETTING_ON
+                self.log('Popup: using chapter detection at {0}s'.format(popup_time))
+            else:
+                self.log('Chapter detection: no suitable chapters found')
+
         # Alway use plugin data, when available
-        if self.get_plugin_type():
+        if not popup_time and self.get_plugin_type():
             # Some plugins send the time from video end
             popup_duration = utils.get_int(self.data, 'notification_time', 0)
             # Some plugins send the time from video start (e.g. Netflix)
@@ -246,8 +335,9 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
         self.popup_time = popup_time
         self._set_detect_time()
 
-        self.log('Popup: due at {0}s of {1}s (cue: {2})'.format(
-            self.popup_time, self.total_time, self.popup_cue
+        popup_pct = (self.popup_time / self.total_time * 100) if self.total_time > 0 else 0
+        self.log('Popup: due at {0}s of {1}s ({2:.1f}%) (auto_play: {3})'.format(
+            self.popup_time, self.total_time, popup_pct, self.popup_cue
         ), utils.LOGINFO)
 
     def process_now_playing(self, playlist_position, plugin_type, play_info):
@@ -315,10 +405,35 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
         if not current_video:
             return None
 
-        if current_video['type'] == 'movie':
+        video_type = current_video['type']
+        plugin_url = current_video.get('mediapath') or current_video.get('file', '')
+        tmdb_id = None
+        tmdb_type = None
+
+        if plugin_url.startswith('plugin://'):
+            _, _, addon_args = utils.parse_url(plugin_url)
+            tmdb_id = addon_args.get('tmdb_id')
+            tmdb_type = addon_args.get('tmdb_type')
+            if video_type in ('unknown', '') and tmdb_type:
+                video_type = 'movie' if tmdb_type == 'movie' else 'episode'
+
+        if video_type == 'movie':
             if (current_video['set']
                     and utils.get_int(current_video, 'setid') > 0):
                 return current_video
+            if not tmdb_id:
+                tmdb_id = cls._get_tmdb_from_trakt_prop()
+            if not tmdb_id and SETTINGS.enable_tmdbhelper_fallback:
+            # Try to get TMDB ID from plugin URL or by searching
+                from tmdb_helper import TMDb
+                title = current_video.get('title', '')
+                year = utils.get_int(current_video, 'year')
+                if title:
+                    tmdb_id = TMDb().get_tmdb_id(
+                        tmdb_type='movie', query=title, year=year if year else None
+                    )
+            if tmdb_id:
+                return cls._get_tmdb_movie_now_playing(current_video, tmdb_id)
             return None
 
         # Previously resolved listitems may lose infotags that are set when the
@@ -333,6 +448,15 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
         season = utils.get_int(current_video, 'season')
         episode = utils.get_int(current_video, 'episode')
 
+        # Fallback to play_info item data if empty (for plugins)
+        if not title or constants.UNDEFINED in {season, episode}:
+            play_item = play_info.get('item', {})
+            title = title or play_item.get('showtitle')
+            if season == constants.UNDEFINED:
+                season = utils.get_int(play_item, 'season', season)
+            if episode == constants.UNDEFINED:
+                episode = utils.get_int(play_item, 'episode', episode)
+        
         if not title or constants.UNDEFINED in {season, episode}:
             return None
 
@@ -387,90 +511,116 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
         return current_video
 
     @staticmethod
-    # pylint: disable-next=too-many-locals
     def _get_tmdb_now_playing(current_video, title, season, episode, addon_id):
-        # TMDBHelper not importable, use plugin url instead
-        if SETTINGS.import_tmdbhelper:
-            from tmdb_helper import (
-                Players,
-                TMDb,
-                get_item_details,
-                get_next_episodes,
-                queue_episodes,
+        if not SETTINGS.import_tmdbhelper:
+            return None
+
+        from tmdb_helper import TMDb, get_item_details, get_next_episodes
+
+        utils.log('Getting TMDB now playing: title={0}, season={1}, episode={2}'.format(
+            title, season, episode), name='UpNextState', level=utils.LOGINFO)
+
+        tmdb_id = current_video.get('tmdb_id')
+        utils.log('TMDB ID from current video: {0}'.format(tmdb_id), name='UpNextState', level=utils.LOGINFO)
+        if not tmdb_id:
+            tmdb_id = UpNextState._get_tmdb_from_trakt_prop()
+            utils.log('TMDB ID from Trakt property: {0}'.format(tmdb_id), name='UpNextState', level=utils.LOGINFO)
+        if not tmdb_id:
+            tmdb_id = TMDb().get_tmdb_id(
+                tmdb_type='tv', query=title, season=season, episode=episode
             )
+            utils.log('TMDB ID from search: {0}'.format(tmdb_id), name='UpNextState', level=utils.LOGINFO)
+        if not tmdb_id:
+            utils.log('TMDB ID not found', name='UpNextState', level=utils.LOGERROR)
+            return None
 
-            no_integration = not TMDb.is_initialised()
-        else:
-            no_integration = True
-
-        player_name = current_video.get('player', addon_id)
-        if no_integration:
-            upnext.send_signal(
-                sender='UpNext.TMDBHelper',
-                upnext_info={
-                    'current_video': current_video,
-                    'play_url': None,
-                    'player': player_name,
-                }
-            )
-            return
-
-        season = utils.get_int(current_video, 'season', season)
-        episode = utils.get_int(current_video, 'episode', episode)
-        # noinspection PyUnboundLocalVariable
-        # pylint: disable-next=possibly-used-before-assignment,no-value-for-parameter
-        tmdb_id = current_video.get('tmdb_id') or TMDb().get_tmdb_id(
-            tmdb_type='tv', query=title, season=season, episode=episode
-        )
-        # noinspection PyUnboundLocalVariable
-        # pylint: disable-next=possibly-used-before-assignment,not-callable
-        current_video = get_item_details(
-            tmdb_type='tv', tmdb_id=tmdb_id, season=season, episode=episode
-        )
-        if not tmdb_id or not current_video:
-            return
-
-        # noinspection PyUnboundLocalVariable
-        # pylint: disable-next=possibly-used-before-assignment,no-value-for-parameter,unexpected-keyword-arg
-        players = Players(tmdb_type='tv',
-                          tmdb_id=tmdb_id,
-                          season=season,
-                          episode=episode,
-                          ignore_default=False,
-                          islocal=False,
-                          player=player_name,
-                          mode='play')
-
-        player = players.current_player or players.get_default_player()
-        player = (player and player.get('file')) or player_name
-        # noinspection PyUnboundLocalVariable
-        # pylint: disable-next=possibly-used-before-assignment
-        episodes = get_next_episodes(tmdb_id, season, episode, player)
+        current_details = get_item_details('tv', tmdb_id, season, episode)
+        episodes = get_next_episodes(tmdb_id, season, episode)
+        
+        # Return None if no episodes found
         if not episodes:
-            return
+            utils.log('No episodes found', name='UpNextState', level=utils.LOGERROR)
+            return None
+        
+        player_name = current_video.get('player', addon_id)
+        current_infolabels = getattr(current_details, 'infolabels', {}) or {}
+        current_art = getattr(current_details, 'art', {}) or {}
+        next_infolabels = getattr(episodes[0], 'infolabels', {}) or {}
+        next_art = getattr(episodes[0], 'art', {}) or {}
+        
+        upnext.send_signal(
+            sender='UpNext.TMDBHelper',
+            upnext_info={
+                'current_video': dict(
+                    current_infolabels,
+                    tmdb_id=tmdb_id,
+                    art=current_art,
+                    showtitle=title,
+                ),
+                'next_video': dict(
+                    next_infolabels,
+                    tmdb_id=tmdb_id,
+                    art=next_art,
+                    showtitle=title,
+                ),
+                'play_info': {},
+                'player': player_name,
+            }
+        )
+        return None
 
-        # noinspection PyUnboundLocalVariable
-        # pylint: disable-next=possibly-used-before-assignment
-        if player and SETTINGS.queue_from_tmdb and queue_episodes(episodes):
-            utils.event('OnAVStart', internal=True)
-        else:
-            upnext.send_signal(sender='UpNext.TMDBHelper',
-                               upnext_info={
-                                   'current_video': dict(
-                                       current_video.infolabels,
-                                       tmdb_id=tmdb_id,
-                                       art=current_video.art,
-                                       showtitle=title,
-                                   ),
-                                   'next_video': dict(
-                                       episodes[1].infolabels,
-                                       tmdb_id=tmdb_id,
-                                       art=episodes[1].art,
-                                       showtitle=title,
-                                   ),
-                                   'play_url': None,
-                                   'player': player,
-                               })
+    @staticmethod
+    def _get_tmdb_movie_now_playing(current_video, tmdb_id):
+        if not SETTINGS.import_tmdbhelper:
+            return None
+
+        from tmdb_helper import get_item_details, get_next_movie
+
+        current_details = get_item_details('movie', tmdb_id)
+        if not current_details:
+            return None
+
+        next_movie = get_next_movie(tmdb_id)
+        if not next_movie:
+            return None
+
+        current_infolabels = getattr(current_details, 'infolabels', {}) or {}
+        current_art = getattr(current_details, 'art', {}) or {}
+        next_infolabels = getattr(next_movie, 'infolabels', {}) or {}
+        next_art = getattr(next_movie, 'art', {}) or {}
+        next_tmdb_id = getattr(next_movie, 'unique_ids', {}).get('tmdb', '')
+
+        play_url = 'plugin://{0}/?info=play&tmdb_type=movie&tmdb_id={1}'.format(
+            constants.TMDBH_ADDON_ID, next_tmdb_id
+        )
+
+        upnext.send_signal(
+            sender='UpNext.TMDBHelper',
+            upnext_info={
+                'current_video': dict(
+                    current_infolabels,
+                    tmdb_id=tmdb_id,
+                    art=current_art,
+                    mediatype='movie',
+                ),
+                'next_video': dict(
+                    next_infolabels,
+                    tmdb_id=next_tmdb_id,
+                    art=next_art,
+                    mediatype='movie',
+                ),
+                'play_url': play_url,
+            }
+        )
+
+        return dict(
+            current_video,
+            type='movie',
+            title=current_infolabels.get('title', current_video.get('label', '')),
+            set=current_infolabels.get('set', ''),
+            setid=current_video.get('setid', -1),
+            tmdb_id=tmdb_id,
+        )
 
     def get_plugin_type(self, playlist_next=None):
         if self.data:
@@ -494,13 +644,13 @@ class UpNextState(object):  # pylint: disable=too-many-public-methods
             return
 
         data, encoding = plugin_data
-        self.log('Plugin data: {0}'.format(data))
 
         # Map to new data structure
         if 'current_episode' in data:
             data['current_video'] = data.pop('current_episode')
-        if 'next_episode' in data:
-            data['next_video'] = data.pop('next_episode')
+        if 'next_video' in data:
+            self.log('next video : {0}'.format(data['next_video']))
+            data['next_video'] = data.pop('next_video')
 
         self.data = data
         self.encoding = encoding or 'base64'

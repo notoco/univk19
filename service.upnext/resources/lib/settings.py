@@ -22,6 +22,11 @@ class UpNextSettings(object):
         'api_retry_attempts',
         'auto_play',
         'default_action_delay',
+        'detect_chapters',
+        'detect_chapters_threshold',
+        'detect_subtitles_threshold',
+        'detect_subtitles_max_pct',
+        'detect_subtitles',
         'detect_enabled',
         'detect_level',
         'detect_matches',
@@ -150,8 +155,10 @@ class UpNextSettings(object):
         try:
             value = self._get_string(self._store, key)
             value = statichelper.from_bytes(value)
-        # Occurs when the addon is disabled
-        except RuntimeError:
+        # Common failures when the underlying settings store isn't available
+        # (e.g. accessed from a non-main thread before Kodi has initialized
+        # the settings object) or when the descriptor isn't bound.
+        except (RuntimeError, AttributeError, TypeError):
             value = default
 
         if echo:
@@ -178,7 +185,15 @@ class UpNextSettings(object):
             self.get_int('popupAccentColour', default=0)
         )
         if not accent_colour:
-            accent_colour = self.get_string('popupCustomAccentColour')
+            if utils.supports_python_api(20):
+                accent_colour = self.get_string('popupCustomAccentColour')
+            else:
+                accent_colour = hex(
+                    (self.get_int('popupCustomAccentColourA') << 24)
+                    + (self.get_int('popupCustomAccentColourR') << 16)
+                    + (self.get_int('popupCustomAccentColourG') << 8)
+                    + self.get_int('popupCustomAccentColourB')
+                )[2:]
         self.popup_accent_colour = accent_colour
 
         self.widget_list_limit = self.get_int('widgetListLimit', default=25)
@@ -233,6 +248,11 @@ class UpNextSettings(object):
 
         self.detect_enabled = self.get_bool('detectPlayTime')
         self.detect_period = self.get_int('detectPeriod')
+        self.detect_chapters = self.get_bool('detectChapters')
+        self.detect_subtitles = self.get_bool('detectSubtitles')
+        self.detect_chapters_threshold = self.get_int('detectChaptersThreshold')
+        self.detect_subtitles_threshold = self.get_int('detectSubtitlesThreshold')
+        self.detect_subtitles_max_pct = self.get_int('detectSubtitlesMaxPercent')
 
         self.enable_queue = self.get_bool('enableQueue')
         self.early_queue_reset = self.get_bool('earlyQueueReset')
