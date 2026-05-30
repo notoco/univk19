@@ -1,5 +1,261 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
+<addon id="context.video.favourites"
+version="0.1.0"
+name="Video Favourites Context Menu"
+provider-name="primaeval">
+<requires>
+  <import addon="xbmc.python" version="3.0.0"/>
+  <import addon="script.module.xbmcswift2" version="2.4.0"/>
+  <import addon="script.module.requests" version="2.9.1" />
+  <import addon="plugin.video.favourites" version="0.0.1" />
+</requires>
+<extension point="kodi.context.item">
+<menu id="kodi.core.main">
+  <item library="context.py">
+    <label>Dodaj do[COLOR darkorange] Video Favourites[/COLOR]</label>
+    <visible>True</visible>
+  </item>
+</menu>
+</extension>
+<extension point="xbmc.addon.metadata">
+  <summary lang="en">Video Favourites Context Menu</summary>
+  <description lang="en"></description>
+  <disclaimer lang="en">.</disclaimer>
+  <assets>
+    <icon>icon.png</icon>
+  </assets>
+</extension>
+</addon>
+<addon id="skin.arctic.zephyr.2.resurrection.mod" name="Arctic: Zephyr 2 - Resurrection" provider-name="jurialmunkey, pkscout, heppen" version="n1.0.37">
+    <requires>
+        <import addon="xbmc.gui" version="5.17.0" />
+        <import addon="script.skinshortcuts"/>
+        <import addon="script.skinhelper" version="0.0.4" />
+        <import addon="script.skinvariables" version="2.1.14" />
+        <import addon="plugin.video.themoviedb.helper" version="5.4.8" />
+        <import addon="resource.images.studios.white"/>
+        <import addon="resource.images.moviegenreicons.transparent"/>
+        <import addon="resource.images.weathericons.white"/>
+        <import addon="resource.images.moviecountryicons.maps"/>
+    </requires>
+    <extension point="xbmc.gui.skin" debugging="false">
+		<res width="1920" height="1080" aspect="16:9" default="true" folder="1080i" />
+	</extension>
+    <extension point="xbmc.addon.metadata">
+        <news></news>
+        <summary lang="de">Klar, minimalistisch, elegant, einfach, leicht</summary>
+        <summary lang="en">Clean, minimal, elegant, simple, light.</summary>
+        <summary lang="en_AU">Clean, minimal, elegant, simple, light.</summary>
+        <summary lang="en_US">Clean, minimal, elegant, simple, light.</summary>
+        <summary lang="es">Limpio, minimalista, elegante, simple, ligero.</summary>
+        <summary lang="fr">Clair, minimaliste, élégant, simple et léger.</summary>
+        <summary lang="fr_CA">Net, minimal, élégant, simple, léger.</summary>
+        <summary lang="it">Pulita, minimale, elegante, semplice, leggera.</summary>
+        <summary lang="lt">Švari, minimali, elegantiška, paprasta, lengva.</summary>
+        <summary lang="nl">Schoon, minimaal, elegant, simpel, licht.</summary>
+        <summary lang="no">Rent, minimalt, elegant, enkelt, lett.</summary>
+        <summary lang="pl">Prosta, minimalistyczna, elegancka i lekka.</summary>
+        <summary lang="pt_BR">Limpa, simplista, elegante, leve.</summary>
+        <summary lang="ro">Curat, minimalist, elegant, simplu, ușor</summary>
+        <summary lang="ru">Опрятный, минималистичный, элегантный, простой, светлый.</summary>
+
+        <description lang="en">This is a light mod of Arctic Zephyr 2 by heppen. Arctic Zephyr 2 is a minimalistic skin created by jurialmunkey and moded to work with Kodi 19 Matrix by pkscout. The skin is designed to be simple so that the user can focus on their media content. In addition to the default light colour scheme, the skin also includes a number of darker variations.</description>
+        <description lang="pl">Jest to modyfikacja skórki Arctic Zephyr 2 autorstwa heppen. Arctic Zephyr 2 jest minimalistyczną skórką stworzoną przez jurialmunkey i zmodowaną do pracy z Kodi 19 Matrix przez pkscout. Skórka została zaprojektowana jako prosta, aby użytkownik mógł skupić się na swojej zawartości multimedialnej. Oprócz domyślnego jasnego schematu kolorów, skórka zawiera również kilka ciemniejszych wariantów.</description>
+        <platform>all</platform>
+        <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
+        <forum>https://forum.kodi.tv/showthread.php?tid=362941</forum>
+        <source>https://github.com/DenDyGH/skin.arctic.zephyr.2.resurrection.mod</source>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+            <screenshot>resources/screenshot-01.jpg</screenshot>
+            <screenshot>resources/screenshot-02.jpg</screenshot>
+            <screenshot>resources/screenshot-03.jpg</screenshot>
+            <screenshot>resources/screenshot-04.jpg</screenshot>
+            <screenshot>resources/screenshot-05.jpg</screenshot>
+            <screenshot>resources/screenshot-06.jpg</screenshot>
+        </assets>
+    </extension>
+</addon>
+<addon id="script.skinshortcuts" name="Skin Shortcuts" version="n2.0.3" provider-name="BigNoid, marcelveldt, SiLVO, anxdpanic">
+    <requires>
+        <import addon="xbmc.python" version="3.0.0"/>
+        <import addon="script.module.unidecode" version="1.1.1+matrix.2"/>
+        <import addon="script.module.simpleeval" version="0.9.10"/>
+    </requires>
+    <extension point="xbmc.python.library" library="resources/lib/entry_point.py"/>
+    <extension point="xbmc.addon.metadata">
+        <news>
+[fix] translations in PVR |contrib: Dis90|
+[fix] titles missing in some dialogs
+[fix] handle missing profiles.xml gracefully (fixes Apple TV)
+[lang] update translations from Weblate
+        </news>
+        <platform>all</platform>
+        <license>GPL-2.0-only</license>
+        <forum>https://forum.kodi.tv/showthread.php?tid=178294</forum>
+        <source>https://github.com/mikesilvo164/script.skinshortcuts</source>
+        <assets>
+            <icon>resources/media/icon.png</icon>
+            <fanart>resources/media/fanart.jpg</fanart>
+        </assets>
+        <description lang="ar_SA">إضافة مخصصه للمظهر لتوفير إدارة بسيطة للودجيت &quot;الأقسام&quot; و الاختصارات على الشاشة (تتطلب دعم المظهر لها)</description>
+        <description lang="cs_CZ">Doplněk pro vzhledy poskytující jednoduchý management a seznamy uživatelských zkratek (vyžaduje podporu vzhledu)</description>
+        <description lang="da_DK">Add-on til skins der giver enkel styring og lister over brugergenveje (kræver skin-understøttelse)</description>
+        <description lang="de_DE">Addon für Skins zum einfachen Bearbeiten und Auflisten von benutzerdefinierten Verknüpfungen (erfordert Skinunterstützung)</description>
+        <description lang="el_GR">Πρόσθετο για κελύφη, το οποίο παρέχει έναν απλό τρόπο διαχείρισης και κατηγοριοποίησης των συντομεύσεων του χρήστη (πρέπει να υποστηρίζεται από το κέλυφος)</description>
+        <description lang="en_GB">Add-on for skins to provide simple managing and listing of user shortcuts (requires skin support)</description>
+        <description lang="en_NZ">Add-on for skins to provide simple managing and listing of user shortcuts (requires skin support)</description>
+        <description lang="en_US">Add-on for skins to provide simple managing and listing of user shortcuts (requires skin support)</description>
+        <description lang="es_ES">Complemento para las pieles para proporcionar una gestión sencilla y lista de atajos de usuario (requiere que la piel lo soporte)</description>
+        <description lang="fi_FI">Lisäosa, joka mahdollistaa ulkoasujen valikkokohteiden ja omien pikavalintojen lisäyksen ja niiden muokkauksen (vaatii tuen ulkoasulta)</description>
+        <description lang="fr_CA">Addiciel pour habillages qui fournit une gestion simple et un listage des raccourcis utilisateurs (exige la prise en charge de l&apos;habillage)</description>
+        <description lang="fr_FR">Module complémentaire pour les skins pour fournir une gestion et une liste simples de raccourcis utilisateur (nécessite la prise en charge des skins)</description>
+        <description lang="gl_ES">Complemento que fornece aos temas dunha xestión sinxela dos atallos dos usuarios (require soporte do tema)</description>
+        <description lang="hr_HR">Dodatak za presvlake koji omogućuje jednostavno upravljanje i prikaz prečaca korisnika (zahtijeva podršku presvlake)</description>
+        <description lang="hu_HU">Felszín kiegészítő amely könnyen kezelhetővé és listázhatóvá teszi a felhasználói parancsikonokat (Felszín támogatás szükséges)</description>
+        <description lang="is_IS">Viðbót fyrir viðmót til að halda utan um flýtivísa og fá yfirlit yfir þá (þarfnast stuðnings frá viðmóti)</description>
+        <description lang="it_IT">Add-on per gli skin per consentire un facile gestione ed elenco delle scorciatoie utente (richiede che lo skin lo supporti)</description>
+        <description lang="ko_KR">사용자 단축키의 간단한 관리 및 목록을 제공하는 스킨용 애드온(스킨 지원 필요)</description>
+        <description lang="lt_LT">Priedas teminėms išvaizdoms, kad jos turėtų galimybę paprastai tvarkyti ir atvaizduoti vartotojo sukurtas nuorodas (reikalingas teminės išvaizdos palaikymas)</description>
+        <description lang="nb_NO">Tillegg for enkel administrering og opplisting av bruker-snarveier i tema (krever støtte i tema)</description>
+        <description lang="nl_NL">Add-on voor skins om te voorzien in het eenvoudig beheren en sorteren van gebruikers snelkoppelingen (vereist skin ondersteuning)</description>
+        <description lang="pl_PL">Wtyczka dla skór, która zapewnia proste zarządzanie i tworzenie list skrótów użytkownika (wymaga wsparcia skóry)</description>
+        <description lang="pt_BR">Add-on para que as skins possam prover gerenciamento de lista de atalhos para o menu principal (requer suporte da skin)</description>
+        <description lang="pt_PT">Um add-on que permite que os temas tenham recursos simples para gerir e listar atalhos de utilizadores (é necessário suporte do tema)</description>
+        <description lang="ru_RU">Дополнение для обложек, предоставляющее простой способ управления пользовательскими ярлыками (требуется поддержка обложкой)</description>
+        <description lang="sk_SK">Doplnok poskytujúci jednoduchý manažment zoznamu užívateľských odkazov (vyžaduje podporu v doplnku pre vzhľad)</description>
+        <description lang="sv_SE">Skinntillägg som tillhandahåller enkel hantering och översikt av användargenvägar (om skinnet stöder det)</description>
+        <description lang="zh_CN">皮肤加载项，提供简单的用户快捷方式管理和列表（需要皮肤支持）</description>
+        <description lang="zh_TW">插件为皮肤提供了简单的管理和用户连接方式列表 (需要皮肤支持)</description>
+    </extension>
+</addon>
+<addon id="script.service.hyperion-control" name="Hyperion Control" version="20.0.1" provider-name="hyperion-project">
+  <requires>
+	<import addon="xbmc.addon"  version="20.0.0"/>
+    <import addon="xbmc.python" version="3.0.1"/>
+    <import addon="script.module.requests" version="2.3.0"/>
+  </requires>
+  <extension point="xbmc.service" library="service.py"/>
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en_GB">Control Hyperion Ambilight</summary>
+    <summary lang="de_DE">Hyperion Ambilight Steuerung</summary>
+    <description lang="en_GB">Enable and disable components (like capture) of Hyperion automatically based on playing/screensaver state of Kodi[CR]-Supports auto detection of Hyperion Servers[CR]-Token authentication</description>
+    <description lang="de_DE">Aktiviere und deaktiviere automatisch Hyperion Komponenten basierend auf dem aktuellen Kodi Status[CR]-Unterstützt Hyperion Server suche[CR]-Token Autorisierung</description>
+    <language>en de es fr hu pl</language>
+    <platform>all</platform>
+    <license>MIT</license>
+    <forum>https://hyperion-project.org/forum</forum>
+    <website>https://hyperion-project.org/forum</website>
+    <source>https://github.com/hyperion-project/hyperion.control</source>
+    <news>
+      20.0.0
+      - Kodi 20 (Nexus) support
+      - major refactor to adhere to SOLID principles
+
+      19.0.2
+      - New languages: Español, Français, Polski
+
+      19.0.1
+      - Kodi 19 support
+      - minor cleanups and corrections
+
+      1.0.1
+      - Fixed a crash with 3d mode @b-jesch
+
+      1.0.0
+      - Added support for server search
+      - Added support token authentication
+      - Fixed issue where kodi api does not properly announce video playing states
+    </news>
+	<assets>
+		<icon>resources/icon.png</icon>
+		<fanart>resources/fanart.png</fanart>
+		<screenshot>resources/screenshot-01.png</screenshot>
+	</assets>
+  </extension>
+</addon>
+<addon id="plugin.program.simple.favourites"
+       version="0.1.17"
+       name="Simple Favourites"
+       provider-name="primaeval">
+    <requires>
+        <import addon="xbmc.python" version="3.0.0"/>
+        <import addon="script.module.xbmcswift2"/>
+        <import addon="script.module.requests"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="main.py">
+        <provides>executable</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">Simple Favourites</summary>
+        <description lang="en"/>
+        <disclaimer lang="en">.</disclaimer>
+    </extension>
+    <extension point="kodi.context.item">
+        <menu id="kodi.core.main">
+
+            <item library="add_item_context.py">
+                <label>Add to simple favorites</label>
+                <visible>true</visible>
+            </item>
+
+        </menu>
+    </extension>
+</addon>
+<addon id="plugin.video.favourites" version="0.1.1" name="Video Favourites" provider-name="primaeval">
+    <requires>
+        <import addon="xbmc.python" version="3.0.0"/>
+        <import addon="script.module.xbmcswift2" version="2.4.0"/>
+        <import addon="script.module.requests" version="2.9.1"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="main.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">Video Favourites</summary>
+        <description lang="en"/>
+        <disclaimer lang="en"/>
+    </extension>
+    <extension point="kodi.context.item">
+        <menu id="kodi.core.main">
+
+            <item library="add_item_context.py">
+                <label>Add to video favorites</label>
+                <visible>true</visible>
+            </item>
+
+        </menu>
+    </extension>
+</addon>
+<addon id="skin.arctic.horizon.2.notoco" name="Arctic Horizon 2 NOTOCO" provider-name="jurialmunkey - notoco mod" version="2025.06.11.0">
+    <requires>
+        <import addon="xbmc.gui" version="5.17.0" />
+        <import addon="script.skinshortcuts" version="0.4.0" />
+        <import addon="script.skinvariables" version="1.0.0" />
+        <import addon="script.texturemaker" version="0.2.8" />
+        <import addon="plugin.video.themoviedb.helper" version="5.1.11~nexus" />
+        <import addon="resource.images.weathericons.white" version="0.0.1" />
+        <import addon="resource.images.studios.coloured" version="0.0.1" />
+        <import addon="resource.font.robotocjksc" version="0.0.1" />
+    </requires>
+    <extension debugging="false" defaultthemename="Textures.xbt" effectslowdown="1" point="xbmc.gui.skin">
+        <res aspect="16:9" default="true" folder="1080i" height="1080" width="1920" />
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">Minimal. Classic. Gradients. Widgets.</summary>
+        <description lang="en">Arctic Horizon 2</description>
+        <platform>all</platform>
+        <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
+        <forum />
+        <source />
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>
 <addon id="service.upnext" name="UpNext" version="2.0.30+nat80.6" provider-name="im85288, MoojMidge, nat80">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
@@ -94,110 +350,6 @@ Många befintliga tillägg integreras redan med den här utanför lådan-tjänst
             </assets>
         </extension>
     </addon>
-<addon id="skin.arctic.zephyr.2.resurrection.mod" name="Arctic: Zephyr 2 - Resurrection" provider-name="jurialmunkey, pkscout, heppen" version="n1.0.37">
-    <requires>
-        <import addon="xbmc.gui" version="5.17.0" />
-        <import addon="script.skinshortcuts"/>
-        <import addon="script.skinhelper" version="0.0.4" />
-        <import addon="script.skinvariables" version="2.1.14" />
-        <import addon="plugin.video.themoviedb.helper" version="5.4.8" />
-        <import addon="resource.images.studios.white"/>
-        <import addon="resource.images.moviegenreicons.transparent"/>
-        <import addon="resource.images.weathericons.white"/>
-        <import addon="resource.images.moviecountryicons.maps"/>
-    </requires>
-    <extension point="xbmc.gui.skin" debugging="false">
-		<res width="1920" height="1080" aspect="16:9" default="true" folder="1080i" />
-	</extension>
-    <extension point="xbmc.addon.metadata">
-        <news></news>
-        <summary lang="de">Klar, minimalistisch, elegant, einfach, leicht</summary>
-        <summary lang="en">Clean, minimal, elegant, simple, light.</summary>
-        <summary lang="en_AU">Clean, minimal, elegant, simple, light.</summary>
-        <summary lang="en_US">Clean, minimal, elegant, simple, light.</summary>
-        <summary lang="es">Limpio, minimalista, elegante, simple, ligero.</summary>
-        <summary lang="fr">Clair, minimaliste, élégant, simple et léger.</summary>
-        <summary lang="fr_CA">Net, minimal, élégant, simple, léger.</summary>
-        <summary lang="it">Pulita, minimale, elegante, semplice, leggera.</summary>
-        <summary lang="lt">Švari, minimali, elegantiška, paprasta, lengva.</summary>
-        <summary lang="nl">Schoon, minimaal, elegant, simpel, licht.</summary>
-        <summary lang="no">Rent, minimalt, elegant, enkelt, lett.</summary>
-        <summary lang="pl">Prosta, minimalistyczna, elegancka i lekka.</summary>
-        <summary lang="pt_BR">Limpa, simplista, elegante, leve.</summary>
-        <summary lang="ro">Curat, minimalist, elegant, simplu, ușor</summary>
-        <summary lang="ru">Опрятный, минималистичный, элегантный, простой, светлый.</summary>
-
-        <description lang="en">This is a light mod of Arctic Zephyr 2 by heppen. Arctic Zephyr 2 is a minimalistic skin created by jurialmunkey and moded to work with Kodi 19 Matrix by pkscout. The skin is designed to be simple so that the user can focus on their media content. In addition to the default light colour scheme, the skin also includes a number of darker variations.</description>
-        <description lang="pl">Jest to modyfikacja skórki Arctic Zephyr 2 autorstwa heppen. Arctic Zephyr 2 jest minimalistyczną skórką stworzoną przez jurialmunkey i zmodowaną do pracy z Kodi 19 Matrix przez pkscout. Skórka została zaprojektowana jako prosta, aby użytkownik mógł skupić się na swojej zawartości multimedialnej. Oprócz domyślnego jasnego schematu kolorów, skórka zawiera również kilka ciemniejszych wariantów.</description>
-        <platform>all</platform>
-        <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
-        <forum>https://forum.kodi.tv/showthread.php?tid=362941</forum>
-        <source>https://github.com/DenDyGH/skin.arctic.zephyr.2.resurrection.mod</source>
-        <assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
-            <screenshot>resources/screenshot-01.jpg</screenshot>
-            <screenshot>resources/screenshot-02.jpg</screenshot>
-            <screenshot>resources/screenshot-03.jpg</screenshot>
-            <screenshot>resources/screenshot-04.jpg</screenshot>
-            <screenshot>resources/screenshot-05.jpg</screenshot>
-            <screenshot>resources/screenshot-06.jpg</screenshot>
-        </assets>
-    </extension>
-</addon>
-<addon id="plugin.video.favourites" version="0.1.1" name="Video Favourites" provider-name="primaeval">
-    <requires>
-        <import addon="xbmc.python" version="3.0.0"/>
-        <import addon="script.module.xbmcswift2" version="2.4.0"/>
-        <import addon="script.module.requests" version="2.9.1"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource" library="main.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en">Video Favourites</summary>
-        <description lang="en"/>
-        <disclaimer lang="en"/>
-    </extension>
-    <extension point="kodi.context.item">
-        <menu id="kodi.core.main">
-
-            <item library="add_item_context.py">
-                <label>Add to video favorites</label>
-                <visible>true</visible>
-            </item>
-
-        </menu>
-    </extension>
-</addon>
-<addon id="plugin.program.simple.favourites"
-       version="0.1.17"
-       name="Simple Favourites"
-       provider-name="primaeval">
-    <requires>
-        <import addon="xbmc.python" version="3.0.0"/>
-        <import addon="script.module.xbmcswift2"/>
-        <import addon="script.module.requests"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource" library="main.py">
-        <provides>executable</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en">Simple Favourites</summary>
-        <description lang="en"/>
-        <disclaimer lang="en">.</disclaimer>
-    </extension>
-    <extension point="kodi.context.item">
-        <menu id="kodi.core.main">
-
-            <item library="add_item_context.py">
-                <label>Add to simple favorites</label>
-                <visible>true</visible>
-            </item>
-
-        </menu>
-    </extension>
-</addon>
 <addon id="script.notoco.helper" name="pomocnik notoco" version="1.9.0" provider-name="notoco">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
@@ -210,105 +362,6 @@ Många befintliga tillägg integreras redan med den här utanför lådan-tjänst
         <summary lang="en">Pomocne skróty</summary>
         <assets>
             <icon>icon.png</icon>
-        </assets>
-    </extension>
-</addon>
-<addon id="context.video.favourites"
-version="0.1.0"
-name="Video Favourites Context Menu"
-provider-name="primaeval">
-<requires>
-  <import addon="xbmc.python" version="3.0.0"/>
-  <import addon="script.module.xbmcswift2" version="2.4.0"/>
-  <import addon="script.module.requests" version="2.9.1" />
-  <import addon="plugin.video.favourites" version="0.0.1" />
-</requires>
-<extension point="kodi.context.item">
-<menu id="kodi.core.main">
-  <item library="context.py">
-    <label>Dodaj do[COLOR darkorange] Video Favourites[/COLOR]</label>
-    <visible>True</visible>
-  </item>
-</menu>
-</extension>
-<extension point="xbmc.addon.metadata">
-  <summary lang="en">Video Favourites Context Menu</summary>
-  <description lang="en"></description>
-  <disclaimer lang="en">.</disclaimer>
-  <assets>
-    <icon>icon.png</icon>
-  </assets>
-</extension>
-</addon>
-<addon id="script.service.hyperion-control" name="Hyperion Control" version="20.0.1" provider-name="hyperion-project">
-  <requires>
-	<import addon="xbmc.addon"  version="20.0.0"/>
-    <import addon="xbmc.python" version="3.0.1"/>
-    <import addon="script.module.requests" version="2.3.0"/>
-  </requires>
-  <extension point="xbmc.service" library="service.py"/>
-  <extension point="xbmc.addon.metadata">
-    <summary lang="en_GB">Control Hyperion Ambilight</summary>
-    <summary lang="de_DE">Hyperion Ambilight Steuerung</summary>
-    <description lang="en_GB">Enable and disable components (like capture) of Hyperion automatically based on playing/screensaver state of Kodi[CR]-Supports auto detection of Hyperion Servers[CR]-Token authentication</description>
-    <description lang="de_DE">Aktiviere und deaktiviere automatisch Hyperion Komponenten basierend auf dem aktuellen Kodi Status[CR]-Unterstützt Hyperion Server suche[CR]-Token Autorisierung</description>
-    <language>en de es fr hu pl</language>
-    <platform>all</platform>
-    <license>MIT</license>
-    <forum>https://hyperion-project.org/forum</forum>
-    <website>https://hyperion-project.org/forum</website>
-    <source>https://github.com/hyperion-project/hyperion.control</source>
-    <news>
-      20.0.0
-      - Kodi 20 (Nexus) support
-      - major refactor to adhere to SOLID principles
-
-      19.0.2
-      - New languages: Español, Français, Polski
-
-      19.0.1
-      - Kodi 19 support
-      - minor cleanups and corrections
-
-      1.0.1
-      - Fixed a crash with 3d mode @b-jesch
-
-      1.0.0
-      - Added support for server search
-      - Added support token authentication
-      - Fixed issue where kodi api does not properly announce video playing states
-    </news>
-	<assets>
-		<icon>resources/icon.png</icon>
-		<fanart>resources/fanart.png</fanart>
-		<screenshot>resources/screenshot-01.png</screenshot>
-	</assets>
-  </extension>
-</addon>
-<addon id="skin.arctic.horizon.2.notoco" name="Arctic Horizon 2 NOTOCO" provider-name="jurialmunkey - notoco mod" version="2025.06.11.0">
-    <requires>
-        <import addon="xbmc.gui" version="5.17.0" />
-        <import addon="script.skinshortcuts" version="0.4.0" />
-        <import addon="script.skinvariables" version="1.0.0" />
-        <import addon="script.texturemaker" version="0.2.8" />
-        <import addon="plugin.video.themoviedb.helper" version="5.1.11~nexus" />
-        <import addon="resource.images.weathericons.white" version="0.0.1" />
-        <import addon="resource.images.studios.coloured" version="0.0.1" />
-        <import addon="resource.font.robotocjksc" version="0.0.1" />
-    </requires>
-    <extension debugging="false" defaultthemename="Textures.xbt" effectslowdown="1" point="xbmc.gui.skin">
-        <res aspect="16:9" default="true" folder="1080i" height="1080" width="1920" />
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en">Minimal. Classic. Gradients. Widgets.</summary>
-        <description lang="en">Arctic Horizon 2</description>
-        <platform>all</platform>
-        <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
-        <forum />
-        <source />
-        <assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
         </assets>
     </extension>
 </addon>
