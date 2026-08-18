@@ -2,6 +2,7 @@
 <settings>
       <category label="Hyperion">
 		<setting id="state" type="bool" default="true" label="Stan"/>
+		<setting id="bright" type="slider" range="0,10,100" option="int" default="70" label="Jasność"/>
     </category>
 </settings>
  

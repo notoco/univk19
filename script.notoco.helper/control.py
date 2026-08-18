@@ -1,59 +1,96 @@
 # -*- coding: utf-8 -*-
 import xbmcaddon
 import xbmcgui
-import requests
 import xbmc
 import time
+import json
+import http.client
 
 
 headers = {
     'Content-Type': 'application/json',
 }
+HYPERION_HOST = '127.0.0.1'
+HYPERION_PORT = 8090
+HYPERION_TIMEOUT = 2
+
 addon = xbmcaddon.Addon()
 state = addon.getSetting('state')
 icon = addon.getAddonInfo('icon')
 
+_hyperion_conn = None
+
+def _hyperion_request(data):
+    global _hyperion_conn
+    body = json.dumps(data)
+    response_body = None
+    for attempt in (1, 2):
+        try:
+            if _hyperion_conn is None:
+                _hyperion_conn = http.client.HTTPConnection(HYPERION_HOST, HYPERION_PORT, timeout=HYPERION_TIMEOUT)
+            _hyperion_conn.request('POST', '/json-rpc', body=body, headers=headers)
+            response_body = _hyperion_conn.getresponse().read()
+            break
+        except (OSError, http.client.HTTPException):
+            try:
+                _hyperion_conn.close()
+            except Exception:
+                pass
+            _hyperion_conn = None
+    if response_body is None:
+        send_notification("Hyperion", "Brak połączenia z Hyperion")
+        return None
+    result = json.loads(response_body)
+    if not result.get('success', True):
+        send_notification("Hyperion", "Błąd Hyperion: " + str(result.get('error', '')))
+        return None
+    return result
+
+def _get_bright():
+    try:
+        bright = int(addon.getSetting('bright'))
+    except ValueError:
+        bright = 50
+    return max(0, min(100, bright))
+
 def ambilight_turn_off():
     data = {"command":"componentstate", "componentstate":{"component": "LEDDEVICE", "state": False }, "tan":1}
-    response = requests.post('http://127.0.0.1:8090/json-rpc', headers=headers, json=data)
-    addon.setSetting('state', 'false')
+    if _hyperion_request(data) is not None:
+        addon.setSetting('state', 'false')
 
 def ambilight_turn_on():
     data = {"command":"componentstate", "componentstate":{"component": "LEDDEVICE", "state": True }, "tan":1}
-    response = requests.post('http://127.0.0.1:8090/json-rpc', headers=headers, json=data)
-    addon.setSetting('state', 'true')
+    if _hyperion_request(data) is not None:
+        addon.setSetting('state', 'true')
 
 def ambilight_bright_up():
-    bright = int(addon.getSetting('bright'))
-    if bright < 100:
-        bright = bright+10
-        data = {"command":"adjustment", "adjustment":{"brightness": bright }, "tan":1}
-        response = requests.post('http://127.0.0.1:8090/json-rpc', headers=headers, json=data)
+    bright = min(_get_bright() + 10, 100)
+    data = {"command":"adjustment", "adjustment":{"brightness": bright }, "tan":1}
+    if _hyperion_request(data) is not None:
         addon.setSetting('bright', str(bright))
         send_notification("Ambilight", "Jasność: "+str(bright))
 
 def ambilight_bright_down():
-    bright = int(addon.getSetting('bright'))
-    if bright > 10:
-        bright = bright-10
-        data = {"command":"adjustment", "adjustment":{"brightness": bright }, "tan":1}
-        response = requests.post('http://127.0.0.1:8090/json-rpc', headers=headers, json=data)
+    bright = max(_get_bright() - 10, 0)
+    data = {"command":"adjustment", "adjustment":{"brightness": bright }, "tan":1}
+    if _hyperion_request(data) is not None:
         addon.setSetting('bright', str(bright))
         send_notification("Ambilight", "Jasność: "+str(bright))
 
 def ambilight_set_brightness(percentage):
     try:
         bright = int(percentage)
-        if not (0 <= bright <= 100):
-            send_notification("Ambilight", "Nieprawidłowa wartość jasności. Zakres 0-100.")
-            return
+    except (ValueError, TypeError):
+        send_notification("Ambilight", "Nieprawidłowy format wartości jasności.")
+        return
+    if not (0 <= bright <= 100):
+        send_notification("Ambilight", "Nieprawidłowa wartość jasności. Zakres 0-100.")
+        return
 
-        data = {"command":"adjustment", "adjustment":{"brightness": bright }, "tan":1}
-        response = requests.post('http://127.0.0.1:8090/json-rpc', headers=headers, json=data)
+    data = {"command":"adjustment", "adjustment":{"brightness": bright }, "tan":1}
+    if _hyperion_request(data) is not None:
         addon.setSetting('bright', str(bright))
         send_notification("Ambilight", "Jasność ustawiona na: "+str(bright)+"%")
-    except ValueError:
-        send_notification("Ambilight", "Nieprawidłowy format wartości jasności.")
 
 def cpu():
     send_notification("", "[B]CPU:[/B] $INFO[System.CPUUsage] [CR][B]Temperatura:[/B] $INFO[System.CPUTemperature]   [B]RAM:[/B] $INFO[System.memory(used.percent)] [B]Up:[/B] $INFO[System.Uptime]")
