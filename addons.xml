@@ -1,83 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="context.video.favourites"
-version="0.1.0"
-name="Video Favourites Context Menu"
-provider-name="primaeval">
-<requires>
-  <import addon="xbmc.python" version="3.0.0"/>
-  <import addon="script.module.xbmcswift2" version="2.4.0"/>
-  <import addon="script.module.requests" version="2.9.1" />
-  <import addon="plugin.video.favourites" version="0.0.1" />
-</requires>
-<extension point="kodi.context.item">
-<menu id="kodi.core.main">
-  <item library="context.py">
-    <label>Dodaj do[COLOR darkorange] Video Favourites[/COLOR]</label>
-    <visible>True</visible>
-  </item>
-</menu>
-</extension>
-<extension point="xbmc.addon.metadata">
-  <summary lang="en">Video Favourites Context Menu</summary>
-  <description lang="en"></description>
-  <disclaimer lang="en">.</disclaimer>
-  <assets>
-    <icon>icon.png</icon>
-  </assets>
-</extension>
-</addon>
-<addon id="skin.arctic.zephyr.2.resurrection.mod" name="Arctic: Zephyr 2 - Resurrection" provider-name="jurialmunkey, pkscout, heppen" version="n1.0.37">
-    <requires>
-        <import addon="xbmc.gui" version="5.17.0" />
-        <import addon="script.skinshortcuts"/>
-        <import addon="script.skinhelper" version="0.0.4" />
-        <import addon="script.skinvariables" version="2.1.14" />
-        <import addon="plugin.video.themoviedb.helper" version="5.4.8" />
-        <import addon="resource.images.studios.white"/>
-        <import addon="resource.images.moviegenreicons.transparent"/>
-        <import addon="resource.images.weathericons.white"/>
-        <import addon="resource.images.moviecountryicons.maps"/>
-    </requires>
-    <extension point="xbmc.gui.skin" debugging="false">
-		<res width="1920" height="1080" aspect="16:9" default="true" folder="1080i" />
-	</extension>
-    <extension point="xbmc.addon.metadata">
-        <news></news>
-        <summary lang="de">Klar, minimalistisch, elegant, einfach, leicht</summary>
-        <summary lang="en">Clean, minimal, elegant, simple, light.</summary>
-        <summary lang="en_AU">Clean, minimal, elegant, simple, light.</summary>
-        <summary lang="en_US">Clean, minimal, elegant, simple, light.</summary>
-        <summary lang="es">Limpio, minimalista, elegante, simple, ligero.</summary>
-        <summary lang="fr">Clair, minimaliste, élégant, simple et léger.</summary>
-        <summary lang="fr_CA">Net, minimal, élégant, simple, léger.</summary>
-        <summary lang="it">Pulita, minimale, elegante, semplice, leggera.</summary>
-        <summary lang="lt">Švari, minimali, elegantiška, paprasta, lengva.</summary>
-        <summary lang="nl">Schoon, minimaal, elegant, simpel, licht.</summary>
-        <summary lang="no">Rent, minimalt, elegant, enkelt, lett.</summary>
-        <summary lang="pl">Prosta, minimalistyczna, elegancka i lekka.</summary>
-        <summary lang="pt_BR">Limpa, simplista, elegante, leve.</summary>
-        <summary lang="ro">Curat, minimalist, elegant, simplu, ușor</summary>
-        <summary lang="ru">Опрятный, минималистичный, элегантный, простой, светлый.</summary>
-
-        <description lang="en">This is a light mod of Arctic Zephyr 2 by heppen. Arctic Zephyr 2 is a minimalistic skin created by jurialmunkey and moded to work with Kodi 19 Matrix by pkscout. The skin is designed to be simple so that the user can focus on their media content. In addition to the default light colour scheme, the skin also includes a number of darker variations.</description>
-        <description lang="pl">Jest to modyfikacja skórki Arctic Zephyr 2 autorstwa heppen. Arctic Zephyr 2 jest minimalistyczną skórką stworzoną przez jurialmunkey i zmodowaną do pracy z Kodi 19 Matrix przez pkscout. Skórka została zaprojektowana jako prosta, aby użytkownik mógł skupić się na swojej zawartości multimedialnej. Oprócz domyślnego jasnego schematu kolorów, skórka zawiera również kilka ciemniejszych wariantów.</description>
-        <platform>all</platform>
-        <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
-        <forum>https://forum.kodi.tv/showthread.php?tid=362941</forum>
-        <source>https://github.com/DenDyGH/skin.arctic.zephyr.2.resurrection.mod</source>
-        <assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
-            <screenshot>resources/screenshot-01.jpg</screenshot>
-            <screenshot>resources/screenshot-02.jpg</screenshot>
-            <screenshot>resources/screenshot-03.jpg</screenshot>
-            <screenshot>resources/screenshot-04.jpg</screenshot>
-            <screenshot>resources/screenshot-05.jpg</screenshot>
-            <screenshot>resources/screenshot-06.jpg</screenshot>
-        </assets>
-    </extension>
-</addon>
 <addon id="script.service.hyperion-control" name="Hyperion Control" version="20.0.1" provider-name="hyperion-project">
   <requires>
 	<import addon="xbmc.addon"  version="20.0.0"/>
@@ -123,116 +45,70 @@ provider-name="primaeval">
 	</assets>
   </extension>
 </addon>
-<addon id="plugin.program.simple.favourites"
-       version="0.1.17"
-       name="Simple Favourites"
-       provider-name="primaeval">
-    <requires>
-        <import addon="xbmc.python" version="3.0.0"/>
-        <import addon="script.module.xbmcswift2"/>
-        <import addon="script.module.requests"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource" library="main.py">
-        <provides>executable</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en">Simple Favourites</summary>
-        <description lang="en"/>
-        <disclaimer lang="en">.</disclaimer>
-    </extension>
-    <extension point="kodi.context.item">
-        <menu id="kodi.core.main">
-
-            <item library="add_item_context.py">
-                <label>Add to simple favorites</label>
-                <visible>true</visible>
-            </item>
-
-        </menu>
-    </extension>
+<addon id="context.video.favourites"
+version="0.1.0"
+name="Video Favourites Context Menu"
+provider-name="primaeval">
+<requires>
+  <import addon="xbmc.python" version="3.0.0"/>
+  <import addon="script.module.xbmcswift2" version="2.4.0"/>
+  <import addon="script.module.requests" version="2.9.1" />
+  <import addon="plugin.video.favourites" version="0.0.1" />
+</requires>
+<extension point="kodi.context.item">
+<menu id="kodi.core.main">
+  <item library="context.py">
+    <label>Dodaj do[COLOR darkorange] Video Favourites[/COLOR]</label>
+    <visible>True</visible>
+  </item>
+</menu>
+</extension>
+<extension point="xbmc.addon.metadata">
+  <summary lang="en">Video Favourites Context Menu</summary>
+  <description lang="en"></description>
+  <disclaimer lang="en">.</disclaimer>
+  <assets>
+    <icon>icon.png</icon>
+  </assets>
+</extension>
 </addon>
-<addon id="plugin.video.favourites" version="0.1.1" name="Video Favourites" provider-name="primaeval">
-    <requires>
-        <import addon="xbmc.python" version="3.0.0"/>
-        <import addon="script.module.xbmcswift2" version="2.4.0"/>
-        <import addon="script.module.requests" version="2.9.1"/>
-    </requires>
-    <extension point="xbmc.python.pluginsource" library="main.py">
-        <provides>video</provides>
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en">Video Favourites</summary>
-        <description lang="en"/>
-        <disclaimer lang="en"/>
-    </extension>
-    <extension point="kodi.context.item">
-        <menu id="kodi.core.main">
-
-            <item library="add_item_context.py">
-                <label>Add to video favorites</label>
-                <visible>true</visible>
-            </item>
-
-        </menu>
-    </extension>
-</addon>
-<addon id="skin.arctic.horizon.2.notoco" name="Arctic Horizon 2 NOTOCO" provider-name="jurialmunkey - notoco mod" version="2025.06.11.0">
-    <requires>
-        <import addon="xbmc.gui" version="5.17.0" />
-        <import addon="script.skinshortcuts" version="0.4.0" />
-        <import addon="script.skinvariables" version="1.0.0" />
-        <import addon="script.texturemaker" version="0.2.8" />
-        <import addon="plugin.video.themoviedb.helper" version="5.1.11~nexus" />
-        <import addon="resource.images.weathericons.white" version="0.0.1" />
-        <import addon="resource.images.studios.coloured" version="0.0.1" />
-        <import addon="resource.font.robotocjksc" version="0.0.1" />
-    </requires>
-    <extension debugging="false" defaultthemename="Textures.xbt" effectslowdown="1" point="xbmc.gui.skin">
-        <res aspect="16:9" default="true" folder="1080i" height="1080" width="1920" />
-    </extension>
-    <extension point="xbmc.addon.metadata">
-        <summary lang="en">Minimal. Classic. Gradients. Widgets.</summary>
-        <description lang="en">Arctic Horizon 2</description>
-        <platform>all</platform>
-        <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
-        <forum />
-        <source />
-        <assets>
-            <icon>icon.png</icon>
-            <fanart>fanart.jpg</fanart>
-        </assets>
-    </extension>
-</addon>
-<addon id="plugin.video.jellycon" name="JellyCon" version="1.0.0+py3" provider-name="Jellyfin Contributors">
-  <requires>
-    <import addon="xbmc.python" version="3.0.0" />
-    <import addon="script.module.requests" version="2.22.0+matrix.1" />
-    <import addon="script.module.dateutil" version="2.8.1+matrix.1" />
-    <import addon="script.module.six" version="1.14.0+matrix.2" />
-    <import addon="script.module.kodi-six" version="0.1.3+1" />
-    <import addon="script.module.addon.signals" version="0.0.5+matrix.1" />
-    <import addon="script.module.websocket" version="0.57.0+matrix.1" />
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="default.py">
-    <provides>video audio</provides>
-    <medialibraryscanpath content="movies">library/movies</medialibraryscanpath>
-  </extension>
-  <extension point="xbmc.service" library="service.py" start="login" />
-  <extension point="xbmc.addon.metadata">
-    <platform>all</platform>
-    <language>en</language>
-    <license>GPL-2.0-only</license>
-    <forum>https://github.com/jellyfin/jellycon/issues</forum>
-    <website>https://github.com/jellyfin/jellycon/wiki</website>
-    <source>https://github.com/jellyfin/jellycon</source>
-    <summary lang="en_GB">Browse and play your Jellyfin server media library.</summary>
-    <description lang="en_GB">An addon to allow you to browse and playback your Jellyfin (https://jellyfin.org) Movie, TV Show and Music collections.</description>
-    <assets>
-      <icon>icon.png</icon>
-      <fanart>fanart.jpg</fanart>
-    </assets>
-  </extension>
-</addon>
+<addon id="repository.notoco.univ19" name="Notoco Univ Repo" version="3.2" provider-name="notoco">
+        <extension point="xbmc.addon.repository" name="Notoco Univ Repo">
+            <dir minversion="18.9.0">
+                <info>https://github.com/notoco/univk19/raw/master/addons.xml</info>
+                <checksum>https://github.com/notoco/univk19/raw/master/addons.xml.md5</checksum>
+                <datadir zip="true">https://github.com/notoco/univk19/raw/master/zip</datadir>
+            </dir>
+        <dir>
+            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/</datadir>
+        </dir>
+		<dir minversion="18.0" maxversion="18.9.0">
+            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/leia/zips/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/leia/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/leia/zips/</datadir>
+        </dir>
+        <dir minversion="18.9.0" maxversion="19.9.0">
+            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/</datadir>
+        </dir>
+        <dir minversion="19.9.1">
+            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/</datadir>
+        </dir>
+        </extension>
+        <extension point="xbmc.addon.metadata">
+            <summary>Notoco Univ Repo</summary>
+            <description>Prywatne repozytorium notoco</description>
+            <platform>all</platform>
+            <assets>
+                <icon>icon.png</icon>
+            </assets>
+        </extension>
+    </addon>
 <addon id="service.upnext" name="UpNext" version="2.0.30+nat80.6" provider-name="im85288, MoojMidge, nat80">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
@@ -290,55 +166,150 @@ Många befintliga tillägg integreras redan med den här utanför lådan-tjänst
         </assets>
     </extension>
 </addon>
-<addon id="repository.notoco.univ19" name="Notoco Univ Repo" version="3.2" provider-name="notoco">
-        <extension point="xbmc.addon.repository" name="Notoco Univ Repo">
-            <dir minversion="18.9.0">
-                <info>https://github.com/notoco/univk19/raw/master/addons.xml</info>
-                <checksum>https://github.com/notoco/univk19/raw/master/addons.xml.md5</checksum>
-                <datadir zip="true">https://github.com/notoco/univk19/raw/master/zip</datadir>
-            </dir>
-        <dir>
-            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/addons.xml</info>
-            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/repo/zips/</datadir>
-        </dir>
-		<dir minversion="18.0" maxversion="18.9.0">
-            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/leia/zips/addons.xml</info>
-            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/leia/zips/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/leia/zips/</datadir>
-        </dir>
-        <dir minversion="18.9.0" maxversion="19.9.0">
-            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/addons.xml</info>
-            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/matrix/zips/</datadir>
-        </dir>
-        <dir minversion="19.9.1">
-            <info compressed="false">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/addons.xml</info>
-            <checksum>https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/addons.xml.md5</checksum>
-            <datadir zip="true">https://raw.githubusercontent.com/jurialmunkey/repository.jurialmunkey/master/nexusrepo/zips/</datadir>
-        </dir>
-        </extension>
-        <extension point="xbmc.addon.metadata">
-            <summary>Notoco Univ Repo</summary>
-            <description>Prywatne repozytorium notoco</description>
-            <platform>all</platform>
-            <assets>
-                <icon>icon.png</icon>
-            </assets>
-        </extension>
-    </addon>
-<addon id="script.notoco.helper" name="pomocnik notoco" version="1.9.0" provider-name="notoco">
+<addon id="plugin.video.favourites" version="0.1.1" name="Video Favourites" provider-name="primaeval">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
+        <import addon="script.module.xbmcswift2" version="2.4.0"/>
+        <import addon="script.module.requests" version="2.9.1"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="main.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">Video Favourites</summary>
+        <description lang="en"/>
+        <disclaimer lang="en"/>
+    </extension>
+    <extension point="kodi.context.item">
+        <menu id="kodi.core.main">
+
+            <item library="add_item_context.py">
+                <label>Add to video favorites</label>
+                <visible>true</visible>
+            </item>
+
+        </menu>
+    </extension>
+</addon>
+<addon id="plugin.program.simple.favourites"
+       version="0.1.17"
+       name="Simple Favourites"
+       provider-name="primaeval">
+    <requires>
+        <import addon="xbmc.python" version="3.0.0"/>
+        <import addon="script.module.xbmcswift2"/>
         <import addon="script.module.requests"/>
     </requires>
-    <extension point="xbmc.python.script" library="addon.py" />
+    <extension point="xbmc.python.pluginsource" library="main.py">
+        <provides>executable</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">Simple Favourites</summary>
+        <description lang="en"/>
+        <disclaimer lang="en">.</disclaimer>
+    </extension>
+    <extension point="kodi.context.item">
+        <menu id="kodi.core.main">
+
+            <item library="add_item_context.py">
+                <label>Add to simple favorites</label>
+                <visible>true</visible>
+            </item>
+
+        </menu>
+    </extension>
+</addon>
+<addon id="skin.arctic.horizon.2.notoco" name="Arctic Horizon 2 NOTOCO" provider-name="jurialmunkey - notoco mod" version="2025.06.11.0">
+    <requires>
+        <import addon="xbmc.gui" version="5.17.0" />
+        <import addon="script.skinshortcuts" version="0.4.0" />
+        <import addon="script.skinvariables" version="1.0.0" />
+        <import addon="script.texturemaker" version="0.2.8" />
+        <import addon="plugin.video.themoviedb.helper" version="5.1.11~nexus" />
+        <import addon="resource.images.weathericons.white" version="0.0.1" />
+        <import addon="resource.images.studios.coloured" version="0.0.1" />
+        <import addon="resource.font.robotocjksc" version="0.0.1" />
+    </requires>
+    <extension debugging="false" defaultthemename="Textures.xbt" effectslowdown="1" point="xbmc.gui.skin">
+        <res aspect="16:9" default="true" folder="1080i" height="1080" width="1920" />
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en">Minimal. Classic. Gradients. Widgets.</summary>
+        <description lang="en">Arctic Horizon 2</description>
+        <platform>all</platform>
+        <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
+        <forum />
+        <source />
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon>
+<addon id="script.notoco.helper" name="pomocnik notoco" version="2.0.0" provider-name="notoco">
+    <requires>
+        <import addon="xbmc.python" version="3.0.0"/>
+    </requires>
+    <extension point="xbmc.python.script" library="addon.py">
+        <reuselanguageinvoker>true</reuselanguageinvoker>
+    </extension>
     <extension point="xbmc.service" library="autoexec.py" />
     <extension point="xbmc.addon.metadata">
         <platform>all</platform>
         <summary lang="en">Pomocne skróty</summary>
         <assets>
             <icon>icon.png</icon>
+        </assets>
+    </extension>
+</addon>
+<addon id="skin.arctic.zephyr.2.resurrection.mod" name="Arctic: Zephyr 2 - Resurrection" provider-name="jurialmunkey, pkscout, heppen" version="n1.0.37">
+    <requires>
+        <import addon="xbmc.gui" version="5.17.0" />
+        <import addon="script.skinshortcuts"/>
+        <import addon="script.skinhelper" version="0.0.4" />
+        <import addon="script.skinvariables" version="2.1.14" />
+        <import addon="plugin.video.themoviedb.helper" version="5.4.8" />
+        <import addon="resource.images.studios.white"/>
+        <import addon="resource.images.moviegenreicons.transparent"/>
+        <import addon="resource.images.weathericons.white"/>
+        <import addon="resource.images.moviecountryicons.maps"/>
+    </requires>
+    <extension point="xbmc.gui.skin" debugging="false">
+		<res width="1920" height="1080" aspect="16:9" default="true" folder="1080i" />
+	</extension>
+    <extension point="xbmc.addon.metadata">
+        <news></news>
+        <summary lang="de">Klar, minimalistisch, elegant, einfach, leicht</summary>
+        <summary lang="en">Clean, minimal, elegant, simple, light.</summary>
+        <summary lang="en_AU">Clean, minimal, elegant, simple, light.</summary>
+        <summary lang="en_US">Clean, minimal, elegant, simple, light.</summary>
+        <summary lang="es">Limpio, minimalista, elegante, simple, ligero.</summary>
+        <summary lang="fr">Clair, minimaliste, élégant, simple et léger.</summary>
+        <summary lang="fr_CA">Net, minimal, élégant, simple, léger.</summary>
+        <summary lang="it">Pulita, minimale, elegante, semplice, leggera.</summary>
+        <summary lang="lt">Švari, minimali, elegantiška, paprasta, lengva.</summary>
+        <summary lang="nl">Schoon, minimaal, elegant, simpel, licht.</summary>
+        <summary lang="no">Rent, minimalt, elegant, enkelt, lett.</summary>
+        <summary lang="pl">Prosta, minimalistyczna, elegancka i lekka.</summary>
+        <summary lang="pt_BR">Limpa, simplista, elegante, leve.</summary>
+        <summary lang="ro">Curat, minimalist, elegant, simplu, ușor</summary>
+        <summary lang="ru">Опрятный, минималистичный, элегантный, простой, светлый.</summary>
+
+        <description lang="en">This is a light mod of Arctic Zephyr 2 by heppen. Arctic Zephyr 2 is a minimalistic skin created by jurialmunkey and moded to work with Kodi 19 Matrix by pkscout. The skin is designed to be simple so that the user can focus on their media content. In addition to the default light colour scheme, the skin also includes a number of darker variations.</description>
+        <description lang="pl">Jest to modyfikacja skórki Arctic Zephyr 2 autorstwa heppen. Arctic Zephyr 2 jest minimalistyczną skórką stworzoną przez jurialmunkey i zmodowaną do pracy z Kodi 19 Matrix przez pkscout. Skórka została zaprojektowana jako prosta, aby użytkownik mógł skupić się na swojej zawartości multimedialnej. Oprócz domyślnego jasnego schematu kolorów, skórka zawiera również kilka ciemniejszych wariantów.</description>
+        <platform>all</platform>
+        <license>Creative Commons Attribution Non-Commercial Share-Alike 4.0</license>
+        <forum>https://forum.kodi.tv/showthread.php?tid=362941</forum>
+        <source>https://github.com/DenDyGH/skin.arctic.zephyr.2.resurrection.mod</source>
+        <assets>
+            <icon>icon.png</icon>
+            <fanart>fanart.jpg</fanart>
+            <screenshot>resources/screenshot-01.jpg</screenshot>
+            <screenshot>resources/screenshot-02.jpg</screenshot>
+            <screenshot>resources/screenshot-03.jpg</screenshot>
+            <screenshot>resources/screenshot-04.jpg</screenshot>
+            <screenshot>resources/screenshot-05.jpg</screenshot>
+            <screenshot>resources/screenshot-06.jpg</screenshot>
         </assets>
     </extension>
 </addon>
