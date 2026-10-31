@@ -6,7 +6,6 @@ import control
 import time
 
 
-state = control.get_setting('state')
 if __name__ == '__main__':
     arg = None
     brightness_percentage = None
@@ -28,12 +27,7 @@ if __name__ == '__main__':
         else:
             control.send_notification("Ambilight", "Brak wartości procentowej jasności dla 'amb_set_brightness'")
     elif arg == "amb_switch":
-        if state == 'true':
-            control.ambilight_turn_off()
-            control.send_notification("Ambilight", "Wyłączono podświetlenie")
-        else:
-            control.ambilight_turn_on()
-            control.send_notification("Ambilight", "Włączono podświetlenie")
+        control.ambilight_switch()
     elif arg == "amb_up":
         control.ambilight_bright_up()
     elif arg == "amb_down":
@@ -54,3 +48,5 @@ if __name__ == '__main__':
         xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Addons.SetAddonEnabled","id":7,"params":{"addonid": "script.service.hyperion-control","enabled":false}}')
         time.sleep(2)
         xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Addons.SetAddonEnabled","id":7,"params":{"addonid": "script.service.hyperion-control","enabled":true}}')
+        # the service sets the state, the brightness and HDR again when Hyperion is up
+        xbmc.executebuiltin('NotifyAll(script.notoco.helper,amb_restore)')

@@ -2,17 +2,12 @@
 import xbmc
 import control
 
-state = control.get_setting('state')
-
-if state == 'true':
-    control.ambilight_turn_on()
-else:
-    control.ambilight_turn_off()
-
 xbmc.executebuiltin('RunScript(script.notoco.helper,amb_start)')
 
 
 class AmbilightMonitor(xbmc.Monitor):
+    restore = True  # Hyperion has the values of its database (Kodi started, Hyperion restarted)
+
     def onNotification(self, sender, method, data):
         if sender != 'script.notoco.helper':
             return
@@ -22,12 +17,9 @@ class AmbilightMonitor(xbmc.Monitor):
         elif action == 'amb_down':
             control.ambilight_bright_down()
         elif action == 'amb_switch':
-            if control.get_setting('state') == 'true':
-                control.ambilight_turn_off()
-                control.send_notification("Ambilight", "Wyłączono podświetlenie")
-            else:
-                control.ambilight_turn_on()
-                control.send_notification("Ambilight", "Włączono podświetlenie")
+            control.ambilight_switch()
+        elif action == 'amb_restore':
+            self.restore = True
 
 
 class HdrPlayer(xbmc.Player):
@@ -48,8 +40,12 @@ class HdrPlayer(xbmc.Player):
 
 monitor = AmbilightMonitor()
 player = HdrPlayer()
-if player.isPlayingVideo():
-    player.onAVStarted()
 while not monitor.abortRequested():
-    if monitor.waitForAbort(60):
+    if monitor.restore and control.hyperion_ready():
+        monitor.restore = False
+        control.ambilight_restore()
+        player.hdr = None
+        if player.isPlayingVideo():
+            player.onAVStarted()
+    if monitor.waitForAbort(2):
         break

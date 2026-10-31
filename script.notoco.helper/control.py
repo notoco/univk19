@@ -2,7 +2,6 @@
 import xbmcaddon
 import xbmcgui
 import xbmc
-import time
 import json
 import http.client
 
@@ -19,13 +18,11 @@ HDR_ADJUSTMENT = {'gammaRed': 3.5, 'gammaGreen': 3.5, 'gammaBlue': 3.5, 'saturat
 # the saved calibration, if it can not be read from the database of Hyperion
 SDR_ADJUSTMENT = {'gammaRed': 1.9, 'gammaGreen': 1.9, 'gammaBlue': 1.9, 'saturationGain': 1.15, 'brightnessGain': 1.0}
 
-addon = xbmcaddon.Addon()
-state = addon.getSetting('state')
-icon = addon.getAddonInfo('icon')
+icon = xbmcaddon.Addon().getAddonInfo('icon')
 
 _hyperion_conn = None
 
-def _hyperion_request(data):
+def _hyperion_request(data, notify=True):
     global _hyperion_conn
     body = json.dumps(data)
     response_body = None
@@ -43,7 +40,8 @@ def _hyperion_request(data):
                 pass
             _hyperion_conn = None
     if response_body is None:
-        send_notification("Hyperion", "Brak połączenia z Hyperion")
+        if notify:
+            send_notification("Hyperion", "Brak połączenia z Hyperion")
         return None
     result = json.loads(response_body)
     if not result.get('success', True):
@@ -53,7 +51,7 @@ def _hyperion_request(data):
 
 def _get_bright():
     try:
-        bright = int(addon.getSetting('bright'))
+        bright = int(get_setting('bright'))
     except ValueError:
         bright = 50
     return max(0, min(100, bright))
@@ -61,25 +59,45 @@ def _get_bright():
 def ambilight_turn_off():
     data = {"command":"componentstate", "componentstate":{"component": "LEDDEVICE", "state": False }, "tan":1}
     if _hyperion_request(data) is not None:
-        addon.setSetting('state', 'false')
+        set_setting('state', 'false')
 
 def ambilight_turn_on():
     data = {"command":"componentstate", "componentstate":{"component": "LEDDEVICE", "state": True }, "tan":1}
     if _hyperion_request(data) is not None:
-        addon.setSetting('state', 'true')
+        set_setting('state', 'true')
+
+def ambilight_switch():
+    if get_setting('state') == 'true':
+        ambilight_turn_off()
+        send_notification("Ambilight", "Wyłączono podświetlenie")
+    else:
+        ambilight_turn_on()
+        send_notification("Ambilight", "Włączono podświetlenie")
+
+def hyperion_ready():
+    return _hyperion_request({"command":"sysinfo", "tan":1}, notify=False) is not None
+
+def ambilight_restore():
+    # Hyperion starts with the values of its database: the state and the brightness of the settings again
+    if get_setting('state') == 'true':
+        ambilight_turn_on()
+    else:
+        ambilight_turn_off()
+    data = {"command":"adjustment", "adjustment":{"brightness": _get_bright() }, "tan":1}
+    _hyperion_request(data)
 
 def ambilight_bright_up():
     bright = min(_get_bright() + 10, 100)
     data = {"command":"adjustment", "adjustment":{"brightness": bright }, "tan":1}
     if _hyperion_request(data) is not None:
-        addon.setSetting('bright', str(bright))
+        set_setting('bright', str(bright))
         send_notification("Ambilight", "Jasność: "+str(bright))
 
 def ambilight_bright_down():
     bright = max(_get_bright() - 10, 0)
     data = {"command":"adjustment", "adjustment":{"brightness": bright }, "tan":1}
     if _hyperion_request(data) is not None:
-        addon.setSetting('bright', str(bright))
+        set_setting('bright', str(bright))
         send_notification("Ambilight", "Jasność: "+str(bright))
 
 def ambilight_set_brightness(percentage):
@@ -94,7 +112,7 @@ def ambilight_set_brightness(percentage):
 
     data = {"command":"adjustment", "adjustment":{"brightness": bright }, "tan":1}
     if _hyperion_request(data) is not None:
-        addon.setSetting('bright', str(bright))
+        set_setting('bright', str(bright))
         send_notification("Ambilight", "Jasność ustawiona na: "+str(bright)+"%")
 
 def _saved_adjustment():
@@ -122,8 +140,9 @@ def cpu():
 def send_notification(komponent, message):
     xbmcgui.Dialog().notification(komponent, message, icon=icon)
 
+# a new Addon each time: an Addon object keeps the settings of its creation (the service lives as long as Kodi)
 def get_setting(name):
-    return addon.getSetting(name)
+    return xbmcaddon.Addon().getSetting(name)
 
 def set_setting(name, value):
-    addon.setSetting(name, value)
+    xbmcaddon.Addon().setSetting(name, value)
