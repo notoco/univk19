@@ -31,7 +31,7 @@ class AmbilightMonitor(xbmc.Monitor):
 
 
 class HdrPlayer(xbmc.Player):
-    hdr = False
+    hdr = None  # unknown: Hyperion keeps its adjustment over a restart of Kodi
 
     def set_hdr(self, hdr):
         if hdr != self.hdr and control.ambilight_hdr(hdr):
