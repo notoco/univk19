@@ -13,6 +13,11 @@ headers = {
 HYPERION_HOST = '127.0.0.1'
 HYPERION_PORT = 8090
 HYPERION_TIMEOUT = 2
+HYPERION_DB = '/storage/.kodi/userdata/addon_data/service.hyperion.ng/db/hyperion.db'
+# Hyperion grabs an HDR picture before the HDR -> SDR conversion of the box (pale and dark), its own adjustment then
+HDR_ADJUSTMENT = {'gammaRed': 3.5, 'gammaGreen': 3.5, 'gammaBlue': 3.5, 'saturationGain': 1.6, 'brightnessGain': 2.0}
+# the saved calibration, if it can not be read from the database of Hyperion
+SDR_ADJUSTMENT = {'gammaRed': 1.9, 'gammaGreen': 1.9, 'gammaBlue': 1.9, 'saturationGain': 1.15, 'brightnessGain': 1.0}
 
 addon = xbmcaddon.Addon()
 state = addon.getSetting('state')
@@ -91,6 +96,25 @@ def ambilight_set_brightness(percentage):
     if _hyperion_request(data) is not None:
         addon.setSetting('bright', str(bright))
         send_notification("Ambilight", "Jasność ustawiona na: "+str(bright)+"%")
+
+def _saved_adjustment():
+    import sqlite3
+    try:
+        db = sqlite3.connect('file:%s?mode=ro' % HYPERION_DB, uri=True, timeout=2)
+        try:
+            row = db.execute("SELECT config FROM settings WHERE type = 'color' AND hyperion_inst = 0").fetchone()
+        finally:
+            db.close()
+        adjustment = json.loads(row[0])['channelAdjustment'][0]
+        return {key: adjustment[key] for key in HDR_ADJUSTMENT}
+    except Exception as exc:
+        xbmc.log('[script.notoco.helper] Hyperion adjustment not read: %s' % exc, xbmc.LOGWARNING)
+        return SDR_ADJUSTMENT
+
+def ambilight_hdr(hdr):
+    adjustment = HDR_ADJUSTMENT if hdr else _saved_adjustment()
+    data = {"command":"adjustment", "adjustment": adjustment, "tan":1}
+    return _hyperion_request(data) is not None
 
 def cpu():
     send_notification("", "[B]CPU:[/B] $INFO[System.CPUUsage] [CR][B]Temperatura:[/B] $INFO[System.CPUTemperature]   [B]RAM:[/B] $INFO[System.memory(used.percent)] [B]Up:[/B] $INFO[System.Uptime]")

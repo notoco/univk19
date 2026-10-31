@@ -30,7 +30,26 @@ class AmbilightMonitor(xbmc.Monitor):
                 control.send_notification("Ambilight", "Włączono podświetlenie")
 
 
+class HdrPlayer(xbmc.Player):
+    hdr = False
+
+    def set_hdr(self, hdr):
+        if hdr != self.hdr and control.ambilight_hdr(hdr):
+            self.hdr = hdr
+
+    def onAVStarted(self):
+        self.set_hdr(bool(xbmc.getInfoLabel('VideoPlayer.HdrType')))
+
+    def onPlayBackStopped(self):
+        self.set_hdr(False)
+
+    onPlayBackEnded = onPlayBackError = onPlayBackStopped
+
+
 monitor = AmbilightMonitor()
+player = HdrPlayer()
+if player.isPlayingVideo():
+    player.onAVStarted()
 while not monitor.abortRequested():
     if monitor.waitForAbort(60):
         break
