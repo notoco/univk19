@@ -12,7 +12,9 @@ headers = {
 HYPERION_HOST = '127.0.0.1'
 HYPERION_PORT = 8090
 HYPERION_TIMEOUT = 2
-HYPERION_DB = '/storage/.kodi/userdata/addon_data/service.hyperion.ng/db/hyperion.db'
+# Hyperion.NG of CoreELEC canary (Kodi feeds the picture) has its own add-on data
+HYPERION_DBS = ('/storage/.kodi/userdata/addon_data/service.hyperion.canary/db/hyperion.db',
+                '/storage/.kodi/userdata/addon_data/service.hyperion.ng/db/hyperion.db')
 # Hyperion grabs an HDR picture before the HDR -> SDR conversion of the box (pale and dark), its own adjustment then
 HDR_ADJUSTMENT = {'gammaRed': 3.5, 'gammaGreen': 3.5, 'gammaBlue': 3.5, 'saturationGain': 1.6, 'brightnessGain': 2.0}
 # the saved calibration, if it can not be read from the database of Hyperion
@@ -118,7 +120,8 @@ def ambilight_set_brightness(percentage):
 def _saved_adjustment():
     import sqlite3
     try:
-        db = sqlite3.connect('file:%s?mode=ro' % HYPERION_DB, uri=True, timeout=2)
+        hyperion_db = next(path for path in HYPERION_DBS if xbmc.getCondVisibility('System.AddonIsEnabled(%s)' % path.split('/')[-3]))
+        db = sqlite3.connect('file:%s?mode=ro' % hyperion_db, uri=True, timeout=2)
         try:
             row = db.execute("SELECT config FROM settings WHERE type = 'color' AND hyperion_inst = 0").fetchone()
         finally:
@@ -130,7 +133,8 @@ def _saved_adjustment():
         return SDR_ADJUSTMENT
 
 def ambilight_hdr(hdr):
-    adjustment = HDR_ADJUSTMENT if hdr else _saved_adjustment()
+    # off when Hyperion already gets an SDR picture (e.g. CoreELEC canary: Kodi sends the picture itself)
+    adjustment = HDR_ADJUSTMENT if hdr and get_setting('hdr_fix') != 'false' else _saved_adjustment()
     data = {"command":"adjustment", "adjustment": adjustment, "tan":1}
     return _hyperion_request(data) is not None
 
