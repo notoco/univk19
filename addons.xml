@@ -144,7 +144,7 @@ provider-name="primaeval">
         </assets>
     </extension>
 </addon>
-<addon id="script.notoco.helper" name="pomocnik notoco" version="3.2.0" provider-name="notoco">
+<addon id="script.notoco.helper" name="pomocnik notoco" version="3.3.0" provider-name="notoco">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
     </requires>
