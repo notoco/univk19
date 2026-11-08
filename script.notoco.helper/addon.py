@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
 import xbmc
-import xbmcaddon
 import control
 import time
 
@@ -32,21 +31,15 @@ if __name__ == '__main__':
         control.ambilight_bright_up()
     elif arg == "amb_down":
         control.ambilight_bright_down()
-    elif arg == "amb_start":
-        xbmcaddon.Addon('script.service.hyperion-control').setSetting('menuEnabled', 'true')
-        time.sleep(2)
-        xbmcaddon.Addon('script.service.hyperion-control').setSetting('menuEnabled', 'false')
 #CPU
     elif arg == "cpu":
         control.cpu()
 
 #Hyperion restart
     elif arg == "hypereset":
-        xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Addons.SetAddonEnabled","id":7,"params":{"addonid": "service.hyperion.ng","enabled":false}}')
+        addon = control.hyperion_addon()  # the one in use, the other one stays off (the same ports)
+        xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Addons.SetAddonEnabled","id":7,"params":{"addonid": "%s","enabled":false}}' % addon)
         time.sleep(2)
-        xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Addons.SetAddonEnabled","id":7,"params":{"addonid": "service.hyperion.ng","enabled":true}}')
-        xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Addons.SetAddonEnabled","id":7,"params":{"addonid": "script.service.hyperion-control","enabled":false}}')
-        time.sleep(2)
-        xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Addons.SetAddonEnabled","id":7,"params":{"addonid": "script.service.hyperion-control","enabled":true}}')
+        xbmc.executeJSONRPC('{"jsonrpc":"2.0","method":"Addons.SetAddonEnabled","id":7,"params":{"addonid": "%s","enabled":true}}' % addon)
         # the service sets the state, the brightness and HDR again when Hyperion is up
         xbmc.executebuiltin('NotifyAll(script.notoco.helper,amb_restore)')

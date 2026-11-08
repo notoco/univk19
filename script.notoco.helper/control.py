@@ -12,9 +12,9 @@ headers = {
 HYPERION_HOST = '127.0.0.1'
 HYPERION_PORT = 8090
 HYPERION_TIMEOUT = 2
-# Hyperion.NG of CoreELEC canary (Kodi feeds the picture) has its own add-on data
-HYPERION_DBS = ('/storage/.kodi/userdata/addon_data/service.hyperion.canary/db/hyperion.db',
-                '/storage/.kodi/userdata/addon_data/service.hyperion.ng/db/hyperion.db')
+# Hyperion.NG of CoreELEC canary (Kodi feeds the picture) is its own add-on
+HYPERION_ADDONS = ('service.hyperion.canary', 'service.hyperion.ng')
+HYPERION_DB = '/storage/.kodi/userdata/addon_data/%s/db/hyperion.db'
 # Hyperion grabs an HDR picture before the HDR -> SDR conversion of the box (pale and dark), its own adjustment then
 HDR_ADJUSTMENT = {'gammaRed': 3.5, 'gammaGreen': 3.5, 'gammaBlue': 3.5, 'saturationGain': 1.6, 'brightnessGain': 2.0}
 # the saved calibration, if it can not be read from the database of Hyperion
@@ -87,6 +87,15 @@ def ambilight_restore():
         ambilight_turn_off()
     data = {"command":"adjustment", "adjustment":{"brightness": _get_bright() }, "tan":1}
     _hyperion_request(data)
+    ambilight_idle_black()
+
+# CoreELEC canary feeds only the playback: without any input Hyperion lets the LEDs show the last scene / white
+# for a moment at the next start - a permanent black below every input instead
+IDLE_PRIORITY = 250
+
+def ambilight_idle_black():
+    data = {"command": "color", "color": [0, 0, 0], "priority": IDLE_PRIORITY, "origin": "notoco helper idle", "tan": 1}
+    _hyperion_request(data, notify=False)
 
 def ambilight_bright_up():
     bright = min(_get_bright() + 10, 100)
@@ -117,11 +126,14 @@ def ambilight_set_brightness(percentage):
         set_setting('bright', str(bright))
         send_notification("Ambilight", "Jasność ustawiona na: "+str(bright)+"%")
 
+def hyperion_addon():
+    return next((addon for addon in HYPERION_ADDONS if xbmc.getCondVisibility('System.AddonIsEnabled(%s)' % addon)),
+                HYPERION_ADDONS[-1])
+
 def _saved_adjustment():
     import sqlite3
     try:
-        hyperion_db = next(path for path in HYPERION_DBS if xbmc.getCondVisibility('System.AddonIsEnabled(%s)' % path.split('/')[-3]))
-        db = sqlite3.connect('file:%s?mode=ro' % hyperion_db, uri=True, timeout=2)
+        db = sqlite3.connect('file:%s?mode=ro' % (HYPERION_DB % hyperion_addon()), uri=True, timeout=2)
         try:
             row = db.execute("SELECT config FROM settings WHERE type = 'color' AND hyperion_inst = 0").fetchone()
         finally:

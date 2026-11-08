@@ -2,8 +2,6 @@
 import xbmc
 import control
 
-xbmc.executebuiltin('RunScript(script.notoco.helper,amb_start)')
-
 
 class AmbilightMonitor(xbmc.Monitor):
     restore = True  # Hyperion has the values of its database (Kodi started, Hyperion restarted)
