@@ -4,6 +4,7 @@ import xbmcgui
 import xbmc
 import json
 import http.client
+import threading
 
 
 headers = {
@@ -23,8 +24,13 @@ SDR_ADJUSTMENT = {'gammaRed': 1.9, 'gammaGreen': 1.9, 'gammaBlue': 1.9, 'saturat
 icon = xbmcaddon.Addon().getAddonInfo('icon')
 
 _hyperion_conn = None
+_hyperion_lock = threading.Lock()  # one connection, the fade in runs in its own thread
 
 def _hyperion_request(data, notify=True):
+    with _hyperion_lock:
+        return _hyperion_send(data, notify)
+
+def _hyperion_send(data, notify):
     global _hyperion_conn
     body = json.dumps(data)
     response_body = None
@@ -57,6 +63,42 @@ def _get_bright():
     except ValueError:
         bright = 50
     return max(0, min(100, bright))
+
+# a video started from the menu: the LEDs brighten from black up to the brightness of the settings
+FADE_IN_SECONDS = 4.0
+FADE_IN_STEPS = 40
+
+def _set_brightness(brightness):
+    _hyperion_request({"command": "adjustment", "adjustment": {"brightness": brightness}, "tan": 1}, notify=False)
+
+def ambilight_fade_start():
+    if get_setting('state') == 'true':
+        _set_brightness(0)
+
+FADE_IN_WAIT_SECONDS = 10.0
+
+def _wait_for_picture(monitor, player):
+    # AV started comes about a second before the picture: wait for the time of the video to move
+    try:
+        start = player.getTime()
+        for _ in range(int(FADE_IN_WAIT_SECONDS / 0.1)):
+            if monitor.waitForAbort(0.1):
+                return False
+            if player.getTime() - start >= 0.2:
+                return True
+    except RuntimeError:  # not playing any more
+        return False
+    return True
+
+def ambilight_fade_in(monitor, player):
+    if get_setting('state') != 'true' or not _wait_for_picture(monitor, player):
+        _set_brightness(_get_bright())
+        return
+    bright = _get_bright()
+    for step in range(1, FADE_IN_STEPS + 1):
+        _set_brightness(round(bright * (step / FADE_IN_STEPS) ** 3))  # slow at first: the eye sees the low ones most
+        if step < FADE_IN_STEPS and monitor.waitForAbort(FADE_IN_SECONDS / FADE_IN_STEPS):
+            return
 
 def ambilight_turn_off():
     data = {"command":"componentstate", "componentstate":{"component": "LEDDEVICE", "state": False }, "tan":1}

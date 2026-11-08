@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import threading
 import xbmc
 import control
 
@@ -22,15 +23,24 @@ class AmbilightMonitor(xbmc.Monitor):
 
 class HdrPlayer(xbmc.Player):
     hdr = None  # unknown: Hyperion keeps its adjustment over a restart of Kodi
+    from_menu = True  # a start from the menu brightens the LEDs, a change of the TV channel does not
 
     def set_hdr(self, hdr):
         if hdr != self.hdr and control.ambilight_hdr(hdr):
             self.hdr = hdr
 
+    def onPlayBackStarted(self):
+        if self.from_menu:
+            control.ambilight_fade_start()
+
     def onAVStarted(self):
         self.set_hdr(bool(xbmc.getInfoLabel('VideoPlayer.HdrType')))
+        if self.from_menu:
+            self.from_menu = False
+            threading.Thread(target=control.ambilight_fade_in, args=(monitor, self), daemon=True).start()
 
     def onPlayBackStopped(self):
+        self.from_menu = True
         self.set_hdr(False)
 
     onPlayBackEnded = onPlayBackError = onPlayBackStopped
