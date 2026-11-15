@@ -39,7 +39,14 @@ class HdrPlayer(xbmc.Player):
             self.from_menu = False
             threading.Thread(target=control.ambilight_fade_in, args=(monitor, self), daemon=True).start()
 
+    def onPlayBackPaused(self):
+        control.ambilight_pause(True)
+
+    def onPlayBackResumed(self):
+        control.ambilight_pause(False)
+
     def onPlayBackStopped(self):
+        control.ambilight_pause(False)
         self.from_menu = True
         self.set_hdr(False)
 

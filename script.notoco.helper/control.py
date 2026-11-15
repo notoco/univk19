@@ -135,6 +135,16 @@ def ambilight_restore():
 # for a moment at the next start - a permanent black below every input instead
 IDLE_PRIORITY = 250
 
+# a paused video: black above the picture of Kodi (smoothing of Hyperion makes it a short fade)
+PAUSE_PRIORITY = 50
+
+def ambilight_pause(paused):
+    if paused:
+        data = {"command": "color", "color": [0, 0, 0], "priority": PAUSE_PRIORITY, "origin": "notoco helper pause", "tan": 1}
+    else:
+        data = {"command": "clear", "priority": PAUSE_PRIORITY, "tan": 1}
+    _hyperion_request(data, notify=False)
+
 def ambilight_idle_black():
     data = {"command": "color", "color": [0, 0, 0], "priority": IDLE_PRIORITY, "origin": "notoco helper idle", "tan": 1}
     _hyperion_request(data, notify=False)
