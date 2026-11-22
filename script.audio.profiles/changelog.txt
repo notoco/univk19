@@ -1,3 +1,6 @@
+v.2.3.1
+- no Kodi objects left alive after a manual run (no "left several classes in memory" warning)
+
 v.2.3.0
 - only settings that differ from the profile are written (one audio reopen instead of several)
 - automatic switch on Player.OnAVStart instead of a fixed wait after Player.OnPlay

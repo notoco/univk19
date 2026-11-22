@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.audio.profiles" name="Audio Profiles" version="2.3.0" provider-name="pkscout, notoco, Regss">
+<addon id="script.audio.profiles" name="Audio Profiles" version="2.3.1" provider-name="pkscout, notoco, Regss">
 	<requires>
         <import addon="xbmc.python" version="3.0.0" />
 	</requires>
@@ -7,6 +7,8 @@
 	<extension point="xbmc.service" library="service.py" />
 	<extension point="xbmc.addon.metadata">
 		<news>
+v.2.3.1
+- no Kodi objects left alive after a manual run (no "left several classes in memory" warning)
 v.2.3.0
 - only settings that differ from the profile are written (one audio reopen instead of several)
 - automatic switch on Player.OnAVStart instead of a fixed wait after Player.OnPlay
