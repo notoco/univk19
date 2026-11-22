@@ -6,27 +6,6 @@
         <value condition="String.IsEqual(ListItem.DBTYPE,tvshow) | String.IsEqual(ListItem.DBTYPE,season) | String.IsEqual(ListItem.DBTYPE,episode)">tv</value>
     </variable>
 
-    <variable name="Info_Cast_List01">
-        <value condition="!Container(3100).IsUpdating + Integer.IsGreater(Container(3100).NumItems,0)">$INFO[Container(3100).ListItemAbsolute(1).FolderPath]</value>
-        <value>videodb://</value>
-    </variable>
-    <variable name="Info_Cast_List02">
-        <value condition="!Container(3100).IsUpdating + Integer.IsGreater(Container(3100).NumItems,0)">$INFO[Container(3100).ListItemAbsolute(2).FolderPath]</value>
-        <value>videodb://</value>
-    </variable>
-    <variable name="Info_Cast_List03">
-        <value condition="!Container(3100).IsUpdating + Integer.IsGreater(Container(3100).NumItems,0)">$INFO[Container(3100).ListItemAbsolute(3).FolderPath]</value>
-        <value>videodb://</value>
-    </variable>
-    <variable name="Info_Cast_List04">
-        <value condition="!Container(3100).IsUpdating + Integer.IsGreater(Container(3100).NumItems,0)">$INFO[Container(3100).ListItemAbsolute(4).FolderPath]</value>
-        <value>videodb://</value>
-    </variable>
-    <variable name="Info_Cast_List05">
-        <value condition="!Container(3100).IsUpdating + Integer.IsGreater(Container(3100).NumItems,0)">$INFO[Container(3100).ListItemAbsolute(5).FolderPath]</value>
-        <value>videodb://</value>
-    </variable>
-
     <include name="Info_Widget_Poster">
         <param name="id" default="5001" />
         <param name="groupid" default="7001" />
@@ -51,9 +30,9 @@
                 <param name="diffuse" value="$PARAM[diffuse]" />
                 <param name="icon" value="$PARAM[icon]" />
                 <param name="labelinclude" value="$PARAM[labelinclude]" />
-                <param name="visible" value="[Container($PARAM[id]).IsUpdating | !Integer.IsEqual(Container($PARAM[id]).NumItems,0)]" />
-                <animation effect="fade" start="100" end="0" condition="[!Integer.IsGreater(Container($PARAM[id]).NumItems,0) | Container($PARAM[id]).IsUpdating]">Conditional</animation>
-                <animation effect="fade" start="100" end="30" time="200" condition="![Control.HasFocus($PARAM[id]) | Control.HasFocus($PARAM[altid])]">Conditional</animation>
+                <param name="visible" value="Container($PARAM[id]).IsUpdating | !Integer.IsEqual(Container($PARAM[id]).NumItems,0)" />
+                <animation effect="fade" start="100" end="0" condition="!Integer.IsGreater(Container($PARAM[id]).NumItems,0) | Container($PARAM[id]).IsUpdating">Conditional</animation>
+                <animation effect="fade" start="100" end="30" time="200" condition="!Control.HasFocus($PARAM[id]) | Control.HasFocus($PARAM[altid])">Conditional</animation>
                 <movement>$PARAM[movement]</movement>
                 <nested />
             </include>
@@ -170,7 +149,7 @@
                 <param name="id" value="8115" />
                 <param name="groupid" value="8015" />
                 <param name="width" value="auto" />
-                <param name="label" value="$LOCALIZE[30060]" />
+                <param name="label" value="$LOCALIZE[31550]" />
                 <param name="icon" value="special://skin/extras/icons/search.png" />
                 <param name="visible" value="!String.IsEmpty(ListItem.Property(tmdb_id)) | !String.IsEmpty(ListItem.IMDbNumber)" />
 
@@ -184,7 +163,7 @@
                 <param name="id" value="8899" />
                 <param name="groupid" value="8014" />
                 <param name="width" value="auto" />
-                <param name="label" value="$LOCALIZE[30102]" />
+                <param name="label" value="$LOCALIZE[31585]" />
                 <param name="icon" value="special://skin/extras/icons/video.png" />
                 <param name="visible" value="!Window.IsVisible(1140) + [!String.IsEmpty(ListItem.Trailer) | !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Trailer))]" />
 
@@ -199,7 +178,7 @@
                 <param name="id" value="8150" />
                 <param name="groupid" value="8050" />
                 <param name="width" value="auto" />
-                <param name="label" value="$LOCALIZE[30103]" />
+                <param name="label" value="$LOCALIZE[31586]" />
                 <param name="icon" value="special://skin/extras/icons/person.png" />
                 <param name="visible" value="Control.IsEnabled(8150)" />
 
@@ -209,20 +188,20 @@
             <include content="Object_Info_Button">
                 <param name="id" value="8151" />
                 <param name="groupid" value="8051" />
-                <param name="label" value="30041" />
+                <param name="label" value="31531" />
                 <param name="width" value="auto" />
                 <param name="icon" value="special://skin/extras/icons/trakttv.png" />
-                <param name="visible" value="[!String.IsEmpty(ListItem.Property(tmdb_id)) | !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.TMDb_ID))] + [String.IsEqual(ListItem.DBTYPE,movie) | String.IsEqual(ListItem.DBTYPE,tvshow)] + !String.IsEmpty(Window(Home).Property(TMDbHelper.TraktIsAuth))" />
+                <param name="visible" value="[!String.IsEmpty(ListItem.Property(tmdb_id)) | !String.IsEmpty(Window(Home).Property(TMDbHelper.ListItem.Monitor.TMDb_ID))] + [String.IsEqual(ListItem.DBTYPE,movie) | String.IsEqual(ListItem.DBTYPE,tvshow)] + !String.IsEmpty(Window(Home).Property(TMDbHelper.TraktIsAuth))" />
 
                 <onclick condition="!String.IsEmpty(ListItem.Property(tmdb_id))">RunScript(plugin.video.themoviedb.helper,sync_trakt=watchlist,tmdb_id=$INFO[ListItem.Property(tmdb_id)],type=$VAR[tmdb_type],cache_refresh)</onclick>
-                <onclick condition="String.IsEmpty(ListItem.Property(tmdb_id))">RunScript(plugin.video.themoviedb.helper,sync_trakt=watchlist,tmdb_id=$INFO[Window(Home).Property(TMDbHelper.ListItem.TMDb_ID)],type=$VAR[tmdb_type],cache_refresh)</onclick>
+                <onclick condition="String.IsEmpty(ListItem.Property(tmdb_id))">RunScript(plugin.video.themoviedb.helper,sync_trakt=watchlist,tmdb_id=$INFO[Window(Home).Property(TMDbHelper.ListItem.Monitor.TMDb_ID)],type=$VAR[tmdb_type],cache_refresh)</onclick>
             </include>
 
             <include content="Object_Info_Button">
                 <param name="id" value="7" />
                 <param name="groupid" value="8007" />
                 <param name="width" value="auto" />
-                <param name="label" value="$LOCALIZE[30104]" />
+                <param name="label" value="$LOCALIZE[31587]" />
                 <param name="icon" value="special://skin/extras/icons/userrating.png" />
                 <param name="visible" value="Control.IsEnabled(7)" />
             </include>

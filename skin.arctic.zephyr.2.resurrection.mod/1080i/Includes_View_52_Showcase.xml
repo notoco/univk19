@@ -122,7 +122,7 @@
                             <align>left</align>
                             <aligny>top</aligny>
                             <height>50</height>
-                            <width>630</width>
+                            <width>730</width>
                             <label>$PARAM[title]</label>
                         </control>
                         <include condition="$EXP[InGameMode]" content="View_540_ROM_Details">
@@ -137,18 +137,15 @@
                         </include>
                         <include content="Object_Ratings_Content">
                             <param name="top" value="10" />
-                            <param name="imdbvotes" value="false" />
-                            <param name="top250" value="false" />
-                            <param name="oscars" value="false" />
                         </include>
                         <control type="textbox">
                             <visible>!$PARAM[isView2]</visible>
-                            <top>8</top>
+                            <top>10</top>
                             <font>font_plotbox</font>
                             <textcolor>main_fg_70</textcolor>
                             <align>left</align>
                             <aligny>top</aligny>
-                            <height>240</height>
+                            <height>230</height>
                             <label>$PARAM[plot]</label>
                         </control>
                         <control type="grouplist">
@@ -460,7 +457,7 @@
                         <left>425</left>
                         <top>35</top>
                     </include>
-                </control>               
+                </control>
             </control>
         </definition>
     </include>
@@ -713,6 +710,7 @@
                 <param name="visible" value="$EXP[Exp_View_522]" />
                 <param name="orientation" value="horizontal" />
                 <param name="controllayout" value="View_514_Wall_Info_Layout" />
+                <param name="labelinclude" value="View_InfoWall_Label" />
                 <width>1028.56</width>
                 <onup>300</onup>
                 <ondown condition="!Container(5229).IsUpdating">SetFocus(5229,0,absolute)</ondown>
@@ -781,6 +779,7 @@
                     <param name="orientation" value="vertical" />
                     <param name="controltype" value="fixedlist" />
                     <param name="controllayout" value="View_514_Wall_Info_Layout" />
+                    <param name="labelinclude" value="View_InfoWall_Label" />
                     <width>item_poster_width</width>
                     <onleft>300</onleft>
                     <onright condition="!Container(5249).IsUpdating">SetFocus(5249,0,absolute)</onright>

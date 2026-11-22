@@ -1,0 +1,9 @@
+{
+    "studio": {"infolabels": ["studio"], "function": "split"},
+    "genre": {"infolabels": ["genre"], "function": "split"},
+    "director": {"infolabels": ["director"], "function": "split"},
+    "writer": {"infolabels": ["writer"], "function": "split"},
+    "tmdb_id": {"infolabels": ["uniqueid(tmdb)"]},
+    "imdb_id": {"infolabels": ["uniqueid(imdb)"]},
+    "tvdb_id": {"infolabels": ["uniqueid(tvdb)"]}
+}

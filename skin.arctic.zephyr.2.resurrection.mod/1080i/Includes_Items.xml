@@ -1429,7 +1429,7 @@
         </content>
     </include>
 
-    <include name="Items_PowerMenu"><content><include>skinshortcuts-group-powermenu</include></content></include>
+    <include name="Items_PowerMenu"><include>skinshortcuts-powermenu</include></include>
 
     <include name="Items_Info_Manage">
         <content>
@@ -1459,7 +1459,7 @@
                 <onclick>SendClick(6)</onclick>
             </item>
             <item>
-                <label>$LOCALIZE[30082]</label>
+                <label>$LOCALIZE[31566]</label>
                 <onclick>UpdateLibrary(video)</onclick>
                 <onclick>Dialog.Close(all,force)</onclick>
             </item>
@@ -1508,7 +1508,7 @@
                 <icon />
                 <label>$LOCALIZE[298]</label>
                 <onclick>Close</onclick>
-                <onclick>ActivateWindow(125)</onclick>
+                <onclick>ActivateWindow(videobookmarks)</onclick>
             </item>
             <item>
                 <icon />
@@ -1535,7 +1535,7 @@
                 <label>22006</label>
                 <onclick>subtitledelay</onclick>
             </item>
-            
+
         </content>
     </include>
 
@@ -1814,7 +1814,7 @@
                 <onclick>SendClick(2)</onclick>
                 <visible>Control.IsEnabled(2)</visible>
             </item>
-            
+
             <!-- Settings -->
             <item>
                 <label>$INFO[Control.GetLabel(9004)]</label>
@@ -1852,35 +1852,35 @@
         <content>
             <!-- Channels -->
             <item>
-                <label>TV Channels</label>
+                <label>$LOCALIZE[10700]</label>
                 <icon>special://skin/extras/icons/livetv.png</icon>
                 <onclick>ActivateWindow(tvchannels)</onclick>
                 <visible>!Window.IsVisible(MyPVRChannels.xml)</visible>
             </item>
             <!-- Guide -->
             <item>
-                <label>TV Guide</label>
+                <label>$LOCALIZE[10702]</label>
                 <icon>special://skin/extras/icons/tvguide.png</icon>
                 <onclick>ActivateWindow(tvguide)</onclick>
                 <visible>!Window.IsVisible(MyPVRGuide.xml)</visible>
             </item>
             <!-- Recordings -->
             <item>
-                <label>TV Recordings</label>
+                <label>$LOCALIZE[10701]</label>
                 <icon>special://skin/extras/icons/database.png</icon>
                 <onclick>ActivateWindow(tvrecordings)</onclick>
                 <visible>!Window.IsVisible(MyPVRRecordings.xml)</visible>
             </item>
             <!-- Timers -->
             <item>
-                <label>TV Timers</label>
+                <label>$LOCALIZE[10703]</label>
                 <icon>special://skin/extras/icons/alarm.png</icon>
                 <onclick>ActivateWindow(tvtimers)</onclick>
                 <visible>!Window.IsVisible(MyPVRTimers.xml)</visible>
             </item>
             <!-- Search -->
             <item>
-                <label>TV Search</label>
+                <label>$LOCALIZE[10704]</label>
                 <icon>special://skin/extras/icons/search.png</icon>
                 <onclick>ActivateWindow(tvsearch)</onclick>
                 <visible>!Window.IsVisible(MyPVRSearch.xml)</visible>
@@ -1993,7 +1993,7 @@
                 <onclick>SendClick(14)</onclick>
                 <visible>Control.IsEnabled(14)</visible>
             </item>
-            
+
             <!-- Hide Foreign -->
             <item>
                 <label>$INFO[Control.GetLabel(7)]</label>
@@ -2037,14 +2037,14 @@
                 <visible>Control.IsEnabled(9)</visible>
                 <visible>!Skin.HasSetting(KioskMode)</visible>
             </item>
-            
+
             <!-- Playlist -->
             <item>
                 <icon>special://skin/extras/icons/playlist.png</icon>
                 <label>13350</label>
                 <onclick condition="!String.IsEqual(Playlist.Length(music),0) + String.IsEqual(Playlist.Length(video),0)">ActivateWindow(musicplaylist)</onclick>
                 <onclick condition="!String.IsEqual(Playlist.Length(video),0) + String.IsEqual(Playlist.Length(music),0)">ActivateWindow(videoplaylist)</onclick>
-                <visible>!String.IsEqual(Playlist.Length(music),0) | !String.IsEqual(Playlist.Length(video),0)</visible> 
+                <visible>!String.IsEqual(Playlist.Length(music),0) | !String.IsEqual(Playlist.Length(video),0)</visible>
             </item>
             <!-- Fullscreen -->
             <item>
@@ -2133,137 +2133,129 @@
         </content>
     </include>
 
-    <include name="Items_MainMenu">
-        <content><include>skinshortcuts-mainmenu</include></content>
-    </include>
-
-    <include name="Items_SubMenu">
-        <content><include>skinshortcuts-submenu</include></content>
-    </include>
-
     <include name="Items_SettingsDialog_Layout">
         <control type="button" id="9001">
-            <label>$LOCALIZE[30101]</label>
+            <label>$LOCALIZE[31584]</label>
             <include>Dialog_Standard_Button</include>
             <onclick>Skin.Reset(HomeMultiNetflix)</onclick>
-            <onclick>Skin.Reset(HomeMultiVertical)</onclick> 
-            <onclick>Skin.Reset(HomeMultiHorizontal)</onclick> 
-            <onclick>Skin.Reset(HomeBasic)</onclick> 
-            <onclick>Skin.SetBool(HomeMulti)</onclick> 
+            <onclick>Skin.Reset(HomeMultiVertical)</onclick>
+            <onclick>Skin.Reset(HomeMultiHorizontal)</onclick>
+            <onclick>Skin.Reset(HomeBasic)</onclick>
+            <onclick>Skin.SetBool(HomeMulti)</onclick>
             <onclick>Skin.SetBool(HomeMultiFlixView)</onclick>
             <onclick>Dialog.Close(1150)</onclick>
         </control>
         <control type="button" id="9002">
-            <label>$LOCALIZE[30079]</label>
+            <label>$LOCALIZE[31564]</label>
             <include>Dialog_Standard_Button</include>
             <onclick>Skin.Reset(HomeMultiFlixView)</onclick>
-            <onclick>Skin.Reset(HomeMultiVertical)</onclick> 
-            <onclick>Skin.Reset(HomeMultiHorizontal)</onclick> 
-            <onclick>Skin.Reset(HomeBasic)</onclick> 
-            <onclick>Skin.SetBool(HomeMulti)</onclick> 
+            <onclick>Skin.Reset(HomeMultiVertical)</onclick>
+            <onclick>Skin.Reset(HomeMultiHorizontal)</onclick>
+            <onclick>Skin.Reset(HomeBasic)</onclick>
+            <onclick>Skin.SetBool(HomeMulti)</onclick>
             <onclick>Skin.SetBool(HomeMultiNetflix)</onclick>
             <onclick>Dialog.Close(1150)</onclick>
         </control>
         <control type="button" id="9004">
-            <label>$LOCALIZE[30051]</label>
+            <label>$LOCALIZE[31541]</label>
             <include>Dialog_Standard_Button</include>
             <onclick>Skin.Reset(HomeMultiNetflix)</onclick>
-            <onclick>Skin.Reset(HomeMultiFlixView)</onclick> 
-            <onclick>Skin.Reset(HomeMultiHorizontal)</onclick> 
-            <onclick>Skin.Reset(HomeBasic)</onclick> 
-            <onclick>Skin.SetBool(HomeMulti)</onclick> 
+            <onclick>Skin.Reset(HomeMultiFlixView)</onclick>
+            <onclick>Skin.Reset(HomeMultiHorizontal)</onclick>
+            <onclick>Skin.Reset(HomeBasic)</onclick>
+            <onclick>Skin.SetBool(HomeMulti)</onclick>
             <onclick>Skin.SetBool(HomeMultiVertical)</onclick>
             <onclick>Dialog.Close(1150)</onclick>
         </control>
         <control type="button" id="9005">
-            <label>$LOCALIZE[30052]</label>
+            <label>$LOCALIZE[31542]</label>
             <include>Dialog_Standard_Button</include>
             <onclick>Skin.Reset(HomeMultiNetflix)</onclick>
-            <onclick>Skin.Reset(HomeMultiVertical)</onclick> 
-            <onclick>Skin.Reset(HomeMultiFlixView)</onclick> 
-            <onclick>Skin.Reset(HomeBasic)</onclick> 
-            <onclick>Skin.SetBool(HomeMulti)</onclick> 
+            <onclick>Skin.Reset(HomeMultiVertical)</onclick>
+            <onclick>Skin.Reset(HomeMultiFlixView)</onclick>
+            <onclick>Skin.Reset(HomeBasic)</onclick>
+            <onclick>Skin.SetBool(HomeMulti)</onclick>
             <onclick>Skin.SetBool(HomeMultiHorizontal)</onclick>
             <onclick>Dialog.Close(1150)</onclick>
         </control>
         <control type="button" id="9006">
-            <label>$LOCALIZE[30061]</label>
+            <label>$LOCALIZE[31551]</label>
             <include>Dialog_Standard_Button</include>
             <onclick>Skin.Reset(HomeMultiNetflix)</onclick>
-            <onclick>Skin.Reset(HomeMultiVertical)</onclick> 
-            <onclick>Skin.Reset(HomeMultiHorizontal)</onclick> 
-            <onclick>Skin.Reset(HomeMultiFlixView)</onclick> 
-            <onclick>Skin.Reset(HomeMulti)</onclick> 
+            <onclick>Skin.Reset(HomeMultiVertical)</onclick>
+            <onclick>Skin.Reset(HomeMultiHorizontal)</onclick>
+            <onclick>Skin.Reset(HomeMultiFlixView)</onclick>
+            <onclick>Skin.Reset(HomeMulti)</onclick>
             <onclick>Skin.SetBool(HomeBasic)</onclick>
             <onclick>Dialog.Close(1150)</onclick>
         </control>
     </include>
     <include name="Items_SettingsDialog_MenuStyle">
         <control type="button" id="9001">
-            <label>$LOCALIZE[30054]</label>
+            <label>$LOCALIZE[31544]</label>
             <include>Dialog_Standard_Button</include>
             <onclick>Skin.Reset(VerticalIconsOnly)</onclick>
-            <onclick>Skin.Reset(HomeTextAutoWidth)</onclick>
             <onclick>Skin.Reset(HomeIcons)</onclick>
+            <onclick>Skin.SetBool(HomeTextAutoWidth)</onclick>
             <onclick>Dialog.Close(1150)</onclick>
             <onclick>ReloadSkin()</onclick>
-            <onclick>AlarmClock(refocus1,SetFocus(9000,0),00:00,silent)</onclick>
-            <onclick>AlarmClock(refocus2,SetFocus(19109),00:00,silent)</onclick>
+            <onclick>AlarmClock(refocus1,SetFocus(9000,0),00:01,silent)</onclick>
+            <onclick>AlarmClock(refocus2,SetFocus(19109),00:01,silent)</onclick>
         </control>
         <control type="button" id="9002">
-            <label>$LOCALIZE[30053]</label>
+            <label>$LOCALIZE[31543]</label>
             <include>Dialog_Standard_Button</include>
             <onclick>Skin.Reset(VerticalIconsOnly)</onclick>
             <onclick>Skin.Reset(HomeTextAutoWidth)</onclick>
             <onclick>Skin.SetBool(HomeIcons)</onclick>
             <onclick>Dialog.Close(1150)</onclick>
             <onclick>ReloadSkin()</onclick>
-            <onclick>AlarmClock(refocus1,SetFocus(9000,0),00:00,silent)</onclick>
-            <onclick>AlarmClock(refocus2,SetFocus(19109),00:00,silent)</onclick>
+            <onclick>AlarmClock(refocus1,SetFocus(9000,0),00:01,silent)</onclick>
+            <onclick>AlarmClock(refocus2,SetFocus(19109),00:01,silent)</onclick>
         </control>
         <control type="button" id="9004">
-            <label>$LOCALIZE[30081]</label>
+            <label>$LOCALIZE[31565]</label>
             <include>Dialog_Standard_Button</include>
             <onclick>Skin.Reset(HomeIcons)</onclick>
             <onclick>Skin.Reset(HomeTextAutoWidth)</onclick>
             <onclick>Skin.SetBool(VerticalIconsOnly)</onclick>
             <onclick>Dialog.Close(1150)</onclick>
             <onclick>ReloadSkin()</onclick>
-            <onclick>AlarmClock(refocus1,SetFocus(9000,0),00:00,silent)</onclick>
-            <onclick>AlarmClock(refocus2,SetFocus(19109),00:00,silent)</onclick>
+            <onclick>AlarmClock(refocus1,SetFocus(9000,0),00:01,silent)</onclick>
+            <onclick>AlarmClock(refocus2,SetFocus(19109),00:01,silent)</onclick>
         </control>
     </include>
     <include name="Items_SettingsDialog_MenuStyle2">
         <control type="button" id="9001">
-            <label>$LOCALIZE[30056]</label>
+            <label>$LOCALIZE[31546]</label>
             <include>Dialog_Standard_Button</include>
             <onclick>Skin.Reset(HomeIcons)</onclick>
             <onclick>Skin.SetBool(HomeTextAutoWidth)</onclick>
             <onclick>Dialog.Close(1150)</onclick>
             <onclick>ReloadSkin()</onclick>
-            <onclick>AlarmClock(refocus1,SetFocus(9000,0),00:00,silent)</onclick>
-            <onclick>AlarmClock(refocus2,SetFocus(19109),00:00,silent)</onclick>
+            <onclick>AlarmClock(refocus1,SetFocus(9000,0),00:01,silent)</onclick>
+            <onclick>AlarmClock(refocus2,SetFocus(19109),00:01,silent)</onclick>
         </control>
         <control type="button" id="9002">
-            <label>$LOCALIZE[30057]</label>
+            <label>$LOCALIZE[31547]</label>
             <include>Dialog_Standard_Button</include>
             <onclick>Skin.Reset(VerticalIconsOnly)</onclick>
             <onclick>Skin.Reset(HomeTextAutoWidth)</onclick>
             <onclick>Skin.Reset(HomeIcons)</onclick>
             <onclick>Dialog.Close(1150)</onclick>
             <onclick>ReloadSkin()</onclick>
-            <onclick>AlarmClock(refocus1,SetFocus(9000,0),00:00,silent)</onclick>
-            <onclick>AlarmClock(refocus2,SetFocus(19109),00:00,silent)</onclick>
+            <onclick>AlarmClock(refocus1,SetFocus(9000,0),00:01,silent)</onclick>
+            <onclick>AlarmClock(refocus2,SetFocus(19109),00:01,silent)</onclick>
         </control>
         <control type="button" id="9004">
-            <label>$LOCALIZE[30055]</label>
+            <label>$LOCALIZE[31545]</label>
             <include>Dialog_Standard_Button</include>
             <onclick>Skin.Reset(HomeTextAutoWidth)</onclick>
             <onclick>Skin.SetBool(HomeIcons)</onclick>
             <onclick>Dialog.Close(1150)</onclick>
             <onclick>ReloadSkin()</onclick>
-            <onclick>AlarmClock(refocus1,SetFocus(9000,0),00:00,silent)</onclick>
-            <onclick>AlarmClock(refocus2,SetFocus(19109),00:00,silent)</onclick>
+            <onclick>AlarmClock(refocus1,SetFocus(9000,0),00:01,silent)</onclick>
+            <onclick>AlarmClock(refocus2,SetFocus(19109),00:01,silent)</onclick>
         </control>
     </include>
     <include name="Items_SettingsDialog_FallbackImage">
@@ -2300,21 +2292,35 @@
             <onclick>Dialog.Close(1150)</onclick>
         </control>
     </include>
+    <include name="Items_SettingsDialog_CustomStartupImage">
+        <control type="button" id="9001">
+            <label>$LOCALIZE[571]</label>
+            <include>Dialog_Standard_Button</include>
+            <onclick>Skin.Reset(StartupImage)</onclick>
+            <onclick>Dialog.Close(1150)</onclick>
+        </control>
+        <control type="button" id="9002">
+            <label>$LOCALIZE[31271]</label>
+            <include>Dialog_Standard_Button</include>
+            <onclick>Skin.SetImage(StartupImage)</onclick>
+            <onclick>Dialog.Close(1150)</onclick>
+        </control>
+    </include>
     <include name="Items_SettingsDialog_TrailerDelay">
         <control type="button" id="9001">
-            <label>$LOCALIZE[30039]</label>
+            <label>$LOCALIZE[31529]</label>
             <include>Dialog_Standard_Button</include>
             <onclick>Skin.Reset(Trailer_Delay)</onclick>
             <onclick>Dialog.Close(1150)</onclick>
         </control>
         <control type="button" id="9002">
-            <label>$LOCALIZE[30112]</label>
+            <label>$LOCALIZE[31594]</label>
             <include>Dialog_Standard_Button</include>
             <onclick>Skin.SetString(Trailer_Delay,00:03)</onclick>
             <onclick>Dialog.Close(1150)</onclick>
         </control>
         <control type="button" id="9003">
-            <label>$LOCALIZE[30113]</label>
+            <label>$LOCALIZE[31595]</label>
             <include>Dialog_Standard_Button</include>
             <onclick>Skin.SetString(Trailer_Delay,00:06)</onclick>
             <onclick>Dialog.Close(1150)</onclick>
@@ -2396,7 +2402,7 @@
     </include>
     <include name="Items_SettingsDialog_IconStyle">
         <control type="button" id="9001">
-            <label>Monochrome</label>
+            <label>$LOCALIZE[31517]</label>
             <include>Dialog_Standard_Button</include>
             <onclick>Skin.SetString(Icons,monochrome)</onclick>
             <onclick>Skin.SetString(icons.diffuse,main_fg_100)</onclick>
@@ -2404,7 +2410,7 @@
             <onclick>Dialog.Close(1150)</onclick>
         </control>
         <control type="button" id="9002">
-            <label>Colorful</label>
+            <label>$LOCALIZE[31518]</label>
             <include>Dialog_Standard_Button</include>
             <onclick>Skin.SetString(Icons,colorful)</onclick>
             <onclick>Skin.SetString(icons.diffuse, '')</onclick>
@@ -2414,21 +2420,21 @@
     </include>
     <include name="Items_SettingsDialog_OSD_Timeout">
         <control type="button" id="9001">
-            <label>$LOCALIZE[30039]</label>
+            <label>$LOCALIZE[31529]</label>
             <include>Dialog_Standard_Button</include>
             <onclick>Skin.Reset(OSD_Timeout)</onclick>
             <onclick>Dialog.Close(1150)</onclick>
         </control>
         <control type="button" id="9002">
-            <label>$LOCALIZE[30064]</label>
+            <label>$LOCALIZE[31554]</label>
             <include>Dialog_Standard_Button</include>
-            <onclick>Skin.SetString(OSD_Timeout,$LOCALIZE[30064])</onclick>
+            <onclick>Skin.SetString(OSD_Timeout,$LOCALIZE[31554])</onclick>
             <onclick>Dialog.Close(1150)</onclick>
         </control>
         <control type="button" id="9003">
-            <label>$LOCALIZE[30065]</label>
+            <label>$LOCALIZE[31555]</label>
             <include>Dialog_Standard_Button</include>
-            <onclick>Skin.SetString(OSD_Timeout,$LOCALIZE[30065])</onclick>
+            <onclick>Skin.SetString(OSD_Timeout,$LOCALIZE[31555])</onclick>
             <onclick>Dialog.Close(1150)</onclick>
         </control>
         <control type="button" id="9004">
@@ -2468,17 +2474,95 @@
             <onclick>Dialog.Close(1150)</onclick>
         </control>
     </include>
-    <include name="Items_SettingsDialog_FocusBorder">
+    <include name="Items_Dialog_BackgroundFade">
         <control type="button" id="9001">
-            <label>$LOCALIZE[30067]</label>
-            <include>Dialog_Standard_Button</include>
-            <onclick>Skin.SetString(FocusBorderSize,$LOCALIZE[30067])</onclick>
+            <height>item_list_height</height>
+            <label>80%</label>
+            <onclick>Skin.SetString(Background_Fade,80)</onclick>
             <onclick>Dialog.Close(1150)</onclick>
         </control>
         <control type="button" id="9002">
-            <label>$LOCALIZE[30068]</label>
-            <include>Dialog_Standard_Button</include>
-            <onclick>Skin.SetString(FocusBorderSize,$LOCALIZE[30068])</onclick>
+            <height>item_list_height</height>
+            <label>75%</label>
+            <onclick>Skin.SetString(Background_Fade,75)</onclick>
+            <onclick>Dialog.Close(1150)</onclick>
+        </control>
+        <control type="button" id="9003">
+            <height>item_list_height</height>
+            <label>70%</label>
+            <onclick>Skin.SetString(Background_Fade,70)</onclick>
+            <onclick>Dialog.Close(1150)</onclick>
+        </control>
+        <control type="button" id="9004">
+            <height>item_list_height</height>
+            <label>65%</label>
+            <onclick>Skin.SetString(Background_Fade,65)</onclick>
+            <onclick>Dialog.Close(1150)</onclick>
+        </control>
+        <control type="button" id="9005">
+            <height>item_list_height</height>
+            <label>60%</label>
+            <onclick>Skin.SetString(Background_Fade,60)</onclick>
+            <onclick>Dialog.Close(1150)</onclick>
+        </control>
+        <control type="button" id="9006">
+            <height>item_list_height</height>
+            <label>55%</label>
+            <onclick>Skin.SetString(Background_Fade,55)</onclick>
+            <onclick>Dialog.Close(1150)</onclick>
+        </control>
+        <control type="button" id="9007">
+            <height>item_list_height</height>
+            <label>50%</label>
+            <onclick>Skin.SetString(Background_Fade,50)</onclick>
+            <onclick>Dialog.Close(1150)</onclick>
+        </control>
+        <control type="button" id="9008">
+            <height>item_list_height</height>
+            <label>45%</label>
+            <onclick>Skin.SetString(Background_Fade,45)</onclick>
+            <onclick>Dialog.Close(1150)</onclick>
+        </control>
+        <control type="button" id="9009">
+            <height>item_list_height</height>
+            <label>40%</label>
+            <onclick>Skin.SetString(Background_Fade,40)</onclick>
+            <onclick>Dialog.Close(1150)</onclick>
+        </control>
+        <control type="button" id="9010">
+            <height>item_list_height</height>
+            <label>35%</label>
+            <onclick>Skin.SetString(Background_Fade,35)</onclick>
+            <onclick>Dialog.Close(1150)</onclick>
+        </control>
+        <control type="button" id="9011">
+            <height>item_list_height</height>
+            <label>30%</label>
+            <onclick>Skin.SetString(Background_Fade,30)</onclick>
+            <onclick>Dialog.Close(1150)</onclick>
+        </control>
+        <control type="button" id="9012">
+            <height>item_list_height</height>
+            <label>25%</label>
+            <onclick>Skin.SetString(Background_Fade,25)</onclick>
+            <onclick>Dialog.Close(1150)</onclick>
+        </control>
+        <control type="button" id="9013">
+            <height>item_list_height</height>
+            <label>20% ($LOCALIZE[31549])</label>
+            <onclick>Skin.SetString(Background_Fade,20)</onclick>
+            <onclick>Dialog.Close(1150)</onclick>
+        </control>
+        <control type="button" id="9014">
+            <height>item_list_height</height>
+            <label>15%</label>
+            <onclick>Skin.SetString(Background_Fade,15)</onclick>
+            <onclick>Dialog.Close(1150)</onclick>
+        </control>
+        <control type="button" id="9015">
+            <height>item_list_height</height>
+            <label>10%</label>
+            <onclick>Skin.SetString(Background_Fade,10)</onclick>
             <onclick>Dialog.Close(1150)</onclick>
         </control>
     </include>
@@ -2605,7 +2689,7 @@
         </control>
         <control type="button" id="9022">
             <height>item_list_height</height>
-            <label>0% ($LOCALIZE[30059])</label>
+            <label>0% ($LOCALIZE[31549])</label>
             <onclick>Dialog.Close(1150)</onclick>
             <onclick>Skin.SetString(AlphaValue,0)</onclick>
         </control>
@@ -2733,9 +2817,260 @@
         </control>
         <control type="button" id="9022">
             <height>item_list_height</height>
-            <label>0% ($LOCALIZE[30059])</label>
+            <label>0% ($LOCALIZE[31549])</label>
             <onclick>Dialog.Close(1150)</onclick>
             <onclick>Skin.SetString(AlphaValue_Highlight,0)</onclick>
         </control>
+    </include>
+    <include name="Items_SettingsDialog_FlixBlur">
+        <control type="button" id="9001">
+            <label>$LOCALIZE[31512]</label>
+            <include>Dialog_Standard_Button</include>
+            <onclick>Skin.ToggleSetting(EnableBlur.FlixViews)</onclick>
+            <onclick condition="Skin.HasSetting(FlixViews.Simple)">Skin.Reset(FlixViews.Simple)</onclick>
+            <onclick condition="!Skin.HasSetting(TMDbHelper.EnableBlur)">Skin.SetBool(TMDbHelper.EnableBlur)</onclick>
+            <onclick condition="Skin.HasSetting(TMDbHelper.EnableBlur) + Skin.HasSetting(EnableBlur.FlixViews) + !Skin.HasSetting(EnableBlur.Background)">Skin.Reset(TMDbHelper.EnableBlur)</onclick>
+            <onclick>Dialog.Close(1150)</onclick>
+            <onclick>ReloadSkin()</onclick>
+            <onclick>AlarmClock(refocus1,SetFocus(9000,1),00:00,silent)</onclick>
+            <onclick>AlarmClock(refocus2,SetFocus(19535),00:00,silent)</onclick>
+        </control>
+        <control type="button" id="9002">
+            <label>$LOCALIZE[31513]</label>
+            <include>Dialog_Standard_Button</include>
+            <onclick condition="Skin.HasSetting(EnableBlur.FlixViews)">Skin.Reset(EnableBlur.FlixViews)</onclick>
+            <onclick condition="Skin.HasSetting(FlixViews.Simple)">Skin.Reset(FlixViews.Simple)</onclick>
+            <onclick condition="Skin.HasSetting(TMDbHelper.EnableBlur) + !Skin.HasSetting(EnableBlur.Background)">Skin.Reset(TMDbHelper.EnableBlur)</onclick>
+            <onclick>Dialog.Close(1150)</onclick>
+            <onclick>ReloadSkin()</onclick>
+            <onclick>AlarmClock(refocus1,SetFocus(9000,1),00:00,silent)</onclick>
+            <onclick>AlarmClock(refocus2,SetFocus(19535),00:00,silent)</onclick>
+        </control>
+        <control type="button" id="9003">
+            <label>$LOCALIZE[31514]</label>
+            <include>Dialog_Standard_Button</include>
+            <onclick>Skin.SetBool(FlixViews.Simple)</onclick>
+            <onclick condition="Skin.HasSetting(EnableBlur.FlixViews)">Skin.Reset(EnableBlur.FlixViews)</onclick>
+            <onclick condition="Skin.HasSetting(TMDbHelper.EnableBlur) + !Skin.HasSetting(EnableBlur.Background)">Skin.Reset(TMDbHelper.EnableBlur)</onclick>
+            <onclick>Dialog.Close(1150)</onclick>
+            <onclick>ReloadSkin()</onclick>
+            <onclick>AlarmClock(refocus1,SetFocus(9000,1),00:00,silent)</onclick>
+            <onclick>AlarmClock(refocus2,SetFocus(19535),00:00,silent)</onclick>
+        </control>
+    </include>
+
+    <include name="Items_Settings_RatingsMovies">
+        <control type="button" id="9001">
+            <include>Dialog_Standard_Button</include>
+            <label>$LOCALIZE[563] 01</label>
+            <label2>$VAR[Label_CustomRating_Movies_01]</label2>
+            <onclick>SetProperty(ConfigureRatingItem,Item01,Home)</onclick>
+            <onclick>SetProperty(ConfigureRatingContent,Movies,Home)</onclick>
+            <onclick>ActivateWindow(1118)</onclick>
+        </control>
+        <control type="button" id="9002">
+            <include>Dialog_Standard_Button</include>
+            <label>$LOCALIZE[563] 02</label>
+            <label2>$VAR[Label_CustomRating_Movies_02]</label2>
+            <onclick>SetProperty(ConfigureRatingItem,Item02,Home)</onclick>
+            <onclick>SetProperty(ConfigureRatingContent,Movies,Home)</onclick>
+            <onclick>ActivateWindow(1118)</onclick>
+        </control>
+        <control type="button" id="9003">
+            <include>Dialog_Standard_Button</include>
+            <label>$LOCALIZE[563] 03</label>
+            <label2>$VAR[Label_CustomRating_Movies_03]</label2>
+            <onclick>SetProperty(ConfigureRatingItem,Item03,Home)</onclick>
+            <onclick>SetProperty(ConfigureRatingContent,Movies,Home)</onclick>
+            <onclick>ActivateWindow(1118)</onclick>
+        </control>
+        <control type="button" id="9004">
+            <include>Dialog_Standard_Button</include>
+            <label>$LOCALIZE[563] 04</label>
+            <label2>$VAR[Label_CustomRating_Movies_04]</label2>
+            <onclick>SetProperty(ConfigureRatingItem,Item04,Home)</onclick>
+            <onclick>SetProperty(ConfigureRatingContent,Movies,Home)</onclick>
+            <onclick>ActivateWindow(1118)</onclick>
+        </control>
+        <control type="button" id="9005">
+            <include>Dialog_Standard_Button</include>
+            <label>$LOCALIZE[563] 05</label>
+            <label2>$VAR[Label_CustomRating_Movies_05]</label2>
+            <onclick>SetProperty(ConfigureRatingItem,Item05,Home)</onclick>
+            <onclick>SetProperty(ConfigureRatingContent,Movies,Home)</onclick>
+            <onclick>ActivateWindow(1118)</onclick>
+        </control>
+        <control type="button" id="9006">
+            <include>Dialog_Standard_Button</include>
+            <label>$LOCALIZE[563] 06</label>
+            <label2>$VAR[Label_CustomRating_Movies_06]</label2>
+            <onclick>SetProperty(ConfigureRatingItem,Item06,Home)</onclick>
+            <onclick>SetProperty(ConfigureRatingContent,Movies,Home)</onclick>
+            <onclick>ActivateWindow(1118)</onclick>
+        </control>
+    </include>
+
+    <include name="Items_Settings_RatingsTVShows">
+        <control type="button" id="9001">
+            <include>Dialog_Standard_Button</include>
+            <label>$LOCALIZE[563] 01</label>
+            <label2>$VAR[Label_CustomRating_TVShows_01]</label2>
+            <onclick>SetProperty(ConfigureRatingItem,Item01,Home)</onclick>
+            <onclick>SetProperty(ConfigureRatingContent,TVShows,Home)</onclick>
+            <onclick>ActivateWindow(1118)</onclick>
+        </control>
+        <control type="button" id="9002">
+            <include>Dialog_Standard_Button</include>
+            <label>$LOCALIZE[563] 02</label>
+            <label2>$VAR[Label_CustomRating_TVShows_02]</label2>
+            <onclick>SetProperty(ConfigureRatingItem,Item02,Home)</onclick>
+            <onclick>SetProperty(ConfigureRatingContent,TVShows,Home)</onclick>
+            <onclick>ActivateWindow(1118)</onclick>
+        </control>
+        <control type="button" id="9003">
+            <include>Dialog_Standard_Button</include>
+            <label>$LOCALIZE[563] 03</label>
+            <label2>$VAR[Label_CustomRating_TVShows_03]</label2>
+            <onclick>SetProperty(ConfigureRatingItem,Item03,Home)</onclick>
+            <onclick>SetProperty(ConfigureRatingContent,TVShows,Home)</onclick>
+            <onclick>ActivateWindow(1118)</onclick>
+        </control>
+        <control type="button" id="9004">
+            <include>Dialog_Standard_Button</include>
+            <label>$LOCALIZE[563] 04</label>
+            <label2>$VAR[Label_CustomRating_TVShows_04]</label2>
+            <onclick>SetProperty(ConfigureRatingItem,Item04,Home)</onclick>
+            <onclick>SetProperty(ConfigureRatingContent,TVShows,Home)</onclick>
+            <onclick>ActivateWindow(1118)</onclick>
+        </control>
+        <control type="button" id="9005">
+            <include>Dialog_Standard_Button</include>
+            <label>$LOCALIZE[563] 05</label>
+            <label2>$VAR[Label_CustomRating_TVShows_05]</label2>
+            <onclick>SetProperty(ConfigureRatingItem,Item05,Home)</onclick>
+            <onclick>SetProperty(ConfigureRatingContent,TVShows,Home)</onclick>
+            <onclick>ActivateWindow(1118)</onclick>
+        </control>
+        <control type="button" id="9006">
+            <include>Dialog_Standard_Button</include>
+            <label>$LOCALIZE[563] 06</label>
+            <label2>$VAR[Label_CustomRating_TVShows_06]</label2>
+            <onclick>SetProperty(ConfigureRatingItem,Item06,Home)</onclick>
+            <onclick>SetProperty(ConfigureRatingContent,TVShows,Home)</onclick>
+            <onclick>ActivateWindow(1118)</onclick>
+        </control>
+    </include>
+
+    <include name="Items_Dialog_RatingType_Template">
+        <include content="Settings_Button">
+            <param name="id">$PARAM[id]</param>
+            <param name="control">radiobutton</param>
+            <label>$PARAM[label]</label>
+            <radioposx>730</radioposx>
+            <onclick condition="Skin.String(CustomRating.$PARAM[content].Item01,$PARAM[type])">Skin.SetString(CustomRating.$PARAM[content].Item01,$INFO[Skin.String(CustomRating.$PARAM[content].$PARAM[item])])</onclick>
+            <onclick condition="Skin.String(CustomRating.$PARAM[content].Item02,$PARAM[type])">Skin.SetString(CustomRating.$PARAM[content].Item02,$INFO[Skin.String(CustomRating.$PARAM[content].$PARAM[item])])</onclick>
+            <onclick condition="Skin.String(CustomRating.$PARAM[content].Item03,$PARAM[type])">Skin.SetString(CustomRating.$PARAM[content].Item03,$INFO[Skin.String(CustomRating.$PARAM[content].$PARAM[item])])</onclick>
+            <onclick condition="Skin.String(CustomRating.$PARAM[content].Item04,$PARAM[type])">Skin.SetString(CustomRating.$PARAM[content].Item04,$INFO[Skin.String(CustomRating.$PARAM[content].$PARAM[item])])</onclick>
+            <onclick condition="Skin.String(CustomRating.$PARAM[content].Item05,$PARAM[type])">Skin.SetString(CustomRating.$PARAM[content].Item05,$INFO[Skin.String(CustomRating.$PARAM[content].$PARAM[item])])</onclick>
+            <onclick>Skin.SetString(CustomRating.$PARAM[content].$PARAM[item],$PARAM[type])</onclick>
+            <onclick>Close</onclick>
+            <selected>Skin.String(CustomRating.$PARAM[content].$PARAM[item],$PARAM[type])</selected>
+        </include>
+    </include>
+
+    <include name="Items_Dialog_RatingType">
+        <include content="Settings_Button">
+            <param name="id">9020</param>
+            <param name="control">radiobutton</param>
+            <label>$LOCALIZE[16018]</label>
+            <radioposx>730</radioposx>
+            <selected>Skin.String(CustomRating.$PARAM[content].$PARAM[item],None)</selected>
+            <onclick>Skin.SetString(CustomRating.$PARAM[content].$PARAM[item],None)</onclick>
+            <onclick>Close</onclick>
+        </include>
+        <include content="Items_Dialog_RatingType_Template">
+            <param name="id">9001</param>
+            <param name="label">Kodi</param>
+            <param name="type">Kodi</param>
+            <param name="item">$PARAM[item]</param>
+            <param name="content">$PARAM[content]</param>
+        </include>
+        <include content="Items_Dialog_RatingType_Template">
+            <param name="id">9002</param>
+            <param name="label">Metacritic</param>
+            <param name="type">Metacritic</param>
+            <param name="item">$PARAM[item]</param>
+            <param name="content">$PARAM[content]</param>
+        </include>
+        <include content="Items_Dialog_RatingType_Template">
+            <param name="id">9003</param>
+            <param name="label">Trakt</param>
+            <param name="type">Trakt</param>
+            <param name="item">$PARAM[item]</param>
+            <param name="content">$PARAM[content]</param>
+        </include>
+        <include content="Items_Dialog_RatingType_Template">
+            <param name="id">9004</param>
+            <param name="label">TMDb</param>
+            <param name="type">TMDb</param>
+            <param name="item">$PARAM[item]</param>
+            <param name="content">$PARAM[content]</param>
+        </include>
+        <include content="Items_Dialog_RatingType_Template">
+            <param name="id">9005</param>
+            <param name="label">RottenTomatoesUser</param>
+            <param name="type">RottenTomatoesUser</param>
+            <param name="item">$PARAM[item]</param>
+            <param name="content">$PARAM[content]</param>
+        </include>
+        <include content="Items_Dialog_RatingType_Template">
+            <param name="id">9006</param>
+            <param name="label">RottenTomatoesCritic</param>
+            <param name="type">RottenTomatoesCritic</param>
+            <param name="item">$PARAM[item]</param>
+            <param name="content">$PARAM[content]</param>
+        </include>
+        <include content="Items_Dialog_RatingType_Template">
+            <param name="id">9007</param>
+            <param name="label">IMDb</param>
+            <param name="type">IMDb</param>
+            <param name="item">$PARAM[item]</param>
+            <param name="content">$PARAM[content]</param>
+        </include>
+        <include content="Items_Dialog_RatingType_Template">
+            <param name="id">9008</param>
+            <param name="label">MDbList</param>
+            <param name="type">MDbList</param>
+            <param name="item">$PARAM[item]</param>
+            <param name="content">$PARAM[content]</param>
+        </include>
+        <include content="Items_Dialog_RatingType_Template">
+            <param name="id">9009</param>
+            <param name="label">Letterboxd</param>
+            <param name="type">Letterboxd</param>
+            <param name="item">$PARAM[item]</param>
+            <param name="content">$PARAM[content]</param>
+        </include>
+        <include content="Items_Dialog_RatingType_Template">
+            <param name="id">9010</param>
+            <param name="label">$LOCALIZE[31596]</param>
+            <param name="type">Awards</param>
+            <param name="item">$PARAM[item]</param>
+            <param name="content">$PARAM[content]</param>
+        </include>
+        <include content="Items_Dialog_RatingType_Template">
+            <param name="id">9011</param>
+            <param name="label">$LOCALIZE[858]</param>
+            <param name="type">User</param>
+            <param name="item">$PARAM[item]</param>
+            <param name="content">$PARAM[content]</param>
+        </include>
+        <include content="Items_Dialog_RatingType_Template">
+            <param name="id">9012</param>
+            <param name="label">MyAnimeList</param>
+            <param name="type">MyAnimeList</param>
+            <param name="item">$PARAM[item]</param>
+            <param name="content">$PARAM[content]</param>
+        </include>
     </include>
 </includes>

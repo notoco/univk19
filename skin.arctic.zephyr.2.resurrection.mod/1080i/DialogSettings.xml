@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <window>
-
     <controls>
         <control type="group">
             <animation effect="fade" start="100" end="0" time="400" condition="Window.IsVisible(SliderDialog)">Conditional</animation>
@@ -11,12 +10,22 @@
             <visible>!Window.IsVisible(SliderDialog)</visible>
             <include content="Dialog_Standard_Group">
                 <param name="width" value="1420" />
-                <param name="height" value="850" />
+                <param name="height" value="840" />
             </include>
 
             <control type="label" id="2">
                 <include>Dialog_Standard_Header</include>
             </control>
+
+            <include content="Object_Control">
+                <param name="control">image</param>
+                <top>80</top>
+                <height>1</height>
+                <width>1370</width>
+                <texture colordiffuse="dialog_fg_12">common/white.png</texture>
+                <left>25</left>
+                <right>25</right>
+            </include>
 
             <control type="grouplist" id="5">
                 <description>control area</description>
@@ -35,8 +44,7 @@
             <include content="Dialog_Scrollbar">
                 <param name="onleft" value="5" />
             </include>
-            
-           
+
             <control type="group">
                 <include>Dialog_Standard_Right_Group</include>
                 <control type="grouplist" id="8000">
@@ -60,5 +68,4 @@
         </control>
         <include>Dialog_Default_Buttons</include>
     </controls>
-
 </window>

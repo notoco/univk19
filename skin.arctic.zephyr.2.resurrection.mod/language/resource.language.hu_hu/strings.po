@@ -1,7 +1,6 @@
- Kodi Media Center language file
-# Addon Name: Horizon
-# Addon id: skin.horizon
-# Addon Provider: jurialmunkey
+# Kodi Media Center language file
+# Addon Name: Arctic: Zephyr 2 - Resurrection
+# Addon id: skin.arctic.zephyr.2.resurrection
 msgid ""
 msgstr ""
 "MIME-Version: 1.0\n"
@@ -87,7 +86,7 @@ msgstr "Extra fanart"
 
 #: /1080i/SkinSettings.xml
 msgctxt "#31015"
-msgid "Customise recommendations window"
+msgid "Customise recommendations"
 msgstr "Infó dialóg listák kiválasztása"
 
 #: /1080i/SkinSettings.xml
@@ -400,11 +399,6 @@ msgctxt "#31078"
 msgid "This category allows you to view$COMMA install and customise add-ons supported by Arctic Zephyr 2."
 msgstr "Ez a kategória beállítás engedélyezi$COMMA  hogy telepíts olyan kiegészítőket amiket az Arctic Zephyr 2 támogat"
 
-#: /1080i/SkinSettings.xml
-msgctxt "#31079"
-msgid "Pause when opening info dialog"
-msgstr "Szünet az infó dialóg megjelenítésekor"
-
 #: /1080i/Includes_Labels.xml
 msgctxt "#31080"
 msgid "This category contains options for backing-up$COMMA restoring and reseting Arctic Zephyr 2 skin settings."
@@ -464,11 +458,6 @@ msgstr "Ez a rész tartalmazza média és médiatár beállításokat"
 msgctxt "#31091"
 msgid "This section contains playback settings."
 msgstr "Ez a rész tartalmazza a lejátszó beállításokat"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#31092"
-msgid "Plot boxes use Faune font"
-msgstr "A tartalom Faune betűtípust használ"
 
 #: /1080i/SkinSettings.xml
 msgctxt "#31093"
@@ -655,11 +644,6 @@ msgctxt "#31132"
 msgid "Use long music osd"
 msgstr "Nagyobb zenei osd használata"
 
-#: /1080i/SkinSettings.xml
-msgctxt "#31133"
-msgid "Prefer poster image for blur"
-msgstr "Poszterkép használata az elmosásnál"
-
 #: /1080i/Includes_View_50_List.xml
 msgctxt "#31134"
 msgid "Tri-Panel"
@@ -687,7 +671,7 @@ msgstr "Extrák és speciális beállítások"
 
 #: /1080i/SkinSettings.xml
 msgctxt "#31139"
-msgid "Widgets and Layout"
+msgid "Layout"
 msgstr "Widgetek és elrendezés"
 
 #: /1080i/SkinSettings.xml
@@ -708,11 +692,6 @@ msgstr "Gördülő szöveg"
 msgctxt "#31143"
 msgid "Miscellaneous"
 msgstr "Egyebek"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#31144"
-msgid "Fonts and Artwork"
-msgstr "Betűtípusok és képek"
 
 #: /1080i/SkinSettings.xml
 msgctxt "#31145"
@@ -814,13 +793,8 @@ msgid "Start-up"
 msgstr "Kezdő"
 
 #: /1080i/SkinSettings.xml
-msgctxt "#31165"
-msgid "Custom lists"
-msgstr "Saját listák"
-
-#: /1080i/SkinSettings.xml
 msgctxt "#31166"
-msgid "Choose search lists"
+msgid "Customise search menu"
 msgstr "Listakereső"
 
 #: /1080i/Custom_1120_EnableSearchLists.xml
@@ -840,7 +814,7 @@ msgstr "Saját keresőlista szerkesztése"
 #: /1080i/SkinSettings.xml
 msgctxt "#31170"
 msgid "Clearlogo"
-msgstr Clearlogo""
+msgstr "Clearlogo"
 
 #: /1080i/Includes_View_52_Showcase.xml
 msgctxt "#31171"
@@ -940,6 +914,10 @@ msgstr "Legutóbb játszott filmek"
 msgctxt "#31191"
 msgid "Info List"
 msgstr "Infólista"
+
+msgctxt "#31192"
+msgid "item"
+msgstr ""
 
 #: /1080i/Includes_Items.xml
 msgctxt "#31193"
@@ -1048,7 +1026,7 @@ msgctxt "#31230"
 msgid "Top Rated Episodes"
 msgstr "Top pontozott részek"
 
-#: /1080i/Includes_View_Posters.xml
+#: /shortcuts/skinviewtypes.json
 msgctxt "#31231"
 msgid "Lovefilm"
 msgstr "Szerelmesfilm"
@@ -1092,9 +1070,29 @@ msgctxt "#31260"
 msgid "Movie Sets"
 msgstr "Filmgyűjtemények"
 
+msgctxt "#31261"
+msgid "Small Landscape"
+msgstr ""
+
 msgctxt "#31262"
 msgid "Poster"
 msgstr "Poszter"
+
+msgctxt "#31263"
+msgid "Big Square"
+msgstr ""
+
+msgctxt "#31264"
+msgid "Big Landscape"
+msgstr ""
+
+msgctxt "#31265"
+msgid "Banner"
+msgstr ""
+
+msgctxt "#31266"
+msgid "Small Square"
+msgstr ""
 
 msgctxt "#31267"
 msgid "Action"
@@ -1277,32 +1275,32 @@ msgctxt "#31356"
 msgid "Years Old"
 msgstr "Éves"
 
-#: /1080i/Includes_View_Posters.xml
+#: /shortcuts/skinviewtypes.json
 msgctxt "#31358"
 msgid "Poster Wall"
 msgstr "Poster Wall"
 
-#: /1080i/Includes_View_Posters.xml
+#: /shortcuts/skinviewtypes.json
 msgctxt "#31359"
 msgid "Landscape Wall"
 msgstr "Landscape Wall"
 
-#: /1080i/Includes_View_Posters.xml
+#: /shortcuts/skinviewtypes.json
 msgctxt "#31360"
 msgid "Square Wall"
 msgstr "Square wall"
 
-#: /1080i/Includes_View_Posters.xml
+#: /shortcuts/skinviewtypes.json
 msgctxt "#31361"
 msgid "Landscape Showcase"
 msgstr "Landscape Showcase"
 
-#: /1080i/Includes_View_Posters.xml
+#: /shortcuts/skinviewtypes.json
 msgctxt "#31362"
 msgid "Square Showcase"
 msgstr "Square Showcase"
 
-#: /1080i/Includes_View_Posters.xml
+#: /shortcuts/skinviewtypes.json
 msgctxt "#31363"
 msgid "Big Posters"
 msgstr "Nagy poszterek"
@@ -1414,8 +1412,8 @@ msgstr "Élő TV / PVR"
 
 #: /1080i/Includes_View_50_List.xml
 msgctxt "#31423"
-msgid "Media Info 2"
-msgstr "Média infó 2"
+msgid "Media Info Extended"
+msgstr ""
 
 #: /1080i/Includes_View_51_Wall.xml
 msgctxt "#31424"
@@ -1496,388 +1494,6 @@ msgstr "Nagyobb kontraszt a ki nem választott widgeten"
 msgctxt "#31439"
 msgid "Show page and item counts on list pages"
 msgstr "Oldal és elemszámok a listázott oldalakon"
-
-msgctxt "#30035"
-msgid "Continue watching in [COLOR FFFF4081]$INFO[Window.Property(remaining)][/COLOR] seconds"
-msgstr "Folytatás [COLOR FFFF4081]$INFO[Window.Property(remaining)][/COLOR] másodperc múlva"
-
-msgctxt "#30036"
-msgid "Up next in [COLOR FFFF4081]$INFO[Window.Property(remaining)][/COLOR] seconds"
-msgstr "Up next [COLOR FFFF4081]$INFO[Window.Property(remaining)][/COLOR] másodperc múlva"
-
-msgctxt "#30037"
-msgid "Next episode in [COLOR FFFF4081]$INFO[Window.Property(remaining)][/COLOR] seconds"
-msgstr "Következő rész [COLOR FFFF4081]$INFO[Window.Property(remaining)][/COLOR] másodperc múlva"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30038"
-msgid "This is a light mod of Arctic Zephyr 2 by heppen. Arctic Zephyr 2 is a minimalistic skin created by jurialmunkey and moded to work with Kodi 19 Matrix by pkscout. The skin is designed to be simple so that the user can focus on their media content. In addition to the default light colour scheme, the skin also includes a number of darker variations."
-msgstr "Ez az Arctic Zephyr 2 módosítása heppentől. Az Arctic Zephyr 2 egy minimalista felszín, amelyet jurialmunkey hozott létre, és pkscout módosította a Kodi 19 Matrixhoz. A felszínt úgy tervezték, hogy egyszerű legyen, hogy a felhasználó a médiatartalmakra koncentrálhasson. Az alapértelmezett világos színvilág mellett a felszín sötétebb variációt is tartalmaz."
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30039"
-msgid "Reset"
-msgstr "Visszaállítás"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30040"
-msgid "Restore to defaults"
-msgstr "Alapbeállításokra visszaállít"
-
-#: /1080i/Includes_Info.xml
-msgctxt "#30041"
-msgid "TRAKT"
-msgstr "Trakt"
-
-#: /1080i/Custom_1119_EnableInfoLists.xml
-msgctxt "#30042"
-msgid "Recommendations"
-msgstr "Ajánlott"
-
-#: /1080i/Custom_1119_EnableInfoLists.xml
-msgctxt "#30043"
-msgid "Posters"
-msgstr "Poszterek"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30044"
-msgid "Debugging"
-msgstr "Felszín hibakereső mód"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30045"
-msgid "Home layout"
-msgstr "Főmenü elrendezés"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30046"
-msgid "Menu style"
-msgstr "Menü stílus"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30047"
-msgid "Corner icon"
-msgstr "Sarok ikon"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30048"
-msgid "Widget movement"
-msgstr "Widget mozgatás"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30049"
-msgid "Auto-scroll single widgets"
-msgstr "Widget auto görgetés"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30050"
-msgid "Other"
-msgstr "Egyéb"
-
-#: /1080i/Includes_Labels.xml
-msgctxt "#30051"
-msgid "Vertical menu | Multiple widgets"
-msgstr "Függőleges menü | Többszörös widgetek"
-
-#: /1080i/Includes_Labels.xml
-msgctxt "#30052"
-msgid "Horizontal menu | Multiple widgets"
-msgstr "Vízszintes menü | Többszörös widgetek"
-
-#: /1080i/Includes_Labels.xml
-msgctxt "#30053"
-msgid "Icons + Text"
-msgstr "Ikonok + Szöveg"
-
-#: /1080i/Includes_Labels.xml
-msgctxt "#30054"
-msgid "Text"
-msgstr "Szöveg"
-
-#: /1080i/Includes_Labels.xml
-msgctxt "#30055"
-msgid "Icons"
-msgstr "Ikonok"
-
-#: /1080i/Includes_Labels.xml
-msgctxt "#30056"
-msgid "Auto-width Text"
-msgstr "Automatikus szélességű szöveg"
-
-#: /1080i/Includes_Labels.xml
-msgctxt "#30057"
-msgid "Fixed-width Text"
-msgstr "Fix szélességű szöveg"
-
-#: /1080i/Includes_Labels.xml
-msgctxt "#30058"
-msgid "Fixed"
-msgstr "Rögzített"
-
-#: /1080i/Includes_Labels.xml
-msgctxt "#30059"
-msgid "Default"
-msgstr "Alap"
-
-#: /1080i/Includes_Labels.xml
-msgctxt "#30060"
-msgid "Search"
-msgstr "Keresés"
-
-#: /1080i/Includes_Labels.xml
-msgctxt "#30061"
-msgid "Basic"
-msgstr "Alap"
-
-#: /1080i/script-skinshortcuts.xml
-msgctxt "#30062"
-msgid "Customize Widgets"
-msgstr "Widgetek testreszabása"
-
-#: /1080i/script-skinshortcuts.xml
-msgctxt "#30063"
-msgid "Default search items"
-msgstr "Alapértelmezett keresési elemek"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30064"
-msgid "3 seconds"
-msgstr "3 másodperc"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30065"
-msgid "5 seconds"
-msgstr "5 másodperc"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30066"
-msgid "Choose between focus border sizes"
-msgstr "Fókuszált keret méret kiválasztás"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30067"
-msgid "Bold"
-msgstr "Vastag"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30068"
-msgid "Thin"
-msgstr "Keskeny"
-
-#: /1080i/Custom_1119_EnableInfoLists.xml
-msgctxt "#30070"
-msgid "Year"
-msgstr "Az Év filmjei"
-
-#: /1080i/Custom_1119_EnableInfoLists.xml
-msgctxt "#30071"
-msgid "Genre"
-msgstr "Műfaj szerint"
-
-#: /1080i/Custom_1119_EnableInfoLists.xml
-msgctxt "#30072"
-msgid "Crew"
-msgstr "Stáb"
-
-#: /1080i/Custom_1151_Wizard.xml
-msgctxt "#30073"
-msgid "Enable ratings for movies/tv shows"
-msgstr "Pontozás engedélyezése, filmek/sorozatok-nál"
-
-#: /1080i/Custom_1151_Wizard.xml
-msgctxt "#30074"
-msgid "Enable blur (may impact on performance)"
-msgstr "Elmosás engedélyezése (a teljesítményre hatással lehet)"
-
-#: /1080i/Custom_1151_Wizard.xml
-msgctxt "#30075"
-msgid "This is a setup wizard. He is guide you through some basic settings you would like to set :)[CR]Keep in mind, some of this settings may impact on performance, so choose carefully what you want to use. After that, you should be ready to go.[CR][CR]Enjoy using Arctic: Zephyr 2 - Resurrection."
-msgstr "Ez egy varázsló végigvezeti Önt néhány alapvető beállításon, amelyet be szeretne állítani :) [CR]Ne feledje, hogy ezek a beállítások némelyike befolyásolhatja a teljesítményt, ezért gondosan válassza ki, mit szeretne használni. Ezt követően készen áll az indításra.[CR][CR]Élvezze az Arctic Zephyr 2 - Resurrention-t."
-
-#: /1080i/Includes_Labels.xml
-msgctxt "#30076"
-msgid "Initialising Services"
-msgstr "Szolgáltatások beállítása"
-
-#: /1080i/Includes_Labels.xml
-msgctxt "#30077"
-msgid "Initialising Shortcuts"
-msgstr "Parancsikonok beállítása"
-
-#: /1080i/Includes_Labels.xml
-msgctxt "#30078"
-msgid "Finished Initialising Skin"
-msgstr "Felszín beállítások befejezve"
-
-#: /1080i/Includes_Labels.xml
-msgctxt "#30079"
-msgid "Netflix style | Multiple widgets"
-msgstr "Netflix stílus | Többszörös widgetek"
-
-#: /1080i/Includes_Labels.xml
-msgctxt "#30080"
-msgid "Netflix style (dark) | Multiple widgets"
-msgstr "Netflix stílus (sötét) | Többszörös widgetek"
-
-#: /1080i/Includes_Labels.xml
-msgctxt "#30081"
-msgid "Icons only"
-msgstr "Csak ikonok"
-
-#: /1080i/Includes_Items.xml
-msgctxt "#30082"
-msgid "Update Library"
-msgstr "Médiatár frissítése"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30083"
-msgid "Choose between icons type"
-msgstr "Ikon típusok közti váltás"
-
-#: /1080i/Custom_1117_ColorPicker.xml
-msgctxt "#30084"
-msgid "Highlight"
-msgstr "Kiemelt"
-
-#: /1080i/Custom_1117_ColorPicker.xml
-msgctxt "#30085"
-msgid "Gradient"
-msgstr "Gradiens"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30086"
-msgid "Gradient colour"
-msgstr "Gradiens szín"
-
-#: /1080i/Custom_1117_ColorPicker.xml
-msgctxt "#30087"
-msgid "Creator"
-msgstr "Készíttette"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30088"
-msgid "Watched indicators"
-msgstr "Nézett jelölések"
-
-#: /1080i/Custom_1121_EnableIndicators.xml
-msgctxt "#30089"
-msgid "Watched progress colour"
-msgstr "Nézett folyamatjelző színe"
-
-#: /1080i/Custom_1121_EnableIndicators.xml
-msgctxt "#30090"
-msgid "Hide all indicators"
-msgstr "Minden jelölő elrejtése"
-
-#: /1080i/Custom_1121_EnableIndicators.xml
-msgctxt "#30091"
-msgid "Classic corner style indicators"
-msgstr "Klasszikus sarok stílusú jelölők"
-
-#: /shortcuts/Custom_1121_EnableIndicators.xml
-msgctxt "#30092"
-msgid "In-progress"
-msgstr "Folyamatban"
-
-#: /1080i/Custom_1117_ColorPicker.xml
-msgctxt "#30093"
-msgid "Overlay"
-msgstr "Átfedés"
-
-#: /1080i/Custom_1117_ColorPicker.xml
-msgctxt "#30094"
-msgid "Gradient preview"
-msgstr "Gradiens előnézet"
-
-#: /1080i/Custom_1117_ColorPicker.xml
-msgctxt "#30095"
-msgid "Colour"
-msgstr "Szín"
-
-#: /1080i/Custom_1117_ColorPicker.xml
-msgctxt "#30096"
-msgid "Value"
-msgstr "Érték"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30097"
-msgid "Enable Monochrome Highlight"
-msgstr "Monokróm kiemelés engedélyezése"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30098"
-msgid "Color Highlight"
-msgstr "Színes kiemelés"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30100"
-msgid "Disable skin splash art on startup"
-msgstr "Felszín betöltőkép tiltása indításkor"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30101"
-msgid "Flix View | Multiple widgets"
-msgstr "Flix nézet | Többszörös widgetek"
-
-#: /1080i/Includes_Info.xml
-msgctxt "#30102"
-msgid "Trailer"
-msgstr "Bemutató"
-
-#: /1080i/Includes_Info.xml
-msgctxt "#30103"
-msgid "Cast"
-msgstr "Stáb"
-
-#: /1080i/Includes_Info.xml
-msgctxt "#30104"
-msgid "Rating"
-msgstr "Értékelés"
-
-#: /1080i/Includes_Home.xml
-msgctxt "#30105"
-msgid "Switch Profile"
-msgstr "Profilváltás"
-
-#: /1080i/Includes_Object.xml
-msgctxt "#30106"
-msgid "Match"
-msgstr "Megegyező"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30107"
-msgid "Play Trailer in background in Flix View"
-msgstr "Előzetes lejátszása a háttérben, a Flix nézetnél"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30108"
-msgid "Hide profile info in menu"
-msgstr "Profil elrejtése a menüben"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30109"
-msgid "Enable zoom on hover"
-msgstr "Zoom engedélyezése kiválasztáskor"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30111"
-msgid "Set delay to playing Trailers in Flix View"
-msgstr "ÁA késleltetés beállítása az előzetesek lejátszásához, a Flix nézet-ben"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30112"
-msgid "4 seconds"
-msgstr "4 másodperc"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30113"
-msgid "7 seconds"
-msgstr "7 másodperc"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#30114"
-msgid "Don't blur Home screen"
-msgstr "Főmenüben az elmosás tiltása"
 
 #: /1080i/Includes_View_54_AEL.xml
 msgctxt "#31440"
@@ -1977,17 +1593,12 @@ msgstr "Kiválasztóbox szövegszín invertálás"
 #: /1080i/SkinSettings.xml
 msgctxt "#31460"
 msgid "Debug: show arts path"
-msgstr "Hibakeresés: mutasd az "art" elérési utat"
+msgstr "Hibakeresés: mutasd az art elérési utat"
 
 #: /1080i/SkinSettings.xml
 msgctxt "#31461"
 msgid "Alpha value for some dialogs"
 msgstr "Áttetszőség néhány dialóghoz"
-
-#: /1080i/SkinSettings.xml
-msgctxt "#31462"
-msgid "Hide extended info background"
-msgstr "Extra információs háttér elrejtése"
 
 #: /1080i/SkinSettings.xml
 msgctxt "#31463"
@@ -2214,7 +1825,7 @@ msgstr ""
 
 #: /1080i/SkinSettings.xml
 msgctxt "#31508"
-msgid "Blur background for some Flix views only"
+msgid "Flix2 Views: background blur"
 msgstr ""
 
 #: /1080i/SkinSettings.xml
@@ -2230,4 +1841,494 @@ msgstr ""
 #: /1080i/SkinSettings.xml
 msgctxt "#31511"
 msgid "Hide chapters mark"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31512"
+msgid "Blur (Quality)"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31513"
+msgid "Blur (Performance)"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31514"
+msgid "Simple"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31515"
+msgid "Notification style"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31516"
+msgid "Extended"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31517"
+msgid "Monochrome"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31518"
+msgid "Colorful"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31519"
+msgid "Mix"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31520"
+msgid "White"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31521"
+msgid "Highlight"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31522"
+msgid "Startup image"
+msgstr ""
+
+#: /1080i/script-skinshortcuts.xml
+msgctxt "#31523"
+msgid "Autoscroll"
+msgstr ""
+
+#: /1080i/script-skinshortcuts.xml
+msgctxt "#31524"
+msgid "Show \"more...\" folder in widgets"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31528"
+msgid "This is a light mod of Arctic Zephyr 2 by heppen. Arctic Zephyr 2 is a minimalistic skin created by jurialmunkey and moded to work with Kodi 19 Matrix by pkscout. The skin is designed to be simple so that the user can focus on their media content. In addition to the default light colour scheme, the skin also includes a number of darker variations."
+msgstr "Ez az Arctic Zephyr 2 módosítása heppentől. Az Arctic Zephyr 2 egy minimalista felszín, amelyet jurialmunkey hozott létre, és pkscout módosította a Kodi 19 Matrixhoz. A felszínt úgy tervezték, hogy egyszerű legyen, hogy a felhasználó a médiatartalmakra koncentrálhasson. Az alapértelmezett világos színvilág mellett a felszín sötétebb variációt is tartalmaz."
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31529"
+msgid "Reset"
+msgstr "Visszaállítás"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31530"
+msgid "Restore to defaults"
+msgstr "Alapbeállításokra visszaállít"
+
+#: /1080i/Includes_Info.xml
+msgctxt "#31531"
+msgid "TRAKT"
+msgstr "Trakt"
+
+#: /1080i/Custom_1119_EnableInfoLists.xml
+msgctxt "#31532"
+msgid "Recommendations"
+msgstr "Ajánlott"
+
+#: /1080i/Custom_1119_EnableInfoLists.xml
+msgctxt "#31533"
+msgid "Posters"
+msgstr "Poszterek"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31534"
+msgid "Debugging"
+msgstr "Felszín hibakereső mód"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31535"
+msgid "Home layout"
+msgstr "Főmenü elrendezés"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31536"
+msgid "Menu style"
+msgstr "Menü stílus"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31537"
+msgid "Corner icon"
+msgstr "Sarok ikon"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31538"
+msgid "Widget movement"
+msgstr "Widget mozgatás"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31539"
+msgid "Auto-scroll single widgets"
+msgstr "Widget auto görgetés"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31540"
+msgid "Other"
+msgstr "Egyéb"
+
+#: /1080i/Includes_Labels.xml
+msgctxt "#31541"
+msgid "Vertical menu | Multiple widgets"
+msgstr "Függőleges menü | Többszörös widgetek"
+
+#: /1080i/Includes_Labels.xml
+msgctxt "#31542"
+msgid "Horizontal menu | Multiple widgets"
+msgstr "Vízszintes menü | Többszörös widgetek"
+
+#: /1080i/Includes_Labels.xml
+msgctxt "#31543"
+msgid "Icons + Text"
+msgstr "Ikonok + Szöveg"
+
+#: /1080i/Includes_Labels.xml
+msgctxt "#31544"
+msgid "Text"
+msgstr "Szöveg"
+
+#: /1080i/Includes_Labels.xml
+msgctxt "#31545"
+msgid "Icons"
+msgstr "Ikonok"
+
+#: /1080i/Includes_Labels.xml
+msgctxt "#31546"
+msgid "Auto-width Text"
+msgstr "Automatikus szélességű szöveg"
+
+#: /1080i/Includes_Labels.xml
+msgctxt "#31547"
+msgid "Fixed-width Text"
+msgstr "Fix szélességű szöveg"
+
+#: /1080i/Includes_Labels.xml
+msgctxt "#31548"
+msgid "Fixed"
+msgstr "Rögzített"
+
+#: /1080i/Includes_Labels.xml
+msgctxt "#31549"
+msgid "Default"
+msgstr "Alap"
+
+#: /1080i/Includes_Labels.xml
+msgctxt "#31550"
+msgid "Search"
+msgstr "Keresés"
+
+#: /1080i/Includes_Labels.xml
+msgctxt "#31551"
+msgid "Basic"
+msgstr "Alap"
+
+#: /1080i/script-skinshortcuts.xml
+msgctxt "#31552"
+msgid "Customize Widgets"
+msgstr "Widgetek testreszabása"
+
+#: /1080i/script-skinshortcuts.xml
+msgctxt "#31553"
+msgid "Default search items"
+msgstr "Alapértelmezett keresési elemek"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31554"
+msgid "3 seconds"
+msgstr "3 másodperc"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31555"
+msgid "5 seconds"
+msgstr "5 másodperc"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31556"
+msgid "Choose between focus border sizes"
+msgstr "Fókuszált keret méret kiválasztás"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31557"
+msgid "Bold"
+msgstr "Vastag"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31558"
+msgid "Thin"
+msgstr "Keskeny"
+
+#: /1080i/Custom_1119_EnableInfoLists.xml
+msgctxt "#31559"
+msgid "Year"
+msgstr "Az Év filmjei"
+
+#: /1080i/Custom_1119_EnableInfoLists.xml
+msgctxt "#31560"
+msgid "Genre"
+msgstr "Műfaj szerint"
+
+#: /1080i/Custom_1119_EnableInfoLists.xml
+msgctxt "#31561"
+msgid "Crew"
+msgstr "Stáb"
+
+#: /1080i/Includes_Labels.xml
+msgctxt "#31562"
+msgid "Initialising Shortcuts"
+msgstr "Parancsikonok beállítása"
+
+#: /1080i/Includes_Labels.xml
+msgctxt "#31563"
+msgid "Finished Initialising Skin"
+msgstr "Felszín beállítások befejezve"
+
+#: /1080i/Includes_Labels.xml
+msgctxt "#31564"
+msgid "Netflix style | Multiple widgets"
+msgstr "Netflix stílus | Többszörös widgetek"
+
+#: /1080i/Includes_Labels.xml
+msgctxt "#31565"
+msgid "Icons only"
+msgstr "Csak ikonok"
+
+#: /1080i/Includes_Items.xml
+msgctxt "#31566"
+msgid "Update Library"
+msgstr "Médiatár frissítése"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31567"
+msgid "Choose between icons type"
+msgstr "Ikon típusok közti váltás"
+
+#: /1080i/Custom_1117_ColorPicker.xml
+msgctxt "#31568"
+msgid "Highlight"
+msgstr "Kiemelt"
+
+#: /1080i/Custom_1117_ColorPicker.xml
+msgctxt "#31569"
+msgid "Gradient"
+msgstr "Gradiens"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31570"
+msgid "Gradient colour"
+msgstr "Gradiens szín"
+
+#: /1080i/Custom_1117_ColorPicker.xml
+msgctxt "#31571"
+msgid "Creator"
+msgstr "Készíttette"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31572"
+msgid "Watched indicators"
+msgstr "Nézett jelölések"
+
+#: /1080i/Custom_1121_EnableIndicators.xml
+msgctxt "#31573"
+msgid "Watched progress colour"
+msgstr "Nézett folyamatjelző színe"
+
+#: /1080i/Custom_1121_EnableIndicators.xml
+msgctxt "#31574"
+msgid "Hide all indicators"
+msgstr "Minden jelölő elrejtése"
+
+#: /1080i/Custom_1121_EnableIndicators.xml
+msgctxt "#31575"
+msgid "Classic corner style indicators"
+msgstr "Klasszikus sarok stílusú jelölők"
+
+#: /shortcuts/Custom_1121_EnableIndicators.xml
+msgctxt "#31576"
+msgid "In-progress"
+msgstr "Folyamatban"
+
+#: /1080i/Custom_1117_ColorPicker.xml
+msgctxt "#31577"
+msgid "Overlay"
+msgstr "Átfedés"
+
+#: /1080i/Custom_1117_ColorPicker.xml
+msgctxt "#31578"
+msgid "Gradient preview"
+msgstr "Gradiens előnézet"
+
+#: /1080i/Custom_1117_ColorPicker.xml
+msgctxt "#31579"
+msgid "Colour"
+msgstr "Szín"
+
+#: /1080i/Custom_1117_ColorPicker.xml
+msgctxt "#31580"
+msgid "Value"
+msgstr "Érték"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31581"
+msgid "Enable Monochrome Highlight"
+msgstr "Monokróm kiemelés engedélyezése"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31582"
+msgid "Color Highlight"
+msgstr "Színes kiemelés"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31583"
+msgid "Disable skin splash art on startup"
+msgstr "Felszín betöltőkép tiltása indításkor"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31584"
+msgid "Flix View | Multiple widgets"
+msgstr "Flix nézet | Többszörös widgetek"
+
+#: /1080i/Includes_Info.xml
+msgctxt "#31585"
+msgid "Trailer"
+msgstr "Bemutató"
+
+#: /1080i/Includes_Info.xml
+msgctxt "#31586"
+msgid "Cast"
+msgstr "Stáb"
+
+#: /1080i/Includes_Info.xml
+msgctxt "#31587"
+msgid "Rating"
+msgstr "Értékelés"
+
+#: /1080i/Includes_Home.xml
+msgctxt "#31588"
+msgid "Switch Profile"
+msgstr "Profilváltás"
+
+#: /1080i/Includes_Object.xml
+msgctxt "#31589"
+msgid "Match"
+msgstr "Megegyező"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31590"
+msgid "Play Trailer in background in Flix View"
+msgstr "Előzetes lejátszása a háttérben, a Flix nézetnél"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31591"
+msgid "Hide profile info in menu"
+msgstr "Profil elrejtése a menüben"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31592"
+msgid "Enable zoom on hover"
+msgstr "Zoom engedélyezése kiválasztáskor"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31593"
+msgid "Set delay to playing Trailers in Flix View"
+msgstr "ÁA késleltetés beállítása az előzetesek lejátszásához, a Flix nézet-ben"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31594"
+msgid "4 seconds"
+msgstr "4 másodperc"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31595"
+msgid "7 seconds"
+msgstr "7 másodperc"
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31596"
+msgid "Awards"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31597"
+msgid "show rating for episodes"
+msgstr ""
+
+#: /1080i/SkinSettings.xml
+msgctxt "#31598"
+msgid "Simple OSD info with poster"
+msgstr ""
+
+#: /shortcuts/menus.xml
+msgctxt "#31599"
+msgid "Reboot to android"
+msgstr ""
+
+#: /shortcuts/menus.xml
+msgctxt "#31600"
+msgid "Commands"
+msgstr ""
+
+#: /shortcuts/skinviewtypes.json
+msgctxt "#31601"
+msgid "List Square"
+msgstr ""
+
+#: /shortcuts/skinviewtypes.json
+msgctxt "#31602"
+msgid "Tri Panel"
+msgstr ""
+
+#: /shortcuts/skinviewtypes.json
+msgctxt "#31603"
+msgid "Square Wall2"
+msgstr ""
+
+#: /shortcuts/skinviewtypes.json
+msgctxt "#31604"
+msgid "Showcase Square"
+msgstr ""
+
+#: /shortcuts/skinviewtypes.json
+msgctxt "#31605"
+msgid "Showcase Seasons"
+msgstr ""
+
+#: /shortcuts/skinviewtypes.json
+msgctxt "#31606"
+msgid "Showcase Seasons2"
+msgstr ""
+
+#: /shortcuts/skinviewtypes.json
+msgctxt "#31607"
+msgid "Showcase Flix"
+msgstr ""
+
+#: /shortcuts/skinviewtypes.json
+msgctxt "#31608"
+msgid "Flix Poster"
+msgstr ""
+
+#: /shortcuts/skinviewtypes.json
+msgctxt "#31609"
+msgid "Flix Poster2"
+msgstr ""
+
+#: /shortcuts/skinviewtypes.json
+msgctxt "#31610"
+msgid "Flix Landscape"
+msgstr ""
+
+#: /shortcuts/skinviewtypes.json
+msgctxt "#31611"
+msgid "Showcase Square2"
+msgstr ""
+
+#: /1080i/script-skinshortcuts.xml
+msgctxt "#31612"
+msgid "Prevent reload"
 msgstr ""

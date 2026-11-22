@@ -81,7 +81,7 @@
                 <param name="left" value="-20" />
                 <param name="right" value="771.44" />
                 <param name="id" value="501" />
-                <param name="viewtype" value="Media Info" />
+                <param name="viewtype" value="MediaInfo" />
                 <param name="viewtypename" value="info" />
                 <param name="flipsides" value="Skin.HasSetting(FlipSide)" />
                 <param name="visible" value="$EXP[Exp_View_501] | $EXP[InGameAEL]" />
@@ -105,7 +105,7 @@
                 <param name="left" value="-20" />
                 <param name="right" value="1038.53" />
                 <param name="id" value="502" />
-                <param name="viewtype" value="Media Info 2" />
+                <param name="viewtype" value="MediaInfo Extended" />
                 <param name="viewtypename" value="biginfo" />
                 <param name="flipsides" value="Skin.HasSetting(FlipSide)" />
                 <param name="visible" value="$EXP[Exp_View_502] | $EXP[InGameAEL]" />
@@ -423,7 +423,7 @@
                             <align>left</align>
                             <aligny>top</aligny>
                             <height>50</height>
-                            <width>500</width>
+                            <width>610</width>
                             <label>$PARAM[title]</label>
                         </control>
                         <include condition="!$EXP[InGameMode]" content="Object_Info_Line">
@@ -432,9 +432,6 @@
                         <include condition="$EXP[InGameMode]">View_540_ROM_Details</include>
                         <include content="Object_Ratings_Content">
                             <param name="top" value="10" />
-                            <param name="imdbvotes" value="false" />
-                            <param name="top250" value="false" />
-                            <param name="oscars" value="false" />
                         </include>
                         <control type="textbox">
                             <top>5</top>
@@ -506,9 +503,6 @@
                     <include condition="$EXP[InGameMode]">View_540_ROM_Details</include>
                     <include content="Object_Ratings_Content" condition="!$EXP[InGameMode]">
                         <param name="top" value="10" />
-                        <param name="imdbvotes" value="false" />
-                        <param name="top250" value="false" />
-                        <param name="oscars" value="false" />
                     </include>
                     <control type="textbox">
                         <visible>!$EXP[InGameMode]</visible>
@@ -552,6 +546,7 @@
         <param name="viewtypename" default="list" />
         <param name="flipsides" default="false" />
         <param name="focustrailer" default="false" />
+        <param name="panelcolor" default="main_fg_100" />
         <definition>
             <control type="$PARAM[controltype]" id="$PARAM[id]">
                 <nested />
@@ -584,17 +579,17 @@
                     </control>
                     <control type="group">
                         <visible>Control.HasFocus($PARAM[id]) | Control.HasFocus($PARAM[altid])</visible>
-                        <include content="$PARAM[itemlayout]" condition="[[String.IsEqual(Skin.String(PosterHighlight),Mix) | String.IsEqual(Skin.String(PosterHighlight),White) | String.IsEmpty(Skin.String(PosterHighlight))] + !Skin.HasSetting(InvertTextColor)] | [String.IsEqual(Skin.String(PosterHighlight),Highlight) + Skin.HasSetting(InvertTextColor) | Window.IsVisible(tvchannels)]">
+                        <include content="$PARAM[itemlayout]" condition="[[String.IsEqual(Skin.String(PosterHighlight),Mix) | String.IsEqual(Skin.String(PosterHighlight),White) | String.IsEmpty(Skin.String(PosterHighlight))] + !Skin.HasSetting(InvertTextColor)] | [String.IsEqual(Skin.String(PosterHighlight),Highlight) + Skin.HasSetting(InvertTextColor)]">
                             <param name="fgcolor" value="main_bg" />
                             <param name="bgcolor" value="main_fg" />
-                            <param name="panelcolor" value="main_fg_100" />
+                            <param name="panelcolor" value="$PARAM[panelcolor]" />
                             <param name="selectbox" value="true" />
                             <param name="itemheight" value="$PARAM[itemheight]" />
                         </include>
-                        <include content="$PARAM[itemlayout]" condition="[[String.IsEqual(Skin.String(PosterHighlight),Mix) | String.IsEqual(Skin.String(PosterHighlight),White)] + Skin.HasSetting(InvertTextColor)] | [String.IsEqual(Skin.String(PosterHighlight),Highlight) + !Skin.HasSetting(InvertTextColor) + !Window.IsVisible(tvchannels)]">
+                        <include content="$PARAM[itemlayout]" condition="[[String.IsEqual(Skin.String(PosterHighlight),Mix) | String.IsEqual(Skin.String(PosterHighlight),White)] + Skin.HasSetting(InvertTextColor)] | [String.IsEqual(Skin.String(PosterHighlight),Highlight) + !Skin.HasSetting(InvertTextColor)]">
                             <param name="fgcolor" value="main_fg" />
                             <param name="bgcolor" value="main_bg" />
-                            <param name="panelcolor" value="main_fg_100" />
+                            <param name="panelcolor" value="$PARAM[panelcolor]" />
                             <param name="selectbox" value="true" />
                             <param name="itemheight" value="$PARAM[itemheight]" />
                         </include>
@@ -626,6 +621,7 @@
                 <right>$PARAM[pad]</right>
                 <visible>String.IsEqual(ListItem.DBType,movie) | String.IsEqual(ListItem.DBType,tvshow) | String.IsEqual(ListItem.DBType,episode) | String.IsEqual(ListItem.DBType,set)</visible>
                 <visible>Skin.HasSetting(EnhancedAddonLabels) | String.IsEmpty(Container.PluginName)</visible>
+                <visible>!$EXP[Exp_Videoasset]</visible>
                 <!-- LEFT SIDE -->
                 <control type="label">
                     <textcolor>$PARAM[fgcolor]_100</textcolor>
@@ -655,6 +651,41 @@
                     <textcolor>$PARAM[fgcolor]_100</textcolor>
                     <selectedcolor>$PARAM[fgcolor]_100</selectedcolor>
                     <label>$VAR[Label_List_Right]</label>
+                </control>
+            </control>
+            <!-- Videoversions -->
+            <control type="group">
+                <left>$PARAM[pad]</left>
+                <right>$PARAM[pad]</right>
+                <visible>$EXP[Exp_Videoasset] + String.IsEqual(ListItem.DBType,movie)</visible>
+                <control type="label">
+                    <textcolor>$PARAM[fgcolor]_100</textcolor>
+                    <selectedcolor>$PARAM[fgcolor]_100</selectedcolor>
+                    <label>$VAR[Label_List_Left]</label>
+                </control>
+                <control type="label">
+                    <animation effect="slide" end="$VAR[Defs_ItemLayout_LeftSideObjectSlideVertical]" />
+                    <top>-35</top>
+                    <left>122</left>
+                    <font>font_small_bold</font>
+                    <textcolor>$PARAM[fgcolor]_100</textcolor>
+                    <selectedcolor>$PARAM[fgcolor]_100</selectedcolor>
+                    <label>$INFO[ListItem.Label]</label>
+                </control>
+                <control type="label">
+                    <animation effect="slide" end="$VAR[Defs_ItemLayout_LeftSideObjectSlideVertical]" />
+                    <top>35</top>
+                    <left>122</left>
+                    <font>font_small_28</font>
+                    <textcolor>$PARAM[fgcolor]_100</textcolor>
+                    <selectedcolor>$PARAM[fgcolor]_100</selectedcolor>
+                    <label>$VAR[MediaInfoListLabel2Var]</label>
+                </control>
+                <control type="label">
+                    <align>right</align>
+                    <textcolor>$PARAM[fgcolor]_100</textcolor>
+                    <selectedcolor>$PARAM[fgcolor]_100</selectedcolor>
+                    <label>$INFO[ListItem.Duration]</label>
                 </control>
             </control>
 
@@ -923,8 +954,16 @@
                 <left>0</left>
                 <width>517</width>
                 <top>4</top>
+                <include condition="!$PARAM[visible] + Skin.HasSetting(HighlightTransparency)">Alpha_Value_Highlight</include>
                 <texture colordiffuse="$PARAM[panelcolor]" border="10">diffuse/box.png</texture>
                 <visible>$PARAM[visible]</visible>
+            </control>
+            <control type="image" id="2">
+                <left>0</left>
+                <width>517</width>
+                <top>4</top>
+                <texture colordiffuse="$VAR[ColorFG_Highlight]" border="10">common/selectbox2.png</texture>
+                <visible>!$PARAM[visible] + Skin.HasSetting(HighlightTransparency) + Integer.IsGreater(Skin.String(AlphaValue_Highlight),0)</visible>
             </control>
             <control type="image" id="2">
                 <aspectratio align="right">keep</aspectratio>
@@ -1020,7 +1059,12 @@
                 <top>4</top>
                 <right>4</right>
                 <control type="image">
+                    <include condition="Skin.HasSetting(HighlightTransparency)">Alpha_Value_Highlight</include>
                     <texture colordiffuse="$PARAM[panelcolor]" border="10">diffuse/box.png</texture>
+                </control>
+                <control type="image">
+                    <visible>Skin.HasSetting(HighlightTransparency) + Integer.IsGreater(Skin.String(AlphaValue_Highlight),0)</visible>
+                    <texture colordiffuse="$PARAM[panelcolor]" border="10">common/selectbox2.png</texture>
                 </control>
                 <control type="image">
                     <texture colordiffuse="$PARAM[fgcolor]_12">common/selected.png</texture>
@@ -1104,7 +1148,12 @@
                     <top>4</top>
                     <right>4</right>
                     <control type="image">
+                        <include condition="Skin.HasSetting(HighlightTransparency)">Alpha_Value_Highlight</include>
                         <texture colordiffuse="$PARAM[panelcolor]" border="10">diffuse/box.png</texture>
+                    </control>
+                    <control type="image">
+                        <visible>Skin.HasSetting(HighlightTransparency) + Integer.IsGreater(Skin.String(AlphaValue_Highlight),0)</visible>
+                        <texture colordiffuse="$PARAM[panelcolor]" border="10">common/selectbox2.png</texture>
                     </control>
                     <control type="image">
                         <texture colordiffuse="$PARAM[fgcolor]_12">common/selected.png</texture>

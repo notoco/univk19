@@ -71,6 +71,38 @@
         </control>
     </include>
 
+    <include name="View_InfoWall_Label">
+        <control type="label">
+            <left>15</left>
+            <right>15</right>
+            <font>font_statusbar</font>
+            <selectedcolor>main_fg_100</selectedcolor>
+            <textcolor>main_fg_100</textcolor>
+            <top>377</top>
+            <bottom>100</bottom>
+            <aligny>center</aligny>
+            <align>center</align>
+            <scrollspeed>20</scrollspeed>
+            <label>$INFO[ListItem.Label]</label>
+        </control>
+    </include>
+
+    <include name="View_SquareWall_Label">
+        <control type="label">
+            <left>15</left>
+            <right>15</right>
+            <font>font_statusbar</font>
+            <selectedcolor>main_fg_100</selectedcolor>
+            <textcolor>main_fg_100</textcolor>
+            <top>317</top>
+            <bottom>100</bottom>
+            <aligny>center</aligny>
+            <align>center</align>
+            <scrollspeed>20</scrollspeed>
+            <label>$INFO[ListItem.Label]</label>
+        </control>
+    </include>
+
     <include name="View_51_Wall_Landscape_Label">
         <control type="label">
             <left>15</left>
@@ -277,10 +309,10 @@
                     <control type="group">
                         <visible>!$PARAM[circle]</visible>
                         <visible>Control.HasFocus($PARAM[id]) | Control.HasFocus($PARAM[altid])</visible>
-                        <include condition="$PARAM[selectbox] + [String.IsEqual(Skin.String(FocusBorderSize),Bold) | String.IsEmpty(Skin.String(FocusBorderSize))]" content="View_Selectbox_Bold">
+                        <include condition="$PARAM[selectbox] + !Skin.HasSetting(SelectBox.Thin)" content="View_Selectbox_Bold">
                             <param name="focusbounce" value="$PARAM[focusbounce]" />
                         </include>
-                        <include condition="$PARAM[selectbox] + String.IsEqual(Skin.String(FocusBorderSize),Thin)" content="View_Selectbox_Thin">
+                        <include condition="$PARAM[selectbox] + Skin.HasSetting(SelectBox.Thin)" content="View_Selectbox_Thin">
                             <param name="focusbounce" value="$PARAM[focusbounce]" />
                         </include>
                     </control>
@@ -326,7 +358,7 @@
         <definition>
             <control type="group">
                 <right>10</right>
-                <animation effect="zoom" time="350" end="110,110" center="120,120" ease="inout" condition="Skin.HasSetting(EnableZoomOnHover)">Focus</animation>
+                <animation effect="zoom" time="350" end="110,110" center="120,120" easing="inout" condition="Skin.HasSetting(EnableZoomOnHover)">Focus</animation>
                 <control type="group">
                     <height>$PARAM[iconheight]</height>
                     <include condition="$PARAM[circle]" content="View_51_Wall_Circle">
@@ -388,10 +420,10 @@
                     <control type="group">
                         <visible>!$PARAM[circle]</visible>
                         <visible>Control.HasFocus($PARAM[id]) | Control.HasFocus($PARAM[altid])</visible>
-                        <include condition="$PARAM[selectbox] + [String.IsEqual(Skin.String(FocusBorderSize),Bold) | String.IsEmpty(Skin.String(FocusBorderSize))]" content="View_Selectbox_Bold">
+                        <include condition="$PARAM[selectbox] + !Skin.HasSetting(SelectBox.Thin)" content="View_Selectbox_Bold">
                             <param name="focusbounce" value="$PARAM[focusbounce]" />
                         </include>
-                        <include condition="$PARAM[selectbox] + String.IsEqual(Skin.String(FocusBorderSize),Thin)" content="View_Selectbox_Thin">
+                        <include condition="$PARAM[selectbox] + Skin.HasSetting(SelectBox.Thin)" content="View_Selectbox_Thin">
                             <param name="focusbounce" value="$PARAM[focusbounce]" />
                         </include>
                     </control>
@@ -531,8 +563,8 @@
                 </control>
                 <control type="group">
                     <visible>Control.HasFocus($PARAM[id])</visible>
-                    <include condition="$PARAM[selectbox] + [String.IsEqual(Skin.String(FocusBorderSize),Bold) | String.IsEmpty(Skin.String(FocusBorderSize))]">View_Selectbox_Bold</include>
-                    <include condition="$PARAM[selectbox] + String.IsEqual(Skin.String(FocusBorderSize),Thin)">View_Selectbox_Thin</include>
+                    <include condition="$PARAM[selectbox] + !Skin.HasSetting(SelectBox.Thin)">View_Selectbox_Bold</include>
+                    <include condition="$PARAM[selectbox] + Skin.HasSetting(SelectBox.Thin)">View_Selectbox_Thin</include>
                 </control>
             </control>
             <include content="$PARAM[labelinclude]">
@@ -677,6 +709,7 @@
                 <param name="height" value="view_height" />
                 <param name="viewtype" value="Poster Wall" />
                 <param name="viewtypename" value="icon" />
+                <param name="labelinclude" value="View_InfoWall_Label" />
                 <param name="visible" value="$EXP[Exp_View_51] | $EXP[InGameAEL]" />
                 <include>View_Vertical_Movement</include>
             </include>
@@ -697,6 +730,7 @@
                 <param name="viewtype" value="Square Wall" />
                 <param name="viewtypename" value="icon" />
                 <param name="diffuse" value="diffuse/square-wall.png" />
+                <param name="labelinclude" value="View_InfoWall_Label" />
                 <param name="visible" value="$EXP[Exp_View_510] | $EXP[InGameAEL]" />
                 <include>View_Vertical_Movement</include>
             </include>
@@ -717,7 +751,7 @@
                 <param name="viewtype" value="Square Wall2" />
                 <param name="viewtypename" value="icon" />
                 <param name="diffuse" value="diffuse/square-wall.png" />
-                <param name="labelinclude" value="View_517_Wall_Label" />
+                <param name="labelinclude" value="View_SquareWall_Label" />
                 <param name="visible" value="$EXP[Exp_View_517] | $EXP[InGameAEL]" />
                 <include>View_Vertical_Movement</include>
             </include>
@@ -785,6 +819,7 @@
                 <param name="circle" value="true" />
                 <param name="viewtype" value="Circle Wall" />
                 <param name="viewtypename" value="icon" />
+                <param name="labelinclude" value="View_InfoWall_Label" />
                 <param name="visible" value="$EXP[Exp_View_513] | $EXP[InGameAEL]" />
                 <include>View_Vertical_Movement</include>
             </include>
@@ -810,6 +845,7 @@
                 <param name="height" value="view_height" />
                 <param name="viewtype" value="Info Wall" />
                 <param name="viewtypename" value="icon" />
+                <param name="labelinclude" value="View_InfoWall_Label" />
                 <param name="controllayout" value="View_514_Wall_Info_Layout" />
                 <param name="visible" value="$EXP[Exp_View_514] | $EXP[InGameAEL]" />
                 <width>1028.56</width>
@@ -835,6 +871,7 @@
                 <param name="height" value="view_height" />
                 <param name="viewtype" value="Info Wall 2" />
                 <param name="viewtypename" value="icon" />
+                <param name="labelinclude" value="View_InfoWall_Label" />
                 <param name="controllayout" value="View_514_Wall_Info_Layout" />
                 <param name="visible" value="$EXP[Exp_View_516]" />
                 <width>1028.56</width>

@@ -282,7 +282,7 @@
                         <align>center</align>
                         <font>font_byline</font>
                         <textcolor>main_fg_70</textcolor>
-                        <label fallback="31105">$INFO[Container(301).ListItem.Property(widgetName.backgroundWidget)]</label>
+                        <label fallback="31105">$INFO[Container(301).ListItem.Property(backgroundWidgetLabel)]</label>
                         <height>30</height>
                     </control>
                     <control type="label">
@@ -302,20 +302,9 @@
                         <label>$INFO[Container(5600).ListItem.Genre]</label>
                         <height>67</height>
                     </control>
-                    <!-- <include content="Object_Icon_Ratings">
-                        <param name="id" value="5600" />
-                    </include> -->
-                    <!-- Check if we're using TMDb Helper -->
-                    <include content="Object_Icon_Ratings" condition="!System.HasAddon(plugin.video.themoviedb.helper)">
-                        <param name="id" value="5600" />
-                    </include>
-                    <include content="Object_Icon_Ratings" condition="System.HasAddon(plugin.video.themoviedb.helper)">
-                        <param name="id" value="5600" />
-                        <param name="metacritic_prop" value="Window(Home).Property(TMDbHelper.ListItem.Metacritic_Rating)" />
-                        <param name="imdb_prop" value="Window(home).Property(TMDbHelper.ListItem.IMDb_Rating)" />
-                        <param name="rt_prop" value="Window(Home).Property(TMDbHelper.ListItem.RottenTomatoes_Rating)" />
-                        <param name="rt_audience_prop" value="Window(Home).Property(TMDbHelper.ListItem.RottenTomatoes_UserMeter)" />
-                        <param name="oscar_prop" value="Window(Home).Property(TMDbHelper.ListItem.Awards)" />
+                    <include content="Object_Ratings_Content">
+                        <!-- <param name="id" value="5600" /> -->
+                        <param name="align" value="center" />
                     </include>
                 </control>
             </control>
@@ -353,7 +342,7 @@
                     <param name="id" value="302" />
                 </include>
                 <content>
-                    <include>skinshortcuts-submenu</include>
+                    <include>skinshortcuts-mainmenu-submenu</include>
                 </content>
             </control>
 
@@ -376,7 +365,7 @@
     </include>
 
     <include name="Home_Multi_Flix_View">
-        <include>Global_Background</include>
+        <include>Global_Background_Flix</include>
 
         <control type="group">
             <control type="group">
@@ -402,14 +391,14 @@
                     <itemgap>0</itemgap>
 
                     <control type="group" id="99301">
-                        <animation effect="slide" start="0,0" end="0,250" time="0" tween="sine" condition="String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]">Conditional</animation>
+                        <animation effect="slide" start="0,0" end="0,250" time="0" tween="sine" condition="String.IsEqual(Container(301).ListItem.Property(submenuPath),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]">Conditional</animation>
                         <height>99999</height>
                         <width>1800</width>
                         <include>Animation_Right</include>
                         <include>Defs_InfoDialog_Visible</include>
                         <control type="group">
                             <control type="grouplist" id="3000">
-                                <visible>!String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Settings) + !String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Weather)</visible>
+                                <visible>!String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings) + !String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)</visible>
                                 <top>20</top>
                                 <onup>301</onup>
                                 <ondown>301</ondown>
@@ -420,9 +409,7 @@
                                 <orientation>vertical</orientation>
                                 <itemgap>-8</itemgap>
                                 <usecontrolcoords>false</usecontrolcoords>
-
                                 <include>Animation_Flix_Widget_Slide</include>
-
                                 <control type="group" id="7999">
                                     <height>0</height>
                                 </control>
@@ -441,11 +428,11 @@
             <visible>ControlGroup(3000).HasFocus()</visible>
             <visible>!$EXP[Exp_ShowPlotOverlay]</visible>
             <include>Defs_InfoDialog_Visible</include>
-            <visible>!String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Settings) + !String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Weather)</visible>
+            <visible>!String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings) + !String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)</visible>
         </control>
         <control type="group">
-            <visible>!String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Settings) + !String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Weather)</visible>
-            <visible>![String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]]</visible>
+            <visible>!String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings) + !String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)</visible>
+            <visible>![String.IsEqual(Container(301).ListItem.Property(submenuPath),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]]</visible>
             <height>680</height>
             <top>2.5</top>
             <left>102.5</left>
@@ -462,21 +449,36 @@
                     <param name="titleheight" value="60" />
                 </include>
             </control>
+            <control type="group">
+                <width>1200</width>
+                <visible>!ControlGroup(3000).HasFocus()</visible>
+                <visible>!Control.IsVisible(993100)</visible>
+                <include>skinshortcuts-template-flix-info</include>
+            </control>
+            <control type="group">
+                <width>1200</width>
+                <visible>!ControlGroup(3000).HasFocus()</visible>
+                <visible>Control.IsVisible(993100)</visible>
+                <include content="Home_Flix_Info">
+                    <param name="id" value="993100" />
+                    <param name="uid" value="993" />
+                </include>
+            </control>
         </control>
         <control type="group">
-            <animation effect="slide" start="0" end="-514" time="200" condition="ControlGroup(3000).HasFocus() | Control.HasFocus(5000) | Control.HasFocus(5100)">Conditional</animation>
+            <animation effect="slide" start="0" end="-514" time="200" condition="[ControlGroup(3000).HasFocus() | Control.HasFocus(5000) | Control.HasFocus(5100)] + [!Skin.HasSetting(VerticalIconsOnly) | [Skin.HasSetting(VerticalIconsOnly) + !Skin.HasSetting(DisabledProfileInfo)]]">Conditional</animation>
             <animation effect="slide" start="0" end="-380" time="200" condition="Control.HasFocus(6000)">Conditional</animation>
             <control type="group">
                 <include>Animation_Right</include>
                 <control type="group">
                     <left>380</left>
                     <right>-380</right>
-                    <visible>String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Weather)</visible>
+                    <visible>String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)</visible>
                     <include>Weather</include>
                 </control>
                 <control type="group">
                     <animation effect="slide" start="0" end="514" time="0" condition="true">Conditional</animation>
-                    <visible>String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Settings)</visible>
+                    <visible>String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings)</visible>
                     <include content="View_Settings">
                         <param name="hideonwindowopen" value="false" />
                     </include>
@@ -485,7 +487,7 @@
 
             <control type="group">
                 <left>240</left>
-                <visible>String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]</visible>
+                <visible>String.IsEqual(Container(301).ListItem.Property(submenuPath),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]</visible>
                 <include>PVRTVRecordingWidget</include>
             </control>
 
@@ -494,18 +496,20 @@
                 <randomize>true</randomize>
                 <width>714</width>
                 <height>1080</height>
-                <left>0</left>
+                <left>-20</left>
                 <aspectratio>keep</aspectratio>
                 <fadetime>600</fadetime>
                 <imagepath background="true" colordiffuse="ff000000">common/vignette-flix-menu.png</imagepath>
                 <animation effect="zoom" start="110" end="130" center="auto" time="10000" tween="sine" easing="inout" pulse="true" condition="Skin.HasSetting(KenBurnsEffect)">Conditional</animation>
                 <animation effect="slide" start="-30,-30" end="30,30" time="6000" tween="sine" easing="inout" pulse="true" condition="Skin.HasSetting(KenBurnsEffect)">Conditional</animation>
+                <animation effect="fade" time="0" end="95" condition="True">Conditional</animation>
                 <visible>Skin.HasSetting(HomeMultiFlixView)</visible>
+                <visible>[!Skin.HasSetting(VerticalIconsOnly) | [Skin.HasSetting(VerticalIconsOnly) + !Skin.HasSetting(DisabledProfileInfo)]] | [Skin.HasSetting(VerticalIconsOnly) + Control.HasFocus(302)]</visible>
             </control>
 
             <control type="group">
                 <top>0</top>
-                <left>64</left>
+                <left>20</left>
                 <height>200</height>
                 <visible>!Skin.HasSetting(DisabledProfileInfo)</visible>
                 <control type="image">
@@ -533,7 +537,7 @@
                     <onright>3000</onright>
                     <align>left</align>
                     <font>font_tiny</font>
-                    <label>$LOCALIZE[30105]</label>
+                    <label>$LOCALIZE[31588]</label>
                     <onclick>ActivateWindow(LoginScreen.xml)</onclick>
                     <focusedcolor>$VAR[Defs_Settings_ToggleButton_Text]</focusedcolor>
                     <texturefocus />
@@ -555,19 +559,31 @@
                 <onleft condition="!Skin.HasSetting(SubmenuOnly) + Integer.IsGreater(Container(302).NumItems,0)">ActivateWindow(1135)</onleft>
                 <onleft condition="Skin.HasSetting(SubmenuOnly) + Integer.IsGreater(Container(302).NumItems,0)">SetFocus(302,0)</onleft>
                 <!-- <animation effect="fade" start="100" end="0" time="200" condition="ControlGroup(3000).HasFocus() | Control.HasFocus(5000) | Control.HasFocus(5100) | Control.HasFocus(6000)">Conditional</animation> -->
-                <onright condition="!String.IsEqual(Container(9989).ListItem.Property(list),Settings) + !String.IsEqual(Container(9989).ListItem.Property(list),Weather)">3000</onright>
-                <onright condition="String.IsEqual(Container(9989).ListItem.Property(list),Settings)">5000</onright>
-                <onright condition="String.IsEqual(Container(9989).ListItem.Property(list),Weather)">6000</onright>
-                <include content="Defs_Margins" condition="!Skin.HasSetting(DisabledProfileInfo)">
-                    <param name="top" value="293" />
-                    <param name="left" value="62" />
-                </include>
-                <include content="Defs_Margins_Centertop" condition="Skin.HasSetting(DisabledProfileInfo)">
-                    <param name="centertop" value="50%" />
-                    <param name="left" value="32" />
-                </include>
+                <onright condition="!String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings) + !String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)">3000</onright>
+                <onright condition="String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings)">5000</onright>
+                <onright condition="String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)">6000</onright>
                 <width>714</width>
                 <height>787</height>
+                <include content="Defs_Margins" condition="!Skin.HasSetting(DisabledProfileInfo) + Skin.HasSetting(HomeTextAutoWidth)">
+                    <param name="top" value="293" />
+                    <param name="left" value="25" />
+                </include>
+                <include content="Defs_Margins" condition="!Skin.HasSetting(DisabledProfileInfo)">
+                    <param name="top" value="293" />
+                    <param name="left" value="20" />
+                </include>
+                <include content="Defs_Margins_Centertop" condition="Skin.HasSetting(DisabledProfileInfo) + Skin.HasSetting(HomeTextAutoWidth)">
+                    <param name="centertop" value="50%" />
+                    <param name="left" value="25" />
+                </include>
+                <include content="Defs_Margins_Centertop" condition="Skin.HasSetting(DisabledProfileInfo) + !Skin.HasSetting(VerticalIconsOnly)">
+                    <param name="centertop" value="50%" />
+                    <param name="left" value="20" />
+                </include>
+                <include content="Defs_Margins_Centertop" condition="Skin.HasSetting(DisabledProfileInfo) + Skin.HasSetting(VerticalIconsOnly)">
+                    <param name="centertop" value="50%" />
+                    <param name="left" value="5" />
+                </include>
                 <onup condition="!Skin.HasSetting(DisabledProfileInfo)">303</onup>
                 <orientation>vertical</orientation>
                 <itemlayout width="714" height="item_list_height" condition="!Skin.HasSetting(HomeIcons) + !Skin.HasSetting(VerticalIconsOnly)">
@@ -595,12 +611,12 @@
                     <control type="image">
                         <centertop>53%</centertop>
                         <height>64</height>
-                        <left>0</left>
+                        <left>-10</left>
                         <aspectratio>keep</aspectratio>
                         <width>item_list_height</width>
                         <texture colordiffuse="main_fg_30">$INFO[ListItem.Icon]</texture>
-                        <animation effect="slide" start="0" end="444" time="200" reversible="false" condition="ControlGroup(3000).HasFocus() + !Skin.HasSetting(FlixHideMenu) + !Skin.HasSetting(DisabledProfileInfo)">Conditional</animation>
-                        <animation effect="slide" start="0" end="484" time="200" reversible="false" condition="ControlGroup(3000).HasFocus() + !Skin.HasSetting(FlixHideMenu) + Skin.HasSetting(DisabledProfileInfo)">Conditional</animation>
+                        <animation effect="slide" start="0" end="513" time="200" reversible="false" condition="ControlGroup(3000).HasFocus() + !Skin.HasSetting(FlixHideMenu) + !Skin.HasSetting(DisabledProfileInfo)">Conditional</animation>
+                        <animation effect="slide" start="0" end="513" time="200" reversible="false" condition="ControlGroup(3000).HasFocus() + !Skin.HasSetting(FlixHideMenu) + Skin.HasSetting(DisabledProfileInfo)">Conditional</animation>
                     </control>
                     <control type="label">
                         <left>80</left>
@@ -615,13 +631,13 @@
                     <control type="image">
                         <centertop>53%</centertop>
                         <height>64</height>
-                        <left>0</left>
+                        <left>-10</left>
                         <aspectratio>keep</aspectratio>
                         <width>item_list_height</width>
                         <texture colordiffuse="main_fg_100">$INFO[ListItem.Icon]</texture>
                     </control>
                     <control type="label">
-                        <left>80</left>
+                        <left>70</left>
                         <font>font_topbar</font>
                         <align>left</align>
                         <aligny>center</aligny>
@@ -638,8 +654,8 @@
                         <aspectratio>keep</aspectratio>
                         <width>item_list_height</width>
                         <texture colordiffuse="main_fg_30">$INFO[ListItem.Icon]</texture>
-                        <animation effect="slide" start="0" end="454" time="200" reversible="false" condition="ControlGroup(3000).HasFocus() + !Skin.HasSetting(FlixHideMenu) + !Skin.HasSetting(DisabledProfileInfo)">Conditional</animation>
-                        <animation effect="slide" start="0" end="484" time="200" reversible="false" condition="ControlGroup(3000).HasFocus() + !Skin.HasSetting(FlixHideMenu) + Skin.HasSetting(DisabledProfileInfo)">Conditional</animation>
+                        <animation effect="slide" start="0" end="498" time="200" reversible="false" condition="ControlGroup(3000).HasFocus() + !Skin.HasSetting(FlixHideMenu) + !Skin.HasSetting(DisabledProfileInfo)">Conditional</animation>
+                        <animation effect="slide" start="0" end="-200" time="200" reversible="false" condition="ControlGroup(3000).HasFocus() + Skin.HasSetting(FlixHideMenu)">Conditional</animation>
                     </control>
                 </itemlayout>
                 <focusedlayout width="400" height="item_list_height" condition="!Skin.HasSetting(HomeIcons) + Skin.HasSetting(VerticalIconsOnly)">
@@ -742,7 +758,7 @@
                             </control>
                         </focusedlayout>
                         <content>
-                            <include>skinshortcuts-submenu</include>
+                            <include>skinshortcuts-mainmenu-submenu</include>
                         </content>
                     </control>
                 </control>
@@ -762,11 +778,11 @@
             <visible>ControlGroup(3000).HasFocus()</visible>
             <visible>!$EXP[Exp_ShowPlotOverlay]</visible>
             <include>Defs_InfoDialog_Visible</include>
-            <visible>!String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Settings) + !String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Weather)</visible>
+            <visible>!String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings) + !String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)</visible>
         </control>
         <control type="group">
-            <visible>!String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Settings) + !String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Weather)</visible>
-            <visible>![String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]]</visible>
+            <visible>!String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings) + !String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)</visible>
+            <visible>![String.IsEqual(Container(301).ListItem.Property(submenuPath),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]]</visible>
             <top>162.5</top>
             <left>132.5</left>
             <right>15</right>
@@ -810,12 +826,12 @@
                 <control type="group">
                     <left>380</left>
                     <right>-380</right>
-                    <visible>String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Weather)</visible>
+                    <visible>String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)</visible>
                     <include>Weather</include>
                 </control>
                 <control type="group">
                     <animation effect="slide" start="0" end="257.14" time="0" condition="true">Conditional</animation>
-                    <visible>String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Settings)</visible>
+                    <visible>String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings)</visible>
                     <include content="View_Settings">
                         <param name="hideonwindowopen" value="false" />
                     </include>
@@ -824,7 +840,7 @@
 
             <control type="group">
                 <left>240</left>
-                <visible>String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]</visible>
+                <visible>String.IsEqual(Container(301).ListItem.Property(submenuPath),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]</visible>
                 <include>PVRTVRecordingWidget</include>
             </control>
 
@@ -904,7 +920,7 @@
                                     </control>
                                 </focusedlayout>
                                 <content>
-                                    <include>skinshortcuts-submenu</include>
+                                    <include>skinshortcuts-mainmenu-submenu</include>
                                 </content>
                             </control>
                         </control>
@@ -923,9 +939,9 @@
                             <onleft condition="Skin.HasSetting(SubmenuOnly) + Integer.IsGreater(Container(302).NumItems,0)">SetFocus(302,0)</onleft>
                             <animation effect="fade" start="100" end="0" time="200" condition="ControlGroup(3000).HasFocus() | Control.HasFocus(5000) | Control.HasFocus(5100) | Control.HasFocus(6000)">Conditional</animation>
                             <top>0</top>
-                            <onright condition="!String.IsEqual(Container(9989).ListItem.Property(list),Settings) + !String.IsEqual(Container(9989).ListItem.Property(list),Weather)">3000</onright>
-                            <onright condition="String.IsEqual(Container(9989).ListItem.Property(list),Settings)">5000</onright>
-                            <onright condition="String.IsEqual(Container(9989).ListItem.Property(list),Weather)">6000</onright>
+                            <onright condition="!String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings) + !String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)">3000</onright>
+                            <onright condition="String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings)">5000</onright>
+                            <onright condition="String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)">6000</onright>
                             <width>257.14</width>
                             <height>393.5</height>
                             <orientation>vertical</orientation>
@@ -1014,13 +1030,13 @@
                     </control>
 
                     <control type="group" id="99301">
-                        <animation effect="slide" start="0,0" end="0,250" time="0" tween="sine" condition="String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]">Conditional</animation>
+                        <animation effect="slide" start="0,0" end="0,250" time="0" tween="sine" condition="String.IsEqual(Container(301).ListItem.Property(submenuPath),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]">Conditional</animation>
                         <height>420</height>
                         <width>1800</width>
                         <include>Animation_Right</include>
                         <include>Defs_InfoDialog_Visible</include>
                         <control type="grouplist" id="3000">
-                            <visible>!String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Settings) + !String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Weather)</visible>
+                            <visible>!String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings) + !String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)</visible>
                             <top>-5</top>
                             <onup>301</onup>
                             <ondown>301</ondown>
@@ -1054,7 +1070,7 @@
             <visible>ControlGroup(3000).HasFocus()</visible>
             <visible>!$EXP[Exp_ShowPlotOverlay]</visible>
             <include>Defs_InfoDialog_Visible</include>
-            <visible>!String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Settings) + !String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Weather)</visible>
+            <visible>!String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings) + !String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)</visible>
             <include content="Object_Info_Arrows">
                 <param name="id" value="3000" />
             </include>
@@ -1067,12 +1083,12 @@
                 <control type="group">
                     <left>380</left>
                     <right>-380</right>
-                    <visible>String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Weather)</visible>
+                    <visible>String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)</visible>
                     <include>Weather</include>
                 </control>
                 <control type="group">
                     <animation effect="slide" start="0" end="257.14" time="0" condition="true">Conditional</animation>
-                    <visible>String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Settings)</visible>
+                    <visible>String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings)</visible>
                     <include content="View_Settings">
                         <param name="hideonwindowopen" value="false" />
                     </include>
@@ -1081,7 +1097,7 @@
 
             <control type="group">
                 <left>240</left>
-                <visible>String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]</visible>
+                <visible>String.IsEqual(Container(301).ListItem.Property(submenuPath),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]</visible>
                 <include>PVRTVRecordingWidget</include>
             </control>
 
@@ -1161,7 +1177,7 @@
                                     </control>
                                 </focusedlayout>
                                 <content>
-                                    <include>skinshortcuts-submenu</include>
+                                    <include>skinshortcuts-mainmenu-submenu</include>
                                 </content>
                             </control>
                         </control>
@@ -1180,9 +1196,9 @@
                             <onleft condition="Skin.HasSetting(SubmenuOnly) + Integer.IsGreater(Container(302).NumItems,0)">SetFocus(302,0)</onleft>
                             <animation effect="fade" start="100" end="0" time="200" condition="ControlGroup(3000).HasFocus() | Control.HasFocus(5000) | Control.HasFocus(5100) | Control.HasFocus(6000)">Conditional</animation>
                             <top>0</top>
-                            <onright condition="!String.IsEqual(Container(9989).ListItem.Property(list),Settings) + !String.IsEqual(Container(9989).ListItem.Property(list),Weather)">3000</onright>
-                            <onright condition="String.IsEqual(Container(9989).ListItem.Property(list),Settings)">5000</onright>
-                            <onright condition="String.IsEqual(Container(9989).ListItem.Property(list),Weather)">6000</onright>
+                            <onright condition="!String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings) + !String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)">3000</onright>
+                            <onright condition="String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings)">5000</onright>
+                            <onright condition="String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)">6000</onright>
                             <width>257.14</width>
                             <orientation>vertical</orientation>
                             <itemlayout width="257.14" height="item_list_height" condition="!Skin.HasSetting(HomeIcons) + !Skin.HasSetting(VerticalIconsOnly)">
@@ -1270,13 +1286,13 @@
                     </control>
 
                     <control type="group" id="99300">
-                        <animation effect="slide" start="0,0" end="0,250" time="0" tween="sine" condition="String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]">Conditional</animation>
+                        <animation effect="slide" start="0,0" end="0,250" time="0" tween="sine" condition="String.IsEqual(Container(301).ListItem.Property(submenuPath),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]">Conditional</animation>
                         <height>view_height</height>
                         <width>1800</width>
                         <include>Animation_Right</include>
                         <include>Defs_InfoDialog_Visible</include>
                         <control type="grouplist" id="3000">
-                            <visible>!String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Settings) + !String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Weather)</visible>
+                            <visible>!String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings) + !String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)</visible>
                             <top>-5</top>
                             <onup>301</onup>
                             <ondown>301</ondown>
@@ -1295,8 +1311,8 @@
                         </control>
                         <control type="group">
                             <visible>Integer.IsEqual(Container(3000).NumItems,1)</visible>
-                            <visible>!String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Settings) + !String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Weather)</visible>
-                            <visible>![String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]]</visible>
+                            <visible>!String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings) + !String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)</visible>
+                            <visible>![String.IsEqual(Container(301).ListItem.Property(submenuPath),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]]</visible>
                             <top>402.5</top>
                             <left>15</left>
                             <right>15</right>
@@ -1347,7 +1363,7 @@
             <itemlayout width="100" />
             <focusedlayout width="100" />
             <content>
-                <include>skinshortcuts-submenu</include>
+                <include>skinshortcuts-mainmenu-submenu</include>
             </content>
         </control>
     </include>
@@ -1422,7 +1438,6 @@
             <width>70</width>
             <onleft>SetFocus(301,9999,absolute)</onleft>
             <onright>SetFocus(301,0,absolute)</onright>
-            <aspectratio>keep</aspectratio>
             <texturenofocus colordiffuse="main_fg_30">$PARAM[icon]</texturenofocus>
             <texturefocus colordiffuse="main_fg_100">$PARAM[icon]</texturefocus>
             <onfocus>ClearProperty(WidgetFocus,Home)</onfocus>
@@ -1447,10 +1462,16 @@
             <param name="icon" value="special://skin/extras/icons/power.png" />
             <onclick>ActivateWindow(shutdownmenu)</onclick>
         </include>
-        <include content="Home_CornerIcon_Template" condition="String.IsEqual(Skin.String(CornerIcon),Kodi)">
-            <param name="icon" value="special://skin/extras/icons/kodi.png" />
-            <onclick>ActivateWindow(settings)</onclick>
-        </include>
+        <control type="image">
+            <left>-18</left>
+            <height>70</height>
+            <width>70</width>
+            <aspectratio>keep</aspectratio>
+            <texture colordiffuse="main_fg_30">special://skin/extras/icons/kodi.png</texture>
+            <visible>![[!Control.HasFocus(302) + Container(301).HasPrevious] | [Control.HasFocus(302) + Container(302).HasPrevious]]</visible>
+            <visible>!Control.HasFocus(302)</visible>
+            <visible>String.IsEqual(Skin.String(CornerIcon),Kodi)</visible>
+        </control>
         <control type="image">
             <left>-18</left>
             <height>70</height>
@@ -1527,7 +1548,7 @@
                     <ondown>301</ondown>
                     <onback>301</onback>
                     <content>
-                        <include>skinshortcuts-submenu</include>
+                        <include>skinshortcuts-mainmenu-submenu</include>
                     </content>
                 </include>
             </control>
@@ -1543,7 +1564,7 @@
                 <param name="id" value="302" />
             </include>
             <content>
-                <include>skinshortcuts-submenu</include>
+                <include>skinshortcuts-mainmenu-submenu</include>
             </content>
         </control>
     </include>
@@ -1612,9 +1633,9 @@
 
         <onup condition="Skin.HasSetting(SubmenuOnly) + Integer.IsGreater(Container(302).NumItems,0)">302</onup>
 
-        <ondown condition="!String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Settings) + !String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Weather)">3000</ondown>
-        <ondown condition="String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Settings)">5000</ondown>
-        <ondown condition="String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Weather)">6000</ondown>
+        <ondown condition="!String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings) + !String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)">3000</ondown>
+        <ondown condition="String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings)">5000</ondown>
+        <ondown condition="String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)">6000</ondown>
         <onfocus>ClearProperty(WidgetFocus,Home)</onfocus>
 
         <onleft condition="!Skin.HasSetting(HomeIcons) + !Skin.HasSetting(HomeTextAutoWidth) + Control.IsVisible(9999)">9999</onleft>
@@ -1641,7 +1662,7 @@
         <include condition="!Skin.HasSetting(HomeIcons) + Skin.HasSetting(HomeTextAutoWidth)">Home_Horizontal_Text</include>
         <include condition="!Skin.HasSetting(HomeIcons) + !Skin.HasSetting(HomeTextAutoWidth)">Home_Horizontal_Fixed</include>
         <control type="group">
-            <visible>String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Weather) | Control.HasFocus(9999)</visible>
+            <visible>String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather) | Control.HasFocus(9999)</visible>
             <visible>Weather.IsFetched</visible>
             <include>Weather</include>
         </control>
@@ -1649,7 +1670,7 @@
         <control type="group">
             <include>Animation_Common</include>
             <control type="group">
-                <visible>String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Settings) + !Control.HasFocus(9999)</visible>
+                <visible>String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings) + !Control.HasFocus(9999)</visible>
                 <include content="View_Settings">
                     <param name="hideonwindowopen" value="false" />
                 </include>
@@ -1658,14 +1679,14 @@
 
         <control type="group">
             <left>-24</left>
-            <visible>String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]</visible>
+            <visible>String.IsEqual(Container(301).ListItem.Property(submenuPath),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]</visible>
             <include>PVRTVRecordingWidget</include>
         </control>
 
         <control type="group">
             <top>view_top</top>
             <visible>!$EXP[Exp_ShowPlotOverlay]</visible>
-            <visible>!String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Settings) + !String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Weather)</visible>
+            <visible>!String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings) + !String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather)</visible>
             <include>Defs_InfoDialog_Visible</include>
             <include content="Object_Info_Arrows">
                 <param name="id" value="3000" />
@@ -1674,18 +1695,18 @@
         <control type="group">
             <include>View_Group</include>
             <control type="group">
-                <animation effect="slide" start="0,0" end="0,250" time="0" tween="sine" condition="String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]">Conditional</animation>
+                <animation effect="slide" start="0,0" end="0,250" time="0" tween="sine" condition="String.IsEqual(Container(301).ListItem.Property(submenuPath),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]">Conditional</animation>
                 <top>-15</top>
                 <right>-15</right>
                 <left>-15</left>
                 <bottom>-15</bottom>
-                <visible>!String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Settings) + !String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),Weather) + !Control.HasFocus(9999)</visible>
+                <visible>!String.IsEqual(Container(301).ListItem.Property(submenuPath),Settings) + !String.IsEqual(Container(301).ListItem.Property(submenuPath),Weather) + !Control.HasFocus(9999)</visible>
                 <control type="grouplist" id="3000">
                     <top>-20</top>
                     <onup>301</onup>
                     <ondown>noop</ondown>
                     <scrolltime tween="quadratic">400</scrolltime>
-                    <height>view_height</height>
+                    <height>865</height>
                     <width>1800</width>
                     <orientation>vertical</orientation>
                     <itemgap>-52</itemgap>
@@ -1698,7 +1719,7 @@
                 </control>
                 <control type="group">
                     <visible>Integer.IsEqual(Container(3000).NumItems,1)</visible>
-                    <visible>![String.IsEqual(Container(9989).ListItemAbsolute(0).Property(list),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]]</visible>
+                    <visible>![String.IsEqual(Container(301).ListItem.Property(submenuPath),TV PVR Recording Widget) + [PVR.IsRecordingTV | PVR.HasNonRecordingTVTimer]]</visible>
                     <top>382.5</top>
                     <left>15</left>
                     <right>15</right>
@@ -1752,18 +1773,20 @@
                     <param name="container" value="Container($PARAM[id])." />
                     <param name="uid" value="$PARAM[uid]" />
                 </include>
-                <control type="group">
+                <!-- <control type="group">
                     <top>-30</top>
                     <height>75</height>
-                    <visible>!Skin.HasSetting(DisableStarRating)</visible>
+                    <visible>String.IsEqual(Skin.String(CustomRating.Movies.Item01),Kodi) | String.IsEqual(Skin.String(CustomRating.Movies.Item02),Kodi)</visible>
                     <control type="group">
                         <left>-14</left>
                         <top>24</top>
                         <visible>!String.IsEmpty(Container($PARAM[id]).ListItem.Rating)</visible>
                         <control type="image">
-                            <width>64</width>
-                            <height>64</height>
-                            <texture colordiffuse="main_fg_100">flags/star10.png</texture>
+                            <top>15</top>
+                            <left>14</left>
+                            <width>32</width>
+                            <height>32</height>
+                            <texture colordiffuse="main_fg_100">flags/$VAR[IconsColor_Var]/ratings/kodi.png</texture>
                         </control>
                         <control type="label">
                             <left>61</left>
@@ -1776,7 +1799,7 @@
                             <label>$INFO[Container($PARAM[id]).ListItem.Rating,,   ]</label>
                         </control>
                     </control>
-                </control>
+                </control> -->
                 <include content="Object_Info_Plot">
                     <param name="label" value="$INFO[Container($PARAM[id]).ListItem.Plot]" />
                     <param name="maxheight" value="$PARAM[plotheight]" />
@@ -1787,6 +1810,7 @@
                 <nested />
                 <animation effect="fade" end="50" condition="true">Conditional</animation>
                 <visible>!String.IsEmpty(Container($PARAM[id]).ListItem.Title) + !String.IsEmpty(Container($PARAM[id]).ListItem.ChannelName)</visible>
+                <top>15</top>
                 <orientation>vertical</orientation>
                 <usecontrolcoords>true</usecontrolcoords>
                 <itemgap>0</itemgap>
@@ -1799,6 +1823,88 @@
                     <param name="label" value="$INFO[Container($PARAM[id]).ListItem.Plot]" />
                     <param name="maxheight" value="300" />
                 </include>
+            </control>
+        </definition>
+    </include>
+
+    <include name="Home_Flix_Info">
+        <param name="plotheight" default="160" />
+        <definition>
+            <control type="grouplist">
+                <nested />
+                <animation effect="fade" end="50" condition="true">Conditional</animation>
+                <visible>!String.IsEmpty(Container($PARAM[id]).ListItem.Title) + String.IsEmpty(Container($PARAM[id]).ListItem.ChannelName)</visible>
+                <orientation>vertical</orientation>
+                <usecontrolcoords>true</usecontrolcoords>
+                <itemgap>0</itemgap>
+                <top>15</top>
+                <control type="group">
+                    <height>200</height>
+                    <include content="Flix_Object_Info_Title">
+                        <param name="label" value="$INFO[Container($PARAM[id]).ListItem.Title]" />
+                        <param name="font" value="font_title_large" />
+                        <param name="shadowcolor" value="ff000000" />
+                        <param name="titleheight" value="$PARAM[titleheight]" />
+                        <param name="top" value="80" />
+                        <param name="visible" value="String.IsEmpty(Container($PARAM[id]).ListItem.Art(clearlogo))" />
+                    </include>
+                    <control type="image">
+                        <width>620</width>
+                        <aspectratio align="left" aligny="center">keep</aspectratio>
+                        <texture background="true">$INFO[Container($PARAM[id]).ListItem.Art(clearlogo)]</texture>
+                        <visible>!String.IsEmpty(Container($PARAM[id]).ListItem.Art(clearlogo))</visible>
+                    </control>
+                </control>
+                <include content="Flix_Object_Info_Line">
+                    <param name="container" value="Container($PARAM[id])." />
+                    <param name="uid" value="$PARAM[uid]" />
+                    <param name="maxheight" value="$PARAM[plotheight]" />
+                </include>
+                <include content="Flix_Object_Info_Plot">
+                    <param name="label" value="$INFO[Container($PARAM[id]).ListItem.Plot]" />
+                    <param name="maxheight" value="$PARAM[plotheight]" />
+                    <param name="shadowcolor" value="ff000000" />
+                </include>
+                <control type="group">
+                    <top>48</top>
+                    <control type="image">
+                        <width>64</width>
+                        <texture background="true" colordiffuse="ffa90007">common/circle.png</texture>
+                        <visible>!String.IsEmpty(Container($PARAM[id]).ListItem.Studio) | !String.IsEmpty(Container($PARAM[id]).ListItem.Genre)</visible>
+                    </control>
+                    <control type="image">
+                        <top>2</top>
+                        <left>2</left>
+                        <width>60</width>
+                        <height>60</height>
+                        <texture colordiffuse="ff000000">special://skin/extras/icons/director.png</texture>
+                        <visible>!String.IsEmpty(Container($PARAM[id]).ListItem.Studio)</visible>
+                    </control>
+                    <control type="image">
+                        <top>2</top>
+                        <left>2</left>
+                        <width>60</width>
+                        <height>60</height>
+                        <texture colordiffuse="ff000000">special://skin/extras/icons/folder.png</texture>
+                        <visible>String.IsEmpty(Container($PARAM[id]).ListItem.Studio)</visible>
+                    </control>
+                    <control type="label">
+                        <left>74</left>
+                        <top>32</top>
+                        <width>680</width>
+                        <wrapmultiline>true</wrapmultiline>
+                        <label>$INFO[Container($PARAM[id]).ListItem.Studio]</label>
+                        <visible>!String.IsEmpty(Container($PARAM[id]).ListItem.Studio)</visible>
+                    </control>
+                    <control type="label">
+                        <left>74</left>
+                        <top>32</top>
+                        <width>680</width>
+                        <wrapmultiline>true</wrapmultiline>
+                        <label>$INFO[Container($PARAM[id]).ListItem.Genre]</label>
+                        <visible>String.IsEmpty(Container($PARAM[id]).ListItem.Studio)</visible>
+                    </control>
+                </control>
             </control>
         </definition>
     </include>

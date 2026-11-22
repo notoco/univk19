@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Foundation -->
 <window id="106">
     <defaultcontrol always="true">1000</defaultcontrol>
 
@@ -57,7 +56,6 @@
                 <width>458</width>
                 <height>item_list_height</height>
                 <left>24</left>
-                <textcolor>dialog_fg_70</textcolor>
                 <font>font_small_bold</font>
                 <label>$LOCALIZE[31059]</label>
                 <align>left</align>
@@ -71,6 +69,14 @@
                 <aspectratio align="right">keep</aspectratio>
                 <texture colordiffuse="dialog_fg_70">special://skin/extras/icons/kodi.png</texture>
             </control>
+            <include content="Object_Control">
+                <param name="control">image</param>
+                <top>25</top>
+                <width>418</width>
+                <height>1</height>
+                <texture colordiffuse="dialog_fg_12">common/white.png</texture>
+                <left>45</left>
+            </include>
             <control type="grouplist" id="996">
                 <description>grouplist for context buttons</description>
                 <left>24</left>
@@ -107,5 +113,4 @@
             </control>
         </control>
     </controls>
-
 </window>

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Foundation -->
 <window type="dialog" id="1119">
     <defaultcontrol always="true">9000</defaultcontrol>
     <controls>
@@ -15,6 +14,16 @@
                 <label>$LOCALIZE[31015]</label>
                 <include>Dialog_Standard_Header</include>
             </control>
+
+            <include content="Object_Control">
+                <param name="control">image</param>
+                <top>80</top>
+                <height>1</height>
+                <width>1130</width>
+                <texture colordiffuse="dialog_fg_12">common/white.png</texture>
+                <left>25</left>
+                <right>25</right>
+            </include>
 
             <control type="grouplist" id="9000">
                 <onright>61</onright>
@@ -79,7 +88,7 @@
                     <selected>!Skin.HasSetting(DisableInfoListDirector)</selected>
                 </control>
                 <control type="radiobutton" id="9017">
-                    <label>$LOCALIZE[30072]</label>
+                    <label>$LOCALIZE[31561]</label>
                     <radioposx>730</radioposx>
                     <include>Dialog_Standard_Button</include>
                     <onclick>Skin.ToggleSetting(DisableInfoListCrew)</onclick>
@@ -87,7 +96,7 @@
                     <enable>!Skin.HasSetting(DisableExtendedInfo)</enable>
                 </control>
                 <control type="radiobutton" id="9018">
-                    <label>$LOCALIZE[30042]</label>
+                    <label>$LOCALIZE[31532]</label>
                     <radioposx>730</radioposx>
                     <include>Dialog_Standard_Button</include>
                     <onclick>Skin.ToggleSetting(DisableInfoListRecommended)</onclick>
@@ -103,7 +112,7 @@
                     <enable>!Skin.HasSetting(DisableExtendedInfo)</enable>
                 </control>
                 <control type="radiobutton" id="9020">
-                    <label>$LOCALIZE[30070]</label>
+                    <label>$LOCALIZE[31559]</label>
                     <radioposx>730</radioposx>
                     <include>Dialog_Standard_Button</include>
                     <onclick>Skin.ToggleSetting(DisableInfoListYear)</onclick>
@@ -111,7 +120,7 @@
                     <enable>!Skin.HasSetting(DisableExtendedInfo)</enable>
                 </control>
                 <control type="radiobutton" id="9021">
-                    <label>$LOCALIZE[30071]</label>
+                    <label>$LOCALIZE[31560]</label>
                     <radioposx>730</radioposx>
                     <include>Dialog_Standard_Button</include>
                     <onclick>Skin.ToggleSetting(DisableInfoListGenre)</onclick>
@@ -134,7 +143,7 @@
                     <selected>!Skin.HasSetting(DisableInfoListYouTube)</selected>
                 </control>
                 <control type="radiobutton" id="9019">
-                    <label>$LOCALIZE[30043]</label>
+                    <label>$LOCALIZE[31533]</label>
                     <radioposx>730</radioposx>
                     <include>Dialog_Standard_Button</include>
                     <onclick>Skin.ToggleSetting(DisableInfoListPosters)</onclick>
@@ -154,8 +163,7 @@
             <include content="Dialog_Scrollbar">
                 <param name="onleft" value="9000" />
             </include>
-            
-           
+
             <control type="group">
                 <include>Dialog_Standard_Right_Group</include>
                 <control type="grouplist" id="8000">
