@@ -4,8 +4,6 @@ import xbmc
 import xbmcgui
 from resources.lib.fileops import listDirectory
 
-KODIMONITOR = xbmc.Monitor()
-KODIPLAYER = xbmc.Player()
 SKINVALUESLIST = {'default': {'config': 'sliced', 'res': '720p', 'diagw': 400, 'toph': 50, 'bottomh': 10, 'itemh': 45},
                   'skin.ace2': {'config': 'sliced', 'res': '1080i', 'diagw': 600, 'toph': 95, 'bottomh': 0, 'itemh': 45},
                   'skin.aeonmq8': {'config': 'sliced', 'res': '1080i', 'diagw': 600, 'toph': 75, 'bottomh': 0, 'itemh': 60},
@@ -73,7 +71,10 @@ class Dialog:
         display = Show('script.audioprofiles-apmenu.xml', self.SETTINGS['ADDONPATH'], skin, skin_values['res'],
                        skin_values=skin_values, title=self.TITLE, buttons=self.BUTTONS)
         display.show()
-        while (KODIPLAYER.isPlaying() or self.FORCEDIALOG) and not display.CLOSED and not KODIMONITOR.abortRequested():
+        # local, not module globals: Kodi warns about Kodi objects left alive when the script ends
+        monitor = xbmc.Monitor()
+        player = xbmc.Player()
+        while (player.isPlaying() or self.FORCEDIALOG) and not display.CLOSED and not monitor.abortRequested():
             self.LOGLINES.append(
                 'the current returned value from display is: %s' % str(display.DIALOGRETURN))
             self.LOGLINES.append(
@@ -85,14 +86,14 @@ class Dialog:
             else:
                 if display.DIALOGRETURN is not None:
                     break
-            KODIMONITOR.waitForAbort(1)
+            monitor.waitForAbort(1)
         self.LOGLINES = self.LOGLINES + display.LOGLINES
         self.LOGLINES.append(
             'the final returned value from display is: %s' % str(display.DIALOGRETURN))
         self.LOGLINES.append(
             'the final returned close status from display is: %s' % str(display.CLOSED))
         d_return = display.DIALOGRETURN
-        del display
+        del display, monitor, player
         return d_return, self.LOGLINES
 
     def _get_skin_info(self, current_skin):
