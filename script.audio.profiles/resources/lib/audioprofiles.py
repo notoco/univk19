@@ -4,243 +4,177 @@
 # *  original Audio Profiles code by Regss
 # *  updates and additions through v1.4.1 by notoco and CtrlGy
 # *  updates and additions since v1.4.2 by pkscout
+# *  2.3.0: settings diffed before writing, switch on Player.OnAVStart (notoco)
 
-import xbmc
 import json
-import os
+import queue
 import sys
-from resources.lib.fileops import *
+import time
+import xbmc
 from resources.lib.xlogger import Logger
-from resources.lib.apsettings import loadSettings
-from resources.lib.approfiles import Profiles
+from resources.lib.apsettings import loadSettings, POPUP, PROFILE_COUNT
+from resources.lib.approfiles import Profiles, jsonrpc
+
+EVENT_POLL = 0.2  # seconds between checks of the event queue
+GUI_DELAY = 1.0  # seconds after Player.OnStop before the GUI profile, so a next playlist item can start first
+CONTENT_ONLY = ('auto_music', 'auto_pvr_radio', 'auto_pvr_tv')
+# Kodi codec name prefix -> setting; longest first (dtshd_ma before dts, eac3 before ac3)
+CODECS = (('truehd', 'auto_truehd'), ('dtshd', 'auto_dtshd'), ('dts', 'auto_dts'), ('dca', 'auto_dts'),
+          ('eac3', 'auto_eac3'), ('ac3', 'auto_ac3'))
+MAPTYPE = {'video': 'auto_videos', 'episode': 'auto_tvshows', 'musicvideo': 'auto_musicvideo', 'song': 'auto_music'}
 
 
-def _upgrade():
-    settings = loadSettings()
+def _upgrade(settings):
     if settings['version_upgrade'] != settings['ADDONVERSION']:
-        settings['ADDON'].setSetting(
-            'version_upgrade', settings['ADDONVERSION'])
+        settings['ADDON'].setSetting('version_upgrade', settings['ADDONVERSION'])
 
 
 class apManual:
 
     def __init__(self):
-        """Runs the audio profiler switcher manually."""
+        """Runs the audio profile switcher manually."""
         settings = loadSettings()
-        lw = Logger(preamble='[Audio Profiles]', logdebug=settings['debug'])
-        lw.log(['script version %s started' %
-               settings['ADDONVERSION']], xbmc.LOGINFO)
-        lw.log(['debug logging set to %s' % settings['debug']], xbmc.LOGINFO)
-        lw.log(['SYS.ARGV: %s' % str(sys.argv)])
-        lw.log(['loaded settings', settings])
-        profiles = Profiles(settings, lw)
-        try:
-            mode = sys.argv[1]
-        except IndexError:
-            mode = False
-        lw.log(['MODE: %s' % str(mode)])
-        profiles.changeProfile(mode)
-        lw.log(['script version %s stopped' %
-               settings['ADDONVERSION']], xbmc.LOGINFO)
+        logger = Logger(preamble='[Audio Profiles]', logdebug=settings['debug'])
+        logger.log(['SYS.ARGV: %s' % str(sys.argv)])
+        mode = sys.argv[1] if len(sys.argv) > 1 else False
+        Profiles(settings, logger).changeProfile(mode)
 
 
 class apMonitor(xbmc.Monitor):
 
     def __init__(self):
-        """Starts the background process for automatic audio profile switching."""
+        """Background service for automatic audio profile switching."""
         xbmc.Monitor.__init__(self)
-        _upgrade()
+        self.EVENTS = queue.Queue()
+        self.PLAYER = xbmc.Player()
         self._init_vars()
-        self.LW.log(['background monitor version %s started' %
-                    self.SETTINGS['ADDONVERSION']], xbmc.LOGINFO)
-        self.LW.log(['debug logging set to %s' %
-                    self.SETTINGS['debug']], xbmc.LOGINFO)
-        self._change_profile(
-            self.SETTINGS['auto_default'], forceload=self.SETTINGS['force_auto_default'])
-        while not self.abortRequested():
-            if self.waitForAbort(10):
-                break
-        self.LW.log(['background monitor version %s stopped' %
-                    self.SETTINGS['ADDONVERSION']], xbmc.LOGINFO)
+        _upgrade(self.SETTINGS)
+        self.LW.log(['background monitor version %s started' % self.SETTINGS['ADDONVERSION']], xbmc.LOGINFO)
+        if not self.PLAYER.isPlaying():
+            self._apply(self.SETTINGS['auto_default'])
+        self._run()
+        self.LW.log(['background monitor version %s stopped' % self.SETTINGS['ADDONVERSION']], xbmc.LOGINFO)
+
+    # Kodi callbacks only queue the event: the work runs in _run(), so a slow switch or
+    # an open select menu never holds up Kodi's notification thread
 
     def onNotification(self, sender, method, data):
-        data = json.loads(data)
-        if 'System.OnWake' in method:
-            self.LW.log(['MONITOR METHOD: %s DATA: %s' %
-                        (str(method), str(data))])
-            self._change_profile(self.SETTINGS['auto_default'])
-        if 'Player.OnStop' in method:
-            self.LW.log(['MONITOR METHOD: %s DATA: %s' %
-                        (str(method), str(data))])
-            self.waitForAbort(1)
-            if not self.KODIPLAYER.isPlaying():
-                self._change_profile(self.SETTINGS['auto_gui'])
-        if 'Player.OnPlay' in method:
-            self.LW.log(['MONITOR METHOD: %s DATA: %s' %
-                        (str(method), str(data))])
-            self._auto_switch(data)
+        if method in ('Player.OnAVStart', 'Player.OnStop', 'System.OnWake'):
+            self.EVENTS.put((method, data))
 
     def onSettingsChanged(self):
-        self._init_vars()
+        self.EVENTS.put(('settings', None))
 
     def _init_vars(self):
         self.SETTINGS = loadSettings()
-        self.PROFILESLIST = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
-        # this only includes mappings we are 100% sure are accurate every time
-        self.MAPTYPE = {'video': 'auto_videos', 'episode': 'auto_tvshows',
-                        'musicvideo': 'auto_musicvideo', 'song': 'auto_music'}
-        self.LW = Logger(
-            preamble='[Audio Profiles Service]', logdebug=self.SETTINGS['debug'])
+        self.LW = Logger(preamble='[Audio Profiles Service]', logdebug=self.SETTINGS['debug'])
         self.PROFILES = Profiles(self.SETTINGS, self.LW, auto=True)
-        self.KODIPLAYER = xbmc.Player()
-        self.LW.log(['the settings are:', self.SETTINGS])
-        self.LW.log(['initialized variables'])
+
+    def _run(self):
+        gui_due = None
+        # Changing passthrough makes Kodi reopen the playing file, which sends Player.OnAVStart
+        # again: the file stays "handled" until playback really stops, so the switch runs once
+        handled_file = None
+        # Kodi runs this script's callbacks only while it waits inside waitForAbort()/sleep()
+        while not self.waitForAbort(EVENT_POLL):
+            try:
+                method, data = self.EVENTS.get_nowait()
+            except queue.Empty:
+                if gui_due is not None and time.monotonic() >= gui_due:
+                    gui_due = None
+                    if not self.PLAYER.isPlaying():
+                        handled_file = None
+                        self._apply(self.SETTINGS['auto_gui'])
+                continue
+            self.LW.log(['event %s %s' % (method, data)])
+            try:
+                if method == 'settings':
+                    self._init_vars()
+                elif method == 'Player.OnStop':
+                    gui_due = time.monotonic() + GUI_DELAY
+                elif method == 'Player.OnAVStart':
+                    gui_due = None
+                    playing = self._playing_file()
+                    if playing and playing == handled_file:
+                        self.LW.log(['%s already handled - Kodi reopened it' % playing], xbmc.LOGINFO)
+                        continue
+                    handled_file = playing
+                    self._auto_switch(json.loads(data))
+                elif method == 'System.OnWake':
+                    self._apply(self.SETTINGS['auto_default'])
+            except Exception as exc:  # keep the service alive whatever one event does
+                self.LW.log(['error handling %s: %r' % (method, exc)], xbmc.LOGERROR)
+
+    def _apply(self, value):
+        if 1 <= value <= PROFILE_COUNT:
+            self.PROFILES.load(value)
+        elif value == POPUP:
+            self.PROFILES.changeProfile('popup')
 
     def _auto_switch(self, data):
         if self.SETTINGS['player_show']:
-            self.LW.log(['showing select menu'])
             if self.PROFILES.changeProfile('popup') is not None:
-                self.LW.log(['option selected, returning'])
                 return
-            self.LW.log(
-                ['select menu timed out or was closed with no selection - continuing to auto select'])
-        content_autoswitch = self._auto_switch_content(data)
-        self.LW.log(['got a content autoswitch of %s' % content_autoswitch])
-        if content_autoswitch not in ['auto_music', 'auto_pvr_radio', 'auto_pvr_tv']:
-            codec_setting, channels_setting = self._auto_switch_stream()
-            if codec_setting != '0':
+        content = self._content(data)
+        if content in CONTENT_ONLY:
+            the_setting = self.SETTINGS[content]
+        else:
+            playerid = (data.get('player') or {}).get('playerid', 1)
+            codec_setting, channels_setting = self._stream_settings(playerid)
+            if codec_setting:
                 the_setting = codec_setting
-                self.LW.log(['using the codec setting of %s' % the_setting])
-            elif channels_setting != '0':
+            elif channels_setting:
                 the_setting = channels_setting
-                self.LW.log(['using the channels setting of %s' % the_setting])
-            elif self.SETTINGS['aggressive_music_match'] and codec_setting == '0' and channels_setting == '0' and content_autoswitch == 'auto_unknown':
+            elif self.SETTINGS['aggressive_music_match'] and content == 'auto_unknown':
                 the_setting = self.SETTINGS['auto_music']
-                self.LW.log(
-                    ['stream does not seem to be video, using the auto_music setting of %s' % the_setting])
             else:
-                the_setting = self.SETTINGS[content_autoswitch]
-                self.LW.log(['using the content setting of %s' % the_setting])
-        else:
-            the_setting = self.SETTINGS[content_autoswitch]
-            self.LW.log(['using the content setting of %s' % the_setting])
-        self._change_profile(the_setting)
+                the_setting = self.SETTINGS[content]
+        self.LW.log(['content %s -> profile setting %s' % (content, the_setting)])
+        self._apply(the_setting)
 
-    def _auto_switch_stream(self):
-        if self.SETTINGS['codec_delay'] > 0:
-            self.LW.log(['waiting %s seconds before trying to get stream details' % str(
-                self.SETTINGS['codec_delay'])])
-            self.waitForAbort(self.SETTINGS['codec_delay'])
-        response = xbmc.executeJSONRPC(
-            '{"jsonrpc":"2.0", "method":"Player.GetProperties", "params":{"playerid":1, "properties":["currentaudiostream"]}, "id":1}')
-        r_dict = json.loads(response)
-        self.LW.log(['got back audio stream data of:', r_dict])
-        try:
-            codec = r_dict['result']['currentaudiostream']['codec']
-        except (IndexError, KeyError, ValueError, TypeError):
-            codec = None
-        try:
-            channels = r_dict['result']['currentaudiostream']['channels']
-        except (IndexError, KeyError, ValueError, TypeError):
-            channels = None
-        self.LW.log(['got %s for the codec and %s for the channels' %
-                    (str(codec), str(channels))])
+    def _stream_settings(self, playerid):
+        """Return the (codec, channels) auto-switch settings of the playing audio stream. On
+        Player.OnAVStart the stream is normally known at once; codec_delay is only the most to wait."""
+        deadline = time.monotonic() + max(self.SETTINGS['codec_delay'], 0)
+        stream = {}
+        while True:
+            response = jsonrpc('Player.GetProperties', {'playerid': playerid, 'properties': ['currentaudiostream']})
+            stream = (response.get('result') or {}).get('currentaudiostream') or {}
+            if stream.get('codec') or time.monotonic() >= deadline or self.waitForAbort(0.25):
+                break
+        codec = (stream.get('codec') or '').lower()
+        channels = stream.get('channels') or 0
+        self.LW.log(['audio stream codec %r, %s channels' % (codec, channels)])
+        codec_setting = 0
         if codec:
-            codec_set = 'auto_othercodec'
-            for check_codec in ['ac3', 'eac3', 'dts', 'dtshd', 'truehd']:
-                if codec in check_codec:
-                    codec_set = 'auto_%s' % check_codec
-                    break
-        else:
-            codec_set = 'none'
-        try:
-            codec_setting = self.SETTINGS[codec_set]
-        except KeyError:
-            codec_setting = '0'
+            codec_key = next((key for prefix, key in CODECS if codec.startswith(prefix)), 'auto_othercodec')
+            codec_setting = self.SETTINGS[codec_key]
+        channels_setting = 0
         if channels:
-            if channels > 2:
-                channels_set = 'auto_multichannel'
-            else:
-                channels_set = 'auto_stereo'
-        else:
-            channels_set = 'none'
-        try:
-            channels_setting = self.SETTINGS[channels_set]
-        except KeyError:
-            channels_setting = '0'
-        self.LW.log(['got codec set of %s and channels set of %s' %
-                    (codec_set, channels_set)])
-        self.LW.log(['sending back codec setting of %s and channel setting of %s' % (
-            codec_setting, channels_setting)])
+            channels_setting = self.SETTINGS['auto_multichannel' if channels > 2 else 'auto_stereo']
         return codec_setting, channels_setting
 
-    def _auto_switch_content(self, data):
-        try:
-            thetype = data['item']['type']
-        except KeyError:
-            self.LW.log(
-                ['data did not include valid item and/or type for playing media - aborting'])
-            return
-        self.LW.log(['the type is: %s' % thetype])
-        theset = self.MAPTYPE.get(thetype)
-        if not theset:
-            if thetype == 'movie':
-                # if video is a PVR recording assign to auto_pvr_tv
-                if self._check_playing_file('pvr://'):
-                    theset = 'auto_pvr_tv'
-                # if video is not from library assign to auto_videos
-                elif 'id' not in data['item']:
-                    theset = 'auto_videos'
-                # it must actually be a movie
-                else:
-                    theset = 'auto_movies'
-            # distinguish pvr TV and pvr RADIO
-            elif 'channel' in thetype and 'channeltype' in data['item']:
-                if 'tv' in data['item']['channeltype']:
-                    theset = 'auto_pvr_tv'
-                elif 'radio' in data['item']['channeltype']:
-                    theset = 'auto_pvr_radio'
-                else:
-                    theset = 'auto_unknown'
-            # detect cdda that kodi return as unknown
-            elif thetype == 'unknown':
-                if self._check_playing_file('cdda://'):
-                    theset = 'auto_music'
-                else:
-                    theset = 'auto_unknown'
-            else:
-                theset = 'auto_unknown'
-            self.LW.log(['got %s from the content auto switch' % theset])
-        return theset
+    def _content(self, data):
+        item = data.get('item') or {}
+        item_type = item.get('type')
+        if item_type in MAPTYPE:
+            return MAPTYPE[item_type]
+        if item_type == 'movie':
+            if self._playing_file().startswith('pvr://'):
+                return 'auto_pvr_tv'  # PVR recording
+            return 'auto_movies' if 'id' in item else 'auto_videos'
+        if item_type and 'channel' in item_type:
+            channel_type = item.get('channeltype', '')
+            if 'tv' in channel_type:
+                return 'auto_pvr_tv'
+            if 'radio' in channel_type:
+                return 'auto_pvr_radio'
+        if item_type == 'unknown' and self._playing_file().startswith('cdda://'):
+            return 'auto_music'
+        return 'auto_unknown'
 
-    def _change_profile(self, profile, forceload=False):
-        if profile in self.PROFILESLIST:
-            last_profile = self._get_last_profile()
-            self.LW.log(
-                ['Last loaded profile: %s To switch profile: %s' % (last_profile, profile)])
-            if last_profile != profile or forceload:
-                self.PROFILES.changeProfile(profile)
-            else:
-                self.LW.log(['Same profile - profiles not switched'])
-        elif profile == str(len(self.PROFILESLIST) + 1):
-            self.LW.log(
-                ['this auto switch setting is set to show the select menu - showing menu'])
-            self.PROFILES.changeProfile('popup')
-
-    def _check_playing_file(self, thestr):
+    def _playing_file(self):
         try:
-            thefile = self.KODIPLAYER.getPlayingFile()
+            return self.PLAYER.getPlayingFile()
         except RuntimeError:
-            self.LW.log(['error trying to get playing file from Kodi'])
-            return False
-        self.LW.log(['the playing file is: %s' % thefile])
-        return thefile.startswith(thestr)
-
-    def _get_last_profile(self):
-        loglines, profile = readFile(os.path.join(
-            self.SETTINGS['ADDONDATAPATH'], 'profile'))
-        self.LW.log(loglines)
-        if profile in self.PROFILESLIST:
-            return profile
-        else:
             return ''

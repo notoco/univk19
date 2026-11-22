@@ -1,11 +1,38 @@
 
 import json
 import os
-import sys
+import time
 import xbmc
 import xbmcgui
 from resources.lib import apdialog
-from resources.lib.fileops import *
+from resources.lib.apsettings import PROFILE_COUNT
+
+CEC_COMMANDS = ['', 'CECActivateSource', 'CECStandby', 'CECToggleState']
+# what "save profile" stores: (section, category) of Settings.GetSettings
+SAVE_FILTERS = [('system', 'audio'), ('player', 'videoplayer'), ('system', 'display')]
+AUDIO_EXTRA = ('lookandfeel.soundskin', 'locale.audiolanguage')
+
+
+def jsonrpc(method, params=None):
+    request = {'jsonrpc': '2.0', 'id': 1, 'method': method}
+    if params is not None:
+        request['params'] = params
+    return json.loads(xbmc.executeJSONRPC(json.dumps(request)))
+
+
+def _typed(raw, current):
+    """Convert a value from a profile file to the type of the current value (old versions saved text only)"""
+    if not isinstance(raw, str) or isinstance(current, str):
+        return raw
+    if isinstance(current, bool):
+        return raw.lower() == 'true'
+    if isinstance(current, int):
+        return int(raw)
+    if isinstance(current, float):
+        return float(raw)
+    if isinstance(current, list):
+        return json.loads(raw)
+    return raw
 
 
 class Profiles:
@@ -15,227 +42,179 @@ class Profiles:
         self.LW = lw
         self.SETTINGS = settings
         self.AUTO = auto
-        self.SNAME = {1: self.SETTINGS['name1'],
-                      2: self.SETTINGS['name2'],
-                      3: self.SETTINGS['name3'],
-                      4: self.SETTINGS['name4'],
-                      5: self.SETTINGS['name5'],
-                      6: self.SETTINGS['name6'],
-                      7: self.SETTINGS['name7'],
-                      8: self.SETTINGS['name8'],
-                      9: self.SETTINGS['name9'],
-                      10: self.SETTINGS['name10']}
-        self.SPROFILE = {1: self.SETTINGS['profile1'],
-                         2: self.SETTINGS['profile2'],
-                         3: self.SETTINGS['profile3'],
-                         4: self.SETTINGS['profile4'],
-                         5: self.SETTINGS['profile5'],
-                         6: self.SETTINGS['profile6'],
-                         7: self.SETTINGS['profile7'],
-                         8: self.SETTINGS['profile8'],
-                         9: self.SETTINGS['profile9'],
-                         10: self.SETTINGS['profile10']}
-        self.APROFILE = []
-        self.CECCOMMANDS = ['', 'CECActivateSource',
-                            'CECStandby', 'CECToggleState']
-        self.ENABLEDPROFILES = self._get_enabled_profiles()
-        self.KODIPLAYER = xbmc.Player()
-        self.DIALOG = xbmcgui.Dialog()
-        self.NOTIFYTIME = self.SETTINGS['notify_time'] * 1000
-        self.DISPLAYNOTIFICATION = self.SETTINGS['notify']
-        success, loglines = checkPath(
-            os.path.join(self.SETTINGS['ADDONDATAPATH'], ''))
-        self.LW.log(loglines)
+        self.DATAPATH = settings['ADDONDATAPATH']
+        self.ENABLED = [number for number in range(1, PROFILE_COUNT + 1) if settings['enabled'][number]]
+        if not os.path.isdir(self.DATAPATH):
+            os.makedirs(self.DATAPATH)
+
+    # ---- public ----
 
     def changeProfile(self, mode):
-        if True not in self.SPROFILE.values():
-            self._notification(self.SETTINGS['ADDONLANGUAGE'](
-                32105), self.SETTINGS['notify_maintenance'])
+        """mode: False = save the current settings to a profile, 'popup' = select menu,
+        '0' = next profile, '1'..'10' = that profile. Returns the menu choice for 'popup'."""
+        if not self.ENABLED:
+            self._notification(self.SETTINGS['ADDONLANGUAGE'](32105), self.SETTINGS['notify_maintenance'])
             self.SETTINGS['ADDON'].openSettings()
+            return None
         if mode is False:
             self._save()
-            return
+            return None
         if mode == 'popup':
-            force_dialog = not self.KODIPLAYER.isPlaying()
-            dialog_return, loglines = apdialog.Dialog().start(self.SETTINGS, title=self.SETTINGS['ADDONLANGUAGE'](32106),
-                                                              buttons=self.ENABLEDPROFILES[1], force_dialog=force_dialog)
-            self.LW.log(loglines)
-            if dialog_return is not None:
-                self._profile(str(self.ENABLEDPROFILES[0][dialog_return]))
-            return dialog_return
-        if int(mode) <= 10:
-            if self._check(mode) is False:
-                return
-            if mode == '0':
-                self._toggle(mode)
-            else:
-                self._profile(mode)
-            return
-        self.LW.log(['Wrong argument used - use like RunScript("%s,x") x (x is the number of the profile)' %
-                    self.SETTINGS['ADDONNAME']], xbmc.LOGERROR)
+            choice = self._select(force_dialog=not xbmc.Player().isPlaying())
+            if choice is not None:
+                self.load(self.ENABLED[choice])
+            return choice
+        try:
+            number = int(mode)
+        except (TypeError, ValueError):
+            number = -1
+        if number == 0:
+            self.load(self._next_profile())
+        elif 1 <= number <= PROFILE_COUNT:
+            self.load(number)
+        else:
+            self.LW.log(['Wrong argument used - use like RunScript("%s,x") x (x is the number of the profile)' %
+                         self.SETTINGS['ADDONNAME']], xbmc.LOGERROR)
+        return None
 
-    def _check(self, mode):
-        if mode != '0' and not self.SPROFILE[int(mode)]:
-            self._notification('%s (%s)' % (self.SETTINGS['ADDONLANGUAGE'](
-                32103), self.SNAME[int(mode)]), self.SETTINGS['notify_maintenance'])
-            self.LW.log(
-                ['CHECK: This profile is disabled in addon settings - %s' % str(mode)], xbmc.LOGINFO)
+    def lastProfile(self):
+        try:
+            with open(self._path('profile')) as state_file:
+                return int(state_file.read().strip())
+        except (OSError, ValueError):
+            return 0
+
+    def load(self, number):
+        """Apply a profile, changing only the Kodi settings that differ from it"""
+        name = self.SETTINGS['names'].get(number, str(number))
+        if number not in self.ENABLED:
+            self._notification('%s (%s)' % (self.SETTINGS['ADDONLANGUAGE'](32103), name),
+                               self.SETTINGS['notify_maintenance'])
+            self.LW.log(['profile %s is disabled in addon settings' % number], xbmc.LOGINFO)
             return False
-        for key in self.SPROFILE:
-            if self.SPROFILE[key]:
-                success, loglines = checkPath(os.path.join(
-                    self.SETTINGS['ADDONDATAPATH'], 'profile%s.json' % str(key)), createdir=False)
-                self.LW.log(loglines)
-                if not success:
-                    self._notification('%s %s (%s)' % (self.SETTINGS['ADDONLANGUAGE'](32101), str(key), self.SNAME[key]),
-                                       self.SETTINGS['notify_maintenance'])
-                    self.LW.log(
-                        ['PROFILE FILE does not exist for profile - %s' % str(key)], xbmc.LOGERROR)
-                    return False
-                self.APROFILE.append(str(key))
+        try:
+            with open(self._path('profile%d.json' % number)) as profile_file:
+                profile = json.load(profile_file)
+        except (OSError, ValueError) as exc:
+            self._notification('%s %s (%s)' % (self.SETTINGS['ADDONLANGUAGE'](32104), number, name),
+                               self.SETTINGS['notify_maintenance'])
+            self.LW.log(['cannot read profile %s: %s' % (number, exc)], xbmc.LOGERROR)
+            return False
+        started = time.monotonic()
+        changed = []
+        for setting_id, raw_value in profile.items():
+            if not self._wanted(setting_id):
+                continue
+            if setting_id == 'volume':
+                if self._set_volume(raw_value):
+                    changed.append(setting_id)
+                continue
+            current = jsonrpc('Settings.GetSettingValue', {'setting': setting_id})
+            if 'result' not in current:
+                self.LW.log(['setting %s does not exist in this Kodi - skipped' % setting_id])
+                continue
+            current_value = current['result'].get('value')
+            try:
+                value = _typed(raw_value, current_value)
+            except ValueError:
+                self.LW.log(['bad value %r for %s - skipped' % (raw_value, setting_id)])
+                continue
+            if value == current_value:
+                continue
+            result = jsonrpc('Settings.SetSettingValue', {'setting': setting_id, 'value': value})
+            if 'error' in result:
+                self.LW.log(['cannot set %s to %r: %s' % (setting_id, value, result['error'])])
+                continue
+            changed.append('%s=%r' % (setting_id, value))
+        previous = self.lastProfile()
+        self._write_state(number)
+        self.LW.log(['profile %s (%s): %d setting(s) changed in %d ms %s' % (
+            number, name, len(changed), (time.monotonic() - started) * 1000, ', '.join(changed))], xbmc.LOGINFO)
+        if changed or previous != number:
+            show = self.SETTINGS['notify_auto'] if self.AUTO else self.SETTINGS['notify_manual']
+            self._notification(name, show)
+        cec = self.SETTINGS['cec'].get(number, 0)
+        if 0 < cec < len(CEC_COMMANDS):
+            self.LW.log(['sending CEC command: %s' % CEC_COMMANDS[cec]], xbmc.LOGINFO)
+            xbmc.executebuiltin(CEC_COMMANDS[cec])
+        return True
 
-    def _convert(self, data):
-        if sys.version_info < (3, 0):
-            return data
-        if isinstance(data, bytes):
-            return data.decode()
-        if isinstance(data, (str, int)):
-            return str(data)
-        if isinstance(data, dict):
-            return dict(list(map(self._convert, list(data.items()))))
-        if isinstance(data, tuple):
-            return tuple(map(self._convert, data))
-        if isinstance(data, list):
-            return list(map(self._convert, data))
-        if isinstance(data, set):
-            return set(map(self._convert, data))
+    # ---- helpers ----
 
-    def _get_enabled_profiles(self):
-        enabled_profile_key = []
-        enabled_profile_name = []
-        for thekey, profile in self.SPROFILE.items():
-            if profile:
-                enabled_profile_key.append(thekey)
-                enabled_profile_name.append(self.SNAME[thekey])
-        return [enabled_profile_key, enabled_profile_name]
+    def _path(self, filename):
+        return os.path.join(self.DATAPATH, filename)
+
+    def _wanted(self, setting_id):
+        if setting_id == 'volume':
+            return self.SETTINGS['volume']
+        if setting_id.startswith('audiooutput.') or setting_id in AUDIO_EXTRA:
+            return True
+        if setting_id.startswith('videoplayer.'):
+            return self.SETTINGS['player']
+        return self.SETTINGS['video']  # System/Display: videoscreen.*, coreelec.amlogic.*, ...
+
+    def _set_volume(self, raw_value):
+        try:
+            volume = int(raw_value)
+        except (TypeError, ValueError):
+            return False
+        current = jsonrpc('Application.GetProperties', {'properties': ['volume']})
+        if current.get('result', {}).get('volume') == volume:
+            return False
+        jsonrpc('Application.SetVolume', {'volume': volume})
+        return True
+
+    def _write_state(self, number):
+        try:
+            with open(self._path('profile'), 'w') as state_file:
+                state_file.write(str(number))
+        except OSError as exc:
+            self.LW.log(['cannot write the last profile file: %s' % exc])
+
+    def _next_profile(self):
+        available = [number for number in self.ENABLED if os.path.exists(self._path('profile%d.json' % number))]
+        if not available:
+            return self.ENABLED[0]
+        last = self.lastProfile()
+        if last not in available:
+            return available[0]
+        return available[(available.index(last) + 1) % len(available)]
 
     def _notification(self, msg, display=True):
-        if self.DISPLAYNOTIFICATION and display:
-            self.DIALOG.notification(
-                self.SETTINGS['ADDONLONGNAME'], msg, icon=self.SETTINGS['ADDONICON'], time=self.NOTIFYTIME)
+        if self.SETTINGS['notify'] and display:
+            xbmcgui.Dialog().notification(self.SETTINGS['ADDONLONGNAME'], msg, icon=self.SETTINGS['ADDONICON'],
+                                          time=self.SETTINGS['notify_time'] * 1000)
 
-    def _profile(self, profile):
-        loglines, result = readFile(os.path.join(
-            self.SETTINGS['ADDONDATAPATH'], 'profile%s.json' % profile))
+    def _select(self, force_dialog):
+        buttons = [self.SETTINGS['names'][number] for number in self.ENABLED]
+        choice, loglines = apdialog.Dialog().start(self.SETTINGS, title=self.SETTINGS['ADDONLANGUAGE'](32106),
+                                                   buttons=buttons, force_dialog=force_dialog)
         self.LW.log(loglines)
-        try:
-            jsonResult = json.loads(result)
-        except ValueError:
-            self._notification('%s %s (%s)' % (self.SETTINGS['ADDONLANGUAGE'](32104), profile, self.SNAME[int(profile)]),
-                               self.SETTINGS['notify_maintenance'])
-            self.LW.log(['LOAD JSON FROM FILE: Error reading from profile - %s' %
-                        str(profile)], xbmc.LOGERROR)
-            return False
-        quote_needed = ['audiooutput.audiodevice',
-                        'audiooutput.passthroughdevice',
-                        'locale.audiolanguage',
-                        'lookandfeel.soundskin']
-        self.LW.log(['RESTORING SETTING: %s' %
-                    self.SNAME[int(profile)]], xbmc.LOGINFO)
-        for set_name, set_value in jsonResult.items():
-            if not self.SETTINGS['player'] and set_name.startswith('videoplayer'):
-                continue
-            if not self.SETTINGS['video'] and set_name.startswith('videoscreen'):
-                continue
-            self.LW.log(['RESTORING SETTING: %s: %s' % (set_name, set_value)])
-            if set_name in quote_needed:
-                set_value = '"%s"' % set_value
-            if self.SETTINGS['volume'] and set_name == 'volume':
-                xbmc.executeJSONRPC(
-                    '{"jsonrpc": "2.0", "method": "Application.SetVolume", "params": {"volume": %s}, "id": 1}' % jsonResult['volume'])
-            else:
-                xbmc.executeJSONRPC(
-                    '{"jsonrpc": "2.0", "method": "Settings.SetSettingValue", "params": {"setting": "%s", "value": %s}, "id": 1}' % (set_name, set_value))
-        if self.AUTO:
-            show_notification = self.SETTINGS['notify_auto']
-        else:
-            show_notification = self.SETTINGS['notify_manual']
-        self._notification(self.SNAME[int(profile)], show_notification)
-        success, loglines = writeFile(profile, os.path.join(
-            self.SETTINGS['ADDONDATAPATH'], 'profile'), 'w')
-        self.LW.log(loglines)
-        s_cec = self.SETTINGS['profile%s_cec' % profile]
-        if s_cec:
-            self.LW.log(['SENDING CEC COMMAND: %s' %
-                        self.CECCOMMANDS[s_cec]], xbmc.LOGINFO)
-            xbmc.executebuiltin(self.CECCOMMANDS[s_cec])
+        return choice
 
     def _save(self):
-        dialog_return, loglines = apdialog.Dialog().start(self.SETTINGS, title=self.SETTINGS['ADDONLANGUAGE'](32106),
-                                                          buttons=self.ENABLEDPROFILES[1], force_dialog=True)
-        self.LW.log(loglines)
-        self.LW.log(['the returned value is %s' % str(dialog_return)])
-        if dialog_return is None:
+        choice = self._select(force_dialog=True)
+        if choice is None:
             return False
-        else:
-            button = self.ENABLEDPROFILES[0][dialog_return]
-        settings_to_save = {}
-        json_s = [
-            '{"jsonrpc":"2.0","method":"Settings.GetSettings", "params":{"level": "expert", "filter":{"section":"system","category":"audio"}},"id":1}',
-            '{"jsonrpc": "2.0", "method": "Application.GetProperties", "params": {"properties": ["volume"]}, "id": 1}',
-            '{"jsonrpc":"2.0","method":"Settings.GetSettings", "params":{"level": "expert", "filter":{"section":"player","category":"videoplayer"}}, "id":1}',
-            '{"jsonrpc":"2.0","method":"Settings.GetSettings", "params":{"level": "expert", "filter":{"section":"system","category":"display"}}, "id":1}'
-        ]
-        for j in json_s:
-            json_get = xbmc.executeJSONRPC(j)
-            json_get = json.loads(json_get)
-            self.LW.log(['JSON: %s' % str(json_get)])
-            if 'result' in json_get:
-                if 'settings' in json_get['result']:
-                    for theset in json_get['result']['settings']:
-                        if 'value' in theset.keys():
-                            if theset['value'] == True or theset['value'] == False:
-                                settings_to_save[theset['id']] = str(
-                                    theset['value']).lower()
-                            else:
-                                if isinstance(theset['value'], int):
-                                    settings_to_save[theset['id']] = str(
-                                        theset['value'])
-                                else:
-                                    settings_to_save[theset['id']] = str(
-                                        theset['value']).encode('utf-8')
-
-                if 'volume' in json_get['result']:
-                    settings_to_save['volume'] = str(
-                        json_get['result']['volume'])
-        json_to_write = json.dumps(self._convert(settings_to_save))
-        self.LW.log(['SAVING SETTING: %s' % self.SNAME[button]], xbmc.LOGINFO)
-        success, loglines = writeFile(json_to_write, os.path.join(
-            self.SETTINGS['ADDONDATAPATH'], 'profile%s.json' % str(button)), 'w')
-        self.LW.log(loglines)
-        if success:
-            self._notification('%s %s (%s)' % (self.SETTINGS['ADDONLANGUAGE'](32102), str(button),
-                                               self.SNAME[button]), self.SETTINGS['notify_maintenance'])
-
-    def _toggle(self, mode):
-        loglines, profile = readFile(os.path.join(
-            self.SETTINGS['ADDONDATAPATH'], 'profile'))
-        self.LW.log(loglines)
-        if profile:
-            if (len(self.APROFILE) == 1) or (profile not in self.APROFILE):
-                profile = self.APROFILE[0]
-            else:
-                ip = int(self.APROFILE.index(profile))
-                if len(self.APROFILE) == ip:
-                    try:
-                        profile = self.APROFILE[0]
-                    except IndexError:
-                        profile = self.APROFILE[0]
-                else:
-                    try:
-                        profile = self.APROFILE[ip + 1]
-                    except IndexError:
-                        profile = self.APROFILE[0]
-        else:
-            profile = self.APROFILE[0]
-        self._profile(profile)
+        number = self.ENABLED[choice]
+        values = {}
+        for section, category in SAVE_FILTERS:
+            response = jsonrpc('Settings.GetSettings', {'level': 'expert',
+                                                        'filter': {'section': section, 'category': category}})
+            for setting in response.get('result', {}).get('settings', []):
+                if 'value' in setting:
+                    values[setting['id']] = setting['value']
+        volume = jsonrpc('Application.GetProperties', {'properties': ['volume']}).get('result', {}).get('volume')
+        if volume is not None:
+            values['volume'] = volume
+        try:
+            with open(self._path('profile%d.json' % number), 'w') as profile_file:
+                json.dump(values, profile_file)
+        except OSError as exc:
+            self.LW.log(['cannot save profile %s: %s' % (number, exc)], xbmc.LOGERROR)
+            return False
+        self.LW.log(['saved %d settings to profile %s (%s)' % (
+            len(values), number, self.SETTINGS['names'][number])], xbmc.LOGINFO)
+        self._notification('%s %s (%s)' % (self.SETTINGS['ADDONLANGUAGE'](32102), number,
+                                           self.SETTINGS['names'][number]), self.SETTINGS['notify_maintenance'])
+        return True

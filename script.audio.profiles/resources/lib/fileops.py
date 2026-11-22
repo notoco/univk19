@@ -225,7 +225,7 @@ def _remove_trailing_dot(thename, endreplace=''):
         return thename
 
 
-def setSafeName(thename, illegalchars='<>:"/\|?*', illegalreplace='_', endreplace=''):
+def setSafeName(thename, illegalchars=r'<>:"/\|?*', illegalreplace='_', endreplace=''):
     loglines = []
     if not thename:
         loglines.append('name is empty, returning it')
