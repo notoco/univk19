@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<includes>
-    <variable name="Defs_PercentPlayed">
-        <value condition="!String.IsEmpty(ListItem.Property(WatchedEpisodePercent)) + !Integer.IsEqual(ListItem.Property(WatchedEpisodePercent),0) + !Integer.IsEqual(ListItem.Property(WatchedEpisodePercent),100)">$INFO[ListItem.Property(WatchedEpisodePercent)]</value>
-        <value condition="!String.IsEmpty(ListItem.PercentPlayed) + [!Integer.IsEqual(ListItem.PercentPlayed,0) | ListItem.IsResumable]">$INFO[ListItem.PercentPlayed]</value>
-        <value condition="!String.IsEmpty(ListItem.Property(WatchedProgress)) + !Integer.IsEqual(ListItem.Property(WatchedProgress),0) + !Integer.IsEqual(ListItem.Property(WatchedProgress),100)">$INFO[ListItem.Property(WatchedProgress)]</value>
-        <value condition="[String.IsEqual(ListItem.Overlay,OverlayWatched.png) | !Integer.IsEqual(ListItem.PlayCount,0)]">100</value>
-    </variable>
-</includes>
