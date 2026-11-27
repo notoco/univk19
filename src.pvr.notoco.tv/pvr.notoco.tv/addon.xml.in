@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="pvr.notoco.tv"
+  version="1.0.0"
+  name="Notoco TV"
+  provider-name="notoco">
+  <requires>@ADDON_DEPENDS@</requires>
+  <extension
+    point="kodi.pvrclient"
+    library_@PLATFORM@="@LIBRARY_FILENAME@"/>
+  <extension point="xbmc.addon.metadata">
+    <platform>@PLATFORM@</platform>
+    <license>GPL-2.0-or-later</license>
+    <summary lang="en_GB">TV client for a Flussonic IPTV list</summary>
+    <summary lang="pl_PL">Klient TV dla listy IPTV z serwera Flussonic</summary>
+    <description lang="en_GB">Live TV, a seekable archive and recordings from the archive. The add-on reads the streams itself, so a channel switch takes a fraction of a second.</description>
+    <description lang="pl_PL">Telewizja na żywo, archiwum z przewijaniem i nagrania z archiwum. Dodatek sam czyta strumienie, więc zmiana kanału trwa ułamek sekundy.</description>
+    <assets>
+      <icon>icon.png</icon>
+    </assets>
+  </extension>
+</addon>

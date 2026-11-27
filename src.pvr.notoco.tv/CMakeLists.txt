@@ -1,0 +1,42 @@
+cmake_minimum_required(VERSION 3.5...4.0)
+project(pvr.notoco.tv)
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR})
+
+# no GNU unique symbols: disabling the add-on unloads the library, a new build loads without a Kodi restart
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-gnu-unique")
+
+find_package(Kodi REQUIRED)
+find_package(pugixml REQUIRED)
+find_package(ZLIB REQUIRED)
+
+include_directories(${KODI_INCLUDE_DIR}/..
+                    ${PUGIXML_INCLUDE_DIRS}
+                    ${ZLIB_INCLUDE_DIRS})
+
+set(DEPLIBS ${PUGIXML_LIBRARIES}
+            ${ZLIB_LIBRARIES})
+
+set(NOTOCO_SOURCES src/Addon.cpp
+                   src/ArchiveReader.cpp
+                   src/Client.cpp
+                   src/Guide.cpp
+                   src/LiveReader.cpp
+                   src/Playlist.cpp
+                   src/Recorder.cpp
+                   src/Utils.cpp)
+
+set(NOTOCO_HEADERS src/ArchiveReader.h
+                   src/Client.h
+                   src/Guide.h
+                   src/LiveReader.h
+                   src/Playlist.h
+                   src/Recorder.h
+                   src/Utils.h)
+
+addon_version(pvr.notoco.tv NOTOCO)
+add_definitions(-DNOTOCO_VERSION=${NOTOCO_VERSION})
+
+build_addon(pvr.notoco.tv NOTOCO DEPLIBS)
+
+include(CPack)
