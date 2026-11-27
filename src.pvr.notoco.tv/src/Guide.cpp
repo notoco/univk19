@@ -9,6 +9,7 @@
 
 #include <kodi/Filesystem.h>
 #include <kodi/General.h>
+#include <kodi/c-api/addon-instance/pvr/pvr_epg.h>
 #include <pugixml.hpp>
 #include <zlib.h>
 
@@ -150,6 +151,7 @@ bool Guide::Load(const std::string& url, const std::vector<Channel>& channels)
     programme.episodeName = node.child("sub-title").text().as_string();
     programme.plot = node.child("desc").text().as_string();
     programme.genre = node.child("category").text().as_string();
+    programme.genreType = GenreType(programme.genre);
     programme.icon = node.child("icon").attribute("src").as_string();
     if (programme.start > 0 && programme.end > programme.start)
       programmes[channel->second].push_back(programme);
@@ -162,6 +164,65 @@ bool Guide::Load(const std::string& url, const std::vector<Channel>& channels)
   std::lock_guard<std::mutex> lock(m_mutex);
   m_programmes = std::move(programmes);
   return true;
+}
+
+int GenreType(const std::string& genre)
+{
+  // the first match wins: "serial animowany" is for children, "film dokumentalny" a documentary
+  static const std::vector<std::pair<int, std::vector<const char*>>> rules = {
+      {EPG_EVENT_CONTENTMASK_CHILDRENYOUTH,
+       {"dla dzieci", "animowan", "bajk", "dla młodzieży", "children", "kids", "cartoon", "anim"}},
+      {EPG_EVENT_CONTENTMASK_EDUCATIONALSCIENCE,
+       {"dokument", "reportaż", "przyrod", "nauk", "edukac", "kurs ", "histori", "documentary", "nature", "science"}},
+      {EPG_EVENT_CONTENTMASK_SPORTS,
+       {"sport",   "piłk",         "football",   "soccer",     "basketball", "koszyk", "hockey",    "hokej",
+        "rugby",   "snooker",      "tenis",      "tennis",     "boks",       "boxing", "mma",       "skoki",
+        "narciar", "łyżwiar",      "biegi",      "kolarstw",   "siatk",      "żużel",  "formuła",   "motorsport",
+        "golf",    "nfl",          "nba",        "nhl",        "ncaa",       "liga",   "league",    "mecz",
+        "puchar",  "championship", "qualifiers", "grand prix", "wrestling",  "darts",  "lekkoatlet"}},
+      {EPG_EVENT_CONTENTMASK_NEWSCURRENTAFFAIRS,
+       {"informac", "wiadomości", "news", "publicyst", "pogoda", "weather", "polity"}},
+      {EPG_EVENT_CONTENTMASK_MUSICBALLETDANCE, {"muzy", "koncert", "music", "teledysk", "opera", "balet", "dance"}},
+      {EPG_EVENT_CONTENTMASK_SHOW,
+       {"rozrywk", "teleturniej", "reality", "talk", "show", "kabaret", "quiz", "entertainment", "game"}},
+      {EPG_EVENT_CONTENTMASK_ARTSCULTURE, {"kultur", "teatr", "sztuk", "religi", "arts", "culture"}},
+      {EPG_EVENT_CONTENTMASK_LEISUREHOBBIES,
+       {"kulinar", "turyst", "motoryz", "poradnik", "mody", "hobby", "podróż", "komputer", "lifestyle", "travel",
+        "cooking", "magazyn", "magazin"}},
+      {EPG_EVENT_CONTENTMASK_MOVIEDRAMA,
+       {"film", "serial", "dramat", "komedi", "thriller", "horror", "telenowel", "kryminał", "sensac", "western",
+        "fantasy", "przygod", "movie", "series", "drama", "comedy", "romans", "obyczaj", "akcj"}},
+      {EPG_EVENT_CONTENTMASK_SOCIALPOLITICALECONOMICS, {"społ", "ekonom", "biznes", "business", "finans"}},
+  };
+  std::string text;
+  for (const char character : genre)
+    text += static_cast<char>(std::tolower(static_cast<unsigned char>(character)));
+  for (const auto& rule : rules)
+  {
+    for (const char* word : rule.second)
+    {
+      if (text.find(word) != std::string::npos)
+        return rule.first;
+    }
+  }
+  return 0;
+}
+
+bool Guide::Find(int channelUid, time_t start, Programme& programme)
+{
+  std::lock_guard<std::mutex> lock(m_mutex);
+  const auto found = m_programmes.find(channelUid);
+  if (found == m_programmes.end())
+    return false;
+  for (const Programme& item : found->second)
+  {
+    if (item.start == start)
+    {
+      programme = item;
+      return true;
+    }
+  }
+  return false;
 }
 
 std::vector<Programme> Guide::Get(int channelUid, time_t from, time_t to)

@@ -51,3 +51,83 @@ msgstr ""
 msgctxt "#30011"
 msgid "Manual recording (from the archive)"
 msgstr ""
+
+msgctxt "#30012"
+msgid "When should the recording be downloaded?"
+msgstr ""
+
+msgctxt "#30013"
+msgid "Now"
+msgstr ""
+
+msgctxt "#30014"
+msgid "Right after the programme"
+msgstr ""
+
+msgctxt "#30015"
+msgid "At a chosen time…"
+msgstr ""
+
+msgctxt "#30016"
+msgid "Backup server (host:port)"
+msgstr ""
+
+msgctxt "#30017"
+msgid "Used after three failed requests to the server from the list, for example eu.stream.itvn.io:4000. Empty: none."
+msgstr ""
+
+msgctxt "#30018"
+msgid "Live delay (seconds)"
+msgstr ""
+
+msgctxt "#30019"
+msgid "Live TV plays from the archive this far behind the broadcast (pause and rewind work). Below about 8 s the next segment may come too late and the picture stops for a moment."
+msgstr ""
+
+msgctxt "#30020"
+msgid "Switched to the backup server"
+msgstr ""
+
+msgctxt "#30021"
+msgid "Switched back to the main server"
+msgstr ""
+
+msgctxt "#30022"
+msgid "%s: recorded"
+msgstr ""
+
+msgctxt "#30023"
+msgid "%s: not in the archive"
+msgstr ""
+
+msgctxt "#30024"
+msgid "%s: not enough disk space (%.1f GB needed, %.1f GB free)"
+msgstr ""
+
+msgctxt "#30025"
+msgid "%s: cannot write the file"
+msgstr ""
+
+msgctxt "#30026"
+msgid "%s: no recording folder set"
+msgstr ""
+
+msgctxt "#30030"
+msgid "Live (time shift)"
+msgstr ""
+
+msgctxt "#30031"
+msgid "Time shift, %d:%02d:%02d behind"
+msgstr ""
+
+msgctxt "#30032"
+msgid "Archive"
+msgstr ""
+
+msgctxt "#30033"
+msgid "Live"
+msgstr ""
+
+msgctxt "#30034"
+msgid "download"
+msgstr ""

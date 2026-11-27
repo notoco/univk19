@@ -202,6 +202,40 @@ def ambilight_hdr(hdr):
     data = {"command":"adjustment", "adjustment": adjustment, "tan":1}
     return _hyperion_request(data) is not None
 
+def _jsonrpc(method, params=None):
+    request = {'jsonrpc': '2.0', 'id': 1, 'method': method}
+    if params is not None:
+        request['params'] = params
+    return json.loads(xbmc.executeJSONRPC(json.dumps(request))).get('result') or {}
+
+
+def play_from_start():
+    """Live TV: the running programme from its start (Notoco TV plays it from the archive and
+    seeks forward up to the broadcast). A programme from the archive: the previous programme of
+    the channel (Kodi's own skip back). Anything else: the usual skip back."""
+    item = _jsonrpc('Player.GetItem', {'playerid': 1}).get('item') or {}
+    if item.get('type') == 'channel' and not xbmc.getCondVisibility('PVR.IsPlayingEpgTag'):
+        details = _jsonrpc('PVR.GetChannelDetails', {'channelid': item['id'], 'properties': ['broadcastnow']})
+        broadcast = (details.get('channeldetails') or {}).get('broadcastnow') or {}
+        if broadcast.get('broadcastid'):
+            _jsonrpc('Player.Open', {'item': {'broadcastid': broadcast['broadcastid']}})
+            return
+    xbmc.executebuiltin('PlayerControl(Previous)')
+
+
+def skip_next():
+    """Live TV: back to the broadcast after a pause or a rewind (Kodi's own skip forward stops a
+    live stream that can seek). A programme from the archive: the next programme of the channel."""
+    item = _jsonrpc('Player.GetItem', {'playerid': 1}).get('item') or {}
+    if item.get('type') == 'channel' and not xbmc.getCondVisibility('PVR.IsPlayingEpgTag'):
+        player = xbmc.Player()
+        total = player.getTotalTime()
+        if total - player.getTime() > 15:
+            player.seekTime(total - 5)
+        return
+    xbmc.executebuiltin('PlayerControl(Next)')
+
+
 def cpu():
     send_notification("", "[B]CPU:[/B] $INFO[System.CPUUsage] [CR][B]Temperatura:[/B] $INFO[System.CPUTemperature]   [B]RAM:[/B] $INFO[System.memory(used.percent)] [B]Up:[/B] $INFO[System.Uptime]")
 

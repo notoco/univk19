@@ -4,6 +4,11 @@
 
 #include <kodi/General.h>
 
+#include <algorithm>
+#include <cstdio>
+#include <kodi/gui/dialogs/Numeric.h>
+#include <kodi/gui/dialogs/Select.h>
+
 namespace notoco
 {
 
@@ -11,8 +16,8 @@ namespace
 {
 constexpr unsigned int TIMER_MANUAL = 1;
 constexpr unsigned int TIMER_GUIDE = 2;
-constexpr time_t ARCHIVE_LEAD = 60;          // an archive programme starts a minute early
-constexpr int ARCHIVE_CHOICE_SECONDS = 30;   // the chosen archive start waits this long for Kodi
+constexpr time_t ARCHIVE_LEAD = 0;         // seconds an archive programme starts before its guide time
+constexpr int ARCHIVE_CHOICE_SECONDS = 30; // the chosen archive start waits this long for Kodi
 constexpr int GUIDE_REFRESH_HOURS = 12;
 } // namespace
 
@@ -21,6 +26,8 @@ Client::Client(const kodi::addon::IInstanceInfo& instance) : CInstancePVRClient(
   m_playlistPath = kodi::addon::GetSettingString("playlist");
   m_guideUrl = kodi::addon::GetSettingString("guideUrl");
   m_recordingFolder = kodi::addon::GetSettingString("recordingFolder");
+  m_liveDelay = std::max(3, kodi::addon::GetSettingInt("liveDelay", 10));
+  SetBackupServer(kodi::addon::GetSettingString("backupServer"));
 
   if (!m_playlistPath.empty())
     LoadPlaylist(m_playlistPath, m_channels);
@@ -46,6 +53,8 @@ Client::~Client()
   m_stopCondition.notify_all();
   if (m_guideThread.joinable())
     m_guideThread.join();
+  if (m_askThread.joinable())
+    m_askThread.join();
   m_recorder->Stop();
   m_liveReader.Close();
   m_archiveReader.Close();
@@ -136,8 +145,7 @@ PVR_ERROR Client::GetChannels(bool radio, kodi::addon::PVRChannelsResultSet& res
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR Client::GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
-                                             PVR_SOURCE,
+PVR_ERROR Client::GetChannelStreamProperties(const kodi::addon::PVRChannel& channel, PVR_SOURCE,
                                              std::vector<kodi::addon::PVRStreamProperty>& properties)
 {
   // No stream URL: Kodi plays the channel through OpenLiveStream()/ReadLiveStream().
@@ -167,7 +175,9 @@ PVR_ERROR Client::GetEPGForChannel(int channelUid, time_t start, time_t end, kod
     tag.SetStartTime(programme.start);
     tag.SetEndTime(programme.end);
     tag.SetIconPath(programme.icon);
-    tag.SetGenreType(EPG_GENRE_USE_STRING);
+    // the type gives the guide colour, the sub type keeps the guide's own text
+    tag.SetGenreType(programme.genreType ? programme.genreType : EPG_GENRE_USE_STRING);
+    tag.SetGenreSubType(EPG_GENRE_USE_STRING);
     tag.SetGenreDescription(programme.genre);
     tag.SetSeriesNumber(EPG_TAG_INVALID_SERIES_EPISODE);
     tag.SetEpisodeNumber(EPG_TAG_INVALID_SERIES_EPISODE);
@@ -178,13 +188,26 @@ PVR_ERROR Client::GetEPGForChannel(int channelUid, time_t start, time_t end, kod
   return PVR_ERROR_NO_ERROR;
 }
 
-PVR_ERROR Client::IsEPGTagPlayable(const kodi::addon::PVREPGTag& tag, bool& isPlayable)
+bool Client::InArchive(const kodi::addon::PVREPGTag& tag)
 {
   Channel channel;
   const time_t now = std::time(nullptr);
-  isPlayable = FindChannel(static_cast<int>(tag.GetUniqueChannelId()), channel) && channel.archiveDays > 0 &&
-               !ArchivePlaylistUrl(channel.url, 0, 0).empty() && tag.GetStartTime() < now &&
-               tag.GetStartTime() > now - static_cast<time_t>(channel.archiveDays) * 86400;
+  return FindChannel(static_cast<int>(tag.GetUniqueChannelId()), channel) && channel.archiveDays > 0 &&
+         !ArchivePlaylistUrl(channel.url, 0, 0).empty() && tag.GetStartTime() < now &&
+         tag.GetStartTime() > now - static_cast<time_t>(channel.archiveDays) * 86400;
+}
+
+PVR_ERROR Client::IsEPGTagPlayable(const kodi::addon::PVREPGTag& tag, bool& isPlayable)
+{
+  isPlayable = InArchive(tag);
+  return PVR_ERROR_NO_ERROR;
+}
+
+PVR_ERROR Client::IsEPGTagRecordable(const kodi::addon::PVREPGTag& tag, bool& isRecordable)
+{
+  // Recordings come from the archive: past programmes still in it can be recorded too
+  // (Kodi's own rule, without this, is "the programme has not ended yet").
+  isRecordable = tag.GetEndTime() > std::time(nullptr) || InArchive(tag);
   return PVR_ERROR_NO_ERROR;
 }
 
@@ -221,14 +244,25 @@ bool Client::OpenLiveStream(const kodi::addon::PVRChannel& kodiChannel)
 
   // one connection: downloads of recordings stop, the other reader is closed first
   m_recorder->SetPlaybackActive(true);
-  m_archive = archiveFrom > 0;
-  if (m_archive)
+  m_live = archiveFrom == 0;
+  m_archive = true;
+  if (!m_live)
   {
     m_liveReader.Close();
-    kodi::Log(ADDON_LOG_INFO, "Client - archive of %s from %lld", channel.name.c_str(), static_cast<long long>(archiveFrom));
+    kodi::Log(ADDON_LOG_INFO, "Client - archive of %s from %lld", channel.name.c_str(),
+              static_cast<long long>(archiveFrom));
     return m_archiveReader.Open(channel.url, archiveFrom);
   }
+  // live TV from the archive (time shift); a channel without one, or a failure, plays the live list
+  m_liveReader.Close();
+  if (channel.archiveDays > 0 && !ArchivePlaylistUrl(channel.url, 0, 0).empty() &&
+      m_archiveReader.OpenLive(channel.url, m_liveDelay))
+  {
+    kodi::Log(ADDON_LOG_INFO, "Client - live %s with time shift", channel.name.c_str());
+    return true;
+  }
   m_archiveReader.Close();
+  m_archive = false;
   kodi::Log(ADDON_LOG_INFO, "Client - live %s", channel.name.c_str());
   return m_liveReader.Open(channel.url);
 }
@@ -253,6 +287,43 @@ int64_t Client::SeekLiveStream(int64_t position, int whence)
 int64_t Client::LengthLiveStream()
 {
   return m_archive ? m_archiveReader.Length() : -1;
+}
+
+PVR_ERROR Client::GetSignalStatus(int channelUid, kodi::addon::PVRSignalStatus& status)
+{
+  // Kodi's stream information (the player info dialog): server, delay, bitrate, download speed
+  Channel channel;
+  if (!FindChannel(channelUid, channel))
+    return PVR_ERROR_INVALID_PARAMETERS;
+  status.SetServiceName(channel.name);
+  status.SetProviderName("Notoco TV");
+  status.SetAdapterName(ActiveServer(channel.url));
+  if (!m_archive)
+  {
+    status.SetAdapterStatus(kodi::addon::GetLocalizedString(30033));
+    return PVR_ERROR_NO_ERROR;
+  }
+  ArchiveReader::Status reader;
+  if (!m_archiveReader.GetStatus(reader))
+    return PVR_ERROR_NO_ERROR;
+  char text[128];
+  if (!m_live)
+    std::snprintf(text, sizeof(text), "%s", kodi::addon::GetLocalizedString(30032).c_str());
+  else if (reader.behindSeconds < 60)
+    std::snprintf(text, sizeof(text), "%s", kodi::addon::GetLocalizedString(30030).c_str());
+  else
+    std::snprintf(text, sizeof(text), kodi::addon::GetLocalizedString(30031).c_str(), reader.behindSeconds / 3600,
+                  reader.behindSeconds / 60 % 60, reader.behindSeconds % 60);
+  status.SetAdapterStatus(text);
+  if (reader.bitrate > 0)
+  {
+    std::snprintf(text, sizeof(text), "%.1f Mbit/s, %s %.0f Mbit/s", reader.bitrate / 1e6,
+                  kodi::addon::GetLocalizedString(30034).c_str(), reader.downloadRate / 1e6);
+    status.SetMuxName(text);
+    // the signal bar: download speed against the stream, full at five times faster
+    status.SetSignal(static_cast<int>(std::min(1.0, reader.downloadRate / reader.bitrate / 5.0) * 0xFFFF));
+  }
+  return PVR_ERROR_NO_ERROR;
 }
 
 PVR_ERROR Client::GetStreamTimes(kodi::addon::PVRStreamTimes& times)
@@ -288,7 +359,14 @@ PVR_ERROR Client::GetRecordings(bool deleted, kodi::addon::PVRRecordingsResultSe
     kodi::addon::PVRRecording recording;
     recording.SetRecordingId(item.id);
     recording.SetTitle(item.title);
+    recording.SetEpisodeName(item.episodeName);
     recording.SetPlot(item.plot);
+    recording.SetIconPath(item.icon);
+    recording.SetThumbnailPath(item.icon);
+    recording.SetGenreType(item.genreType ? item.genreType : EPG_GENRE_USE_STRING);
+    recording.SetGenreSubType(EPG_GENRE_USE_STRING);
+    recording.SetGenreDescription(item.genre);
+    recording.SetSizeInBytes(item.size);
     recording.SetChannelName(item.channelName);
     recording.SetChannelUid(item.channelUid);
     recording.SetChannelType(PVR_RECORDING_CHANNEL_TYPE_TV);
@@ -306,7 +384,9 @@ PVR_ERROR Client::GetRecordingStreamProperties(const kodi::addon::PVRRecording& 
   if (file.empty())
     return PVR_ERROR_SERVER_ERROR;
   properties.emplace_back(PVR_STREAM_PROPERTY_STREAMURL, file);
-  properties.emplace_back(PVR_STREAM_PROPERTY_MIMETYPE, "video/mp2t");
+  properties.emplace_back(PVR_STREAM_PROPERTY_MIMETYPE, file.size() > 4 && file.compare(file.size() - 4, 4, ".mp4") == 0
+                                                            ? "video/mp4"
+                                                            : "video/mp2t");
   properties.emplace_back(PVR_STREAM_PROPERTY_ISREALTIMESTREAM, "false");
   return PVR_ERROR_NO_ERROR;
 }
@@ -361,7 +441,8 @@ PVR_ERROR Client::GetTimers(kodi::addon::PVRTimersResultSet& results)
     timer.SetMarginEnd(item.marginEnd);
     timer.SetEPGUid(item.epgUid);
     timer.SetState(!item.error.empty() ? PVR_TIMER_STATE_ERROR
-                                       : item.recording ? PVR_TIMER_STATE_RECORDING : PVR_TIMER_STATE_SCHEDULED);
+                   : item.recording    ? PVR_TIMER_STATE_RECORDING
+                                       : PVR_TIMER_STATE_SCHEDULED);
     results.Add(timer);
   }
   return PVR_ERROR_NO_ERROR;
@@ -387,6 +468,17 @@ RecorderTimer Client::ToRecorderTimer(const kodi::addon::PVRTimer& timer)
     if (item.title.empty())
       item.title = channel.name;
   }
+  // a programme from the guide (its id is its start): episode, genre and picture for the recording
+  Programme programme;
+  if (item.epgUid > 0 && m_guide.Find(item.channelUid, static_cast<time_t>(item.epgUid), programme))
+  {
+    item.episodeName = programme.episodeName;
+    item.genre = programme.genre;
+    item.genreType = programme.genreType;
+    item.icon = programme.icon;
+    if (item.plot.empty())
+      item.plot = programme.plot;
+  }
   return item;
 }
 
@@ -395,8 +487,48 @@ PVR_ERROR Client::AddTimer(const kodi::addon::PVRTimer& timer)
   RecorderTimer item = ToRecorderTimer(timer);
   if (item.channelName.empty())
     return PVR_ERROR_INVALID_PARAMETERS;
-  m_recorder->AddTimer(item);
+  item.downloadAt = -1; // decided in the question below
+  const unsigned int id = m_recorder->AddTimer(item);
+  const time_t programmeEnd = item.end + static_cast<time_t>(item.marginEnd) * 60;
+  // Kodi waits for AddTimer(): the question runs on its own thread
+  if (m_askThread.joinable())
+    m_askThread.join();
+  m_askThread = std::thread([this, id, programmeEnd] { AskDownloadTime(id, programmeEnd); });
   return PVR_ERROR_NO_ERROR;
+}
+
+void Client::AskDownloadTime(unsigned int timerId, time_t programmeEnd)
+{
+  const bool ended = programmeEnd < std::time(nullptr);
+  const std::vector<std::string> choices = {kodi::addon::GetLocalizedString(ended ? 30013 : 30014),
+                                            kodi::addon::GetLocalizedString(30015)};
+  time_t downloadAt = 0;
+  if (kodi::gui::dialogs::Select::Show(kodi::addon::GetLocalizedString(30012), choices, 0) == 1)
+  {
+    // the next such time of day (today or tomorrow), not before the programme is in the archive
+    const time_t now = std::time(nullptr);
+    std::tm chosen{};
+    localtime_r(&now, &chosen);
+    chosen.tm_hour = 3;
+    chosen.tm_min = 0;
+    if (kodi::gui::dialogs::Numeric::ShowAndGetTime(chosen, kodi::addon::GetLocalizedString(30015)))
+    {
+      std::tm parts{};
+      localtime_r(&now, &parts);
+      parts.tm_hour = chosen.tm_hour;
+      parts.tm_min = chosen.tm_min;
+      parts.tm_sec = 0;
+      parts.tm_isdst = -1;
+      downloadAt = std::mktime(&parts);
+      while (downloadAt <= now || downloadAt < programmeEnd)
+      {
+        parts.tm_mday += 1;
+        parts.tm_isdst = -1;
+        downloadAt = std::mktime(&parts);
+      }
+    }
+  }
+  m_recorder->SetDownloadTime(timerId, downloadAt);
 }
 
 PVR_ERROR Client::UpdateTimer(const kodi::addon::PVRTimer& timer)

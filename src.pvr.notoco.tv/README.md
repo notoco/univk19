@@ -1,8 +1,10 @@
 # pvr.notoco.tv – sources
 
 Kodi TV client for a Flussonic IPTV list (channels `.../mono.m3u8`, DVR archive). The add-on reads
-the streams itself (no inputstream add-on): live (`LiveReader`), seekable archive (`ArchiveReader`)
-and recordings made from the archive (`Recorder`). The built add-on for the CoreELEC box (aarch64)
+the streams itself (no inputstream add-on): the archive as a seekable file (`ArchiveReader`), used for
+guide programmes and for live TV with time shift (a few seconds behind the broadcast, the delay is a
+setting), the plain live list for a channel without an archive (`LiveReader`) and recordings made from
+the archive (`Recorder`, .mp4 by FFmpeg Tools from the CoreELEC repository). The built add-on for the CoreELEC box (aarch64)
 is the `pvr.notoco.tv` folder in the repository root.
 
 ## Build (aarch64, Kodi 22)
@@ -24,6 +26,9 @@ cmake --build build-notoco -j8
 
 3. Copy `install-notoco/pvr.notoco.tv` (addon.xml, icon, resources, `pvr.notoco.tv.so.<version>`) to the
    repository root and run `generator.py`.
+
+Code style: `.clang-format` (Kodi's add-on style, 120 columns), English comments, no one-letter names,
+a one-line comment for every function that is not Kodi's API.
 
 The library is built with `-fno-gnu-unique`: disabling the add-on unloads it, so a new build loads
 without restarting Kodi.

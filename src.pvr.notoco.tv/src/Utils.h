@@ -5,6 +5,7 @@
 #pragma once
 
 #include <atomic>
+#include <cstddef>
 #include <cstdint>
 #include <ctime>
 #include <string>
@@ -12,6 +13,8 @@
 
 namespace notoco
 {
+
+constexpr size_t READ_CHUNK = 64 * 1024; // bytes per network read
 
 struct Segment
 {
@@ -24,13 +27,19 @@ struct Segment
 // The URL without its query (the provider token never goes to the log)
 std::string RedactUrl(const std::string& url);
 
-// Whole body of a URL or file; false on an error or when stop was set
+// The provider's server from the list and an optional backup (host:port from the settings).
+// Every request goes to the active one; playback reports its results and three failures in a
+// row switch to the other server (paths and tokens are the same on both).
+void SetBackupServer(const std::string& hostPort);
+std::string ServerUrl(const std::string& url);
+std::string ActiveServer(const std::string& url);
+void ReportServer(bool ok);
+
+// Whole body of a URL or file (on the active server); false on an error or when stop was set
 bool Download(const std::string& url, std::vector<unsigned char>& data, const std::atomic<bool>& stop);
 
 // Segments of a media playlist, relative URIs resolved against playlistUrl
-bool ParsePlaylist(const std::string& playlistUrl,
-                   const std::string& content,
-                   std::vector<Segment>& segments,
+bool ParsePlaylist(const std::string& playlistUrl, const std::string& content, std::vector<Segment>& segments,
                    double& targetDuration);
 
 // .../mono.m3u8?query -> .../mono-<from>-<seconds>.m3u8?query (the archive of a time range)

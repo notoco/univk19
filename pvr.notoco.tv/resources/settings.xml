@@ -24,6 +24,28 @@
             <heading>30004</heading>
           </control>
         </setting>
+        <setting id="backupServer" type="string" label="30016" help="30017">
+          <level>0</level>
+          <default></default>
+          <constraints>
+            <allowempty>true</allowempty>
+          </constraints>
+          <control type="edit" format="string">
+            <heading>30016</heading>
+          </control>
+        </setting>
+        <setting id="liveDelay" type="integer" label="30018" help="30019">
+          <level>0</level>
+          <default>10</default>
+          <constraints>
+            <minimum>3</minimum>
+            <step>1</step>
+            <maximum>30</maximum>
+          </constraints>
+          <control type="slider" format="integer">
+            <popup>false</popup>
+          </control>
+        </setting>
       </group>
       <group id="2" label="30006">
         <setting id="recordingFolder" type="path" label="30007" help="30008">

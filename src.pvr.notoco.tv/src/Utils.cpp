@@ -1,16 +1,35 @@
 #include "Utils.h"
 
 #include <cstdio>
+#include <mutex>
 #include <sstream>
 
 #include <kodi/Filesystem.h>
+#include <kodi/General.h>
 
 namespace notoco
 {
 
 namespace
 {
-constexpr size_t READ_CHUNK = 64 * 1024;
+constexpr int SERVER_FAILURES = 3;
+
+std::mutex serverMutex;
+std::string backupServer;
+bool useBackup = false;
+int serverFailures = 0;
+
+// scheme://host:port of a URL: the start, the length
+bool HostPart(const std::string& url, size_t& start, size_t& length)
+{
+  const size_t scheme = url.find("://");
+  if (scheme == std::string::npos)
+    return false;
+  start = scheme + 3;
+  const size_t end = url.find('/', start);
+  length = (end == std::string::npos ? url.size() : end) - start;
+  return true;
+}
 
 bool SegmentTimes(const std::string& url, time_t& start, double& seconds)
 {
@@ -19,8 +38,8 @@ bool SegmentTimes(const std::string& url, time_t& start, double& seconds)
     return false;
   std::tm parts{};
   int milliseconds = 0;
-  if (std::sscanf(url.c_str() + position + 4, "%d/%d/%d/%d/%d/%d-%d", &parts.tm_year, &parts.tm_mon,
-                  &parts.tm_mday, &parts.tm_hour, &parts.tm_min, &parts.tm_sec, &milliseconds) != 7)
+  if (std::sscanf(url.c_str() + position + 4, "%d/%d/%d/%d/%d/%d-%d", &parts.tm_year, &parts.tm_mon, &parts.tm_mday,
+                  &parts.tm_hour, &parts.tm_min, &parts.tm_sec, &milliseconds) != 7)
     return false;
   parts.tm_year -= 1900;
   parts.tm_mon -= 1;
@@ -35,10 +54,53 @@ std::string RedactUrl(const std::string& url)
   return url.substr(0, url.find('?'));
 }
 
+void SetBackupServer(const std::string& hostPort)
+{
+  std::lock_guard<std::mutex> lock(serverMutex);
+  backupServer = hostPort;
+  useBackup = false;
+  serverFailures = 0;
+}
+
+std::string ServerUrl(const std::string& url)
+{
+  std::lock_guard<std::mutex> lock(serverMutex);
+  size_t start, length;
+  if (!useBackup || backupServer.empty() || !HostPart(url, start, length))
+    return url;
+  return url.substr(0, start) + backupServer + url.substr(start + length);
+}
+
+std::string ActiveServer(const std::string& url)
+{
+  const std::string active = ServerUrl(url);
+  size_t start, length;
+  return HostPart(active, start, length) ? active.substr(start, length) : std::string();
+}
+
+void ReportServer(bool ok)
+{
+  {
+    std::lock_guard<std::mutex> lock(serverMutex);
+    if (ok)
+    {
+      serverFailures = 0;
+      return;
+    }
+    if (backupServer.empty() || ++serverFailures < SERVER_FAILURES)
+      return;
+    serverFailures = 0;
+    useBackup = !useBackup;
+  }
+  kodi::Log(ADDON_LOG_WARNING, "Server - %d failures, switched to the %s server", SERVER_FAILURES,
+            useBackup ? "backup" : "main");
+  kodi::QueueNotification(QUEUE_WARNING, "Notoco TV", kodi::addon::GetLocalizedString(useBackup ? 30020 : 30021));
+}
+
 bool Download(const std::string& url, std::vector<unsigned char>& data, const std::atomic<bool>& stop)
 {
   kodi::vfs::CFile file;
-  if (!file.OpenFile(url, ADDON_READ_NO_CACHE))
+  if (!file.OpenFile(ServerUrl(url), ADDON_READ_NO_CACHE))
     return false;
   unsigned char chunk[READ_CHUNK];
   ssize_t length;
@@ -48,9 +110,7 @@ bool Download(const std::string& url, std::vector<unsigned char>& data, const st
   return !stop && length == 0;
 }
 
-bool ParsePlaylist(const std::string& playlistUrl,
-                   const std::string& content,
-                   std::vector<Segment>& segments,
+bool ParsePlaylist(const std::string& playlistUrl, const std::string& content, std::vector<Segment>& segments,
                    double& targetDuration)
 {
   const std::string path = playlistUrl.substr(0, playlistUrl.find('?'));

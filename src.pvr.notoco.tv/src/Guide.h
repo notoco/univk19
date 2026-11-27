@@ -24,14 +24,22 @@ struct Programme
   std::string episodeName;
   std::string plot;
   std::string genre;
+  int genreType = 0; // Kodi's EPG_EVENT_CONTENTMASK_* of the genre (the guide colours), 0 unknown
   std::string icon;
 };
+
+// Kodi's genre category of an XMLTV category text (Polish or English)
+int GenreType(const std::string& genre);
 
 class Guide
 {
 public:
+  // downloads (or reads the cached copy of) the guide and matches it to the channels
   bool Load(const std::string& url, const std::vector<Channel>& channels);
+  // programmes of a channel overlapping a time range
   std::vector<Programme> Get(int channelUid, time_t from, time_t to);
+  // the programme of a channel starting at a time
+  bool Find(int channelUid, time_t start, Programme& programme);
 
 private:
   std::mutex m_mutex;

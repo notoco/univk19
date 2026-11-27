@@ -13,7 +13,6 @@ namespace notoco
 
 namespace
 {
-constexpr size_t READ_CHUNK = 64 * 1024;
 constexpr size_t MAX_BUFFERED = 256 * 1024 * 1024; // a long pause keeps downloading, the oldest data goes first
 constexpr int OPEN_TIMEOUT_MS = 15000;
 constexpr int READ_TIMEOUT_MS = 20000;
@@ -134,7 +133,11 @@ void LiveReader::Run()
     std::vector<unsigned char> content;
     std::vector<Segment> segments;
     double targetDuration = 5.0;
-    if (!Download(m_playlistUrl, content, m_stop) ||
+    const bool downloaded = Download(m_playlistUrl, content, m_stop);
+    if (m_stop)
+      return;
+    ReportServer(downloaded);
+    if (!downloaded ||
         !ParsePlaylist(m_playlistUrl, std::string(content.begin(), content.end()), segments, targetDuration))
     {
       if (++failures >= PLAYLIST_FAILURES)
@@ -171,8 +174,9 @@ void LiveReader::Run()
 bool LiveReader::FetchSegment(const std::string& url, double duration, time_t start)
 {
   kodi::vfs::CFile file;
-  if (!file.OpenFile(url, ADDON_READ_NO_CACHE))
+  if (!file.OpenFile(ServerUrl(url), ADDON_READ_NO_CACHE))
   {
+    ReportServer(false);
     kodi::Log(ADDON_LOG_ERROR, "LiveReader - cannot open %s", RedactUrl(url).c_str());
     return false;
   }

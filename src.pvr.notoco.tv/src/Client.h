@@ -38,12 +38,13 @@ public:
 
   PVR_ERROR GetChannelsAmount(int& amount) override;
   PVR_ERROR GetChannels(bool radio, kodi::addon::PVRChannelsResultSet& results) override;
-  PVR_ERROR GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
-                                       PVR_SOURCE source,
+  PVR_ERROR GetChannelStreamProperties(const kodi::addon::PVRChannel& channel, PVR_SOURCE source,
                                        std::vector<kodi::addon::PVRStreamProperty>& properties) override;
 
-  PVR_ERROR GetEPGForChannel(int channelUid, time_t start, time_t end, kodi::addon::PVREPGTagsResultSet& results) override;
+  PVR_ERROR GetEPGForChannel(int channelUid, time_t start, time_t end,
+                             kodi::addon::PVREPGTagsResultSet& results) override;
   PVR_ERROR IsEPGTagPlayable(const kodi::addon::PVREPGTag& tag, bool& isPlayable) override;
+  PVR_ERROR IsEPGTagRecordable(const kodi::addon::PVREPGTag& tag, bool& isRecordable) override;
   PVR_ERROR GetEPGTagStreamProperties(const kodi::addon::PVREPGTag& tag,
                                       std::vector<kodi::addon::PVRStreamProperty>& properties) override;
 
@@ -54,8 +55,9 @@ public:
   int64_t LengthLiveStream() override;
   bool CanPauseStream() override { return true; }
   bool CanSeekStream() override { return m_archive; }
-  bool IsRealTimeStream() override { return !m_archive; }
+  bool IsRealTimeStream() override { return m_archive ? m_live && m_archiveReader.AtLiveEdge() : true; }
   PVR_ERROR GetStreamTimes(kodi::addon::PVRStreamTimes& times) override;
+  PVR_ERROR GetSignalStatus(int channelUid, kodi::addon::PVRSignalStatus& status) override;
 
   PVR_ERROR GetRecordingsAmount(bool deleted, int& amount) override;
   PVR_ERROR GetRecordings(bool deleted, kodi::addon::PVRRecordingsResultSet& results) override;
@@ -71,13 +73,21 @@ public:
   PVR_ERROR DeleteTimer(const kodi::addon::PVRTimer& timer, bool forceDelete) override;
 
 private:
+  // a copy of the channel with a unique id
   bool FindChannel(int uid, Channel& channel);
+  // the programme has started and is still in the channel's archive
+  bool InArchive(const kodi::addon::PVREPGTag& tag);
+  // Kodi's timer with the channel and the guide data of its programme
   RecorderTimer ToRecorderTimer(const kodi::addon::PVRTimer& timer);
+  // the guide thread: loads the guide every GUIDE_REFRESH_HOURS
   void RefreshGuide();
+  // asks when the recording of a new timer is downloaded
+  void AskDownloadTime(unsigned int timerId, time_t programmeEnd);
 
   std::string m_playlistPath;
   std::string m_guideUrl;
   std::string m_recordingFolder;
+  int m_liveDelay = 10;
 
   std::mutex m_mutex;
   std::vector<Channel> m_channels;
@@ -89,12 +99,14 @@ private:
   time_t m_archiveFrom = 0;
   std::chrono::steady_clock::time_point m_archiveChosen;
 
-  bool m_archive = false;
+  bool m_archive = false; // read by the ArchiveReader: a programme from the guide or live TV
+  bool m_live = false;    // live TV (with time shift when m_archive)
   LiveReader m_liveReader;
   ArchiveReader m_archiveReader;
   std::unique_ptr<Recorder> m_recorder;
 
   std::thread m_guideThread;
+  std::thread m_askThread;
   std::atomic<bool> m_stop{false};
   std::condition_variable m_stopCondition;
 };
