@@ -119,7 +119,8 @@ private:
   size_t m_wanted = 0;
 
   // live TV goes out at the playback rate near the broadcast (see LiveReader.h)
-  double m_tokens = 0;
+  double m_tokens = 0;   // stream bytes Kodi may take now (padding is free)
+  double m_dataRate = 0; // stream bytes per second of the segment being read
   std::chrono::steady_clock::time_point m_lastRefill;
 
   double m_bitrate = 0;

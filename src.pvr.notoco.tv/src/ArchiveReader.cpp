@@ -22,7 +22,7 @@ constexpr size_t EXTEND_BEFORE_END = 60;   // segments left when a running progr
 constexpr int EXTEND_SECONDS = 10;         // between archive extensions
 constexpr int EXTEND_SECONDS_LIVE = 2;     // the same for live TV
 constexpr double PACE_SECONDS = 30.0;      // live TV this close to the broadcast is paced
-constexpr double BURST_SECONDS = 3.0;      // less than the archive ahead of a live start (one segment at least)
+constexpr double BURST_SECONDS = 4.0;      // of stream data, less than the archive ahead of a live start
 constexpr int PACE_WAIT_MS = 20;
 constexpr int LIVE_EDGE_SECONDS = 25;
 constexpr time_t BROADCAST_SECONDS = 60; // an archive ending this close to now reaches the broadcast
@@ -130,7 +130,8 @@ bool ArchiveReader::Start(const std::string& liveUrl, std::vector<Segment> found
   {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_slotRate = size / found.front().duration * SLOT_FACTOR;
-    m_tokens = BURST_SECONDS * m_slotRate;
+    m_dataRate = m_slotRate / SLOT_FACTOR;
+    m_tokens = BURST_SECONDS * m_dataRate;
     m_lastRefill = std::chrono::steady_clock::now();
     m_lastExtend = m_lastRefill;
     Layout(found);
@@ -370,7 +371,7 @@ void ArchiveReader::Refill()
 {
   const auto now = std::chrono::steady_clock::now();
   const double seconds = std::chrono::duration<double>(now - m_lastRefill).count();
-  m_tokens = std::min(m_tokens + seconds * m_slotRate, BURST_SECONDS * m_slotRate);
+  m_tokens = std::min(m_tokens + seconds * m_dataRate, BURST_SECONDS * m_dataRate);
   m_lastRefill = now;
 }
 
@@ -423,10 +424,13 @@ int ArchiveReader::Read(unsigned char* buffer, unsigned int size)
   else
     length = std::min<int64_t>(length, static_cast<int64_t>(cached.data.size()) - (offset - padding));
 
-  // near the broadcast (live TV or a running programme): Kodi gets the data at the playback rate,
-  // so a read never waits for the next segment (a channel switch or a pause waits for that read)
-  if (AtBroadcast() && m_length - m_position < PACE_SECONDS * m_slotRate)
+  // Near the broadcast (live TV or a running programme) Kodi gets the stream data at the playback
+  // rate, so a read never waits for the next segment (a channel switch or a pause waits for that
+  // read). The padding goes out at once: FFmpeg reads all of it in one step.
+  if (offset >= padding && AtBroadcast() && m_length - m_position < PACE_SECONDS * m_slotRate)
   {
+    if (slot.segment.duration > 0)
+      m_dataRate = cached.expected / slot.segment.duration;
     const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(WAIT_MS);
     Refill();
     while (m_tokens < 1 && !m_stop && std::chrono::steady_clock::now() < deadline)
