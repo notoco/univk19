@@ -94,6 +94,8 @@ private:
   size_t IndexAt(int64_t position) const;
   // UTC time of the read position (m_mutex held)
   time_t PlayingTime() const;
+  // live TV, or an archive that reaches the broadcast (a running programme) (m_mutex held)
+  bool AtBroadcast() const;
   // tokens of the live pacing for the time since the last refill
   void Refill();
 

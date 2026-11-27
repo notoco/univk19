@@ -31,11 +31,6 @@ if __name__ == '__main__':
         control.ambilight_bright_up()
     elif arg == "amb_down":
         control.ambilight_bright_down()
-# Live TV: the running programme from its start
-    elif arg == "from_start":
-        control.play_from_start()
-    elif arg == "skip_next":
-        control.skip_next()
 #CPU
     elif arg == "cpu":
         control.cpu()

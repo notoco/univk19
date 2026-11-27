@@ -22,9 +22,10 @@ constexpr size_t EXTEND_BEFORE_END = 60;   // segments left when a running progr
 constexpr int EXTEND_SECONDS = 10;         // between archive extensions
 constexpr int EXTEND_SECONDS_LIVE = 2;     // the same for live TV
 constexpr double PACE_SECONDS = 30.0;      // live TV this close to the broadcast is paced
-constexpr double BURST_SECONDS = 10.0;
+constexpr double BURST_SECONDS = 3.0;      // less than the archive ahead of a live start (one segment at least)
 constexpr int PACE_WAIT_MS = 20;
 constexpr int LIVE_EDGE_SECONDS = 25;
+constexpr time_t BROADCAST_SECONDS = 60; // an archive ending this close to now reaches the broadcast
 constexpr int WAIT_MS = 20000;
 
 // MPEG-TS null packet (PID 0x1FFF), the padding of a slot
@@ -240,7 +241,7 @@ void ArchiveReader::Run()
         }
       }
       // a running programme or live TV: more archive near the end of the known range
-      const int interval = m_live ? EXTEND_SECONDS_LIVE : EXTEND_SECONDS;
+      const int interval = AtBroadcast() ? EXTEND_SECONDS_LIVE : EXTEND_SECONDS;
       extend = target == m_slots.size() && m_wanted + EXTEND_BEFORE_END > m_slots.size() &&
                std::chrono::steady_clock::now() - m_lastExtend > std::chrono::seconds(interval);
       if (target == m_slots.size() && !extend)
@@ -360,6 +361,11 @@ time_t ArchiveReader::PlayingTime() const
          static_cast<time_t>(slot.segment.duration * (m_position - slot.offset) / static_cast<double>(slot.size));
 }
 
+bool ArchiveReader::AtBroadcast() const
+{
+  return m_live || std::time(nullptr) - m_rangeEnd < BROADCAST_SECONDS;
+}
+
 void ArchiveReader::Refill()
 {
   const auto now = std::chrono::steady_clock::now();
@@ -417,9 +423,9 @@ int ArchiveReader::Read(unsigned char* buffer, unsigned int size)
   else
     length = std::min<int64_t>(length, static_cast<int64_t>(cached.data.size()) - (offset - padding));
 
-  // live TV near the broadcast: Kodi gets the data at the playback rate, so a read never
-  // waits for the next segment (a channel switch or a pause waits for that read)
-  if (m_live && m_length - m_position < PACE_SECONDS * m_slotRate)
+  // near the broadcast (live TV or a running programme): Kodi gets the data at the playback rate,
+  // so a read never waits for the next segment (a channel switch or a pause waits for that read)
+  if (AtBroadcast() && m_length - m_position < PACE_SECONDS * m_slotRate)
   {
     const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(WAIT_MS);
     Refill();

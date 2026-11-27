@@ -4,7 +4,8 @@ Kodi TV client for a Flussonic IPTV list (channels `.../mono.m3u8`, DVR archive)
 the streams itself (no inputstream add-on): the archive as a seekable file (`ArchiveReader`), used for
 guide programmes and for live TV with time shift (a few seconds behind the broadcast, the delay is a
 setting), the plain live list for a channel without an archive (`LiveReader`) and recordings made from
-the archive (`Recorder`, .mp4 by FFmpeg Tools from the CoreELEC repository). The built add-on for the CoreELEC box (aarch64)
+the archive (`Recorder`, .mp4 by FFmpeg Tools from the CoreELEC repository). `service.py` writes a
+keymap for the |<< and >>| keys in live TV and handles them (Kodi reads keymaps only from its folders). The built add-on for the CoreELEC box (aarch64)
 is the `pvr.notoco.tv` folder in the repository root.
 
 ## Build (aarch64, Kodi 22)

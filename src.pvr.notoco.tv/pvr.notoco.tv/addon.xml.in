@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <addon
   id="pvr.notoco.tv"
-  version="1.1.0"
+  version="1.1.1"
   name="Notoco TV"
   provider-name="notoco">
-  <requires>@ADDON_DEPENDS@</requires>
+  <requires>@ADDON_DEPENDS@
+    <import addon="xbmc.python" version="3.0.0"/>
+  </requires>
   <extension
     point="kodi.pvrclient"
     library_@PLATFORM@="@LIBRARY_FILENAME@"/>
+  <extension point="xbmc.service" library="service.py"/>
   <extension point="xbmc.addon.metadata">
     <platform>@PLATFORM@</platform>
     <license>GPL-2.0-or-later</license>
