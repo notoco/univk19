@@ -231,8 +231,13 @@ class GeneratorZIP:
                 print("Exception: %s\r\n" % e)
                 pass
 
+        # the root page is the Kodi file source (https://notoco.github.io/univk19/): only the current
+        # repository add-on, under a fixed name
+        xml = open("repository.notoco.univ19/addon.xml", "r", encoding="utf8").read()
+        version = re.search(r'<addon[^>]*version="([^"]+)"', xml).group(1)
+        shutil.copyfile("zip/repository.notoco.univ19/repository.notoco.univ19-" + version + ".zip", "repository.notoco.univ19.zip")
         with open('index.html', 'w', encoding="utf8") as file:
-            file.write(self.index(""))
+            file.write(Template(self.INDEX_TEMPLATE).render(names=["repository.notoco.univ19.zip"], header="Notoco Univ Repo"))
         with open("zip" + '/index.html', 'w', encoding="utf8") as file:
             file.write(self.index("zip/"))
 
