@@ -13,7 +13,7 @@ Repozytorium dodatków Kodi notoco.
 
 1. Ustawienia → System → Dodatki → włącz „Nieznane źródła”.
 2. Ustawienia → Menedżer plików → Dodaj źródło → `https://notoco.github.io/univ/`.
-3. Dodatki → Zainstaluj z pliku zip → to źródło → `repository.notoco.univ19.zip`.
+3. Dodatki → Zainstaluj z pliku zip → to źródło → `repository.notoco.univ.zip`.
 4. Zainstaluj z repozytorium → Notoco Univ Repo.
 
 `generator.py` buduje `addons.xml` i zipy: główne repozytorium oraz `kodi21/` i `kodi22/`

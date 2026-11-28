@@ -235,9 +235,9 @@ class GeneratorZIP:
         # repository add-on, under a fixed name
         xml = open("repository.notoco.univ19/addon.xml", "r", encoding="utf8").read()
         version = re.search(r'<addon[^>]*version="([^"]+)"', xml).group(1)
-        shutil.copyfile("zip/repository.notoco.univ19/repository.notoco.univ19-" + version + ".zip", "repository.notoco.univ19.zip")
+        shutil.copyfile("zip/repository.notoco.univ19/repository.notoco.univ19-" + version + ".zip", "repository.notoco.univ.zip")
         with open('index.html', 'w', encoding="utf8") as file:
-            file.write(Template(self.INDEX_TEMPLATE).render(names=["repository.notoco.univ19.zip"], header="Notoco Univ Repo"))
+            file.write(Template(self.INDEX_TEMPLATE).render(names=["repository.notoco.univ.zip"], header="Notoco Univ Repo"))
         with open("zip" + '/index.html', 'w', encoding="utf8") as file:
             file.write(self.index("zip/"))
 
