@@ -231,7 +231,7 @@ class GeneratorZIP:
                 print("Exception: %s\r\n" % e)
                 pass
 
-        # the root page is the Kodi file source (https://notoco.github.io/univk19/): only the current
+        # the root page is the Kodi file source (https://notoco.github.io/univ/): only the current
         # repository add-on, under a fixed name
         xml = open("repository.notoco.univ19/addon.xml", "r", encoding="utf8").read()
         version = re.search(r'<addon[^>]*version="([^"]+)"', xml).group(1)
