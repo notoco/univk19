@@ -145,8 +145,13 @@ PVR_ERROR Client::GetChannels(bool radio, kodi::addon::PVRChannelsResultSet& res
   return PVR_ERROR_NO_ERROR;
 }
 
+#ifdef NOTOCO_PVR_API_8
+PVR_ERROR Client::GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
+                                             std::vector<kodi::addon::PVRStreamProperty>& properties)
+#else
 PVR_ERROR Client::GetChannelStreamProperties(const kodi::addon::PVRChannel& channel, PVR_SOURCE,
                                              std::vector<kodi::addon::PVRStreamProperty>& properties)
+#endif
 {
   // No stream URL: Kodi plays the channel through OpenLiveStream()/ReadLiveStream().
   // Kodi resolves a guide programme played as live twice (EPG_AS_LIVE, then DEFAULT): the

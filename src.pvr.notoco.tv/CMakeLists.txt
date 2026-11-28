@@ -34,6 +34,18 @@ set(NOTOCO_HEADERS src/ArchiveReader.h
                    src/Recorder.h
                    src/Utils.h)
 
+# Kodi 21 (PVR API 8): GetChannelStreamProperties() has no PVR_SOURCE
+file(STRINGS ${KODI_INCLUDE_DIR}/versions.h PVR_API_LINE REGEX "define ADDON_INSTANCE_VERSION_PVR +\"")
+string(REGEX MATCH "\"([0-9]+)\\." PVR_API_MAJOR "${PVR_API_LINE}")
+if(CMAKE_MATCH_1 LESS 9)
+  add_definitions(-DNOTOCO_PVR_API_8)
+endif()
+
+# 64-bit builds only for 64-bit Kodi (the repository hides them elsewhere)
+if(CMAKE_SYSTEM_PROCESSOR STREQUAL "aarch64")
+  set(PLATFORM_TAG linux-aarch64)
+endif()
+
 addon_version(pvr.notoco.tv NOTOCO)
 add_definitions(-DNOTOCO_VERSION=${NOTOCO_VERSION})
 

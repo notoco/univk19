@@ -38,8 +38,13 @@ public:
 
   PVR_ERROR GetChannelsAmount(int& amount) override;
   PVR_ERROR GetChannels(bool radio, kodi::addon::PVRChannelsResultSet& results) override;
+#ifdef NOTOCO_PVR_API_8 // Kodi 21: no PVR_SOURCE
+  PVR_ERROR GetChannelStreamProperties(const kodi::addon::PVRChannel& channel,
+                                       std::vector<kodi::addon::PVRStreamProperty>& properties) override;
+#else
   PVR_ERROR GetChannelStreamProperties(const kodi::addon::PVRChannel& channel, PVR_SOURCE source,
                                        std::vector<kodi::addon::PVRStreamProperty>& properties) override;
+#endif
 
   PVR_ERROR GetEPGForChannel(int channelUid, time_t start, time_t end,
                              kodi::addon::PVREPGTagsResultSet& results) override;

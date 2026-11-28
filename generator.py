@@ -38,6 +38,44 @@ else:
     def u(x):
         return x
 
+# Repositories for one Kodi version (dirs with minversion/maxversion in repository.notoco.univ19):
+# kodi21/ = Kodi 21, kodi22/ = Kodi 22. Their add-ons sit in variant folders (kodi21/ne/pvr.notoco.tv,
+# kodi21/ng/pvr.notoco.tv): one add-on id may come in several builds, told apart by <platform>.
+SUBREPOS = ["kodi21", "kodi22"]
+
+
+class GeneratorSubrepo:
+    """addons.xml, addons.xml.md5 and zip/<id>/<id>-<version>.zip of one per-version repository"""
+
+    def __init__(self, repo):
+        import hashlib
+        import xml.etree.ElementTree as ElementTree
+        entries = []
+        for root, dirs, files in sorted(os.walk(repo)):
+            dirs[:] = sorted(name for name in dirs if name != "zip")
+            if "addon.xml" not in files:
+                continue
+            dirs[:] = []  # an add-on folder: nothing below is another add-on
+            with open(os.path.join(root, "addon.xml"), encoding="utf8") as source:
+                xml = source.read()
+            addon = ElementTree.fromstring(xml.encode("utf8"))
+            addon_id, version = addon.get("id"), addon.get("version")
+            entries.append("\r\n".join(line.rstrip() for line in xml.splitlines() if "<?xml" not in line).strip())
+            zip_folder = os.path.join(repo, "zip", addon_id)
+            os.makedirs(zip_folder, exist_ok=True)
+            with zipfile.ZipFile(os.path.join(zip_folder, addon_id + "-" + version + ".zip"), "w", zipfile.ZIP_DEFLATED) as archive:
+                for folder, _, names in os.walk(root):
+                    for name in names:
+                        path = os.path.join(folder, name)
+                        archive.write(path, os.path.join(addon_id, os.path.relpath(path, root)))
+            print(root + " " + version + " Udało się!")
+        addons_xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\r\n<addons>\r\n" + "\r\n".join(entries) + "\r\n</addons>\r\n"
+        with open(os.path.join(repo, "addons.xml"), "wb") as target:
+            target.write(addons_xml.encode("utf8"))
+        with open(os.path.join(repo, "addons.xml.md5"), "wb") as target:
+            target.write(hashlib.md5(addons_xml.encode("utf8")).hexdigest().encode("utf8"))
+
+
 class GeneratorXML:
     """
         Generates a new addons.xml file from each addons addon.xml file
@@ -61,7 +99,7 @@ class GeneratorXML:
             try:
                 # skip any file or .svn folder or .git folder
                 if (not os.path.isdir(
-                    addon) or ".svn" in addon or ".git" in addon or "zip" in addon or ".idea" in addon or "temp" in addon or "packages" in addon): continue
+                    addon) or addon in SUBREPOS or ".svn" in addon or ".git" in addon or "zip" in addon or ".idea" in addon or "temp" in addon or "packages" in addon): continue
                 # create path
                 _path = os.path.join( addon, "addon.xml" )
                 # split lines for stripping
@@ -175,7 +213,7 @@ class GeneratorZIP:
         for addon in addons:
             try:
                 if (not os.path.isdir(
-                    addon) or ".svn" in addon or ".git" in addon or "zip" in addon or ".idea" in addon or "temp" in addon or "packages" in addon): continue
+                    addon) or addon in SUBREPOS or ".svn" in addon or ".git" in addon or "zip" in addon or ".idea" in addon or "temp" in addon or "packages" in addon): continue
                 _path = os.path.join( addon, "addon.xml" )
                 xml = open( _path, "r" , encoding="utf8").read()
                 version = re.findall('''version=\"(.*?[0-9])\"''', xml)[1]
@@ -208,3 +246,6 @@ if ( __name__ == "__main__" ):
     GeneratorXML()
     print("\r\nTworzę spakowane dodatki")
     GeneratorZIP()
+    for subrepo in SUBREPOS:
+        print("\r\nTworzę repozytorium " + subrepo)
+        GeneratorSubrepo(subrepo)
