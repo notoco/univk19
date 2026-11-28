@@ -38,7 +38,7 @@ else:
     def u(x):
         return x
 
-# Repositories for one Kodi version (dirs with minversion/maxversion in repository.notoco.univ19):
+# Repositories for one Kodi version (dirs with minversion/maxversion in repository.notoco.univ):
 # kodi21/ = Kodi 21, kodi22/ = Kodi 22. Their add-ons sit in variant folders (kodi21/ne/pvr.notoco.tv,
 # kodi21/ng/pvr.notoco.tv): one add-on id may come in several builds, told apart by <platform>.
 SUBREPOS = ["kodi21", "kodi22"]
@@ -233,9 +233,9 @@ class GeneratorZIP:
 
         # the root page is the Kodi file source (https://notoco.github.io/univ/): only the current
         # repository add-on, under a fixed name
-        xml = open("repository.notoco.univ19/addon.xml", "r", encoding="utf8").read()
+        xml = open("repository.notoco.univ/addon.xml", "r", encoding="utf8").read()
         version = re.search(r'<addon[^>]*version="([^"]+)"', xml).group(1)
-        shutil.copyfile("zip/repository.notoco.univ19/repository.notoco.univ19-" + version + ".zip", "repository.notoco.univ.zip")
+        shutil.copyfile("zip/repository.notoco.univ/repository.notoco.univ-" + version + ".zip", "repository.notoco.univ.zip")
         with open('index.html', 'w', encoding="utf8") as file:
             file.write(Template(self.INDEX_TEMPLATE).render(names=["repository.notoco.univ.zip"], header="Notoco Univ Repo"))
         with open("zip" + '/index.html', 'w', encoding="utf8") as file:

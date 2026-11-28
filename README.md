@@ -7,7 +7,7 @@ Repozytorium dodatków Kodi notoco.
 | `pvr.notoco.tv` (Notoco TV) | Klient TV dla listy IPTV z serwera Flussonic, tylko CoreELEC: Kodi 22 (`kodi22/`), Kodi 21 ne/ng (`kodi21/`). Kod źródłowy: [notoco/pvr.notoco.tv](https://github.com/notoco/pvr.notoco.tv) |
 | `script.notoco.helper` | Pomocne skróty |
 | `script.audio.profiles` | Profile ustawień audio z szybkim przełączaniem |
-| `repository.notoco.univ19` | To repozytorium |
+| `repository.notoco.univ` | To repozytorium |
 
 ## Instalacja
 

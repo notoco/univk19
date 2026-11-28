@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="repository.notoco.univ19" name="Notoco Univ Repo" version="3.4" provider-name="notoco">
+<addon id="script.notoco.helper" name="pomocnik notoco" version="3.6.4" provider-name="notoco">
+    <requires>
+        <import addon="xbmc.python" version="3.0.0"/>
+    </requires>
+    <extension point="xbmc.python.script" library="addon.py">
+        <reuselanguageinvoker>true</reuselanguageinvoker>
+    </extension>
+    <extension point="xbmc.service" library="autoexec.py" />
+    <extension point="xbmc.addon.metadata">
+        <platform>all</platform>
+        <summary lang="en">Pomocne skróty</summary>
+        <assets>
+            <icon>icon.png</icon>
+        </assets>
+    </extension>
+</addon>
+<addon id="repository.notoco.univ" name="Notoco Univ Repo" version="1.0.0" provider-name="notoco">
         <extension point="xbmc.addon.repository" name="Notoco Univ Repo">
             <dir minversion="18.9.0">
                 <info>https://github.com/notoco/univ/raw/master/addons.xml</info>
@@ -38,22 +54,6 @@
             </assets>
         </extension>
     </addon>
-<addon id="script.notoco.helper" name="pomocnik notoco" version="3.6.4" provider-name="notoco">
-    <requires>
-        <import addon="xbmc.python" version="3.0.0"/>
-    </requires>
-    <extension point="xbmc.python.script" library="addon.py">
-        <reuselanguageinvoker>true</reuselanguageinvoker>
-    </extension>
-    <extension point="xbmc.service" library="autoexec.py" />
-    <extension point="xbmc.addon.metadata">
-        <platform>all</platform>
-        <summary lang="en">Pomocne skróty</summary>
-        <assets>
-            <icon>icon.png</icon>
-        </assets>
-    </extension>
-</addon>
 <addon id="script.audio.profiles" name="Audio Profiles" version="2.3.1" provider-name="pkscout, notoco, Regss">
 	<requires>
         <import addon="xbmc.python" version="3.0.0" />
