@@ -131,3 +131,27 @@ msgstr ""
 msgctxt "#30034"
 msgid "download"
 msgstr ""
+
+msgctxt "#30035"
+msgid "Channel list source"
+msgstr ""
+
+msgctxt "#30036"
+msgid "A file (local or network path) or a web address typed in."
+msgstr ""
+
+msgctxt "#30037"
+msgid "File"
+msgstr ""
+
+msgctxt "#30038"
+msgid "Web address"
+msgstr ""
+
+msgctxt "#30039"
+msgid "Channel list (M3U) address"
+msgstr ""
+
+msgctxt "#30040"
+msgid "http(s) address of the provider's M3U list."
+msgstr ""

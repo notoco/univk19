@@ -23,7 +23,8 @@ constexpr int GUIDE_REFRESH_HOURS = 12;
 
 Client::Client(const kodi::addon::IInstanceInfo& instance) : CInstancePVRClient(instance)
 {
-  m_playlistPath = kodi::addon::GetSettingString("playlist");
+  m_playlistPath =
+      kodi::addon::GetSettingString(kodi::addon::GetSettingInt("playlistSource", 0) == 1 ? "playlistUrl" : "playlist");
   m_guideUrl = kodi::addon::GetSettingString("guideUrl");
   m_recordingFolder = kodi::addon::GetSettingString("recordingFolder");
   m_liveDelay = std::max(3, kodi::addon::GetSettingInt("liveDelay", 10));
