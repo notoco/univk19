@@ -1,0 +1,133 @@
+# Kodi Media Center language file
+# Addon Name: Notoco TV
+# Addon id: pvr.notoco.tv
+msgid ""
+msgstr ""
+"Language: pl-pl\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgctxt "#30000"
+msgid "Notoco TV"
+msgstr "Notoco TV"
+
+msgctxt "#30001"
+msgid "Channels"
+msgstr "Kanały"
+
+msgctxt "#30002"
+msgid "Channel list (M3U)"
+msgstr "Lista kanałów (M3U)"
+
+msgctxt "#30003"
+msgid "The M3U file of the provider (local or network path)."
+msgstr "Plik M3U od dostawcy (ścieżka lokalna lub sieciowa)."
+
+msgctxt "#30004"
+msgid "Programme guide (XMLTV) URL"
+msgstr "Adres przewodnika (XMLTV)"
+
+msgctxt "#30005"
+msgid "XMLTV address or path, plain or .gz."
+msgstr "Adres lub ścieżka XMLTV, zwykły albo .gz."
+
+msgctxt "#30006"
+msgid "Recordings"
+msgstr "Nagrywanie"
+
+msgctxt "#30007"
+msgid "Recording folder"
+msgstr "Folder nagrań"
+
+msgctxt "#30008"
+msgid "Programmes recorded from the archive are saved to this folder (local or network)."
+msgstr "Do tego folderu (lokalnego lub sieciowego) trafiają programy nagrane z archiwum."
+
+msgctxt "#30010"
+msgid "Record (from the archive after the programme)"
+msgstr "Nagraj (z archiwum po zakończeniu programu)"
+
+msgctxt "#30011"
+msgid "Manual recording (from the archive)"
+msgstr "Nagranie ręczne (z archiwum)"
+
+msgctxt "#30012"
+msgid "When should the recording be downloaded?"
+msgstr "Kiedy pobrać nagranie?"
+
+msgctxt "#30013"
+msgid "Now"
+msgstr "Teraz"
+
+msgctxt "#30014"
+msgid "Right after the programme"
+msgstr "Zaraz po zakończeniu programu"
+
+msgctxt "#30015"
+msgid "At a chosen time…"
+msgstr "O wybranej godzinie…"
+
+msgctxt "#30016"
+msgid "Backup server (host:port)"
+msgstr "Serwer zapasowy (host:port)"
+
+msgctxt "#30017"
+msgid "Used after three failed requests to the server from the list, for example eu.stream.itvn.io:4000. Empty: none."
+msgstr "Używany po trzech nieudanych zapytaniach do serwera z listy, np. eu.stream.itvn.io:4000. Puste: brak."
+
+msgctxt "#30018"
+msgid "Live delay (seconds)"
+msgstr "Opóźnienie na żywo (sekundy)"
+
+msgctxt "#30019"
+msgid "Live TV plays from the archive this far behind the broadcast (pause and rewind work). Below about 8 s the next segment may come too late and the picture stops for a moment."
+msgstr "Telewizja na żywo leci z archiwum o tyle za nadawaniem (działa pauza i cofanie). Poniżej ok. 8 s kolejny fragment może nie zdążyć i obraz na chwilę stanie."
+
+msgctxt "#30020"
+msgid "Switched to the backup server"
+msgstr "Przełączono na serwer zapasowy"
+
+msgctxt "#30021"
+msgid "Switched back to the main server"
+msgstr "Wrócono na serwer główny"
+
+msgctxt "#30022"
+msgid "%s: recorded"
+msgstr "%s: nagrano"
+
+msgctxt "#30023"
+msgid "%s: not in the archive"
+msgstr "%s: brak w archiwum"
+
+msgctxt "#30024"
+msgid "%s: not enough disk space (%.1f GB needed, %.1f GB free)"
+msgstr "%s: za mało miejsca na dysku (potrzeba %.1f GB, wolne %.1f GB)"
+
+msgctxt "#30025"
+msgid "%s: cannot write the file"
+msgstr "%s: nie można zapisać pliku"
+
+msgctxt "#30026"
+msgid "%s: no recording folder set"
+msgstr "%s: nie ustawiono folderu nagrań"
+
+msgctxt "#30030"
+msgid "Live (time shift)"
+msgstr "Na żywo (z przesunięciem czasowym)"
+
+msgctxt "#30031"
+msgid "Time shift, %d:%02d:%02d behind"
+msgstr "Przesunięcie o %d:%02d:%02d"
+
+msgctxt "#30032"
+msgid "Archive"
+msgstr "Archiwum"
+
+msgctxt "#30033"
+msgid "Live"
+msgstr "Na żywo"
+
+msgctxt "#30034"
+msgid "download"
+msgstr "pobieranie"
